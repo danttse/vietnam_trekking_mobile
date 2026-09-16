@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'features/auth/views/login_screen.dart';
+import 'app/theme/app_theme.dart';
 
 void main() {
   runApp(const VietnamTrekkingApp());
@@ -10,17 +12,10 @@ class VietnamTrekkingApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Vietnam Trekking',
       debugShowCheckedModeBanner: false,
-      home: const Scaffold(
-        body: Center(
-          child: Text(
-            'Vietnam Trekking\nĐang xây dựng...',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ),
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      home: const LoginScreen(),
     );
   }
 }
