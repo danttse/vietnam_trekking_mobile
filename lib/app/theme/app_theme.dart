@@ -20,7 +20,7 @@ class AppTheme {
       brightness: Brightness.light,
       colorScheme: const ColorScheme.light(
         surface: Color(0xFFf5f7fa),
-        surfaceContainerHighest: Color(0xFFf5f7fa),
+        surfaceContainerHighest: Color(0xFFf7fcfd),
         onSurface: Color(0xFF207335),
         onSurfaceVariant: Color(0xFF6ebf49),
         primary: Color(0xFF207335),

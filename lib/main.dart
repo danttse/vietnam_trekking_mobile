@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'features/auth/views/login_screen.dart';
+import 'features/auth/views/home_screen.dart';
 import 'app/theme/app_theme.dart';
+
 
 void main() {
   runApp(const VietnamTrekkingApp());
@@ -15,7 +17,7 @@ class VietnamTrekkingApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      home: const LoginScreen(),
+      home: LoginScreen(),
     );
   }
 }

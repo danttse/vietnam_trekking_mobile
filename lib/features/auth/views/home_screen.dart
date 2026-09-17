@@ -1,0 +1,153 @@
+import 'package:flutter/material.dart';
+import 'package:vietnam_trekking_mobile/core/widgets/cards/card_home_stats.dart';
+import 'package:vietnam_trekking_mobile/core/widgets/cards/home_journey_map.dart';
+import 'package:vietnam_trekking_mobile/core/widgets/cards/recent_province_card.dart';
+import 'package:vietnam_trekking_mobile/features/auth/data/models/province_model.dart';
+import '../view_models/home_view_model.dart';
+import '../../../core/widgets/cards/bottom_navigation.dart';
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int currentIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final HomeViewModel viewModel = HomeViewModel();
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SizedBox(height: 8),
+                Row(children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.asset(
+                      'assets/images/img_app_logo_ver2.png',
+                      width: 36,
+                      height: 36,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  const Text(
+                    'TrekViệt',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Spacer(),
+
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                    Text(
+                      'PHÂN HẠNG',
+                      style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      fontSize: 9,
+                      fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  Text(
+                    'Tên người dùng',
+                    style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant ,
+                    fontSize: 9,),
+                    ),
+                  ],
+              ),
+            ]),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                Expanded(
+                  child: CardHomeStats(
+                    icon: Icons.map,
+                    iconColor: Colors.green,
+                    value: '12/63',
+                    title: 'Tỉnh thành',
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: CardHomeStats(
+                    icon: Icons.route,
+                    iconColor: Colors.green,
+                    value: '384 km',
+                    title: 'Quãng đường',
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: CardHomeStats(
+                    icon: Icons.terrain,
+                    iconColor: Colors.green,
+                    value: '12',
+                    title: 'Chuyến đi',
+                  ),
+                ),
+              ],
+              ),
+              const SizedBox(height: 16),
+              const HomeJourneyMap(),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                    height: 64,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.only(left: 20),
+                      itemCount: viewModel.visitedProvinces.length,
+                      separatorBuilder: (_, __) => const SizedBox(width: 8),
+                      itemBuilder: (context, index) {
+                        return RecentProvinceCard(
+                          province: viewModel.visitedProvinces[index],
+                        );
+                      },
+                    ),
+                    ),
+                  ),
+                const SizedBox(width: 8),
+
+                Padding(
+                  padding: const EdgeInsets.only(right: 20),
+                  child: FloatingActionButton.small(
+                    onPressed: () {},
+                  child: const Icon(Icons.add),
+                  ),
+                ),
+              ],
+              ),
+
+                  ],
+                ),
+              ),
+            ),
+            HomeBottomNavigation(
+              currentIndex: currentIndex,
+              onTap: (index) {
+                setState(() {
+                  currentIndex = index;
+                });
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+} 
