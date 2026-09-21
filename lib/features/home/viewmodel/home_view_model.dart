@@ -8,8 +8,8 @@ class HomeViewModel extends ChangeNotifier {
   List<Province> provinces = List<Province>.from(ProvinceData.provinces);
 
   List<RecentPlace> recentPlaces = [
-    const RecentPlace(name: 'Hà Nội', lastVisited: '2 ngày trước'),
-    const RecentPlace(name: 'Lào Cai', lastVisited: '5 ngày trước'),
+    const RecentPlace(name: 'Núi Bà Đen', lastVisited: '19/9'),
+    const RecentPlace(name: 'Tháp Nghinh Phong', lastVisited: '17/11'),
   ];
 
   void addRecentPlace(RecentPlace place) {

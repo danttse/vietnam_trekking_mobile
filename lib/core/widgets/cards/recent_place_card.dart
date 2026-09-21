@@ -36,7 +36,7 @@ class RecentProvinceCard extends StatelessWidget {
             ),
 
             child: const Icon(
-              Icons.location_on,
+              Icons.terrain,
               size: 14,
               color: Colors.white,
             ),

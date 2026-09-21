@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vietnam_trekking_mobile/core/widgets/cards/card_home_stats.dart';
 import 'package:vietnam_trekking_mobile/core/widgets/cards/home_journey_map.dart';
-import 'package:vietnam_trekking_mobile/core/widgets/cards/recent_province_card.dart';
+import 'package:vietnam_trekking_mobile/core/widgets/cards/recent_place_card.dart';
 import 'package:vietnam_trekking_mobile/core/widgets/sheet/select_province_sheet.dart';
 import '../viewmodel/home_view_model.dart';
 import '../../../core/widgets/cards/bottom_navigation.dart';

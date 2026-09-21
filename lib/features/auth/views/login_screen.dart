@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vietnam_trekking_mobile/features/auth/views/forgot_password_screen.dart';
 import '../../../core/widgets/buttons/btn_login_style.dart';
 import '../../../core/widgets/inputs/login_input_field.dart';
 import '../view_models/login_viewmodel.dart';
@@ -96,7 +97,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {
-                    _viewModel.toggleForgotPassword();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ForgotPasswordScreen(),
+                        ),
+                      );
                   },
                   child: Text(
                     'Quên mật khẩu?',

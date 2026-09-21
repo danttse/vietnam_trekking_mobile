@@ -21,6 +21,6 @@ class LoginViewModel extends ChangeNotifier {
     print('Đăng nhập thành công với: $email');
   }
   void toggleForgotPassword() {
-    print('Người dùng quên mật khẩu');
+    
   }
 }

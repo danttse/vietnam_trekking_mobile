@@ -8,6 +8,7 @@ class AppTheme {
       colorScheme:const ColorScheme.dark(
         surface: Color(0xFF0f1513),
         surfaceContainerHighest: Color(0xFF1a2320),
+        surfaceContainerLow: Color(0xFFb9dbc0),
         onSurface: Color(0xFFf4f7f5),
         onSurfaceVariant: Color(0xFF90a396),
         primary: Color(0xFF207335),
@@ -21,6 +22,7 @@ class AppTheme {
       colorScheme: const ColorScheme.light(
         surface: Color(0xFFf0f0f0),
         surfaceContainerHighest: Color(0xFFe7e7e7),
+        surfaceContainerLow: Color(0xFFb9dbc0),
         onSurface: Color(0xFF207335),
         onSurfaceVariant: Color(0xFF375534),
         primary: Color(0xFF207335),

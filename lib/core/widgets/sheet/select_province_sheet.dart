@@ -115,7 +115,7 @@ class _SelectProvinceSheetState extends State<SelectProvinceSheet>
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Theme.of(context).colorScheme.surface,
-                          backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                          backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
