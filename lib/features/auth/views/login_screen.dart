@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import '../../../core/widgets/buttons/btn_login_style.dart';
 import '../../../core/widgets/inputs/login_input_field.dart';
 import '../view_models/login_viewmodel.dart';
-import 'home_screen.dart'; // Import trang home
+import '../../home/view/home_screen.dart';
+import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,6 +16,14 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final LoginViewModel _viewModel = LoginViewModel();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _viewModel.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,8 +113,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: () async {
                   final email = _emailController.text;
                   final password = _passwordController.text;
-                  
-                  // Bắt đầu loading (để UI cập nhật nếu bạn có gắn state)
                   setState(() {});
                   await _viewModel.login(email, password);
                   
@@ -160,19 +167,23 @@ class _LoginScreenState extends State<LoginScreen> {
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      print('Chuyển đến màn hình đăng ký');
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const RegisterScreen(),
+                        ),
+                      );
                     },
                     child: Text(
-                      ' Đăng ký ngay',
+                      'Đăng ký ngay',
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.primary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 16),
                 ],
               ),
             ],

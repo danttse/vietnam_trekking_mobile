@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../../features/auth/data/models/province_model.dart';
+import 'package:vietnam_trekking_mobile/features/home/data/recent_place_visited_model.dart';
 
 class RecentProvinceCard extends StatelessWidget {
-  final Province province;
+  final RecentPlace recentPlace;
 
   const RecentProvinceCard({
     super.key,
-    required this.province,
+    required this.recentPlace,
   });
 
   @override
@@ -44,7 +44,7 @@ class RecentProvinceCard extends StatelessWidget {
           const SizedBox(height: 3),
           // Tên tỉnh
           Text(
-            province.name,
+            recentPlace.name,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
@@ -54,7 +54,7 @@ class RecentProvinceCard extends StatelessWidget {
             ),
           ),
           Text(
-            province.lastVisit ?? '',
+            recentPlace.lastVisited,
             style: TextStyle(
               fontSize: 8,
               color: colorScheme.onSurfaceVariant,
