@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../../features/home/viewmodel/home_view_model.dart';
 import '../../../features/home/data/province_model.dart';
@@ -17,7 +18,10 @@ class SelectProvinceSheet extends StatefulWidget {
 class _SelectProvinceSheetState extends State<SelectProvinceSheet>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  Set<int> _tempVisitedIds = {};
+  Set<String> _tempVisitedIds = {};
+  late final Set<String> _initialVisitedIds;
+
+  bool get _hasChanged =>!setEquals(_initialVisitedIds, _tempVisitedIds);
 
   @override
   void initState() {
@@ -31,6 +35,7 @@ class _SelectProvinceSheetState extends State<SelectProvinceSheet>
     _tempVisitedIds = widget.homeViewModel.visitedProvinces
         .map((p) => p.id)
         .toSet();
+    _initialVisitedIds = Set.from(_tempVisitedIds);
   }
 
   @override
@@ -115,19 +120,27 @@ class _SelectProvinceSheetState extends State<SelectProvinceSheet>
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Theme.of(context).colorScheme.surface,
-                          backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
+                          backgroundColor: _hasChanged
+                              ? Theme.of(context).colorScheme.primary
+                              : Theme.of(context).colorScheme.surfaceContainerHighest,
+                          disabledBackgroundColor:
+                              Theme.of(context).colorScheme.surfaceContainerHighest,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        onPressed: () {
-                          widget.homeViewModel.updateVisitedProvinces(_tempVisitedIds);
-                          Navigator.pop(context);
-                        },
+                        onPressed: _hasChanged
+                            ? () {
+                                widget.homeViewModel.updateVisitedProvinces(_tempVisitedIds);
+                                Navigator.pop(context);
+                              }
+                            : null,
                         child: Text(
                           'Lưu',
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSurface,
+                            color: _hasChanged
+                                ? Theme.of(context).colorScheme.onPrimary
+                                : Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),

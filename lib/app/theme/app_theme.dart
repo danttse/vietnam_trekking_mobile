@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import '../app_fonts.dart';
 class AppTheme {
 
   static ThemeData get darkTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
+      fontFamily: AppFonts.primary,
       colorScheme:const ColorScheme.dark(
         surface: Color(0xFF0f1513),
         surfaceContainerHighest: Color(0xFF1a2320),
@@ -19,9 +21,11 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
+      fontFamily: AppFonts.primary,
       colorScheme: const ColorScheme.light(
-        surface: Color(0xFFf0f0f0),
-        surfaceContainerHighest: Color(0xFFe7e7e7),
+        //surface: Color(0xFFe1e8e5),
+        surface: Color(0xFFeff0f2),
+        surfaceContainerHighest: Color(0xFFfcfcfc),
         surfaceContainerLow: Color(0xFFb9dbc0),
         onSurface: Color(0xFF207335),
         onSurfaceVariant: Color(0xFF375534),

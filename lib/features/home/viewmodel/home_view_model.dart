@@ -38,7 +38,13 @@ class HomeViewModel extends ChangeNotifier {
 
   List<Province> get visitedProvinces {
     return provinces
-        .where((province) => province.visited)
+        .where((province) => province.isVisited)
+        .toList();
+  }
+
+  List<Province> get checkedInProvinces {
+    return provinces
+        .where((province) => province.isCheckedIn)
         .toList();
   }
 
@@ -60,21 +66,21 @@ class HomeViewModel extends ChangeNotifier {
         .toList();
   }
 
-  void toggleProvinceVisited(int provinceId) {
+  void toggleProvinceVisited(String provinceId) {
     final index = provinces.indexWhere((p) => p.id == provinceId);
     if (index == -1) return;
     final current = provinces[index];
-    final newVisited = !current.visited;
-    provinces[index] = current.copyWith(visited: newVisited);
+    final newVisited = !current.isVisited;
+    provinces[index] = current.copyWith(isVisited: newVisited);
     notifyListeners();
   }
 
-  void updateVisitedProvinces(Set<int> visitedIds) {
+  void updateVisitedProvinces(Set<String> visitedIds) {
     for (int i = 0; i < provinces.length; i++) {
       final p = provinces[i];
       final shouldBeVisited = visitedIds.contains(p.id);
-      if (p.visited != shouldBeVisited) {
-        provinces[i] = p.copyWith(visited: shouldBeVisited);
+      if (p.isVisited != shouldBeVisited) {
+        provinces[i] = p.copyWith(isVisited: shouldBeVisited);
       }
     }
     notifyListeners();

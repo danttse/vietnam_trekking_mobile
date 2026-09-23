@@ -55,7 +55,6 @@ class ForgotPasswordViewModel extends ChangeNotifier {
 
     try {
       await Future.delayed(const Duration(milliseconds: 1500));
-
       _isLoading = false;
       _successMessage = 'Mã khôi phục đã được gửi về email: $trimmedEmail';
       notifyListeners();
@@ -89,6 +88,56 @@ class ForgotPasswordViewModel extends ChangeNotifier {
     } catch (e) {
       _isOtpLoading = false;
       _otpErrorMessage = 'Mã OTP không chính xác. Vui lòng thử lại.';
+      notifyListeners();
+      return false;
+    }
+  }
+
+  bool _isPasswordObscured = true;
+  bool _isConfirmPasswordObscured = true;
+
+  bool get isPasswordObscured => _isPasswordObscured;
+  bool get isConfirmPasswordObscured => _isConfirmPasswordObscured;
+
+  void togglePasswordVisibility() {
+    _isPasswordObscured = !_isPasswordObscured;
+    notifyListeners();
+  }
+
+  void toggleConfirmPasswordVisibility() {
+    _isConfirmPasswordObscured = !_isConfirmPasswordObscured;
+    notifyListeners();
+  }
+
+  Future<bool> updateNewPassword(String newPassword, String confirmPassword) async {
+    if (newPassword.isEmpty || confirmPassword.isEmpty) {
+      _errorMessage = 'Vui lòng nhập đầy đủ mật khẩu mới';
+      notifyListeners();
+      return false;
+    }
+    if (newPassword.length < 6) {
+      _errorMessage = 'Mật khẩu phải có ít nhất 6 ký tự';
+      notifyListeners();
+      return false;
+    }
+    if (newPassword != confirmPassword) {
+      _errorMessage = 'Mật khẩu xác nhận không khớp';
+      notifyListeners();
+      return false;
+    }
+
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      await Future.delayed(const Duration(milliseconds: 1500));
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _isLoading = false;
+      _errorMessage = 'Đã có lỗi xảy ra. Vui lòng thử lại sau.';
       notifyListeners();
       return false;
     }

@@ -107,11 +107,26 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: ListenableBuilder(
                   listenable: viewModel,
                   builder: (context, _) => HomeJourneyMap(
-                    provinces: viewModel.visitedProvinces,
+                    provinces: viewModel.provinces,
                   ),
                 ),
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Check-In gần đây',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height:8),
             SizedBox(
               height: 64,
               child: Row(
