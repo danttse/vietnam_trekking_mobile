@@ -1,0 +1,8 @@
+{
+    "@@locale":"vi",
+    "loginTitle": "ĐĂNG NHẬP",
+    "emailInputLabel": "EMAIL",
+    "passwordInputLabel":"MẬT KHẨU",
+    "emailInputHint": "Nhập địa chỉ email...",
+    "passwordInputLabel": "Nhập mật khẩu..."
+}

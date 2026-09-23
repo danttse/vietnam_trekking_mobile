@@ -1,0 +1,8 @@
+{
+    "@@locale":"en",
+    "loginTitle": "LOGIN",
+    "emailInputLabel": "EMAIL",
+    "passwordInputLabel":"PASSWORD",
+    "emailInputHint": "Enter your email...",
+    "passwordInputLabel": "Enter your password..."
+}
