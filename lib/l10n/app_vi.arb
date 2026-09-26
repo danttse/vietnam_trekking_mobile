@@ -1,8 +1,120 @@
 {
-    "@@locale":"vi",
+    "@@locale": "vi",
+
+    "appName": "TrekViệt",
+    "appTagline": "Hành trình mây ngàn Việt Nam",
+
     "loginTitle": "ĐĂNG NHẬP",
-    "emailInputLabel": "EMAIL",
-    "passwordInputLabel":"MẬT KHẨU",
-    "emailInputHint": "Nhập địa chỉ email...",
-    "passwordInputLabel": "Nhập mật khẩu..."
+    "emailLabel": "Email",
+    "emailHint": "Nhập email",
+    "passwordLabel": "Mật khẩu",
+    "passwordHint": "Nhập mật khẩu",
+    "forgotPassword": "Quên mật khẩu?",
+    "loginButton": "Đăng nhập",
+    "loginWithGoogle": "Đăng nhập với Google",
+    "orDivider": "Hoặc",
+    "noAccount": "Bạn chưa có tài khoản?",
+    "registerNow": "Đăng ký ngay",
+
+    "registerTitle": "ĐĂNG KÝ",
+    "fullNameLabel": "Họ và tên",
+    "fullNameHint": "Nhập họ và tên",
+    "confirmPasswordLabel": "Xác nhận mật khẩu",
+    "confirmPasswordHint": "Nhập lại mật khẩu",
+    "agreeToTermsPrefix": "Tôi đồng ý với ",
+    "termsOfService": "Điều khoản dịch vụ",
+    "and": " & ",
+    "privacyPolicy": "Chính sách bảo mật",
+    "registerButton": "Đăng ký",
+    "registerWithGoogle": "Đăng ký với Google",
+    "alreadyHaveAccount": "Bạn đã có tài khoản?",
+
+    "forgotPasswordTitle": "Khôi phục mật khẩu",
+    "resetPasswordTitle": "Đặt lại mật khẩu",
+    "forgotPasswordDescription": "Nhập email đã đăng ký của bạn bên dưới. Chúng tôi\nsẽ gửi một liên kết an toàn để bạn đặt lại\nmật khẩu mới.",
+    "sendResetLink": "Gửi liên kết đặt lại",
+    "resetPasswordDescription": "Vui lòng nhập mật khẩu mới cho tài khoản của bạn.",
+    "newPasswordLabel": "Mật khẩu mới",
+    "newPasswordHint": "Nhập mật khẩu mới",
+    "updatePasswordButton": "Cập nhật mật khẩu",
+    "backToLogin": "Quay lại ",
+    "otpVerifiedSuccess": "Xác thực OTP thành công! Vui lòng nhập mật khẩu mới.",
+    "updatePasswordSuccess": "Cập nhật mật khẩu thành công! Vui lòng đăng nhập lại.",
+
+    "otpDialogTitle": "Nhập mã xác thực",
+    "otpSentTo": "Mã OTP đã được gửi đến:",
+    "resendOtp": "Gửi lại mã",
+    "cancelButton": "Hủy",
+    "confirmButton": "Xác nhận",
+
+    "navHome": "Trang chủ",
+    "navExplore": "Khám phá",
+    "navCommunity": "Cộng đồng",
+    "navJourney": "Hành trình",
+    "navProfile": "Hồ sơ",
+    "featureInDevelopment": "Tính năng đang được phát triển",
+
+    "homeRankLabel": "PHÂN HẠNG",
+    "homeStatProvinces": "Tỉnh thành",
+    "homeStatDistance": "Quãng đường",
+    "homeStatTrips": "Chuyến đi",
+    "homeRecentCheckin": "Check-In gần đây",
+
+    "provinceSheetTitle": "Tỉnh thành đã đi",
+    "regionNorth": "Miền Bắc",
+    "regionCentral": "Miền Trung",
+    "regionSouth": "Miền Nam",
+    "saveButton": "Lưu",
+
+    "profileTitle": "Hồ Sơ",
+    "memberSince": "Thành viên từ {date}",
+    "@memberSince": {
+        "placeholders": {
+            "date": { "type": "String" }
+        }
+    },
+    "profileProvinceMapTitle": "Bản đồ tỉnh thành",
+    "profileProvinceUnit": "tỉnh",
+    "profileStatTotalDistance": "Tổng quãng đường",
+    "profileStatVisitedProvinces": "Tỉnh thành đi qua",
+    "profileStatCompletedTrips": "Chuyến đi hoàn thành",
+    "profileStatTotalDays": "Tổng số ngày đi",
+    "profileAchievementsTitle": "DANH HIỆU CỦA BẠN",
+
+    "settingsTitle": "Cài Đặt",
+    "settingsGroupAccount": "TÀI KHOẢN",
+    "settingsChangePassword": "Đổi mật khẩu",
+    "settingsChangeLanguage": "Đổi ngôn ngữ",
+    "settingsChangeAvatar": "Đổi ảnh đại diện",
+    "settingsGroupAppearance": "GIAO DIỆN",
+    "settingsDarkMode": "Chế độ tối",
+    "settingsGroupContribute": "ĐÓNG GÓP",
+    "settingsSuggestPlace": "Đề xuất địa điểm mới",
+    "settingsSupportFeedback": "Hỗ trợ & Phản hồi",
+    "settingsGroupOther": "KHÁC",
+    "settingsTermsOfUse": "Điều khoản sử dụng",
+    "settingsPrivacyPolicy": "Chính sách quyền riêng tư",
+    "logoutButton": "Đăng xuất",
+
+    "proposePlace":"Đề xuất địa điểm mới",
+    "submitPropose":"Gửi đề xuất",
+    "placeName": "Tên địa điểm",
+    "enterPlaceName": "Nhập tên địa điểm",
+    "provinceCity": "Tỉnh/Thành phố",
+    "gpsCoordinates": "Tọa độ GPS",
+    "getCurrentLocation": "Lấy vị trí hiện tại",
+    "elevation": "Độ cao (m)",
+    "difficulty": "Độ khó",
+    "placeDescription": "Mô tả địa điểm",
+    "enterPlaceDescription": "Nhập thông tin mô tả chi tiết cung đường hoặc lưu ý khi trekking tại địa điểm này...",
+    "addImages": "Thêm hình ảnh",
+    "addPhoto": "+ Thêm ảnh",
+    "suggestionNotice": "Đề xuất của bạn sẽ được gửi về email quản trị viên để xem xét phê duyệt và cập nhật chính thức trên bản đồ TrekViệt.",
+
+    "featureComingSoon": "Tính năng {feature} đang phát triển",
+    "@featureComingSoon": {
+        "placeholders": {
+            "feature": { "type": "String" }
+        }
+    }
 }

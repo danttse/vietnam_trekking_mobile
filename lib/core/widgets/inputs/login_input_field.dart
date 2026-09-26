@@ -6,6 +6,10 @@ class EditTextAuthCustom extends StatelessWidget {
   final bool obscureText;
   final Widget? suffixIcon;
   final TextEditingController controller;
+  final int maxLines;
+  final Widget? labelTrailing;
+  final bool readOnly;
+  final TextInputType? keyboardType;
 
   const EditTextAuthCustom({
     super.key,
@@ -14,6 +18,10 @@ class EditTextAuthCustom extends StatelessWidget {
     this.obscureText = false,
     required this.controller,
     this.suffixIcon,
+    this.maxLines = 1,
+    this.labelTrailing,
+    this.readOnly = false,
+    this.keyboardType,
   });
 
   @override
@@ -22,13 +30,19 @@ class EditTextAuthCustom extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: colorScheme.onSurface,
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                color: colorScheme.onSurface,
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            ?labelTrailing,
+          ],
         ),
         const SizedBox(height: 8),
         Container(
@@ -40,9 +54,12 @@ class EditTextAuthCustom extends StatelessWidget {
           child: TextField(
             controller: controller,
             obscureText: obscureText,
+            maxLines: maxLines,
+            readOnly: readOnly,
+            keyboardType: keyboardType,
             decoration: InputDecoration(
               hintText: hintText,
-              hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
+              hintStyle: TextStyle(color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6)),
               border: InputBorder.none,
               isDense: true,
               contentPadding:

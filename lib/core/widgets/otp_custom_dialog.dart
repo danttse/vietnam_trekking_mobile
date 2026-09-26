@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../l10n/app_localizations.dart';
 
 typedef OtpCustom = OtpDialog;
 typedef OtpCustomDialog = OtpDialog;
@@ -125,15 +126,16 @@ class _OtpDialogState extends State<OtpDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
 
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       contentPadding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
-      title: const Text(
-        'Nhập mã xác thực',
+      title: Text(
+        l10n.otpDialogTitle,
         textAlign: TextAlign.center,
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
       ),
       content: SingleChildScrollView(
         child: Column(
@@ -141,7 +143,7 @@ class _OtpDialogState extends State<OtpDialog> {
           children: [
             if (widget.email != null && widget.email!.isNotEmpty) ...[
               Text(
-                'Mã OTP đã được gửi đến:',
+                l10n.otpSentTo,
                 style: TextStyle(
                   fontSize: 13,
                   color: colorScheme.onSurfaceVariant,
@@ -174,7 +176,7 @@ class _OtpDialogState extends State<OtpDialog> {
               TextButton(
                 onPressed: widget.onResend,
                 child: Text(
-                  'Gửi lại mã',
+                  l10n.resendOtp,
                   style: TextStyle(
                     color: colorScheme.primary,
                     fontWeight: FontWeight.w600,
@@ -189,7 +191,7 @@ class _OtpDialogState extends State<OtpDialog> {
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
           child: Text(
-            'Hủy',
+            l10n.cancelButton,
             style: TextStyle(color: colorScheme.onSurfaceVariant),
           ),
         ),
@@ -203,7 +205,7 @@ class _OtpDialogState extends State<OtpDialog> {
             backgroundColor: colorScheme.primary,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
-          child: const Text('Xác nhận'),
+          child: Text(l10n.confirmButton),
         ),
       ],
     );

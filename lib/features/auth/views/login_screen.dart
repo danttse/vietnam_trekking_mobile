@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../l10n/app_localizations.dart';
 import 'package:vietnam_trekking_mobile/features/auth/views/forgot_password_screen.dart';
 import '../../../core/widgets/buttons/btn_login_style.dart';
 import '../../../core/widgets/buttons/btn_outline_style.dart';
@@ -29,6 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -50,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 16),
               Text(
-                'TrekViệt',
+                l10n.appName,
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -60,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 6),
               Text(
-                'Hành trình mây ngàn Việt Nam',
+                l10n.appTagline,
                 style: TextStyle(
                   fontSize: 14,
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -69,14 +71,14 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 32),
               EditTextAuthCustom(
-                label: 'Email',
-                hintText: 'Nhập email',
+                label: l10n.emailLabel,
+                hintText: l10n.emailHint,
                 controller: _emailController,
               ),
               const SizedBox(height: 16),
               EditTextAuthCustom(
-                label: 'Mật khẩu',
-                hintText: 'Nhập mật khẩu',
+                label: l10n.passwordLabel,
+                hintText: l10n.passwordHint,
                 obscureText: _viewModel.isPasswordObscured,
                 controller: _passwordController,
                 suffixIcon: IconButton(
@@ -106,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       );
                   },
                   child: Text(
-                    'Quên mật khẩu?',
+                    l10n.forgotPassword,
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.primary,
                     ),
@@ -115,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 16),
               BtnLoginPrimary(
-                text: 'Đăng nhập',
+                text: l10n.loginButton,
                 isLoading: _viewModel.isLoading,
                 onPressed: () async {
                   final email = _emailController.text;
@@ -142,7 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    'Hoặc',
+                    l10n.orDivider,
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
@@ -158,7 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 16),
               BtnOutlineStyle(
-                text: 'Đăng nhập với Google',
+                text: l10n.loginWithGoogle,
                 icon: const Icon(Icons.g_mobiledata, color: Colors.redAccent, size: 28),
                 onPressed: () {
                   print('Đăng nhập bằng Google');
@@ -169,7 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Bạn chưa có tài khoản?',
+                    l10n.noAccount,
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
@@ -184,7 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       );
                     },
                     child: Text(
-                      'Đăng ký ngay',
+                      l10n.registerNow,
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.primary,
                         fontWeight: FontWeight.bold,

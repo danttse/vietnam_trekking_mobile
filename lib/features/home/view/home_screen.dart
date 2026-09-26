@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../l10n/app_localizations.dart';
 import 'package:vietnam_trekking_mobile/core/widgets/cards/card_home_stats.dart';
 import 'package:vietnam_trekking_mobile/core/widgets/cards/home_journey_map.dart';
 import 'package:vietnam_trekking_mobile/core/widgets/cards/recent_place_card.dart';
@@ -23,6 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
 
     return SafeArea(
@@ -46,9 +48,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    const Text(
-                      'TrekViệt',
-                      style: TextStyle(
+                    Text(
+                      l10n.appName,
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
@@ -74,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
-                              'PHÂN HẠNG',
+                              l10n.homeRankLabel,
                               style: TextStyle(
                                 color: colorScheme.onSurfaceVariant,
                                 fontSize: 9,
@@ -105,26 +107,26 @@ class _HomeScreenState extends State<HomeScreen> {
                           iconColor: Colors.green,
                           value:
                               '${viewModel.visitedProvinces.length}/${viewModel.provinces.length}',
-                          title: 'Tỉnh thành',
+                          title: l10n.homeStatProvinces,
                         ),
                       ),
                     ),
                     const SizedBox(width: 8),
-                    const Expanded(
+                    Expanded(
                       child: CardHomeStats(
                         icon: Icons.route,
                         iconColor: Colors.green,
                         value: '384 km',
-                        title: 'Quãng đường',
+                        title: l10n.homeStatDistance,
                       ),
                     ),
                     const SizedBox(width: 8),
-                    const Expanded(
+                    Expanded(
                       child: CardHomeStats(
                         icon: Icons.terrain,
                         iconColor: Colors.green,
                         value: '12',
-                        title: 'Chuyến đi',
+                        title: l10n.homeStatTrips,
                       ),
                     ),
                   ],
@@ -148,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                'Check-In gần đây',
+                l10n.homeRecentCheckin,
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,

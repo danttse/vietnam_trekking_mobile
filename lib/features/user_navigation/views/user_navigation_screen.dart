@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../core/widgets/cards/bottom_navigation.dart';
 import '../../home/view/home_screen.dart';
 import '../../profile/views/profile_screen.dart';
@@ -36,6 +37,7 @@ class _UserNavigationScreenState extends State<UserNavigationScreen> {
   }
 
   Widget _buildPlaceholder(String title, IconData icon) {
+    final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     return SafeArea(
       child: Center(
@@ -58,7 +60,7 @@ class _UserNavigationScreenState extends State<UserNavigationScreen> {
             ),
             const SizedBox(height: 6),
             Text(
-              'Tính năng đang được phát triển',
+              l10n.featureInDevelopment,
               style: TextStyle(
                 fontSize: 12,
                 color: colorScheme.onSurfaceVariant,
@@ -84,9 +86,9 @@ class _UserNavigationScreenState extends State<UserNavigationScreen> {
               HomeScreen(
                 onProfileTap: () => _viewModel.goToProfile(),
               ),
-              _buildPlaceholder('Khám phá', Icons.explore_outlined),
-              _buildPlaceholder('Cộng đồng', Icons.people_outline),
-              _buildPlaceholder('Hành trình', Icons.route_outlined),
+              _buildPlaceholder(AppLocalizations.of(context)!.navExplore, Icons.explore_outlined),
+              _buildPlaceholder(AppLocalizations.of(context)!.navCommunity, Icons.people_outline),
+              _buildPlaceholder(AppLocalizations.of(context)!.navJourney, Icons.route_outlined),
               ProfileScreen(
                 onBackToHome: () => _viewModel.goToHome(),
               ),

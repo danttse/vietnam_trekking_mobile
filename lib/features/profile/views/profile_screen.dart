@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../l10n/app_localizations.dart';
 import '../view_models/profile_viewmodel.dart';
 import '../widgets/profile_widgets.dart';
 import 'profile_setting_screen.dart';
@@ -30,6 +31,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: ListenableBuilder(
           listenable: _viewModel,
           builder: (context, _) {
+            final l10n = AppLocalizations.of(context)!;
             final profile = _viewModel.profile;
 
             return SingleChildScrollView(
@@ -54,7 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             const SizedBox(width: 8),
                           ],
                           Text(
-                            'Hồ Sơ',
+                            l10n.profileTitle,
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
@@ -101,7 +103,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ProfileHeaderCard(
                     name: profile.name,
                     isPro: profile.isPro,
-                    memberSince: 'Thành viên từ ${profile.memberSince}',
+                    memberSince: l10n.memberSince(profile.memberSince),
                     bio: profile.bio,
                     avatarUrl: profile.avatarUrl,
                   ),
@@ -109,10 +111,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                   // Province Progress Bar
                   ProfileProvinceProgressBar(
-                    title: 'Bản đồ tỉnh thành',
+                    title: l10n.profileProvinceMapTitle,
                     current: profile.visitedProvinces,
                     total: profile.totalProvinces,
-                    unit: 'tỉnh',
+                    unit: l10n.profileProvinceUnit,
                   ),
                   const SizedBox(height: 20),
 
@@ -122,14 +124,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Expanded(
                         child: ProfileStatCard(
                           value: '${profile.totalDistanceKm} km',
-                          label: 'Tổng quãng đường',
+                          label: l10n.profileStatTotalDistance,
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: ProfileStatCard(
                           value: '${profile.visitedProvinces}',
-                          label: 'Tỉnh thành đi qua',
+                          label: l10n.profileStatVisitedProvinces,
                         ),
                       ),
                     ],
@@ -140,14 +142,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Expanded(
                         child: ProfileStatCard(
                           value: '${profile.completedTrips}',
-                          label: 'Chuyến đi hoàn thành',
+                          label: l10n.profileStatCompletedTrips,
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: ProfileStatCard(
                           value: '${profile.totalDays} ngày',
-                          label: 'Tổng số ngày đi',
+                          label: l10n.profileStatTotalDays,
                         ),
                       ),
                     ],
@@ -156,7 +158,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                   // Title: DANH HIỆU CỦA BẠN
                   Text(
-                    'DANH HIỆU CỦA BẠN',
+                    l10n.profileAchievementsTitle,
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,

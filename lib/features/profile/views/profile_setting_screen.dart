@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:vietnam_trekking_mobile/app/language/app_language_viewmodel.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../app/theme/app_theme_viewmodel.dart';
 import '../../../core/widgets/cards/bottom_navigation.dart';
 import '../view_models/profile_viewmodel.dart';
+import '../view_models/profile_setting_viewmodel.dart';
 import '../widgets/profile_widgets.dart';
 import '../../../core/widgets/buttons/btn_outline_style.dart';
 
@@ -15,9 +18,11 @@ class ProfileSettingScreen extends StatefulWidget {
 class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
   final ProfileViewModel _profileViewModel = ProfileViewModel();
   final AppThemeViewModel _themeViewModel = AppThemeViewModel();
+  final ProfileSettingViewModel _settingViewModel = ProfileSettingViewModel();
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     final profile = _profileViewModel.profile;
 
@@ -39,7 +44,7 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                   ),
                   const SizedBox(width: 12),
                   Text(
-                    'Cài Đặt',
+                    l10n.settingsTitle,
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -62,7 +67,7 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                 child: ProfileHeaderCard(
                   name: profile.name,
                   isPro: profile.isPro,
-                  memberSince: 'Thành viên từ ${profile.memberSince}',
+                  memberSince: l10n.memberSince(profile.memberSince),
                   bio: profile.bio,
                   subTitle: profile.email,
                   avatarUrl: profile.avatarUrl,
@@ -71,43 +76,22 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
               const SizedBox(height: 20),
               //Nhom 1 tai khoan
               ProfileSettingGroupItem(
-                title: 'TÀI KHOẢN',
+                title: l10n.settingsGroupAccount,
                 items: [
                   ProfileSettingItem(
-                    mainTitle: 'Đổi mật khẩu',
+                    mainTitle: l10n.settingsChangePassword,
                     icon: Icons.lock_outline,
-                    onTapAction: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Tính năng Đổi mật khẩu đang phát triển'),
-                          duration: Duration(seconds: 1),
-                        ),
-                      );
-                    },
+                    onTapAction: () {},
                   ),
                   ProfileSettingItem(
-                    mainTitle: 'Đổi ngôn ngữ',
+                    mainTitle: l10n.settingsChangeLanguage,
                     icon: Icons.language,
-                    onTapAction: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Tính năng Đổi ngôn ngữ đang phát triển'),
-                          duration: Duration(seconds: 1),
-                        ),
-                      );
-                    },
+                    onTapAction: () => _settingViewModel.changeLanguage(context),
                   ),
                   ProfileSettingItem(
-                    mainTitle: 'Đổi ảnh đại diện',
+                    mainTitle: l10n.settingsChangeAvatar,
                     icon: Icons.photo_camera_outlined,
-                    onTapAction: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Tính năng Đổi ảnh đại diện đang phát triển'),
-                          duration: Duration(seconds: 1),
-                        ),
-                      );
-                    },
+                    onTapAction: () {},
                   ),
                 ],
               ),
@@ -116,10 +100,10 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
               ListenableBuilder(
                 listenable: _themeViewModel,
                 builder: (context, _) => ProfileSettingGroupItem(
-                  title: 'GIAO DIỆN',
+                  title: l10n.settingsGroupAppearance,
                   items: [
                     ProfileSettingItem(
-                      mainTitle: 'Chế độ tối',
+                      mainTitle: l10n.settingsDarkMode,
                       icon: Icons.dark_mode_outlined,
                       trailing: Switch.adaptive(
                         value: _themeViewModel.isDarkMode,
@@ -133,31 +117,17 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
               const SizedBox(height: 20),
               // Nhom 3 Dong gop
               ProfileSettingGroupItem(
-                title: 'ĐÓNG GÓP',
+                title: l10n.settingsGroupContribute,
                 items: [
                   ProfileSettingItem(
-                    mainTitle: 'Đề xuất địa điểm mới',
+                    mainTitle: l10n.settingsSuggestPlace,
                     icon: Icons.place_outlined,
-                    onTapAction: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Tính năng Đề xuất địa điểm đang phát triển'),
-                          duration: Duration(seconds: 1),
-                        ),
-                      );
-                    },
+                    onTapAction: () => _settingViewModel.suggestPlace(context),
                   ),
                   ProfileSettingItem(
-                    mainTitle: 'Hỗ trợ & Phản hồi',
+                    mainTitle: l10n.settingsSupportFeedback,
                     icon: Icons.help_outline,
-                    onTapAction: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Tính năng Hỗ trợ & Phản hồi đang phát triển'),
-                          duration: Duration(seconds: 1),
-                        ),
-                      );
-                    },
+                    onTapAction: () {},
                   ),
                 ],
               ),
@@ -165,41 +135,27 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
 
               // Group 4: KHÁC
               ProfileSettingGroupItem(
-                title: 'KHÁC',
+                title: l10n.settingsGroupOther,
                 items: [
                   ProfileSettingItem(
-                    mainTitle: 'Điều khoản sử dụng',
+                    mainTitle: l10n.settingsTermsOfUse,
                     icon: Icons.description_outlined,
-                    onTapAction: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Tính năng Điều khoản sử dụng đang phát triển'),
-                          duration: Duration(seconds: 1),
-                        ),
-                      );
-                    },
+                    onTapAction: () {},
                   ),
                   ProfileSettingItem(
-                    mainTitle: 'Chính sách quyền riêng tư',
+                    mainTitle: l10n.settingsPrivacyPolicy,
                     icon: Icons.privacy_tip_outlined,
-                    onTapAction: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Tính năng Chính sách quyền riêng tư đang phát triển'),
-                          duration: Duration(seconds: 1),
-                        ),
-                      );
-                    },
+                    onTapAction: () {},
                   ),
                 ],
               ),
               const SizedBox(height: 12),
               BtnOutlineStyle(
-                text: 'Đăng xuất',
+                text: l10n.logoutButton,
                 icon: const Icon(Icons.exit_to_app),
-                onPressed: ()=>{},
+                onPressed: () => _settingViewModel.logout(),
               ),
-              const SizedBox(height:8)
+              const SizedBox(height: 8)
             ],
           ),
         ),

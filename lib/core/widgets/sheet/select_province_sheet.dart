@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../features/home/viewmodel/home_view_model.dart';
 import '../../../features/home/data/province_model.dart';
+import 'app_draggable_sheet.dart';
 
 class SelectProvinceSheet extends StatefulWidget {
   final HomeViewModel homeViewModel;
@@ -21,7 +23,7 @@ class _SelectProvinceSheetState extends State<SelectProvinceSheet>
   Set<String> _tempVisitedIds = {};
   late final Set<String> _initialVisitedIds;
 
-  bool get _hasChanged =>!setEquals(_initialVisitedIds, _tempVisitedIds);
+  bool get _hasChanged => !setEquals(_initialVisitedIds, _tempVisitedIds);
 
   @override
   void initState() {
@@ -46,112 +48,81 @@ class _SelectProvinceSheetState extends State<SelectProvinceSheet>
 
   @override
   Widget build(BuildContext context) {
-    return DraggableScrollableSheet(
-      initialChildSize: 0.6,
-      minChildSize: 0.35,
-      maxChildSize: 0.9,
-      expand: false,
-      builder: (context, scrollController) {
-        return Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-          ),
-          child: SafeArea(
-            child: Column(
-              children: [
-                const SizedBox(height: 12),
-                Container(
-                  width: 50,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: Colors.grey,
-                    borderRadius: BorderRadius.circular(12),
+    final l10n = AppLocalizations.of(context)!;
+    return AppDraggableSheet(
+      title: l10n.provinceSheetTitle,
+      contentBuilder: (context, scrollController) {
+        return Column(
+          children: [
+            const SizedBox(height: 12),
+            TabBar(
+              controller: _tabController,
+              tabs: [
+                Tab(text: l10n.regionNorth),
+                Tab(text: l10n.regionCentral),
+                Tab(text: l10n.regionSouth),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  _buildProvinceList(
+                    _tabController.index == 0 ? scrollController : null,
+                    widget.homeViewModel.getListNorthernProvinces,
                   ),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  'Tỉnh thành đã đi',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurface,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                  _buildProvinceList(
+                    _tabController.index == 1 ? scrollController : null,
+                    widget.homeViewModel.getListCentralnProvinces,
                   ),
-                ),
-                const Divider(
-                  height: 0.5,
-                  color: Colors.grey,),
-                const SizedBox(height: 12),
-                TabBar(
-                  controller: _tabController,
-                  tabs: const [
-                    Tab(text: 'Miền Bắc'),
-                    Tab(text: 'Miền Trung'),
-                    Tab(text: 'Miền Nam'),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Expanded(
-                  child: TabBarView(
-                    controller: _tabController,
-                    children: [
-                      _buildProvinceList(
-                        _tabController.index == 0 ? scrollController : null,
-                        widget.homeViewModel.getListNorthernProvinces,
-                      ),
-                      _buildProvinceList(
-                        _tabController.index == 1 ? scrollController : null,
-                        widget.homeViewModel.getListCentralnProvinces,
-                      ),
-                      _buildProvinceList(
-                        _tabController.index == 2 ? scrollController : null,
-                        widget.homeViewModel.getListSouththernProvinces,
-                      ),
-                    ],
+                  _buildProvinceList(
+                    _tabController.index == 2 ? scrollController : null,
+                    widget.homeViewModel.getListSouththernProvinces,
                   ),
-                ),
-                SafeArea(
-                  top: false,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: SizedBox(
-                      height: 48,
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Theme.of(context).colorScheme.surface,
-                          backgroundColor: _hasChanged
-                              ? Theme.of(context).colorScheme.primary
-                              : Theme.of(context).colorScheme.surfaceContainerHighest,
-                          disabledBackgroundColor:
-                              Theme.of(context).colorScheme.surfaceContainerHighest,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        onPressed: _hasChanged
-                            ? () {
-                                widget.homeViewModel.updateVisitedProvinces(_tempVisitedIds);
-                                Navigator.pop(context);
-                              }
-                            : null,
-                        child: Text(
-                          'Lưu',
-                          style: TextStyle(
-                            color: _hasChanged
-                                ? Theme.of(context).colorScheme.onPrimary
-                                : Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                ],
+              ),
+            ),
+            SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: SizedBox(
+                  height: 48,
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Theme.of(context).colorScheme.surface,
+                      backgroundColor: _hasChanged
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).colorScheme.surfaceContainerHighest,
+                      disabledBackgroundColor:
+                          Theme.of(context).colorScheme.surfaceContainerHighest,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onPressed: _hasChanged
+                        ? () {
+                            widget.homeViewModel.updateVisitedProvinces(_tempVisitedIds);
+                            Navigator.pop(context);
+                          }
+                        : null,
+                    child: Text(
+                      l10n.saveButton,
+                      style: TextStyle(
+                        color: _hasChanged
+                            ? Theme.of(context).colorScheme.onPrimary
+                            : Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
+          ],
         );
       },
     );
