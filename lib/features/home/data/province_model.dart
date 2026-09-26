@@ -6,6 +6,8 @@ class Province {
   final String region;
   final bool isVisited;
   final bool isCheckedIn;
+  final double? area; // Diện tích (km²)
+  final int? population; // Dân số (người)
 
   static const String mienBac = 'Miền Bắc';
   static const String mienTrung = 'Miền Trung';
@@ -17,10 +19,17 @@ class Province {
     required this.region,
     this.isVisited = false,
     this.isCheckedIn = false,
+    this.area,
+    this.population,
   });
 
   /// Alias tương thích ngược với code cũ
   bool get visited => isVisited;
+  double? get acreage => area;
+
+  /// Alias tiếng Việt
+  double? get dienTich => area;
+  int? get danSo => population;
 
   /// Lấy chỉ số SVG path để vẽ bản đồ
   int? get pathIndex => ProvincePathMapper.getPathIndex(id);
@@ -32,6 +41,8 @@ class Province {
     bool? isVisited,
     bool? isCheckedIn,
     bool? visited,
+    double? area,
+    int? population,
   }) {
     return Province(
       id: id ?? this.id,
@@ -39,6 +50,8 @@ class Province {
       region: region ?? this.region,
       isVisited: isVisited ?? visited ?? this.isVisited,
       isCheckedIn: isCheckedIn ?? this.isCheckedIn,
+      area: area ?? this.area,
+      population: population ?? this.population,
     );
   }
 
@@ -49,6 +62,8 @@ class Province {
       region: json['region'] as String,
       isVisited: (json['is_visited'] ?? json['isVisited'] ?? json['visited'] ?? false) as bool,
       isCheckedIn: (json['is_checked_in'] ?? json['isCheckedIn'] ?? false) as bool,
+      area: (json['area'] ?? json['dien_tich'] ?? json['dienTich'])?.toDouble(),
+      population: (json['population'] ?? json['dan_so'] ?? json['danSo']) as int?,
     );
   }
 
@@ -59,6 +74,8 @@ class Province {
       'region': region,
       'is_visited': isVisited,
       'is_checked_in': isCheckedIn,
+      if (area != null) 'area': area,
+      if (population != null) 'population': population,
     };
   }
 }

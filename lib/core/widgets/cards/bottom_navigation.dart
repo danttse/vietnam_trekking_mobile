@@ -16,6 +16,8 @@ class HomeBottomNavigation extends StatelessWidget {
 
     return NavigationBarTheme(
       data: NavigationBarThemeData(
+        backgroundColor: colorScheme.surfaceContainerHighest,
+        indicatorColor: colorScheme.surface,
         iconTheme: WidgetStateProperty.resolveWith<IconThemeData>((states) {
           if (states.contains(WidgetState.selected)) {
             return IconThemeData(color: colorScheme.onSurface);
@@ -42,38 +44,33 @@ class HomeBottomNavigation extends StatelessWidget {
         onDestinationSelected: onTap,
         backgroundColor: colorScheme.surfaceContainerHighest,
         indicatorColor: colorScheme.surface,
-
-      destinations: const [
-        NavigationDestination(
-          icon: Icon(Icons.home_outlined),
-          selectedIcon: Icon(Icons.home),
-          label: 'Trang chủ',
-        ),
-
-        NavigationDestination(
-          icon: Icon(Icons.map_outlined),
-          selectedIcon: Icon(Icons.map),
-          label: 'Bản đồ',
-        ),
-
-        NavigationDestination(
-          icon: Icon(Icons.route_outlined),
-          selectedIcon: Icon(Icons.route),
-          label: 'Hành trình',
-        ),
-
-        NavigationDestination(
-          icon: Icon(Icons.people_outline),
-          selectedIcon: Icon(Icons.people),
-          label: 'Cộng đồng',
-        ),
-
-        NavigationDestination(
-          icon: Icon(Icons.person_outline),
-          selectedIcon: Icon(Icons.person),
-          label: 'Cá nhân',
-        ),
-      ],
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home),
+            label: 'Trang chủ',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.explore_outlined),
+            selectedIcon: Icon(Icons.explore),
+            label: 'Khám phá',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.people_outline),
+            selectedIcon: Icon(Icons.people),
+            label: 'Cộng đồng',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.route_outlined),
+            selectedIcon: Icon(Icons.route),
+            label: 'Hành trình',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person_outline),
+            selectedIcon: Icon(Icons.person),
+            label: 'Hồ sơ',
+          ),
+        ],
       ),
     );
   }

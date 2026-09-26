@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:vietnam_trekking_mobile/features/auth/views/forgot_password_screen.dart';
 import '../../../core/widgets/buttons/btn_login_style.dart';
+import '../../../core/widgets/buttons/btn_outline_style.dart';
 import '../../../core/widgets/inputs/login_input_field.dart';
 import '../view_models/login_viewmodel.dart';
-import '../../home/view/home_screen.dart';
+import '../../user_navigation/views/user_navigation_screen.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -125,7 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   if (context.mounted) {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => const HomeScreen()),
+                      MaterialPageRoute(builder: (context) => const UserNavigationScreen()),
                     );
                   }
                 },
@@ -156,7 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
               const SizedBox(height: 16),
-              BtnLoginSocial(
+              BtnOutlineStyle(
                 text: 'Đăng nhập với Google',
                 icon: const Icon(Icons.g_mobiledata, color: Colors.redAccent, size: 28),
                 onPressed: () {

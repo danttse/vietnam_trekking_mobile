@@ -1,3 +1,5 @@
+import 'dart:math' as Math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -62,6 +64,9 @@ class _HomeJourneyMapState extends State<HomeJourneyMap> {
       for (final p in widget.provinces)
         if (p.pathIndex != null) p.pathIndex!: p,
     };
+    final selectedProvince = _selectedPathIndex == null
+        ? null
+        : provinceMap[_selectedPathIndex];
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -69,10 +74,13 @@ class _HomeJourneyMapState extends State<HomeJourneyMap> {
         final targetWidth = constraints.maxWidth.isFinite && constraints.maxWidth > 0
             ? constraints.maxWidth
             : MediaQuery.of(context).size.width;
+        final targetHeightTemp = constraints.maxHeight.isFinite && constraints.maxHeight>0
+            ? constraints.maxHeight
+            : MediaQuery.of(context).size.width;
 
         const padding = 8.0;
         final availableWidth = targetWidth - padding * 2;
-        final availableHeight = widget.maxHeight - padding * 2;
+        final availableHeight = Math.min(widget.maxHeight,targetHeightTemp) - padding * 2;
 
         // 2. Tỉ lệ dài : rộng = 1.37 : 1 (height / width = 1.37)
         const double aspectHtoW = 1.37;
@@ -155,10 +163,29 @@ class _HomeJourneyMapState extends State<HomeJourneyMap> {
                   ),
                 ),
               ),
-              const Positioned(
+              Positioned(
                 top: 12,
                 right: 12,
-                child: MapLegend(),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    MapLegend(),
+                    const SizedBox(height:8),
+                    if (selectedProvince != null)
+                      _ProvinceDetail(
+                        boxLabel: selectedProvince.name,
+                        population: selectedProvince.population,
+                        acreage: selectedProvince.acreage,
+                      )
+                    else
+                      _ProvinceDetail(
+                        boxLabel: 'Việt Nam',
+                        population: 102300000,
+                        acreage: 331211.6,
+                      )
+                  ]
+                )
               ),
             ],
           ),
@@ -238,8 +265,9 @@ class _LegendItem extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          width: 14,
-          height: 14,
+          width: 9,
+          height: 9,
+          alignment: Alignment.centerLeft,
           decoration: BoxDecoration(
             color: color,
             borderRadius: BorderRadius.circular(3),
@@ -260,12 +288,103 @@ class _LegendItem extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-            fontSize: 10,
+            fontSize: 7,
             fontWeight: FontWeight.w600,
             color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
       ],
+    );
+  }
+}
+
+class _ProvinceDetail extends StatelessWidget {
+  final String boxLabel;
+  final String? description;
+  final num? population;
+  final double? acreage;
+
+  const _ProvinceDetail({
+    required this.boxLabel,
+    this.population,
+    this.acreage,
+    this.description,
+  });
+
+  static String _formatNumber(int number) {
+    return number.toString().replaceAllMapped(
+          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+          (Match m) => '${m[1]}.',
+        );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 10,
+        vertical: 8,
+      ),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.75),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: colorScheme.outlineVariant.withValues(alpha: 0.4),
+          width: 0.8,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.15),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(children: [
+            Image(
+              image: const AssetImage('assets/images/vietnam_flag.jpg'),
+              width: 12,
+              height: 8,
+            ),
+            const SizedBox(width: 5),
+            Text(
+              boxLabel,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+          ],),
+          if (acreage != null && acreage! > 0) ...[
+            const SizedBox(height: 2),
+            Text(
+              '${acreage!.toStringAsFixed(1)} km²',
+              style: TextStyle(
+                fontSize: 9,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+          if (population != null && population! > 0) ...[
+            const SizedBox(height: 1),
+            Text(
+              '${_formatNumber(population!.toInt())} người',
+              style: TextStyle(
+                fontSize: 9,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ],
+      ),
     );
   }
 }

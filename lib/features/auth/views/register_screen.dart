@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../../core/widgets/buttons/btn_login_style.dart';
+import '../../../core/widgets/buttons/btn_outline_style.dart';
 import '../../../core/widgets/inputs/login_input_field.dart';
 import '../view_models/register_viewmodel.dart';
-import '../../home/view/home_screen.dart';
+import '../../user_navigation/views/user_navigation_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -124,8 +125,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-
-              // Dòng Checkbox Điều khoản dịch vụ & Chính sách bảo mật
               Row(
                 children: [
                   Checkbox(
@@ -202,7 +201,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ],
               ),
-
               const SizedBox(height: 20),
               BtnLoginPrimary(
                 text: 'Đăng ký',
@@ -219,13 +217,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   if (context.mounted) {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => const HomeScreen()),
+                      MaterialPageRoute(builder: (context) => const UserNavigationScreen()),
                     );
                   }
                 },
               ),
               const SizedBox(height: 16),
-              BtnLoginSocial(
+              BtnOutlineStyle(
                 text: 'Đăng ký với Google',
                 icon: const Icon(Icons.g_mobiledata, color: Colors.redAccent, size: 28),
                 onPressed: () {

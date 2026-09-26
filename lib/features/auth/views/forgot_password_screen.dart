@@ -192,8 +192,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       ),
     );
   }
-
-  // Bước 1: Nhập email
   Widget _buildEnterEmailAddress() {
     return Column(
       children: [
@@ -220,8 +218,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       ],
     );
   }
-
-  // Bước 2: Đổi mật khẩu mới
   Widget _buildChangePassword() {
     final colorScheme = Theme.of(context).colorScheme;
     return Column(
