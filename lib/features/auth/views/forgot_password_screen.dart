@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../core/network/dio_client.dart';
 import '../../../core/services/auth_event_bus.dart';
 import '../../../core/services/token_storage.dart';
-import '../../../core/widgets/inputs/login_input_field.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../core/widgets/buttons/btn_login_style.dart';
 import '../../../core/widgets/otp_custom_dialog.dart';
 import '../repository/auth_repository_impl.dart';
@@ -71,8 +71,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             if (isVerified) {
               Navigator.of(dialogContext).pop();
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Xác thực OTP thành công! Vui lòng nhập mật khẩu mới.'),
+                SnackBar(
+                  content: Text(AppLocalizations.of(context)!.otpVerifiedSuccess),
                   backgroundColor: Colors.green,
                 ),
               );
@@ -106,8 +106,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Cập nhật mật khẩu thành công! Vui lòng đăng nhập lại.'),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.updatePasswordSuccess),
           backgroundColor: Colors.green,
         ),
       );
@@ -124,6 +124,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       body: SafeArea(
@@ -153,7 +154,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       ),
                     ),
                     Text(
-                      viewModel.isOtpVerified ? 'Đặt lại mật khẩu' : 'Khôi phục mật khẩu',
+                      viewModel.isOtpVerified ? l10n.resetPasswordTitle : l10n.forgotPasswordTitle,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: colorScheme.onSurface,
@@ -188,13 +189,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Quay lại ',
+                    l10n.backToLogin,
                     style: TextStyle(color: colorScheme.onSurfaceVariant),
                   ),
                   TextButton(
                     onPressed: () => Navigator.pop(context),
                     child: Text(
-                      'Đăng nhập',
+                      l10n.loginButton,
                       style: TextStyle(
                         color: colorScheme.primary,
                         fontWeight: FontWeight.bold,
@@ -211,10 +212,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   }
 
   Widget _buildEnterEmailAddress() {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
         Text(
-          'Nhập email đã đăng ký của bạn bên dưới. Chúng tôi\nsẽ gửi một liên kết an toàn để bạn đặt lại\nmật khẩu mới.',
+          l10n.forgotPasswordDescription,
           textAlign: TextAlign.center,
           style: TextStyle(
             color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -223,13 +225,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         ),
         const SizedBox(height: 16),
         EditTextAuthCustom(
-          label: 'Email',
-          hintText: 'Nhập email',
+          label: l10n.emailLabel,
+          hintText: l10n.emailHint,
           controller: _emailController,
         ),
         const SizedBox(height: 16),
         BtnLoginPrimary(
-          text: 'Gửi liên kết đặt lại',
+          text: l10n.sendResetLink,
           isLoading: viewModel.isLoading,
           onPressed: _onSendEmail,
         ),
@@ -238,11 +240,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   }
 
   Widget _buildChangePassword() {
+    final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     return Column(
       children: [
         Text(
-          'Vui lòng nhập mật khẩu mới cho tài khoản của bạn.',
+          l10n.resetPasswordDescription,
           textAlign: TextAlign.center,
           style: TextStyle(
             color: colorScheme.onSurfaceVariant,
@@ -251,8 +254,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         ),
         const SizedBox(height: 16),
         EditTextAuthCustom(
-          label: 'Mật khẩu mới',
-          hintText: 'Nhập mật khẩu mới',
+          label: l10n.newPasswordLabel,
+          hintText: l10n.newPasswordHint,
           obscureText: viewModel.isPasswordObscured,
           controller: _passwordController,
           suffixIcon: IconButton(
@@ -265,8 +268,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         ),
         const SizedBox(height: 16),
         EditTextAuthCustom(
-          label: 'Xác nhận mật khẩu',
-          hintText: 'Nhập lại mật khẩu',
+          label: l10n.confirmPasswordLabel,
+          hintText: l10n.confirmPasswordHint,
           obscureText: viewModel.isConfirmPasswordObscured,
           controller: _confirmPasswordController,
           suffixIcon: IconButton(
@@ -279,7 +282,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         ),
         const SizedBox(height: 16),
         BtnLoginPrimary(
-          text: 'Cập nhật mật khẩu',
+          text: l10n.updatePasswordButton,
           isLoading: viewModel.isLoading,
           onPressed: _onUpdatePassword,
         ),

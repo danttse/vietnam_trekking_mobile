@@ -1,8 +1,120 @@
 {
-    "@@locale":"en",
+    "@@locale": "en",
+
+    "appName": "TrekViet",
+    "appTagline": "Journey through Vietnam's thousand clouds",
+
     "loginTitle": "LOGIN",
-    "emailInputLabel": "EMAIL",
-    "passwordInputLabel":"PASSWORD",
-    "emailInputHint": "Enter your email...",
-    "passwordInputLabel": "Enter your password..."
+    "emailLabel": "Email",
+    "emailHint": "Enter your email",
+    "passwordLabel": "Password",
+    "passwordHint": "Enter your password",
+    "forgotPassword": "Forgot password?",
+    "loginButton": "Login",
+    "loginWithGoogle": "Login with Google",
+    "orDivider": "Or",
+    "noAccount": "Don't have an account?",
+    "registerNow": "Register now",
+
+    "registerTitle": "REGISTER",
+    "fullNameLabel": "Full name",
+    "fullNameHint": "Enter your full name",
+    "confirmPasswordLabel": "Confirm password",
+    "confirmPasswordHint": "Re-enter your password",
+    "agreeToTermsPrefix": "I agree to the ",
+    "termsOfService": "Terms of Service",
+    "and": " & ",
+    "privacyPolicy": "Privacy Policy",
+    "registerButton": "Register",
+    "registerWithGoogle": "Register with Google",
+    "alreadyHaveAccount": "Already have an account?",
+
+    "forgotPasswordTitle": "Recover Password",
+    "resetPasswordTitle": "Reset Password",
+    "forgotPasswordDescription": "Enter your registered email below. We will\nsend you a secure link to reset\nyour new password.",
+    "sendResetLink": "Send reset link",
+    "resetPasswordDescription": "Please enter a new password for your account.",
+    "newPasswordLabel": "New password",
+    "newPasswordHint": "Enter new password",
+    "updatePasswordButton": "Update password",
+    "backToLogin": "Back to ",
+    "otpVerifiedSuccess": "OTP verified! Please enter your new password.",
+    "updatePasswordSuccess": "Password updated successfully! Please login again.",
+
+    "otpDialogTitle": "Enter verification code",
+    "otpSentTo": "OTP code has been sent to:",
+    "resendOtp": "Resend code",
+    "cancelButton": "Cancel",
+    "confirmButton": "Confirm",
+
+    "navHome": "Home",
+    "navExplore": "Explore",
+    "navCommunity": "Community",
+    "navJourney": "Journey",
+    "navProfile": "Profile",
+    "featureInDevelopment": "Feature is under development",
+
+    "homeRankLabel": "RANK",
+    "homeStatProvinces": "Provinces",
+    "homeStatDistance": "Distance",
+    "homeStatTrips": "Trips",
+    "homeRecentCheckin": "Recent Check-Ins",
+
+    "provinceSheetTitle": "Visited Provinces",
+    "regionNorth": "North",
+    "regionCentral": "Central",
+    "regionSouth": "South",
+    "saveButton": "Save",
+
+    "profileTitle": "Profile",
+    "memberSince": "Member since {date}",
+    "@memberSince": {
+        "placeholders": {
+            "date": { "type": "String" }
+        }
+    },
+    "profileProvinceMapTitle": "Province Map",
+    "profileProvinceUnit": "provinces",
+    "profileStatTotalDistance": "Total distance",
+    "profileStatVisitedProvinces": "Provinces visited",
+    "profileStatCompletedTrips": "Completed trips",
+    "profileStatTotalDays": "Total days traveled",
+    "profileAchievementsTitle": "YOUR ACHIEVEMENTS",
+
+    "settingsTitle": "Settings",
+    "settingsGroupAccount": "ACCOUNT",
+    "settingsChangePassword": "Change password",
+    "settingsChangeLanguage": "Change language",
+    "settingsChangeAvatar": "Change avatar",
+    "settingsGroupAppearance": "APPEARANCE",
+    "settingsDarkMode": "Dark mode",
+    "settingsGroupContribute": "CONTRIBUTE",
+    "settingsSuggestPlace": "Suggest a new place",
+    "settingsSupportFeedback": "Support & Feedback",
+    "settingsGroupOther": "OTHER",
+    "settingsTermsOfUse": "Terms of Use",
+    "settingsPrivacyPolicy": "Privacy Policy",
+    "logoutButton": "Logout",
+    
+    "proposePlace":"Suggest a new location",
+    "submitPropose":"Submit suggestion",
+    "placeName": "Place name",
+    "enterPlaceName": "Enter place name",
+    "provinceCity": "Province/City",
+    "gpsCoordinates": "GPS Coordinates",
+    "getCurrentLocation": "Get current location",
+    "elevation": "Elevation (m)",
+    "difficulty": "Difficulty",
+    "placeDescription": "Place description",
+    "enterPlaceDescription": "Enter detailed information about the trail or notes for trekking at this location...",
+    "addImages": "Add images",
+    "addPhoto": "+ Add photo",
+    "suggestionNotice": "Your suggestion will be sent to the administrator's email for review and approval before being officially added to the TrekViệt map.",
+
+    "featureComingSoon": "Feature {feature} is under development",
+    "@featureComingSoon": {
+        "placeholders": {
+            "feature": { "type": "String" }
+        }
+    }
 }

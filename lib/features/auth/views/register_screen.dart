@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../core/network/dio_client.dart';
 import '../../../core/services/auth_event_bus.dart';
 import '../../../core/services/token_storage.dart';
-import '../../../core/widgets/buttons/btn_login_style.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../core/widgets/buttons/btn_outline_style.dart';
 import '../../../core/widgets/inputs/login_input_field.dart';
 import '../repository/auth_repository_impl.dart';
@@ -55,6 +55,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
@@ -78,7 +79,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 16),
               Text(
-                'TrekViệt',
+                l10n.appName,
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -88,7 +89,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 6),
               Text(
-                'Hành trình mây ngàn Việt Nam',
+                l10n.appTagline,
                 style: TextStyle(
                   fontSize: 14,
                   color: colorScheme.onSurfaceVariant,
@@ -97,20 +98,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 24),
               EditTextAuthCustom(
-                label: 'Họ và tên',
-                hintText: 'Nhập họ và tên',
+                label: l10n.fullNameLabel,
+                hintText: l10n.fullNameHint,
                 controller: _nameController,
               ),
               const SizedBox(height: 16),
               EditTextAuthCustom(
-                label: 'Email',
-                hintText: 'Nhập email',
+                label: l10n.emailLabel,
+                hintText: l10n.emailHint,
                 controller: _emailController,
               ),
               const SizedBox(height: 16),
               EditTextAuthCustom(
-                label: 'Mật khẩu',
-                hintText: 'Nhập mật khẩu',
+                label: l10n.passwordLabel,
+                hintText: l10n.passwordHint,
                 obscureText: _viewModel.isPasswordObscured,
                 controller: _passwordController,
                 suffixIcon: IconButton(
@@ -129,8 +130,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 16),
               EditTextAuthCustom(
-                label: 'Xác nhận mật khẩu',
-                hintText: 'Nhập lại mật khẩu',
+                label: l10n.confirmPasswordLabel,
+                hintText: l10n.confirmPasswordHint,
                 obscureText: _viewModel.isConfirmPasswordObscured,
                 controller: _confirmPasswordController,
                 suffixIcon: IconButton(
@@ -170,7 +171,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         Text(
-                          'Tôi đồng ý với ',
+                          l10n.agreeToTermsPrefix,
                           style: TextStyle(
                             fontSize: 13,
                             color: colorScheme.onSurface,
@@ -186,7 +187,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           ),
                           child: Text(
-                            'Điều khoản dịch vụ',
+                            l10n.termsOfService,
                             style: TextStyle(
                               fontSize: 13,
                               color: Theme.of(context).colorScheme.primary,
@@ -195,7 +196,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         ),
                         Text(
-                          ' & ',
+                          l10n.and,
                           style: TextStyle(
                             fontSize: 13,
                             color: colorScheme.onSurface,
@@ -211,7 +212,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           ),
                           child: Text(
-                            'Chính sách bảo mật',
+                            l10n.privacyPolicy,
                             style: TextStyle(
                               fontSize: 13,
                               color: Theme.of(context).colorScheme.primary,
@@ -238,7 +239,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ],
               const SizedBox(height: 20),
               BtnLoginPrimary(
-                text: 'Đăng ký',
+                text: l10n.registerButton,
                 isLoading: _viewModel.isLoading,
                 onPressed: () async {
                   final name = _nameController.text;
@@ -272,7 +273,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 16),
               BtnOutlineStyle(
-                text: 'Đăng ký với Google',
+                text: l10n.registerWithGoogle,
                 icon: const Icon(Icons.g_mobiledata, color: Colors.redAccent, size: 28),
                 onPressed: () {
                   // TODO: Google Sign-Up
@@ -283,7 +284,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Bạn đã có tài khoản?',
+                    l10n.alreadyHaveAccount,
                     style: TextStyle(
                       color: colorScheme.onSurfaceVariant,
                     ),
@@ -293,7 +294,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       Navigator.pop(context);
                     },
                     child: Text(
-                      'Đăng nhập',
+                      l10n.loginButton,
                       style: TextStyle(
                         color: colorScheme.primary,
                         fontWeight: FontWeight.bold,

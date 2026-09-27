@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// ViewModel quản lý trạng thái theme sáng/tối toàn app
 class AppThemeViewModel extends ChangeNotifier {
   static final AppThemeViewModel _instance = AppThemeViewModel._internal();
   factory AppThemeViewModel() => _instance;
