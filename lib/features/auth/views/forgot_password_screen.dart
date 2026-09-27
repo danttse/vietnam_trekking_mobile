@@ -1,8 +1,14 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import '../view_models/forgot_password_viewmodel.dart';
+
+import '../../../core/network/dio_client.dart';
+import '../../../core/services/auth_event_bus.dart';
+import '../../../core/services/token_storage.dart';
 import '../../../core/widgets/inputs/login_input_field.dart';
 import '../../../core/widgets/buttons/btn_login_style.dart';
 import '../../../core/widgets/otp_custom_dialog.dart';
+import '../repository/auth_repository_impl.dart';
+import '../view_models/forgot_password_viewmodel.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -15,11 +21,22 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
-  final ForgotPasswordViewModel viewModel = ForgotPasswordViewModel();
+
+  late final SecureTokenStorage _tokenStorage;
+  late final AuthEventBus _eventBus;
+  late final Dio _dio;
+  late final AuthRepositoryImpl _repository;
+  late final ForgotPasswordViewModel viewModel;
 
   @override
   void initState() {
     super.initState();
+    _tokenStorage = const SecureTokenStorage();
+    _eventBus = AuthEventBus(); // singleton
+    _dio = DioClient.createDio(tokenStorage: _tokenStorage, eventBus: _eventBus);
+    _repository = AuthRepositoryImpl(dio: _dio, tokenStorage: _tokenStorage);
+    viewModel = ForgotPasswordViewModel(repository: _repository);
+
     viewModel.addListener(() {
       if (mounted) {
         setState(() {});
@@ -50,7 +67,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           onResend: () => viewModel.sendResetPasswordEmail(email),
           onSubmitted: (otp) async {
             final isVerified = await viewModel.verifyOtp(otp);
-            if (!dialogContext.mounted||!mounted) return;
+            if (!dialogContext.mounted || !mounted) return;
             if (isVerified) {
               Navigator.of(dialogContext).pop();
               ScaffoldMessenger.of(context).showSnackBar(
@@ -193,7 +210,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     );
   }
 
-  // Bước 1: Nhập email
   Widget _buildEnterEmailAddress() {
     return Column(
       children: [
@@ -221,7 +237,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     );
   }
 
-  // Bước 2: Đổi mật khẩu mới
   Widget _buildChangePassword() {
     final colorScheme = Theme.of(context).colorScheme;
     return Column(

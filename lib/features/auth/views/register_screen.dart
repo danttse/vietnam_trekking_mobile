@@ -1,8 +1,14 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+
+import '../../../core/network/dio_client.dart';
+import '../../../core/services/auth_event_bus.dart';
+import '../../../core/services/token_storage.dart';
 import '../../../core/widgets/buttons/btn_login_style.dart';
+import '../../../core/widgets/buttons/btn_outline_style.dart';
 import '../../../core/widgets/inputs/login_input_field.dart';
+import '../repository/auth_repository_impl.dart';
 import '../view_models/register_viewmodel.dart';
-import '../../home/view/home_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -16,7 +22,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
-  final RegisterViewModel _viewModel = RegisterViewModel();
+
+  late final SecureTokenStorage _tokenStorage;
+  late final AuthEventBus _eventBus;
+  late final Dio _dio;
+  late final AuthRepositoryImpl _repository;
+  late final RegisterViewModel _viewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    _tokenStorage = const SecureTokenStorage();
+    _eventBus = AuthEventBus(); // singleton
+    _dio = DioClient.createDio(tokenStorage: _tokenStorage, eventBus: _eventBus);
+    _repository = AuthRepositoryImpl(dio: _dio, tokenStorage: _tokenStorage);
+    _viewModel = RegisterViewModel(repository: _repository, tokenStorage: _tokenStorage);
+
+    _viewModel.addListener(() {
+      if (mounted) setState(() {});
+    });
+  }
 
   @override
   void dispose() {
@@ -31,7 +56,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    const accentLinkColor = Color(0xFFD97757);
 
     return Scaffold(
       body: SafeArea(
@@ -124,8 +148,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-
-              // Dòng Checkbox Điều khoản dịch vụ & Chính sách bảo mật
               Row(
                 children: [
                   Checkbox(
@@ -156,7 +178,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         TextButton(
                           onPressed: () {
-                            print('Điều khoản dịch vụ');
+                            // TODO: Show Terms of Service
                           },
                           style: TextButton.styleFrom(
                             padding: EdgeInsets.zero,
@@ -181,7 +203,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         TextButton(
                           onPressed: () {
-                            print('Chính sách bảo mật');
+                            // TODO: Show Privacy Policy
                           },
                           style: TextButton.styleFrom(
                             padding: EdgeInsets.zero,
@@ -202,7 +224,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ],
               ),
-
+              // Req 5.9, 5.10, 5.11: Hiển thị thông báo lỗi từ ViewModel
+              if (_viewModel.errorMessage != null) ...[
+                const SizedBox(height: 8),
+                Text(
+                  _viewModel.errorMessage!,
+                  style: TextStyle(
+                    color: colorScheme.error,
+                    fontSize: 13,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
               const SizedBox(height: 20),
               BtnLoginPrimary(
                 text: 'Đăng ký',
@@ -214,22 +247,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   final confirmPassword = _confirmPasswordController.text;
 
                   setState(() {});
-                  await _viewModel.register(name, email, password, confirmPassword);
 
-                  if (context.mounted) {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => const HomeScreen()),
+                  // Req 5.1: Gọi register với named params
+                  // Req 5.2: Chỉ xử lý khi register() trả về true (OTP step starts)
+                  final success = await _viewModel.register(
+                    displayName: name,
+                    email: email,
+                    password: password,
+                    confirmPassword: confirmPassword,
+                    agreedToTerms: _viewModel.isAgreeToTerms,
+                  );
+
+                  if (success && context.mounted) {
+                    // OTP screen not yet built — show SnackBar per task spec
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                            'Vui lòng kiểm tra email và nhập mã OTP'),
+                        backgroundColor: Colors.green,
+                      ),
                     );
                   }
                 },
               ),
               const SizedBox(height: 16),
-              BtnLoginSocial(
+              BtnOutlineStyle(
                 text: 'Đăng ký với Google',
                 icon: const Icon(Icons.g_mobiledata, color: Colors.redAccent, size: 28),
                 onPressed: () {
-                  print('Đăng ký bằng Google');
+                  // TODO: Google Sign-Up
                 },
               ),
               const SizedBox(height: 24),

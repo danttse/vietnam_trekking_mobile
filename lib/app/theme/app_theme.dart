@@ -8,8 +8,8 @@ class AppTheme {
       brightness: Brightness.dark,
       fontFamily: AppFonts.primary,
       colorScheme:const ColorScheme.dark(
-        surface: Color(0xFF0f1513),
-        surfaceContainerHighest: Color(0xFF1a2320),
+        surface: Color(0xFF010101),
+        surfaceContainerHighest: Color(0xFF151515),
         surfaceContainerLow: Color(0xFFb9dbc0),
         onSurface: Color(0xFFf4f7f5),
         onSurfaceVariant: Color(0xFF90a396),
