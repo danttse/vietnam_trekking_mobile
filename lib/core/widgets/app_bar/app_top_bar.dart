@@ -2,55 +2,58 @@ import 'package:flutter/material.dart';
 
 class AppTopBar extends StatelessWidget {
   final String title;
-  final VoidCallback? onBack;
+  final IconData? icon;
+  final VoidCallback? onClickIcon;
 
   const AppTopBar({
     super.key,
     required this.title,
-    this.onBack,
+    this.icon,
+    this.onClickIcon,
   });
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return SizedBox(
-      height:44,
-      child: Stack(
-        alignment: Alignment.center,
+      child: Padding(padding: EdgeInsetsGeometry.symmetric(vertical: 8,horizontal: 16),
+      child: 
+      Stack(
+        alignment: Alignment.centerLeft,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 48),
-            child: Text(
-              title,
-              style: TextStyle(
-                fontSize: 18,
-                color: Theme.of(context).colorScheme.onSurface
-              )
-            ),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 20,
+              color: Theme.of(context).colorScheme.onSurface,
+              fontWeight: FontWeight.bold
+            
+            )
           ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: 
-            InkWell(
-              onTap: onBack ?? () => Navigator.of(context).maybePop(),
-              child: 
-                Container(
-                  width: 30,
-                  height: 30,
+          if (icon != null)
+            Align(
+              alignment: Alignment.centerRight,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(16),
+                onTap: onClickIcon ?? () => Navigator.of(context).maybePop(),
+                child: Container(
+                  width: 35,
+                  height: 35,
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(16),
                   ),
                   child: Icon(
-                    Icons.navigate_before,
+                    icon,
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    size: 15,
+                    size: 20,
                   ),
-                )
-            )
-          )
+                ),
+              ),
+            ),
         ]
       ),
+      )
     );
   }
 }

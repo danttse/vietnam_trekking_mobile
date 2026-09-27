@@ -662,6 +662,60 @@ abstract class AppLocalizations {
   /// **'Đề xuất của bạn sẽ được gửi về email quản trị viên để xem xét phê duyệt và cập nhật chính thức trên bản đồ TrekViệt.'**
   String get suggestionNotice;
 
+  /// No description provided for @featuredDestinations.
+  ///
+  /// In vi, this message translates to:
+  /// **'Điểm đến nổi bật'**
+  String get featuredDestinations;
+
+  /// No description provided for @popularTrails.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cung đường phổ biến'**
+  String get popularTrails;
+
+  /// No description provided for @recommendedForYou.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý dành cho bạn'**
+  String get recommendedForYou;
+
+  /// No description provided for @searchTrailsPlaces.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm cung đường, địa danh trekking...'**
+  String get searchTrailsPlaces;
+
+  /// No description provided for @seeAll.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem tất cả'**
+  String get seeAll;
+
+  /// No description provided for @north.
+  ///
+  /// In vi, this message translates to:
+  /// **'Miền Bắc'**
+  String get north;
+
+  /// No description provided for @central.
+  ///
+  /// In vi, this message translates to:
+  /// **'Miền Trung'**
+  String get central;
+
+  /// No description provided for @south.
+  ///
+  /// In vi, this message translates to:
+  /// **'Miền Nam'**
+  String get south;
+
+  /// No description provided for @popular.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phổ biến'**
+  String get popular;
+
   /// No description provided for @featureComingSoon.
   ///
   /// In vi, this message translates to:

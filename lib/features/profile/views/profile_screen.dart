@@ -3,6 +3,7 @@ import '../../../l10n/app_localizations.dart';
 import '../view_models/profile_viewmodel.dart';
 import '../widgets/profile_widgets.dart';
 import 'profile_setting_screen.dart';
+import '../../../core/widgets/app_bar/app_top_bar.dart';
 
 class ProfileScreen extends StatefulWidget {
   final VoidCallback? onBackToHome;
@@ -33,73 +34,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
           builder: (context, _) {
             final l10n = AppLocalizations.of(context)!;
             final profile = _viewModel.profile;
-
-            return SingleChildScrollView(
+            return Column(children: [
+            AppTopBar(
+              title: l10n.profileTitle,
+              icon: Icons.settings_outlined,
+              onClickIcon: () {
+              Navigator.push(context,
+                MaterialPageRoute(
+                  builder: (context) => const ProfileSettingScreen(),
+                ),
+              );
+              },
+            ),
+            Expanded(child: 
+            SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Top App Bar: Title "Hồ Sơ" + Settings Icon
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        children: [
-                          if (Navigator.canPop(context)) ...[
-                            IconButton(
-                              icon: Icon(Icons.arrow_back, color: colorScheme.onSurface),
-                              onPressed: () => Navigator.pop(context),
-                              padding: EdgeInsets.zero,
-                              constraints: const BoxConstraints(),
-                            ),
-                            const SizedBox(width: 8),
-                          ],
-                          Text(
-                            l10n.profileTitle,
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: colorScheme.onSurface,
-                              letterSpacing: 0.2,
-                            ),
-                          ),
-                        ],
-                      ),
-                      // Settings button in circular container
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ProfileSettingScreen(),
-                            ),
-                          );
-                        },
-                        borderRadius: BorderRadius.circular(20),
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            color: colorScheme.surfaceContainerHighest,
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.2),
-                              width: 1,
-                            ),
-                          ),
-                          child: Icon(
-                            Icons.settings_outlined,
-                            size: 20,
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
                   const SizedBox(height: 18),
-
-                  // Profile Header (Avatar, Name, PRO, Member Since, Bio)
                   ProfileHeaderCard(
                     name: profile.name,
                     isPro: profile.isPro,
@@ -183,7 +136,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 16),
                 ],
               ),
-            );
+            ))
+            ]);
           },
         ),
       ),

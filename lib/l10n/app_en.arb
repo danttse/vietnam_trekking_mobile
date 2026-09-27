@@ -110,6 +110,15 @@
     "addImages": "Add images",
     "addPhoto": "+ Add photo",
     "suggestionNotice": "Your suggestion will be sent to the administrator's email for review and approval before being officially added to the TrekViệt map.",
+    "featuredDestinations": "Featured Destinations",
+    "popularTrails": "Popular Trails",
+    "recommendedForYou": "Recommended for You",
+    "searchTrailsPlaces": "Search trails, trekking destinations...",
+    "seeAll": "See All",
+    "north": "Northern",
+    "central": "Central",
+    "south": "Southern",
+    "popular": "Popular",
 
     "featureComingSoon": "Feature {feature} is under development",
     "@featureComingSoon": {

@@ -300,6 +300,33 @@ class AppLocalizationsVi extends AppLocalizations {
       'Đề xuất của bạn sẽ được gửi về email quản trị viên để xem xét phê duyệt và cập nhật chính thức trên bản đồ TrekViệt.';
 
   @override
+  String get featuredDestinations => 'Điểm đến nổi bật';
+
+  @override
+  String get popularTrails => 'Cung đường phổ biến';
+
+  @override
+  String get recommendedForYou => 'Gợi ý dành cho bạn';
+
+  @override
+  String get searchTrailsPlaces => 'Tìm cung đường, địa danh trekking...';
+
+  @override
+  String get seeAll => 'Xem tất cả';
+
+  @override
+  String get north => 'Miền Bắc';
+
+  @override
+  String get central => 'Miền Trung';
+
+  @override
+  String get south => 'Miền Nam';
+
+  @override
+  String get popular => 'Phổ biến';
+
+  @override
   String featureComingSoon(String feature) {
     return 'Tính năng $feature đang phát triển';
   }

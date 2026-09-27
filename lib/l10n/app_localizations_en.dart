@@ -300,6 +300,33 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your suggestion will be sent to the administrator\'s email for review and approval before being officially added to the TrekViệt map.';
 
   @override
+  String get featuredDestinations => 'Featured Destinations';
+
+  @override
+  String get popularTrails => 'Popular Trails';
+
+  @override
+  String get recommendedForYou => 'Recommended for You';
+
+  @override
+  String get searchTrailsPlaces => 'Search trails, trekking destinations...';
+
+  @override
+  String get seeAll => 'See All';
+
+  @override
+  String get north => 'Northern';
+
+  @override
+  String get central => 'Central';
+
+  @override
+  String get south => 'Southern';
+
+  @override
+  String get popular => 'Popular';
+
+  @override
   String featureComingSoon(String feature) {
     return 'Feature $feature is under development';
   }

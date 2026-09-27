@@ -110,6 +110,15 @@
     "addImages": "Thêm hình ảnh",
     "addPhoto": "+ Thêm ảnh",
     "suggestionNotice": "Đề xuất của bạn sẽ được gửi về email quản trị viên để xem xét phê duyệt và cập nhật chính thức trên bản đồ TrekViệt.",
+    "featuredDestinations": "Điểm đến nổi bật",
+    "popularTrails": "Cung đường phổ biến",
+    "recommendedForYou": "Gợi ý dành cho bạn",
+    "searchTrailsPlaces": "Tìm cung đường, địa danh trekking...",
+    "seeAll": "Xem tất cả",
+    "north": "Miền Bắc",
+    "central": "Miền Trung",
+    "south": "Miền Nam",
+    "popular": "Phổ biến",
 
     "featureComingSoon": "Tính năng {feature} đang phát triển",
     "@featureComingSoon": {
