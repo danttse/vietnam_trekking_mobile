@@ -119,11 +119,27 @@
     "central": "Miền Trung",
     "south": "Miền Nam",
     "popular": "Phổ biến",
+    "editBio":"Chỉnh sửa Bio",
+    "titleBioBox":"Giới thiệu bản thân (BIO)",
+    "editAvatar": "Đổi Ảnh Đại Diện",
+    "avatarPickerTitle": "TÙY CHỌN TẢI ẢNH",
+    "takeNewPhoto": "Chụp ảnh mới",
+    "chooseFromLibrary": "Chọn từ thư viện",
 
     "featureComingSoon": "Tính năng {feature} đang phát triển",
     "@featureComingSoon": {
         "placeholders": {
             "feature": { "type": "String" }
         }
-    }
+    },
+    "changePasswordTitle": "Đổi Mật Khẩu",
+    "currentPasswordLabel": "MẬT KHẨU HIỆN TẠI",
+    "currentPasswordHint": "Nhập mật khẩu hiện tại",
+    "newPasswordLabelUpper": "MẬT KHẨU MỚI",
+    "confirmNewPasswordLabelUpper": "XÁC NHẬN MẬT KHẨU MỚI",
+    "confirmNewPasswordHint": "Xác nhận lại mật khẩu mới",
+    "pleaseFillAllFields": "Vui lòng nhập đầy đủ thông tin",
+    "passwordsDoNotMatch": "Mật khẩu xác nhận không khớp",
+    "passwordTooShort": "Mật khẩu phải có ít nhất 6 ký tự",
+    "changePasswordSuccess": "Đổi mật khẩu thành công!"
 }

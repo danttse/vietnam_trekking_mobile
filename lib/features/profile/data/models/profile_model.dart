@@ -49,4 +49,36 @@ class UserProfileModel {
 
   double get provinceProgress =>
       totalProvinces > 0 ? visitedProvinces / totalProvinces : 0.0;
+
+  UserProfileModel copyWith({
+    String? id,
+    String? name,
+    bool? isPro,
+    String? memberSince,
+    String? bio,
+    String? email,
+    String? avatarUrl,
+    int? visitedProvinces,
+    int? totalProvinces,
+    int? totalDistanceKm,
+    int? completedTrips,
+    int? totalDays,
+    List<AchievementModel>? achievements,
+  }) {
+    return UserProfileModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      isPro: isPro ?? this.isPro,
+      memberSince: memberSince ?? this.memberSince,
+      bio: bio ?? this.bio,
+      email: email ?? this.email,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
+      visitedProvinces: visitedProvinces ?? this.visitedProvinces,
+      totalProvinces: totalProvinces ?? this.totalProvinces,
+      totalDistanceKm: totalDistanceKm ?? this.totalDistanceKm,
+      completedTrips: completedTrips ?? this.completedTrips,
+      totalDays: totalDays ?? this.totalDays,
+      achievements: achievements ?? this.achievements,
+    );
+  }
 }

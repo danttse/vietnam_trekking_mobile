@@ -5,10 +5,10 @@ class ProfileHeaderCard extends StatelessWidget {
   final bool isPro;
   final String memberSince;
   final String bio;
-  /// Optional override for the second text line (e.g. email in Settings).
-  /// When provided, replaces the `bio` line display.
   final String? subTitle;
   final String? avatarUrl;
+  final bool isEdit;
+  final VoidCallback? actionEdit;
 
   const ProfileHeaderCard({
     super.key,
@@ -18,6 +18,8 @@ class ProfileHeaderCard extends StatelessWidget {
     required this.bio,
     this.subTitle,
     this.avatarUrl,
+    this.isEdit=false,
+    this.actionEdit
   });
 
   @override
@@ -27,7 +29,6 @@ class ProfileHeaderCard extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // Avatar with circular border
         Container(
           width: 62,
           height: 62,
@@ -93,6 +94,17 @@ class ProfileHeaderCard extends StatelessWidget {
                       ),
                     ),
                   ],
+                  if (isEdit) ...[
+                    const Spacer(),
+                    GestureDetector(
+                      onTap: actionEdit,
+                      child: Icon(
+                        Icons.mode_edit_outline,
+                        size: 18,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ]
                 ],
               ),
               const SizedBox(height: 4),

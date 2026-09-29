@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:vietnam_trekking_mobile/app/language/app_language_viewmodel.dart';
 import '../../../l10n/app_localizations.dart';
 import 'features/auth/views/login_screen.dart';
 import 'app/theme/app_theme.dart';
 import 'app/theme/app_theme_viewmodel.dart';
+import 'features/profile/view_models/profile_viewmodel.dart';
 
 void main() {
   runApp(const VietnamTrekkingApp());
@@ -40,21 +42,24 @@ class _VietnamTrekkingAppState extends State<VietnamTrekkingApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: _themeViewModel.themeMode,
+    return ChangeNotifierProvider(
+      create: (_) => ProfileViewModel(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
+        themeMode: _themeViewModel.themeMode,
 
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: AppLocalizations.supportedLocales,
-      locale: _appLanguageViewModel.currentLocale,
-      home: const LoginScreen(),
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: _appLanguageViewModel.currentLocale,
+        home: const LoginScreen(),
+      ),
     );
   }
 }

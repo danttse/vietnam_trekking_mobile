@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/app_bar/app_top_bar_with_back.dart';
 import '../../../l10n/app_localizations.dart';
 import '../view_models/forgot_password_viewmodel.dart';
 import '../../../core/widgets/inputs/login_input_field.dart';
@@ -112,84 +113,67 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-          child: Column(
-            children: [
-              SizedBox(
-                height: 48,
-                child: Stack(
-                  alignment: Alignment.center,
+        child: Column(
+          children: [
+            AppTopBarWithBack(
+              title: viewModel.isOtpVerified
+                  ? l10n.resetPasswordTitle
+                  : l10n.forgotPasswordTitle,
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                child: Column(
                   children: [
-                    Positioned(
-                      left: 0,
-                      child: IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: Icon(
-                          Icons.arrow_back,
-                          color: colorScheme.onSurfaceVariant,
-                          size: 18,
-                        ),
-                        style: IconButton.styleFrom(
-                          backgroundColor: colorScheme.surfaceContainerHighest,
-                          shape: const CircleBorder(),
-                          padding: EdgeInsets.zero,
-                        ),
+                    const SizedBox(height: 32),
+                    Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: colorScheme.surfaceContainerLow,
+                      ),
+                      child: Icon(
+                        viewModel.isOtpVerified
+                            ? Icons.lock_reset_rounded
+                            : Icons.lock_outline_rounded,
+                        color: colorScheme.primary,
+                        size: 42,
                       ),
                     ),
-                    Text(
-                      viewModel.isOtpVerified ? l10n.resetPasswordTitle : l10n.forgotPasswordTitle,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: colorScheme.onSurface,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    const SizedBox(height: 16),
+
+                    // Chuyển đổi giữa 2 bước
+                    viewModel.isOtpVerified
+                        ? _buildChangePassword()
+                        : _buildEnterEmailAddress(),
+
+                    const SizedBox(height: 32),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          l10n.backToLogin,
+                          style: TextStyle(
+                              color: colorScheme.onSurfaceVariant),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text(
+                            l10n.loginButton,
+                            style: TextStyle(
+                              color: colorScheme.primary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 50),
-              Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: colorScheme.surfaceContainerLow,
-                ),
-                child: Icon(
-                  viewModel.isOtpVerified ? Icons.lock_reset_rounded : Icons.lock_outline_rounded,
-                  color: colorScheme.primary,
-                  size: 42,
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Chuyển đổi giữa 2 bước
-              viewModel.isOtpVerified ? _buildChangePassword() : _buildEnterEmailAddress(),
-
-              const SizedBox(height: 32),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    l10n.backToLogin,
-                    style: TextStyle(color: colorScheme.onSurfaceVariant),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text(
-                      l10n.loginButton,
-                      style: TextStyle(
-                        color: colorScheme.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

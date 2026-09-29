@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import '../../../core/widgets/sheet/select_language_sheet.dart';
 import '../../../app/language/app_language_viewmodel.dart';
+import '../views/change_password_screen.dart';
+import '../views/edit_avatar_screen.dart';
 import '../views/suggest_place_screen.dart';
 
 class ProfileSettingViewModel extends ChangeNotifier {
-  final AppLanguageViewModel _appLanguageViewModel=AppLanguageViewModel();
+  final AppLanguageViewModel _appLanguageViewModel = AppLanguageViewModel();
   bool _isLoading = false;
 
   bool get isLoading => _isLoading;
@@ -23,8 +25,18 @@ class ProfileSettingViewModel extends ChangeNotifier {
     );
   }
 
-  Future<void> changeAvatar() async {
-    // TODO: Implement change avatar logic
+  Future<void> changeAvatar(BuildContext context) async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const EditAvatarScreen()),
+    );
+  }
+
+  Future<void> changePassword(BuildContext context) async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const ChangePasswordScreen()),
+    );
   }
 
   Future<void> suggestPlace(BuildContext context) async {

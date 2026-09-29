@@ -716,11 +716,107 @@ abstract class AppLocalizations {
   /// **'Phổ biến'**
   String get popular;
 
+  /// No description provided for @editBio.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉnh sửa Bio'**
+  String get editBio;
+
+  /// No description provided for @titleBioBox.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giới thiệu bản thân (BIO)'**
+  String get titleBioBox;
+
+  /// No description provided for @editAvatar.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi Ảnh Đại Diện'**
+  String get editAvatar;
+
+  /// No description provided for @avatarPickerTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'TÙY CHỌN TẢI ẢNH'**
+  String get avatarPickerTitle;
+
+  /// No description provided for @takeNewPhoto.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chụp ảnh mới'**
+  String get takeNewPhoto;
+
+  /// No description provided for @chooseFromLibrary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn từ thư viện'**
+  String get chooseFromLibrary;
+
   /// No description provided for @featureComingSoon.
   ///
   /// In vi, this message translates to:
   /// **'Tính năng {feature} đang phát triển'**
   String featureComingSoon(String feature);
+
+  /// No description provided for @changePasswordTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi Mật Khẩu'**
+  String get changePasswordTitle;
+
+  /// No description provided for @currentPasswordLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'MẬT KHẨU HIỆN TẠI'**
+  String get currentPasswordLabel;
+
+  /// No description provided for @currentPasswordHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập mật khẩu hiện tại'**
+  String get currentPasswordHint;
+
+  /// No description provided for @newPasswordLabelUpper.
+  ///
+  /// In vi, this message translates to:
+  /// **'MẬT KHẨU MỚI'**
+  String get newPasswordLabelUpper;
+
+  /// No description provided for @confirmNewPasswordLabelUpper.
+  ///
+  /// In vi, this message translates to:
+  /// **'XÁC NHẬN MẬT KHẨU MỚI'**
+  String get confirmNewPasswordLabelUpper;
+
+  /// No description provided for @confirmNewPasswordHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xác nhận lại mật khẩu mới'**
+  String get confirmNewPasswordHint;
+
+  /// No description provided for @pleaseFillAllFields.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng nhập đầy đủ thông tin'**
+  String get pleaseFillAllFields;
+
+  /// No description provided for @passwordsDoNotMatch.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mật khẩu xác nhận không khớp'**
+  String get passwordsDoNotMatch;
+
+  /// No description provided for @passwordTooShort.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mật khẩu phải có ít nhất 6 ký tự'**
+  String get passwordTooShort;
+
+  /// No description provided for @changePasswordSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi mật khẩu thành công!'**
+  String get changePasswordSuccess;
 }
 
 class _AppLocalizationsDelegate

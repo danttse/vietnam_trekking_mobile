@@ -327,7 +327,55 @@ class AppLocalizationsVi extends AppLocalizations {
   String get popular => 'Phổ biến';
 
   @override
+  String get editBio => 'Chỉnh sửa Bio';
+
+  @override
+  String get titleBioBox => 'Giới thiệu bản thân (BIO)';
+
+  @override
+  String get editAvatar => 'Đổi Ảnh Đại Diện';
+
+  @override
+  String get avatarPickerTitle => 'TÙY CHỌN TẢI ẢNH';
+
+  @override
+  String get takeNewPhoto => 'Chụp ảnh mới';
+
+  @override
+  String get chooseFromLibrary => 'Chọn từ thư viện';
+
+  @override
   String featureComingSoon(String feature) {
     return 'Tính năng $feature đang phát triển';
   }
+
+  @override
+  String get changePasswordTitle => 'Đổi Mật Khẩu';
+
+  @override
+  String get currentPasswordLabel => 'MẬT KHẨU HIỆN TẠI';
+
+  @override
+  String get currentPasswordHint => 'Nhập mật khẩu hiện tại';
+
+  @override
+  String get newPasswordLabelUpper => 'MẬT KHẨU MỚI';
+
+  @override
+  String get confirmNewPasswordLabelUpper => 'XÁC NHẬN MẬT KHẨU MỚI';
+
+  @override
+  String get confirmNewPasswordHint => 'Xác nhận lại mật khẩu mới';
+
+  @override
+  String get pleaseFillAllFields => 'Vui lòng nhập đầy đủ thông tin';
+
+  @override
+  String get passwordsDoNotMatch => 'Mật khẩu xác nhận không khớp';
+
+  @override
+  String get passwordTooShort => 'Mật khẩu phải có ít nhất 6 ký tự';
+
+  @override
+  String get changePasswordSuccess => 'Đổi mật khẩu thành công!';
 }

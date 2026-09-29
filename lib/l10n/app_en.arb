@@ -119,11 +119,27 @@
     "central": "Central",
     "south": "Southern",
     "popular": "Popular",
+    "editBio":"Edit Bio",
+    "editAvatar": "Edit Avatar",
+    "avatarPickerTitle": "UPLOAD OPTIONS",
+    "takeNewPhoto": "Take a new photo",
+    "chooseFromLibrary": "Choose from library",
+    "titleBioBox":"Biography (BIO)",
 
     "featureComingSoon": "Feature {feature} is under development",
     "@featureComingSoon": {
         "placeholders": {
             "feature": { "type": "String" }
         }
-    }
+    },
+    "changePasswordTitle": "Change Password",
+    "currentPasswordLabel": "CURRENT PASSWORD",
+    "currentPasswordHint": "Enter current password",
+    "newPasswordLabelUpper": "NEW PASSWORD",
+    "confirmNewPasswordLabelUpper": "CONFIRM NEW PASSWORD",
+    "confirmNewPasswordHint": "Re-enter new password",
+    "pleaseFillAllFields": "Please fill in all fields",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "passwordTooShort": "Password must be at least 6 characters",
+    "changePasswordSuccess": "Password changed successfully!"
 }

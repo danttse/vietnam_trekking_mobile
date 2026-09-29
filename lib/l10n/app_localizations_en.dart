@@ -327,7 +327,55 @@ class AppLocalizationsEn extends AppLocalizations {
   String get popular => 'Popular';
 
   @override
+  String get editBio => 'Edit Bio';
+
+  @override
+  String get titleBioBox => 'Biography (BIO)';
+
+  @override
+  String get editAvatar => 'Edit Avatar';
+
+  @override
+  String get avatarPickerTitle => 'UPLOAD OPTIONS';
+
+  @override
+  String get takeNewPhoto => 'Take a new photo';
+
+  @override
+  String get chooseFromLibrary => 'Choose from library';
+
+  @override
   String featureComingSoon(String feature) {
     return 'Feature $feature is under development';
   }
+
+  @override
+  String get changePasswordTitle => 'Change Password';
+
+  @override
+  String get currentPasswordLabel => 'CURRENT PASSWORD';
+
+  @override
+  String get currentPasswordHint => 'Enter current password';
+
+  @override
+  String get newPasswordLabelUpper => 'NEW PASSWORD';
+
+  @override
+  String get confirmNewPasswordLabelUpper => 'CONFIRM NEW PASSWORD';
+
+  @override
+  String get confirmNewPasswordHint => 'Re-enter new password';
+
+  @override
+  String get pleaseFillAllFields => 'Please fill in all fields';
+
+  @override
+  String get passwordsDoNotMatch => 'Passwords do not match';
+
+  @override
+  String get passwordTooShort => 'Password must be at least 6 characters';
+
+  @override
+  String get changePasswordSuccess => 'Password changed successfully!';
 }
