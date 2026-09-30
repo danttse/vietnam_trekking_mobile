@@ -303,4 +303,19 @@ class AppLocalizationsVi extends AppLocalizations {
   String featureComingSoon(String feature) {
     return 'Tính năng $feature đang phát triển';
   }
+
+  @override
+  String get otpVerificationTitle => 'Xác thực Email';
+
+  @override
+  String get otpExpiredLabel => 'OTP hết hạn. Vui lòng gửi lại.';
+
+  @override
+  String get otpExpiresIn => 'OTP hết hạn sau';
+
+  @override
+  String get otpIncompleteError => 'Vui lòng nhập đủ 6 chữ số OTP';
+
+  @override
+  String get otpResendSuccess => 'Đã gửi lại mã OTP. Vui lòng kiểm tra email.';
 }

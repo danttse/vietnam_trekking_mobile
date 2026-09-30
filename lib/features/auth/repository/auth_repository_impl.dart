@@ -11,6 +11,7 @@ import '../data/models/requests/verify_otp_request.dart';
 import '../data/models/responses/auth_response.dart';
 import '../data/models/responses/otp_sent_response.dart';
 import '../data/models/responses/reset_token_response.dart';
+import '../data/models/responses/user_dto.dart';
 import 'auth_repository.dart';
 
 /// Concrete implementation of [AuthRepository] that communicates with the
@@ -285,5 +286,58 @@ class AuthRepositoryImpl implements AuthRepository {
 
     // Always clear local tokens (Requirement 7.2, 7.3).
     await _tokenStorage.clearTokens();
+  }
+
+  /// GET /users/me
+  /// Returns [UserDto] for the currently authenticated user.
+  @override
+  Future<UserDto> getMe() async {
+    try {
+      final response = await _dio.get('/users/me');
+      return ApiResponse.fromJson(
+        response.data as Map<String, dynamic>,
+        UserDto.fromJson,
+      ).data!;
+    } on DioException catch (e) {
+      _handleError(e);
+    }
+  }
+
+  /// PATCH /users/me/bio
+  @override
+  Future<UserDto> updateBio(String bio) async {
+    try {
+      final response = await _dio.patch(
+        '/users/me/bio',
+        data: {'bio': bio},
+      );
+      return ApiResponse.fromJson(
+        response.data as Map<String, dynamic>,
+        UserDto.fromJson,
+      ).data!;
+    } on DioException catch (e) {
+      _handleError(e);
+    }
+  }
+
+  /// POST /users/me/avatar  (multipart/form-data)
+  @override
+  Future<UserDto> uploadAvatar(String filePath) async {
+    try {
+      final formData = FormData.fromMap({
+        'avatar': await MultipartFile.fromFile(filePath, filename: 'avatar.jpg'),
+      });
+      final response = await _dio.post(
+        '/users/me/avatar',
+        data: formData,
+        options: Options(contentType: 'multipart/form-data'),
+      );
+      return ApiResponse.fromJson(
+        response.data as Map<String, dynamic>,
+        UserDto.fromJson,
+      ).data!;
+    } on DioException catch (e) {
+      _handleError(e);
+    }
   }
 }

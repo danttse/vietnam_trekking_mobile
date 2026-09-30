@@ -303,4 +303,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String featureComingSoon(String feature) {
     return 'Feature $feature is under development';
   }
+
+  @override
+  String get otpVerificationTitle => 'Email Verification';
+
+  @override
+  String get otpExpiredLabel => 'OTP expired. Please resend.';
+
+  @override
+  String get otpExpiresIn => 'OTP expires in';
+
+  @override
+  String get otpIncompleteError => 'Please enter all 6 OTP digits';
+
+  @override
+  String get otpResendSuccess => 'OTP resent. Please check your email.';
 }

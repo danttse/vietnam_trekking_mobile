@@ -116,5 +116,11 @@
         "placeholders": {
             "feature": { "type": "String" }
         }
-    }
+    },
+
+    "otpVerificationTitle": "Email Verification",
+    "otpExpiredLabel": "OTP expired. Please resend.",
+    "otpExpiresIn": "OTP expires in",
+    "otpIncompleteError": "Please enter all 6 OTP digits",
+    "otpResendSuccess": "OTP resent. Please check your email."
 }

@@ -6,6 +6,9 @@ import 'dart:async';
 enum AuthEvent {
   /// Fired when a token refresh attempt fails and the user session has expired.
   authExpired,
+
+  /// Fired when the user explicitly logs out.
+  loggedOut,
 }
 
 // ─── Auth Event Bus ───────────────────────────────────────────────────────────

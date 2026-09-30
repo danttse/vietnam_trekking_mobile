@@ -4,6 +4,10 @@ import '../view_models/profile_viewmodel.dart';
 import '../widgets/profile_widgets.dart';
 import 'profile_setting_screen.dart';
 
+// [BACKEND TEST TEMP IMPORTS]
+import 'temp_test/edit_bio_screen.dart';
+import 'temp_test/badge_detail_screen.dart';
+
 class ProfileScreen extends StatefulWidget {
   final VoidCallback? onBackToHome;
   final ValueChanged<int>? onTabChanged;
@@ -22,6 +26,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final ProfileViewModel _viewModel = ProfileViewModel();
 
   @override
+  void dispose() {
+    _viewModel.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -33,6 +43,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
           builder: (context, _) {
             final l10n = AppLocalizations.of(context)!;
             final profile = _viewModel.profile;
+
+            // Loading state
+            if (_viewModel.isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            // Error state
+            if (_viewModel.errorMessage != null && _viewModel.user == null) {
+              return Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.error_outline, size: 48, color: Theme.of(context).colorScheme.error),
+                    const SizedBox(height: 12),
+                    Text(_viewModel.errorMessage!, textAlign: TextAlign.center),
+                    const SizedBox(height: 12),
+                    TextButton.icon(
+                      onPressed: _viewModel.loadUser,
+                      icon: const Icon(Icons.refresh),
+                      label: const Text('Thử lại'),
+                    ),
+                  ],
+                ),
+              );
+            }
 
             return SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
@@ -99,13 +134,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   const SizedBox(height: 18),
 
-                  // Profile Header (Avatar, Name, PRO, Member Since, Bio)
-                  ProfileHeaderCard(
-                    name: profile.name,
-                    isPro: profile.isPro,
-                    memberSince: l10n.memberSince(profile.memberSince),
-                    bio: profile.bio,
-                    avatarUrl: profile.avatarUrl,
+                  // Profile Header (Avatar, Name, PRO, Member Since, Bio) - Tap to edit bio
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditBioScreen(
+                            initialName: profile.name,
+                            initialEmail: profile.email ?? 'minhtran@email.com',
+                            initialBio: profile.bio,
+                            avatarUrl: profile.avatarUrl,
+                            isPro: profile.isPro,
+                          ),
+                        ),
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(16),
+                    child: ProfileHeaderCard(
+                      name: profile.name,
+                      isPro: profile.isPro,
+                      memberSince: profile.memberSince.isNotEmpty
+                          ? l10n.memberSince(profile.memberSince)
+                          : '',
+                      bio: profile.bio,
+                      avatarUrl: profile.avatarUrl,
+                    ),
                   ),
                   const SizedBox(height: 20),
 
@@ -168,7 +222,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   const SizedBox(height: 12),
 
-                  // List of achievements
+                  // List of achievements - Tap to view detail
                   ...profile.achievements.map((achievement) {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 10),
@@ -177,6 +231,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         description: achievement.description,
                         icon: achievement.icon,
                         isUnlocked: achievement.isUnlocked,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BadgeDetailScreen(
+                                title: achievement.title,
+                                description: achievement.description,
+                                achievedDate: '15/12/2025',
+                                currentProgress: '5',
+                                totalProgress: '5 Tỉnh thành',
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     );
                   }),

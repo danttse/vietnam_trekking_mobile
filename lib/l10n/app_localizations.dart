@@ -667,6 +667,36 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Tính năng {feature} đang phát triển'**
   String featureComingSoon(String feature);
+
+  /// No description provided for @otpVerificationTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xác thực Email'**
+  String get otpVerificationTitle;
+
+  /// No description provided for @otpExpiredLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'OTP hết hạn. Vui lòng gửi lại.'**
+  String get otpExpiredLabel;
+
+  /// No description provided for @otpExpiresIn.
+  ///
+  /// In vi, this message translates to:
+  /// **'OTP hết hạn sau'**
+  String get otpExpiresIn;
+
+  /// No description provided for @otpIncompleteError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng nhập đủ 6 chữ số OTP'**
+  String get otpIncompleteError;
+
+  /// No description provided for @otpResendSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã gửi lại mã OTP. Vui lòng kiểm tra email.'**
+  String get otpResendSuccess;
 }
 
 class _AppLocalizationsDelegate

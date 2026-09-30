@@ -6,6 +6,7 @@ class UserDto {
   final String status;
   final String? avatarUrl;
   final String? emailVerifiedAt;
+  final String? bio;
 
   const UserDto({
     required this.userId,
@@ -15,6 +16,7 @@ class UserDto {
     required this.status,
     this.avatarUrl,
     this.emailVerifiedAt,
+    this.bio,
   });
 
   factory UserDto.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,7 @@ class UserDto {
       status: json['status'] as String,
       avatarUrl: json['avatarUrl'] as String?,
       emailVerifiedAt: json['emailVerifiedAt'] as String?,
+      bio: json['bio'] as String?,
     );
   }
 }

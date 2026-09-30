@@ -5,10 +5,12 @@ import '../../../core/network/dio_client.dart';
 import '../../../core/services/auth_event_bus.dart';
 import '../../../core/services/token_storage.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../core/widgets/buttons/btn_login_style.dart';
 import '../../../core/widgets/buttons/btn_outline_style.dart';
 import '../../../core/widgets/inputs/login_input_field.dart';
 import '../repository/auth_repository_impl.dart';
 import '../view_models/register_viewmodel.dart';
+import 'otp_verification_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -260,12 +262,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   );
 
                   if (success && context.mounted) {
-                    // OTP screen not yet built — show SnackBar per task spec
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                            'Vui lòng kiểm tra email và nhập mã OTP'),
-                        backgroundColor: Colors.green,
+                    // Bước 2: navigate sang màn OTP xác thực email
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => OtpVerificationScreen(
+                          email: email.trim(),
+                          viewModel: _viewModel,
+                        ),
                       ),
                     );
                   }

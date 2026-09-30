@@ -116,5 +116,11 @@
         "placeholders": {
             "feature": { "type": "String" }
         }
-    }
+    },
+
+    "otpVerificationTitle": "Xác thực Email",
+    "otpExpiredLabel": "OTP hết hạn. Vui lòng gửi lại.",
+    "otpExpiresIn": "OTP hết hạn sau",
+    "otpIncompleteError": "Vui lòng nhập đủ 6 chữ số OTP",
+    "otpResendSuccess": "Đã gửi lại mã OTP. Vui lòng kiểm tra email."
 }

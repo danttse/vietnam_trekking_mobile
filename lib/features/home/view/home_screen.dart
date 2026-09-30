@@ -6,6 +6,7 @@ import 'package:vietnam_trekking_mobile/core/widgets/cards/recent_place_card.dar
 import 'package:vietnam_trekking_mobile/core/widgets/sheet/select_province_sheet.dart';
 import 'package:vietnam_trekking_mobile/features/profile/views/profile_screen.dart';
 import '../viewmodel/home_view_model.dart';
+import '../viewmodel/home_user_viewmodel.dart';
 
 class HomeScreen extends StatefulWidget {
   final VoidCallback? onProfileTap;
@@ -21,6 +22,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final HomeViewModel viewModel = HomeViewModel();
+  final HomeUserViewModel _userViewModel = HomeUserViewModel();
+
+  @override
+  void dispose() {
+    _userViewModel.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,25 +80,31 @@ class _HomeScreenState extends State<HomeScreen> {
                       borderRadius: BorderRadius.circular(8),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              l10n.homeRankLabel,
-                              style: TextStyle(
-                                color: colorScheme.onSurfaceVariant,
-                                fontSize: 9,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              'Tên người dùng',
-                              style: TextStyle(
-                                color: colorScheme.onSurfaceVariant,
-                                fontSize: 9,
-                              ),
-                            ),
-                          ],
+                        child: ListenableBuilder(
+                          listenable: _userViewModel,
+                          builder: (context, _) {
+                            final user = _userViewModel.user;
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  l10n.homeRankLabel,
+                                  style: TextStyle(
+                                    color: colorScheme.onSurfaceVariant,
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  user?.displayName ?? '...',
+                                  style: TextStyle(
+                                    color: colorScheme.onSurfaceVariant,
+                                    fontSize: 9,
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
                         ),
                       ),
                     ),

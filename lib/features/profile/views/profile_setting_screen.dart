@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:vietnam_trekking_mobile/app/language/app_language_viewmodel.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../app/theme/app_theme_viewmodel.dart';
 import '../view_models/profile_viewmodel.dart';
@@ -80,7 +79,7 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                   ProfileSettingItem(
                     mainTitle: l10n.settingsChangePassword,
                     icon: Icons.lock_outline,
-                    onTapAction: () {},
+                    onTapAction: () => _settingViewModel.changePassword(context),
                   ),
                   ProfileSettingItem(
                     mainTitle: l10n.settingsChangeLanguage,
@@ -90,7 +89,12 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                   ProfileSettingItem(
                     mainTitle: l10n.settingsChangeAvatar,
                     icon: Icons.photo_camera_outlined,
-                    onTapAction: () {},
+                    onTapAction: () => _settingViewModel.changeAvatar(context),
+                  ),
+                  ProfileSettingItem(
+                    mainTitle: 'Chỉnh sửa bio',
+                    icon: Icons.edit_outlined,
+                    onTapAction: () => _settingViewModel.changeBio(context),
                   ),
                 ],
               ),
@@ -126,7 +130,7 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                   ProfileSettingItem(
                     mainTitle: l10n.settingsSupportFeedback,
                     icon: Icons.help_outline,
-                    onTapAction: () {},
+                    onTapAction: () => _settingViewModel.supportAndFeedback(context),
                   ),
                 ],
               ),
@@ -139,12 +143,12 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                   ProfileSettingItem(
                     mainTitle: l10n.settingsTermsOfUse,
                     icon: Icons.description_outlined,
-                    onTapAction: () {},
+                    onTapAction: () => _settingViewModel.openTermsOfUse(context),
                   ),
                   ProfileSettingItem(
                     mainTitle: l10n.settingsPrivacyPolicy,
                     icon: Icons.privacy_tip_outlined,
-                    onTapAction: () {},
+                    onTapAction: () => _settingViewModel.openPrivacyPolicy(context),
                   ),
                 ],
               ),
