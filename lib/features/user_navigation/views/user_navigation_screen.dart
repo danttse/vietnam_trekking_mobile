@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../core/widgets/cards/bottom_navigation.dart';
+import '../../community/views/community_screen.dart';
 import '../../home/view/home_screen.dart';
 import '../../explore/views/explore_screen.dart';
 import '../../profile/views/profile_screen.dart';
@@ -88,7 +89,7 @@ class _UserNavigationScreenState extends State<UserNavigationScreen> {
                 onProfileTap: () => _viewModel.goToProfile(),
               ),
               const ExploreScreen(),
-              _buildPlaceholder(AppLocalizations.of(context)!.navCommunity, Icons.people_outline),
+              const CommunityScreen(),
               _buildPlaceholder(AppLocalizations.of(context)!.navJourney, Icons.route_outlined),
               ProfileScreen(
                 onBackToHome: () => _viewModel.goToHome(),
