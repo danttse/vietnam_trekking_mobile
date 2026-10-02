@@ -141,5 +141,6 @@
     "pleaseFillAllFields": "Please fill in all fields",
     "passwordsDoNotMatch": "Passwords do not match",
     "passwordTooShort": "Password must be at least 6 characters",
-    "changePasswordSuccess": "Password changed successfully!"
+    "changePasswordSuccess": "Password changed successfully!",
+    "createNewPostHintText": "Share your trekking experience"
 }

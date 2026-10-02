@@ -378,4 +378,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get changePasswordSuccess => 'Đổi mật khẩu thành công!';
+
+  @override
+  String get createNewPostHintText => 'Chia sẻ trải nghiệm trekking của bạn';
 }

@@ -141,5 +141,6 @@
     "pleaseFillAllFields": "Vui lòng nhập đầy đủ thông tin",
     "passwordsDoNotMatch": "Mật khẩu xác nhận không khớp",
     "passwordTooShort": "Mật khẩu phải có ít nhất 6 ký tự",
-    "changePasswordSuccess": "Đổi mật khẩu thành công!"
+    "changePasswordSuccess": "Đổi mật khẩu thành công!",
+    "createNewPostHintText": "Chia sẻ trải nghiệm trekking của bạn"
 }

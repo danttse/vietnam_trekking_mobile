@@ -817,6 +817,12 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đổi mật khẩu thành công!'**
   String get changePasswordSuccess;
+
+  /// No description provided for @createNewPostHintText.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chia sẻ trải nghiệm trekking của bạn'**
+  String get createNewPostHintText;
 }
 
 class _AppLocalizationsDelegate

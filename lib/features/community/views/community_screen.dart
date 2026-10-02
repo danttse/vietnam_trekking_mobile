@@ -3,6 +3,8 @@ import '../../../core/widgets/app_bar/app_top_bar.dart';
 import '../../../core/widgets/cards/post_card.dart';
 import '../data/models/post_model.dart';
 import '../viewmodels/community_view_model.dart';
+import 'create_new_post_creen.dart';
+import 'show_comment_screen.dart';
 
 class CommunityScreen extends StatefulWidget {
   const CommunityScreen({super.key});
@@ -234,7 +236,13 @@ class _CommunityScreenState extends State<CommunityScreen> {
                       return PostCard(
                         post: post,
                         onLike: () => _viewModel.toggleLike(post.postId),
-                        onComment: () {},
+                        onComment: () =>
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ShowCommentScreen(post: post,),
+                            ),
+                          ),
                         onShare: () {},
                         onMoreOptions: () => _showPostOptions(context, post),
                       );
@@ -252,7 +260,17 @@ class _CommunityScreenState extends State<CommunityScreen> {
             foregroundColor: Colors.white,
             shape: const CircleBorder(),
             elevation: 4,
-            onPressed: () {},
+            onPressed: () async {
+              final newPost = await Navigator.push<PostModel>(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CreateNewPostCreen(),
+                ),
+              );
+              if (newPost != null) {
+                _viewModel.addPost(newPost);
+              }
+            },
             child: const Icon(Icons.add, size: 28),
           ),
         ),

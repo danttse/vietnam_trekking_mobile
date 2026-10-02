@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import '../../../features/community/data/models/post_model.dart';
 
@@ -26,6 +27,36 @@ class PostCard extends StatefulWidget {
 class _PostCardState extends State<PostCard> {
   final PageController _pageController = PageController();
   int _currentImageIndex = 0;
+
+  Widget _buildSingleImage(String imagePath, ColorScheme colorScheme) {
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+      return Image.network(
+        imagePath,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => Container(
+          color: colorScheme.surface,
+          child: Icon(
+            Icons.image_not_supported_outlined,
+            color: colorScheme.onSurfaceVariant,
+            size: 36,
+          ),
+        ),
+      );
+    } else {
+      return Image.file(
+        File(imagePath),
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => Container(
+          color: colorScheme.surface,
+          child: Icon(
+            Icons.image_not_supported_outlined,
+            color: colorScheme.onSurfaceVariant,
+            size: 36,
+          ),
+        ),
+      );
+    }
+  }
 
   @override
   void dispose() {
@@ -86,18 +117,7 @@ class _PostCardState extends State<PostCard> {
           borderRadius: BorderRadius.circular(14),
           child: AspectRatio(
             aspectRatio: 16 / 9,
-            child: Image.network(
-              images.first,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Container(
-                color: colorScheme.surface,
-                child: Icon(
-                  Icons.image_not_supported_outlined,
-                  color: colorScheme.onSurfaceVariant,
-                  size: 36,
-                ),
-              ),
-            ),
+            child: _buildSingleImage(images.first, colorScheme),
           ),
         ),
       );
@@ -119,19 +139,7 @@ class _PostCardState extends State<PostCard> {
                   });
                 },
                 itemBuilder: (context, index) {
-                  final imageUrl = images[index];
-                  return Image.network(
-                    imageUrl,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      color: colorScheme.surface,
-                      child: Icon(
-                        Icons.image_not_supported_outlined,
-                        color: colorScheme.onSurfaceVariant,
-                        size: 36,
-                      ),
-                    ),
-                  );
+                  return _buildSingleImage(images[index], colorScheme);
                 },
               ),
             ),
