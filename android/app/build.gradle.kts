@@ -4,6 +4,13 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+// [OFFLINE-MAP-PROTOTYPE] Exclude play-services-location pulled in by maplibre_gl.
+// myLocationEnabled = false trong OfflineMapTestScreen nên không cần dependency này.
+// Xóa block này nếu sau này cần bật GPS tracking thật.
+configurations.all {
+    exclude(group = "com.google.android.gms", module = "play-services-location")
+}
+
 android {
     namespace = "com.example.vietnam_trekking_mobile"
     compileSdk = flutter.compileSdkVersion

@@ -19,4 +19,8 @@ abstract class AuthRepository {
   Future<UserDto> getMe();
   Future<UserDto> updateBio(String bio);
   Future<UserDto> uploadAvatar(String filePath);
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  });
 }

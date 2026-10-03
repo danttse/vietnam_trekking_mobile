@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vietnam_trekking_mobile/core/widgets/cards/image_load_card.dart';
-import '../../../core/widgets/app_bar/app_top_bar.dart';
+import '../../../core/widgets/app_bar/app_top_bar_with_back.dart';
 import '../../../core/widgets/buttons/btn_login_style.dart';
 import '../../../core/widgets/inputs/login_input_field.dart';
 import '../view_models/suggest_place_viewmodel.dart';
@@ -32,7 +32,7 @@ class _SuggestPlaceScreenState extends State<SuggestPlaceScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            AppTopBar(
+            AppTopBarWithBack(
               title: l10n.proposePlace,
             ),
             Expanded(

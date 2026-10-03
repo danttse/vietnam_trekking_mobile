@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:vietnam_trekking_mobile/features/profile/views/edit_bio_screen.dart';
 import '../../../l10n/app_localizations.dart';
 import '../view_models/profile_viewmodel.dart';
 import '../widgets/profile_widgets.dart';
 import 'profile_setting_screen.dart';
+import '../../../core/widgets/app_bar/app_top_bar.dart';
 
 // [BACKEND TEST TEMP IMPORTS]
-import 'temp_test/edit_bio_screen.dart';
 import 'temp_test/badge_detail_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -23,236 +25,144 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final ProfileViewModel _viewModel = ProfileViewModel();
-
-  @override
-  void dispose() {
-    _viewModel.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
+
+    // watch -> tự rebuild khi ProfileViewModel gọi notifyListeners()
+    final viewModel = context.watch<ProfileViewModel>();
+    final profile = viewModel.profile;
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
       body: SafeArea(
-        child: ListenableBuilder(
-          listenable: _viewModel,
-          builder: (context, _) {
-            final l10n = AppLocalizations.of(context)!;
-            final profile = _viewModel.profile;
-
-            // Loading state
-            if (_viewModel.isLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            // Error state
-            if (_viewModel.errorMessage != null && _viewModel.user == null) {
-              return Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.error_outline, size: 48, color: Theme.of(context).colorScheme.error),
-                    const SizedBox(height: 12),
-                    Text(_viewModel.errorMessage!, textAlign: TextAlign.center),
-                    const SizedBox(height: 12),
-                    TextButton.icon(
-                      onPressed: _viewModel.loadUser,
-                      icon: const Icon(Icons.refresh),
-                      label: const Text('Thử lại'),
-                    ),
-                  ],
-                ),
-              );
-            }
-
-            return SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Top App Bar: Title "Hồ Sơ" + Settings Icon
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        children: [
-                          if (Navigator.canPop(context)) ...[
-                            IconButton(
-                              icon: Icon(Icons.arrow_back, color: colorScheme.onSurface),
-                              onPressed: () => Navigator.pop(context),
-                              padding: EdgeInsets.zero,
-                              constraints: const BoxConstraints(),
-                            ),
-                            const SizedBox(width: 8),
-                          ],
-                          Text(
-                            l10n.profileTitle,
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: colorScheme.onSurface,
-                              letterSpacing: 0.2,
-                            ),
-                          ),
-                        ],
-                      ),
-                      // Settings button in circular container
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ProfileSettingScreen(),
-                            ),
-                          );
-                        },
-                        borderRadius: BorderRadius.circular(20),
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            color: colorScheme.surfaceContainerHighest,
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.2),
-                              width: 1,
-                            ),
-                          ),
-                          child: Icon(
-                            Icons.settings_outlined,
-                            size: 20,
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ),
-                    ],
+        child: Column(
+          children: [
+            AppTopBar(
+              title: l10n.profileTitle,
+              icon: Icons.settings_outlined,
+              onClickIcon: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ProfileSettingScreen(),
                   ),
-                  const SizedBox(height: 18),
-
-                  // Profile Header (Avatar, Name, PRO, Member Since, Bio) - Tap to edit bio
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EditBioScreen(
-                            initialName: profile.name,
-                            initialEmail: profile.email ?? 'minhtran@email.com',
-                            initialBio: profile.bio,
-                            avatarUrl: profile.avatarUrl,
-                            isPro: profile.isPro,
-                          ),
-                        ),
-                      );
-                    },
-                    borderRadius: BorderRadius.circular(16),
-                    child: ProfileHeaderCard(
+                );
+              },
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SizedBox(height: 18),
+                    ProfileHeaderCard(
                       name: profile.name,
                       isPro: profile.isPro,
-                      memberSince: profile.memberSince.isNotEmpty
-                          ? l10n.memberSince(profile.memberSince)
-                          : '',
+                      memberSince: l10n.memberSince(profile.memberSince),
                       bio: profile.bio,
                       avatarUrl: profile.avatarUrl,
+                      isEdit: true,
+                      actionEdit: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const EditBioScreen(),
+                          ),
+                        );
+                      },
                     ),
-                  ),
-                  const SizedBox(height: 20),
+                    const SizedBox(height: 20),
 
-                  // Province Progress Bar
-                  ProfileProvinceProgressBar(
-                    title: l10n.profileProvinceMapTitle,
-                    current: profile.visitedProvinces,
-                    total: profile.totalProvinces,
-                    unit: l10n.profileProvinceUnit,
-                  ),
-                  const SizedBox(height: 20),
-
-                  // 2x2 Stats Grid
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ProfileStatCard(
-                          value: '${profile.totalDistanceKm} km',
-                          label: l10n.profileStatTotalDistance,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: ProfileStatCard(
-                          value: '${profile.visitedProvinces}',
-                          label: l10n.profileStatVisitedProvinces,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ProfileStatCard(
-                          value: '${profile.completedTrips}',
-                          label: l10n.profileStatCompletedTrips,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: ProfileStatCard(
-                          value: '${profile.totalDays} ngày',
-                          label: l10n.profileStatTotalDays,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-
-                  // Title: DANH HIỆU CỦA BẠN
-                  Text(
-                    l10n.profileAchievementsTitle,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.8,
-                      color: colorScheme.onSurfaceVariant,
+                    ProfileProvinceProgressBar(
+                      title: l10n.profileProvinceMapTitle,
+                      current: profile.visitedProvinces,
+                      total: profile.totalProvinces,
+                      unit: l10n.profileProvinceUnit,
                     ),
-                  ),
-                  const SizedBox(height: 12),
+                    const SizedBox(height: 20),
 
-                  // List of achievements - Tap to view detail
-                  ...profile.achievements.map((achievement) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: ProfileAchievementCard(
-                        title: achievement.title,
-                        description: achievement.description,
-                        icon: achievement.icon,
-                        isUnlocked: achievement.isUnlocked,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BadgeDetailScreen(
-                                title: achievement.title,
-                                description: achievement.description,
-                                achievedDate: '15/12/2025',
-                                currentProgress: '5',
-                                totalProgress: '5 Tỉnh thành',
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ProfileStatCard(
+                            value: '${profile.totalDistanceKm} km',
+                            label: l10n.profileStatTotalDistance,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: ProfileStatCard(
+                            value: '${profile.visitedProvinces}',
+                            label: l10n.profileStatVisitedProvinces,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ProfileStatCard(
+                            value: '${profile.completedTrips}',
+                            label: l10n.profileStatCompletedTrips,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: ProfileStatCard(
+                            value: '${profile.totalDays} ngày',
+                            label: l10n.profileStatTotalDays,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+
+                    Text(
+                      l10n.profileAchievementsTitle,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.8,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    ...profile.achievements.map((achievement) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: ProfileAchievementCard(
+                          title: achievement.title,
+                          description: achievement.description,
+                          icon: achievement.icon,
+                          isUnlocked: achievement.isUnlocked,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BadgeDetailScreen(
+                                  title: achievement.title,
+                                  description: achievement.description,
+                                  achievedDate: '15/12/2025',
+                                  currentProgress: '5',
+                                  totalProgress: '5 Tỉnh thành',
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  }),
-                  const SizedBox(height: 16),
-                ],
+                            );
+                          },
+                        ),
+                      );
+                    }),
+                    const SizedBox(height: 16),
+                  ],
+                ),
               ),
-            );
-          },
+            ),
+          ],
         ),
       ),
     );

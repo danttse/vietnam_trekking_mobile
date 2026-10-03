@@ -105,6 +105,23 @@ class ProfileViewModel extends ChangeNotifier {
   /// Refresh lại user data từ API — alias cho [loadUser].
   Future<void> refresh() => loadUser();
 
+  /// Cập nhật profile local
+  void updateProfile(UserProfileModel newProfile) {
+    if (_user != null) {
+      _user = UserDto(
+        userId: _user!.userId,
+        displayName: newProfile.name,
+        email: _user!.email,
+        role: _user!.role,
+        status: _user!.status,
+        bio: newProfile.bio,
+        avatarUrl: newProfile.avatarUrl,
+        emailVerifiedAt: _user!.emailVerifiedAt,
+      );
+    }
+    notifyListeners();
+  }
+
   /// Cập nhật user local từ kết quả trả về của API (avatar/bio update)
   /// mà không cần gọi lại GET /users/me.
   void updateUserLocal(UserDto updatedUser) {

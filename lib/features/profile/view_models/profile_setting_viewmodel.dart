@@ -1,22 +1,34 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../../core/widgets/sheet/select_language_sheet.dart';
 import '../../../app/language/app_language_viewmodel.dart';
+import '../../../core/services/auth_event_bus.dart';
+import '../../../core/services/token_storage.dart';
+import '../../../features/auth/repository/auth_repository.dart';
+import '../views/change_password_screen.dart';
+import '../views/edit_avatar_screen.dart';
 import '../views/suggest_place_screen.dart';
-import '../view_models/profile_viewmodel.dart';
 
-// [BACKEND TEST TEMP IMPORTS]
-import '../views/temp_test/change_avatar_screen.dart';
-import '../views/temp_test/change_password_screen.dart';
-import '../views/temp_test/edit_bio_screen.dart';
+// [BACKEND TEST TEMP IMPORTS - for screens dev frontend hasn't implemented yet]
 import '../views/temp_test/support_feedback_screen.dart';
 import '../views/temp_test/terms_of_use_screen.dart';
 import '../views/temp_test/privacy_policy_screen.dart';
 
 class ProfileSettingViewModel extends ChangeNotifier {
   final AppLanguageViewModel _appLanguageViewModel = AppLanguageViewModel();
+  final AuthRepository _authRepository;
+  final TokenStorage _tokenStorage;
+  final AuthEventBus _eventBus;
+
   bool _isLoading = false;
 
   bool get isLoading => _isLoading;
+
+  ProfileSettingViewModel({
+    required this._authRepository,
+    required this._tokenStorage,
+    required this._eventBus,
+  });
 
   Future<void> changeLanguage(BuildContext context) async {
     await showModalBottomSheet(
@@ -33,43 +45,12 @@ class ProfileSettingViewModel extends ChangeNotifier {
   }
 
   Future<void> changeAvatar(BuildContext context) async {
-    // Lấy avatar hiện tại từ ProfileViewModel nếu có
-    final profileVm = ProfileViewModel();
-    final currentAvatarUrl = profileVm.user?.avatarUrl;
-    profileVm.dispose();
-
-    final result = await Navigator.push(
+    Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => ChangeAvatarScreen(initialAvatarUrl: currentAvatarUrl),
-      ),
-    );
-
-    // Nếu upload thành công, refresh ProfileViewModel ở màn hình trên
-    if (result != null && context.mounted) {
-      // Signal to rebuild — navigator pop sẽ trigger parent rebuild tự động
-    }
-  }
-
-  Future<void> changeBio(BuildContext context) async {
-    final profileVm = ProfileViewModel();
-    final user = profileVm.user;
-    profileVm.dispose();
-
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => EditBioScreen(
-          initialName: user?.displayName ?? '',
-          initialEmail: user?.email ?? '',
-          initialBio: user?.bio ?? '',
-          avatarUrl: user?.avatarUrl,
-        ),
-      ),
+      MaterialPageRoute(builder: (_) => const EditAvatarScreen()),
     );
   }
 
-  // [BACKEND TEST TEMP NAVIGATION]
   Future<void> changePassword(BuildContext context) async {
     Navigator.push(
       context,
@@ -109,6 +90,24 @@ class ProfileSettingViewModel extends ChangeNotifier {
   }
 
   Future<void> logout() async {
-    // TODO: Implement logout logic
+    if (_isLoading) return;
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final refreshToken = await _tokenStorage.getRefreshToken();
+      await _authRepository.logout(refreshToken: refreshToken);
+    } catch (e) {
+      // Fail-safe: dù lỗi gì cũng vẫn đăng xuất phía local
+      if (kDebugMode) {
+        debugPrint('[ProfileSettingViewModel] logout error (ignored): $e');
+      }
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+
+    // Fire event → LoginScreen lắng nghe và điều hướng
+    _eventBus.fire(AuthEvent.authExpired);
   }
 }

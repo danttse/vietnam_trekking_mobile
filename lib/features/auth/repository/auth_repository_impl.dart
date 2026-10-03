@@ -340,4 +340,23 @@ class AuthRepositoryImpl implements AuthRepository {
       _handleError(e);
     }
   }
+
+  /// PATCH /users/me/password
+  @override
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    try {
+      await _dio.patch(
+        '/users/me/password',
+        data: {
+          'currentPassword': currentPassword,
+          'newPassword': newPassword,
+        },
+      );
+    } on DioException catch (e) {
+      _handleError(e);
+    }
+  }
 }

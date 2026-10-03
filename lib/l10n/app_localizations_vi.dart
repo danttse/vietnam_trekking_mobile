@@ -300,6 +300,51 @@ class AppLocalizationsVi extends AppLocalizations {
       'Đề xuất của bạn sẽ được gửi về email quản trị viên để xem xét phê duyệt và cập nhật chính thức trên bản đồ TrekViệt.';
 
   @override
+  String get featuredDestinations => 'Điểm đến nổi bật';
+
+  @override
+  String get popularTrails => 'Cung đường phổ biến';
+
+  @override
+  String get recommendedForYou => 'Gợi ý dành cho bạn';
+
+  @override
+  String get searchTrailsPlaces => 'Tìm cung đường, địa danh trekking...';
+
+  @override
+  String get seeAll => 'Xem tất cả';
+
+  @override
+  String get north => 'Miền Bắc';
+
+  @override
+  String get central => 'Miền Trung';
+
+  @override
+  String get south => 'Miền Nam';
+
+  @override
+  String get popular => 'Phổ biến';
+
+  @override
+  String get editBio => 'Chỉnh sửa Bio';
+
+  @override
+  String get titleBioBox => 'Giới thiệu bản thân (BIO)';
+
+  @override
+  String get editAvatar => 'Đổi Ảnh Đại Diện';
+
+  @override
+  String get avatarPickerTitle => 'TÙY CHỌN TẢI ẢNH';
+
+  @override
+  String get takeNewPhoto => 'Chụp ảnh mới';
+
+  @override
+  String get chooseFromLibrary => 'Chọn từ thư viện';
+
+  @override
   String featureComingSoon(String feature) {
     return 'Tính năng $feature đang phát triển';
   }
@@ -318,4 +363,34 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get otpResendSuccess => 'Đã gửi lại mã OTP. Vui lòng kiểm tra email.';
+
+  @override
+  String get changePasswordTitle => 'Đổi Mật Khẩu';
+
+  @override
+  String get currentPasswordLabel => 'MẬT KHẨU HIỆN TẠI';
+
+  @override
+  String get currentPasswordHint => 'Nhập mật khẩu hiện tại';
+
+  @override
+  String get newPasswordLabelUpper => 'MẬT KHẨU MỚI';
+
+  @override
+  String get confirmNewPasswordLabelUpper => 'XÁC NHẬN MẬT KHẨU MỚI';
+
+  @override
+  String get confirmNewPasswordHint => 'Xác nhận lại mật khẩu mới';
+
+  @override
+  String get pleaseFillAllFields => 'Vui lòng nhập đầy đủ thông tin';
+
+  @override
+  String get passwordsDoNotMatch => 'Mật khẩu xác nhận không khớp';
+
+  @override
+  String get passwordTooShort => 'Mật khẩu phải có ít nhất 6 ký tự';
+
+  @override
+  String get changePasswordSuccess => 'Đổi mật khẩu thành công!';
 }

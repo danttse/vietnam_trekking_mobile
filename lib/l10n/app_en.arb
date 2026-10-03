@@ -110,6 +110,21 @@
     "addImages": "Add images",
     "addPhoto": "+ Add photo",
     "suggestionNotice": "Your suggestion will be sent to the administrator's email for review and approval before being officially added to the TrekViệt map.",
+    "featuredDestinations": "Featured Destinations",
+    "popularTrails": "Popular Trails",
+    "recommendedForYou": "Recommended for You",
+    "searchTrailsPlaces": "Search trails, trekking destinations...",
+    "seeAll": "See All",
+    "north": "Northern",
+    "central": "Central",
+    "south": "Southern",
+    "popular": "Popular",
+    "editBio":"Edit Bio",
+    "editAvatar": "Edit Avatar",
+    "avatarPickerTitle": "UPLOAD OPTIONS",
+    "takeNewPhoto": "Take a new photo",
+    "chooseFromLibrary": "Choose from library",
+    "titleBioBox":"Biography (BIO)",
 
     "featureComingSoon": "Feature {feature} is under development",
     "@featureComingSoon": {
@@ -122,5 +137,16 @@
     "otpExpiredLabel": "OTP expired. Please resend.",
     "otpExpiresIn": "OTP expires in",
     "otpIncompleteError": "Please enter all 6 OTP digits",
-    "otpResendSuccess": "OTP resent. Please check your email."
+    "otpResendSuccess": "OTP resent. Please check your email.",
+
+    "changePasswordTitle": "Change Password",
+    "currentPasswordLabel": "CURRENT PASSWORD",
+    "currentPasswordHint": "Enter current password",
+    "newPasswordLabelUpper": "NEW PASSWORD",
+    "confirmNewPasswordLabelUpper": "CONFIRM NEW PASSWORD",
+    "confirmNewPasswordHint": "Re-enter new password",
+    "pleaseFillAllFields": "Please fill in all fields",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "passwordTooShort": "Password must be at least 6 characters",
+    "changePasswordSuccess": "Password changed successfully!"
 }

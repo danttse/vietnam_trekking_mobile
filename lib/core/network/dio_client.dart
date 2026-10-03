@@ -5,29 +5,60 @@ import '../services/auth_event_bus.dart';
 import '../services/token_storage.dart';
 import 'interceptors/token_interceptor.dart';
 
-/// Factory for creating a configured [Dio] HTTP client instance.
+/// Factory tạo các Dio client cho từng service.
 ///
-/// Configures [BaseOptions] from [AppConfig] (base URL, timeouts, headers)
-/// and attaches a [TokenInterceptor] for automatic token attachment and
-/// transparent token refresh.
-///
-/// Requirements: 2.1, 2.2, 2.3, 2.9
+/// Mỗi service có base URL khác nhau — trekking (3003), checkin (3002),
+/// auth gateway (3000) — tất cả đều share cùng TokenInterceptor.
 class DioClient {
-  // Prevents instantiation — this class is a pure factory.
   DioClient._();
 
-  /// Creates and configures a [Dio] instance with [TokenInterceptor] attached.
-  ///
-  /// - [tokenStorage]: used by [TokenInterceptor] to read/write tokens.
-  /// - [eventBus]: used by [TokenInterceptor] to fire [AuthEvent.authExpired]
-  ///   when a token refresh fails (Requirement 2.7).
+  /// Tạo Dio client cho **Trekking Service** (port 3003).
+  /// Dùng cho: /journeys, /routes, /places, /contributions, /badges
+  static Dio createTrekkingDio({
+    required TokenStorage tokenStorage,
+    required AuthEventBus eventBus,
+  }) {
+    return _createDio(
+      baseUrl: AppConfig.trekkingBaseUrl,
+      tokenStorage: tokenStorage,
+      eventBus: eventBus,
+    );
+  }
+
+  /// Tạo Dio client cho **Checkin Service** (port 3002).
+  /// Dùng cho: /checkins, /visits, /journeys (checkin context)
+  static Dio createCheckinDio({
+    required TokenStorage tokenStorage,
+    required AuthEventBus eventBus,
+  }) {
+    return _createDio(
+      baseUrl: AppConfig.checkinBaseUrl,
+      tokenStorage: tokenStorage,
+      eventBus: eventBus,
+    );
+  }
+
+  /// Tạo Dio client cho **API Gateway / Auth Service** (port 3000).
+  /// Dùng cho: /auth/login, /auth/refresh, /auth/me
   static Dio createDio({
+    required TokenStorage tokenStorage,
+    required AuthEventBus eventBus,
+  }) {
+    return _createDio(
+      baseUrl: AppConfig.baseUrl,
+      tokenStorage: tokenStorage,
+      eventBus: eventBus,
+    );
+  }
+
+  static Dio _createDio({
+    required String baseUrl,
     required TokenStorage tokenStorage,
     required AuthEventBus eventBus,
   }) {
     final dio = Dio(
       BaseOptions(
-        baseUrl: AppConfig.baseUrl,
+        baseUrl: baseUrl,
         connectTimeout: AppConfig.connectTimeout,
         receiveTimeout: AppConfig.receiveTimeout,
         headers: const {

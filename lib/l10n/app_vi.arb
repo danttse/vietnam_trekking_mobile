@@ -110,6 +110,21 @@
     "addImages": "Thêm hình ảnh",
     "addPhoto": "+ Thêm ảnh",
     "suggestionNotice": "Đề xuất của bạn sẽ được gửi về email quản trị viên để xem xét phê duyệt và cập nhật chính thức trên bản đồ TrekViệt.",
+    "featuredDestinations": "Điểm đến nổi bật",
+    "popularTrails": "Cung đường phổ biến",
+    "recommendedForYou": "Gợi ý dành cho bạn",
+    "searchTrailsPlaces": "Tìm cung đường, địa danh trekking...",
+    "seeAll": "Xem tất cả",
+    "north": "Miền Bắc",
+    "central": "Miền Trung",
+    "south": "Miền Nam",
+    "popular": "Phổ biến",
+    "editBio":"Chỉnh sửa Bio",
+    "titleBioBox":"Giới thiệu bản thân (BIO)",
+    "editAvatar": "Đổi Ảnh Đại Diện",
+    "avatarPickerTitle": "TÙY CHỌN TẢI ẢNH",
+    "takeNewPhoto": "Chụp ảnh mới",
+    "chooseFromLibrary": "Chọn từ thư viện",
 
     "featureComingSoon": "Tính năng {feature} đang phát triển",
     "@featureComingSoon": {
@@ -122,5 +137,16 @@
     "otpExpiredLabel": "OTP hết hạn. Vui lòng gửi lại.",
     "otpExpiresIn": "OTP hết hạn sau",
     "otpIncompleteError": "Vui lòng nhập đủ 6 chữ số OTP",
-    "otpResendSuccess": "Đã gửi lại mã OTP. Vui lòng kiểm tra email."
+    "otpResendSuccess": "Đã gửi lại mã OTP. Vui lòng kiểm tra email.",
+
+    "changePasswordTitle": "Đổi Mật Khẩu",
+    "currentPasswordLabel": "MẬT KHẨU HIỆN TẠI",
+    "currentPasswordHint": "Nhập mật khẩu hiện tại",
+    "newPasswordLabelUpper": "MẬT KHẨU MỚI",
+    "confirmNewPasswordLabelUpper": "XÁC NHẬN MẬT KHẨU MỚI",
+    "confirmNewPasswordHint": "Xác nhận lại mật khẩu mới",
+    "pleaseFillAllFields": "Vui lòng nhập đầy đủ thông tin",
+    "passwordsDoNotMatch": "Mật khẩu xác nhận không khớp",
+    "passwordTooShort": "Mật khẩu phải có ít nhất 6 ký tự",
+    "changePasswordSuccess": "Đổi mật khẩu thành công!"
 }

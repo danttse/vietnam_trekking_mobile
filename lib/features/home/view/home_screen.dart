@@ -21,11 +21,18 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final HomeViewModel viewModel = HomeViewModel();
+  late final HomeViewModel viewModel;
   final HomeUserViewModel _userViewModel = HomeUserViewModel();
 
   @override
+  void initState() {
+    super.initState();
+    viewModel = HomeViewModel.create();
+  }
+
+  @override
   void dispose() {
+    viewModel.dispose();
     _userViewModel.dispose();
     super.dispose();
   }
@@ -153,9 +160,25 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Center(
               child: ListenableBuilder(
                 listenable: viewModel,
-                builder: (context, _) => HomeJourneyMap(
-                  provinces: viewModel.provinces,
-                ),
+                builder: (context, _) {
+                  // Hiển thị loading spinner khi đang tải lần đầu và chưa có
+                  // dữ liệu từ server (vẫn dùng static fallback)
+                  if (viewModel.isLoadingProvinces) {
+                    return Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        HomeJourneyMap(provinces: viewModel.provinces),
+                        Container(
+                          color: Colors.black.withValues(alpha: 0.15),
+                          child: const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                  return HomeJourneyMap(provinces: viewModel.provinces);
+                },
               ),
             ),
           ),

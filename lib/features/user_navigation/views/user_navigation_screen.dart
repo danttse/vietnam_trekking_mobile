@@ -2,11 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import '../../../core/services/auth_event_bus.dart';
-import '../../../l10n/app_localizations.dart';
 import '../../../core/widgets/cards/bottom_navigation.dart';
 import '../../auth/views/login_screen.dart';
 import '../../home/view/home_screen.dart';
+import '../../explore/views/explore_screen.dart';
+// [TEST-ONLY] import màn hình detail tạm – xóa khi pull code dev frontend về
+import '../../explore/views/test_explore_detail_screen.dart';
 import '../../profile/views/profile_screen.dart';
+import '../../community/views/community_screen.dart';
+import '../../journey/views/journey_list_screen.dart';
 import '../view_models/user_navigation_viewmodel.dart';
 
 /// Màn hình điều phối chính phía người dùng (User Shell Navigation)
@@ -54,31 +58,6 @@ class _UserNavigationScreenState extends State<UserNavigationScreen> {
     super.dispose();
   }
 
-  Widget _buildPlaceholder(String title, IconData icon) {
-    final l10n = AppLocalizations.of(context)!;
-    final colorScheme = Theme.of(context).colorScheme;
-    return SafeArea(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 56, color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5)),
-            const SizedBox(height: 12),
-            Text(
-              title,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: colorScheme.onSurface),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              l10n.featureInDevelopment,
-              style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
@@ -90,10 +69,22 @@ class _UserNavigationScreenState extends State<UserNavigationScreen> {
           body: IndexedStack(
             index: currentIndex,
             children: [
-              HomeScreen(onProfileTap: () => _viewModel.goToProfile()),
-              _buildPlaceholder(AppLocalizations.of(context)!.navExplore, Icons.explore_outlined),
-              _buildPlaceholder(AppLocalizations.of(context)!.navCommunity, Icons.people_outline),
-              _buildPlaceholder(AppLocalizations.of(context)!.navJourney, Icons.route_outlined),
+              HomeScreen(
+                onProfileTap: () => _viewModel.goToProfile(),
+              ),
+              // [TEST-ONLY] onPlaceTap mở TestExploreDetailScreen tạm thời
+              // Xóa đoạn này khi pull code dev frontend về, thay bằng ExploreScreen() gốc
+              ExploreScreen(
+                onPlaceTap: (place) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => TestExploreDetailScreen(place: place),
+                    ),
+                  );
+                },
+              ),
+              const CommunityScreen(),
+              const JourneyListScreen(),
               ProfileScreen(onBackToHome: () => _viewModel.goToHome()),
             ],
           ),
