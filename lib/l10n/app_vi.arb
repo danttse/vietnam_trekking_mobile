@@ -142,5 +142,127 @@
     "passwordsDoNotMatch": "Mật khẩu xác nhận không khớp",
     "passwordTooShort": "Mật khẩu phải có ít nhất 6 ký tự",
     "changePasswordSuccess": "Đổi mật khẩu thành công!",
-    "createNewPostHintText": "Chia sẻ trải nghiệm trekking của bạn"
+    "createNewPostHintText": "Chia sẻ trải nghiệm trekking của bạn",
+
+    "communityTabPosts": "Bài viết",
+    "communityTabGroups": "Nhóm",
+    "communityTabPersonal": "Cá nhân",
+    "postHideThis": "Ẩn bài viết này",
+    "postHideSubtitle": "Bớt nhìn thấy các bài viết tương tự trên bảng tin",
+    "postHiddenMessage": "Đã ẩn bài viết",
+    "undo": "Hoàn tác",
+    "postHideAllFrom": "Ẩn tất cả từ {authorName}",
+    "@postHideAllFrom": {
+        "placeholders": {
+            "authorName": { "type": "String" }
+        }
+    },
+    "thisPerson": "người này",
+    "postReport": "Báo cáo bài viết",
+    "postReportSuccess": "Cảm ơn bạn đã gửi báo cáo. Chúng tôi sẽ xem xét nội dung này.",
+    "communityNoPosts": "Chưa có bài viết nào",
+
+    "commentsTitle": "Bình luận",
+    "noCommentsYet": "Chưa có bình luận nào",
+    "beFirstToComment": "Hãy là người đầu tiên bình luận!",
+    "replyingTo": "Đang trả lời {userName}",
+    "@replyingTo": {
+        "placeholders": {
+            "userName": { "type": "String" }
+        }
+    },
+    "replyToHint": "Trả lời @{userName}...",
+    "@replyToHint": {
+        "placeholders": {
+            "userName": { "type": "String" }
+        }
+    },
+    "writeCommentHint": "Viết bình luận...",
+
+    "journeyCompleted": "Đã hoàn thành",
+    "journeyUpcoming": "Sắp tới",
+    "journeyStatTrips": "Chuyến đi",
+    "journeyStatDistance": "Quãng đường",
+    "journeyStatCompanions": "Người đồng hành",
+    "journeyEmptyList": "Chưa có hành trình nào",
+
+    "createNewJourneyTitle": "Tạo hành trình mới",
+    "journeyNameLabel": "Tên chuyến đi",
+    "journeyNameHint": "Nhập tên chuyến đi",
+    "journeyStartDateLabel": "Ngày bắt đầu",
+    "journeyEndDateLabel": "Ngày kết thúc",
+    "participantCountLabel": "Số người tham gia",
+    "participantCountHint": "Nhập số người tham gia",
+    "journeyNoteLabel": "Ghi chú/Mô tả",
+    "journeyNoteHint": "Nhập ghi chú hoặc mô tả cho chuyến đi",
+    "selectRouteLabel": "Tuyến đường",
+    "selectRouteHint": "Chọn tuyến đường trekking",
+    "selectRouteSheetTitle": "Chọn tuyến đường",
+    "createJourneyButton": "Tạo hành trình",
+    "createJourneySuccess": "Đã tạo hành trình thành công!",
+
+    "milestonesSectionTitle": "CÁC MỐC HÀNH TRÌNH",
+    "milestoneCheckedIn": "Đã check-in",
+    "milestoneNotCheckedIn": "Chưa đến",
+    "milestoneCheckInButton": "Check In",
+    "milestoneAltitude": "{altitude} m so mực nước biển",
+    "@milestoneAltitude": {
+        "placeholders": {
+            "altitude": { "type": "String" }
+        }
+    },
+    "milestoneProgress": "{checked}/{total} mốc",
+    "@milestoneProgress": {
+        "placeholders": {
+            "checked": { "type": "int" },
+            "total": { "type": "int" }
+        }
+    },
+    "journeyDetailMapTitle": "BẢN ĐỒ LỘ TRÌNH",
+    "journeyDetailDownloadMap": "Tải bản đồ Offline",
+    "journeyDetailViewMap": "Xem bản đồ Offline",
+    "journeyActionStart": "Bắt đầu hành trình",
+    "journeyActionPause": "Tạm dừng hành trình",
+    "journeyActionResume": "Tiếp tục hành trình",
+    "journeyActionViewMap": "Xem bản đồ",
+    "journeyRemainingTime": "Thời gian còn lại",
+    "journeyCurrentElevation": "Độ cao hiện tại",
+    "journeyProgressTitle": "Tiến trình hành trình",
+    "journeyCheckinPoints": "Điểm check-in",
+    "journeyStatusPlanned": "DỰ KIẾN",
+    "journeyStatusActive": "ĐANG ĐI",
+    "journeyStatusPaused": "TẠM DỪNG",
+    "journeyStatusCompleted": "HOÀN THÀNH",
+    "journeyStatusCancelled": "ĐÃ HỦY",
+
+    "downloadOfflineMapTitle": "Tải bản đồ Offline",
+    "downloadOfflineMapSubtitle": "Lưu trữ dữ liệu địa hình ngoại tuyến để đề phòng mất sóng.",
+    "downloading": "ĐANG TẢI...",
+    "cancelDownload": "Hủy tải xuống",
+    "mapDataHeader": "Dữ liệu {name} Map",
+    "@mapDataHeader": {
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+    "mapLabel": "Bản đồ",
+    "zoomLevelLabel": "Mức Zoom",
+    "zoomLevelDetail": "12 – 17 (Chi tiết)",
+    "fileSizeLabel": "Dung lượng",
+    "waypointsLabel": "Điểm kiểm soát",
+    "waypointsCount": "{count} Waypoints",
+    "@waypointsCount": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "trailSupportLabel": "Đường mòn",
+    "supported": "Có hỗ trợ",
+    "mapReadyTitle": "Bản đồ đã sẵn sàng!",
+    "mapReadySubtitle": "Mọi dữ liệu đã được lưu trữ an toàn ngoại tuyến.",
+    "mapPackageInfoTitle": "THÔNG TIN GÓI BẢN ĐỒ",
+    "offlineMapFeature": "Offline Map (Bản đồ ngoại tuyến)",
+    "hikingTrailFeature": "Hiking Trail (Đường mòn chi tiết)",
+    "waypointsFeature": "Waypoints (Các điểm dừng chân)",
+    "backtrackFeature": "Backtrack (Chế độ quay lại tự động)"
 }

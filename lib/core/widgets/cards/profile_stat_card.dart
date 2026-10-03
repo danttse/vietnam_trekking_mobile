@@ -36,11 +36,13 @@ class ProfileStatCard extends StatelessWidget {
             Text(
               value,
               style: TextStyle(
-                fontSize: 19,
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
                 color: colorScheme.onSurface,
                 letterSpacing: -0.2,
               ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 4),
             Text(

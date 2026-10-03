@@ -142,5 +142,127 @@
     "passwordsDoNotMatch": "Passwords do not match",
     "passwordTooShort": "Password must be at least 6 characters",
     "changePasswordSuccess": "Password changed successfully!",
-    "createNewPostHintText": "Share your trekking experience"
+    "createNewPostHintText": "Share your trekking experience",
+
+    "communityTabPosts": "Posts",
+    "communityTabGroups": "Groups",
+    "communityTabPersonal": "Personal",
+    "postHideThis": "Hide this post",
+    "postHideSubtitle": "See fewer posts like this on your feed",
+    "postHiddenMessage": "Post hidden",
+    "undo": "Undo",
+    "postHideAllFrom": "Hide all from {authorName}",
+    "@postHideAllFrom": {
+        "placeholders": {
+            "authorName": { "type": "String" }
+        }
+    },
+    "thisPerson": "this person",
+    "postReport": "Report post",
+    "postReportSuccess": "Thank you for your report. We will review this content.",
+    "communityNoPosts": "No posts yet",
+
+    "commentsTitle": "Comments",
+    "noCommentsYet": "No comments yet",
+    "beFirstToComment": "Be the first to comment!",
+    "replyingTo": "Replying to {userName}",
+    "@replyingTo": {
+        "placeholders": {
+            "userName": { "type": "String" }
+        }
+    },
+    "replyToHint": "Reply to @{userName}...",
+    "@replyToHint": {
+        "placeholders": {
+            "userName": { "type": "String" }
+        }
+    },
+    "writeCommentHint": "Write a comment...",
+
+    "journeyCompleted": "Completed",
+    "journeyUpcoming": "Upcoming",
+    "journeyStatTrips": "Trips",
+    "journeyStatDistance": "Distance",
+    "journeyStatCompanions": "Companions",
+    "journeyEmptyList": "No journeys yet",
+
+    "createNewJourneyTitle": "Create New Journey",
+    "journeyNameLabel": "Journey Name",
+    "journeyNameHint": "Enter journey name",
+    "journeyStartDateLabel": "Start Date",
+    "journeyEndDateLabel": "End Date",
+    "participantCountLabel": "Number of Participants",
+    "participantCountHint": "Enter number of participants",
+    "journeyNoteLabel": "Notes/Description",
+    "journeyNoteHint": "Enter notes or description for the journey",
+    "selectRouteLabel": "Route",
+    "selectRouteHint": "Select trekking route",
+    "selectRouteSheetTitle": "Select Route",
+    "createJourneyButton": "Create Journey",
+    "createJourneySuccess": "Journey created successfully!",
+
+    "milestonesSectionTitle": "MILESTONES",
+    "milestoneCheckedIn": "Checked in",
+    "milestoneNotCheckedIn": "Not yet",
+    "milestoneCheckInButton": "Check In",
+    "milestoneAltitude": "{altitude} m asl",
+    "@milestoneAltitude": {
+        "placeholders": {
+            "altitude": { "type": "String" }
+        }
+    },
+    "milestoneProgress": "{checked}/{total} milestones",
+    "@milestoneProgress": {
+        "placeholders": {
+            "checked": { "type": "int" },
+            "total": { "type": "int" }
+        }
+    },
+    "journeyDetailMapTitle": "ROUTE MAP",
+    "journeyDetailDownloadMap": "Download Offline Map",
+    "journeyDetailViewMap": "View Offline Map",
+    "journeyActionStart": "Start Journey",
+    "journeyActionPause": "Pause Journey",
+    "journeyActionResume": "Resume Journey",
+    "journeyActionViewMap": "View Map",
+    "journeyRemainingTime": "Remaining time",
+    "journeyCurrentElevation": "Current elevation",
+    "journeyProgressTitle": "Journey Progress",
+    "journeyCheckinPoints": "Check-in points",
+    "journeyStatusPlanned": "PLANNED",
+    "journeyStatusActive": "IN PROGRESS",
+    "journeyStatusPaused": "PAUSED",
+    "journeyStatusCompleted": "COMPLETED",
+    "journeyStatusCancelled": "CANCELLED",
+
+    "downloadOfflineMapTitle": "Download Offline Map",
+    "downloadOfflineMapSubtitle": "Store offline terrain data to prevent signal loss.",
+    "downloading": "DOWNLOADING...",
+    "cancelDownload": "Cancel download",
+    "mapDataHeader": "{name} Map Data",
+    "@mapDataHeader": {
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+    "mapLabel": "Map",
+    "zoomLevelLabel": "Zoom level",
+    "zoomLevelDetail": "12 – 17 (Detailed)",
+    "fileSizeLabel": "Size",
+    "waypointsLabel": "Control points",
+    "waypointsCount": "{count} Waypoints",
+    "@waypointsCount": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "trailSupportLabel": "Trails",
+    "supported": "Supported",
+    "mapReadyTitle": "Map is ready!",
+    "mapReadySubtitle": "All data has been safely stored offline.",
+    "mapPackageInfoTitle": "MAP PACKAGE INFORMATION",
+    "offlineMapFeature": "Offline Map",
+    "hikingTrailFeature": "Hiking Trail (Detailed)",
+    "waypointsFeature": "Waypoints (Rest points)",
+    "backtrackFeature": "Backtrack (Auto return mode)"
 }

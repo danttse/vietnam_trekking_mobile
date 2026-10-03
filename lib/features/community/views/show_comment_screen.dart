@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/widgets/app_bar/app_top_bar_with_back.dart';
 import '../../../core/widgets/cards/comment_thread_item.dart';
+import '../../../l10n/app_localizations.dart';
 import '../data/models/post_model.dart';
 import '../viewmodels/comment_viewmodel.dart';
 
@@ -37,6 +38,7 @@ class _ShowCommentScreenState extends State<ShowCommentScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
 
     return SafeArea(
       child: Scaffold(
@@ -44,7 +46,7 @@ class _ShowCommentScreenState extends State<ShowCommentScreen> {
         body: Column(
           children: [
             AppTopBarWithBack(
-              title: "Bình luận",
+              title: l10n.commentsTitle,
               onBack: () => Navigator.of(context).maybePop(),
             ),
             Expanded(
@@ -68,7 +70,7 @@ class _ShowCommentScreenState extends State<ShowCommentScreen> {
                           ),
                           const SizedBox(height: 12),
                           Text(
-                            'Chưa có bình luận nào',
+                            l10n.noCommentsYet,
                             style: TextStyle(
                               color: colorScheme.onSurfaceVariant,
                               fontSize: 14,
@@ -76,7 +78,7 @@ class _ShowCommentScreenState extends State<ShowCommentScreen> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Hãy là người đầu tiên bình luận!',
+                            l10n.beFirstToComment,
                             style: TextStyle(
                               color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
                               fontSize: 12,
@@ -122,7 +124,7 @@ class _ShowCommentScreenState extends State<ShowCommentScreen> {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          'Đang trả lời ${replying.userName}',
+                          l10n.replyingTo(replying.userName),
                           style: TextStyle(
                             fontSize: 13,
                             color: colorScheme.onSurfaceVariant,
@@ -174,8 +176,8 @@ class _ShowCommentScreenState extends State<ShowCommentScreen> {
                           ),
                           decoration: InputDecoration(
                             hintText: replying != null
-                                ? 'Trả lời @${replying.userName}...'
-                                : 'Viết bình luận...',
+                                ? l10n.replyToHint(replying.userName)
+                                : l10n.writeCommentHint,
                             hintStyle: TextStyle(
                               color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
                               fontSize: 14,

@@ -49,7 +49,7 @@ class EditTextAuthCustom extends StatelessWidget {
           decoration: BoxDecoration(
             color: colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(12),
-            border:Border.all(color: colorScheme.onSurfaceVariant),
+            border:Border.all(color: colorScheme.onSurfaceVariant.withValues(alpha: 0.15), width: 1),
           ),
           child: TextField(
             controller: controller,

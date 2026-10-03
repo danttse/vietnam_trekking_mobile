@@ -13,7 +13,7 @@ class ProfileProvinceProgressBar extends StatelessWidget {
     this.title = 'Bản đồ tỉnh thành',
     required this.current,
     this.total = 34,
-    this.unit = 'tỉnh',
+    this.unit = '',
     this.progressColor,
     this.trackColor,
   });

@@ -823,6 +823,486 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Chia sẻ trải nghiệm trekking của bạn'**
   String get createNewPostHintText;
+
+  /// No description provided for @communityTabPosts.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bài viết'**
+  String get communityTabPosts;
+
+  /// No description provided for @communityTabGroups.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhóm'**
+  String get communityTabGroups;
+
+  /// No description provided for @communityTabPersonal.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cá nhân'**
+  String get communityTabPersonal;
+
+  /// No description provided for @postHideThis.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ẩn bài viết này'**
+  String get postHideThis;
+
+  /// No description provided for @postHideSubtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bớt nhìn thấy các bài viết tương tự trên bảng tin'**
+  String get postHideSubtitle;
+
+  /// No description provided for @postHiddenMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ẩn bài viết'**
+  String get postHiddenMessage;
+
+  /// No description provided for @undo.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoàn tác'**
+  String get undo;
+
+  /// No description provided for @postHideAllFrom.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ẩn tất cả từ {authorName}'**
+  String postHideAllFrom(String authorName);
+
+  /// No description provided for @thisPerson.
+  ///
+  /// In vi, this message translates to:
+  /// **'người này'**
+  String get thisPerson;
+
+  /// No description provided for @postReport.
+  ///
+  /// In vi, this message translates to:
+  /// **'Báo cáo bài viết'**
+  String get postReport;
+
+  /// No description provided for @postReportSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cảm ơn bạn đã gửi báo cáo. Chúng tôi sẽ xem xét nội dung này.'**
+  String get postReportSuccess;
+
+  /// No description provided for @communityNoPosts.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có bài viết nào'**
+  String get communityNoPosts;
+
+  /// No description provided for @commentsTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bình luận'**
+  String get commentsTitle;
+
+  /// No description provided for @noCommentsYet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có bình luận nào'**
+  String get noCommentsYet;
+
+  /// No description provided for @beFirstToComment.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hãy là người đầu tiên bình luận!'**
+  String get beFirstToComment;
+
+  /// No description provided for @replyingTo.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang trả lời {userName}'**
+  String replyingTo(String userName);
+
+  /// No description provided for @replyToHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trả lời @{userName}...'**
+  String replyToHint(String userName);
+
+  /// No description provided for @writeCommentHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Viết bình luận...'**
+  String get writeCommentHint;
+
+  /// No description provided for @journeyCompleted.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã hoàn thành'**
+  String get journeyCompleted;
+
+  /// No description provided for @journeyUpcoming.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sắp tới'**
+  String get journeyUpcoming;
+
+  /// No description provided for @journeyStatTrips.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chuyến đi'**
+  String get journeyStatTrips;
+
+  /// No description provided for @journeyStatDistance.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quãng đường'**
+  String get journeyStatDistance;
+
+  /// No description provided for @journeyStatCompanions.
+  ///
+  /// In vi, this message translates to:
+  /// **'Người đồng hành'**
+  String get journeyStatCompanions;
+
+  /// No description provided for @journeyEmptyList.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có hành trình nào'**
+  String get journeyEmptyList;
+
+  /// No description provided for @createNewJourneyTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo hành trình mới'**
+  String get createNewJourneyTitle;
+
+  /// No description provided for @journeyNameLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên chuyến đi'**
+  String get journeyNameLabel;
+
+  /// No description provided for @journeyNameHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập tên chuyến đi'**
+  String get journeyNameHint;
+
+  /// No description provided for @journeyStartDateLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày bắt đầu'**
+  String get journeyStartDateLabel;
+
+  /// No description provided for @journeyEndDateLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày kết thúc'**
+  String get journeyEndDateLabel;
+
+  /// No description provided for @participantCountLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Số người tham gia'**
+  String get participantCountLabel;
+
+  /// No description provided for @participantCountHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập số người tham gia'**
+  String get participantCountHint;
+
+  /// No description provided for @journeyNoteLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi chú/Mô tả'**
+  String get journeyNoteLabel;
+
+  /// No description provided for @journeyNoteHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập ghi chú hoặc mô tả cho chuyến đi'**
+  String get journeyNoteHint;
+
+  /// No description provided for @selectRouteLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuyến đường'**
+  String get selectRouteLabel;
+
+  /// No description provided for @selectRouteHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn tuyến đường trekking'**
+  String get selectRouteHint;
+
+  /// No description provided for @selectRouteSheetTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn tuyến đường'**
+  String get selectRouteSheetTitle;
+
+  /// No description provided for @createJourneyButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo hành trình'**
+  String get createJourneyButton;
+
+  /// No description provided for @createJourneySuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã tạo hành trình thành công!'**
+  String get createJourneySuccess;
+
+  /// No description provided for @milestonesSectionTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'CÁC MỐC HÀNH TRÌNH'**
+  String get milestonesSectionTitle;
+
+  /// No description provided for @milestoneCheckedIn.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã check-in'**
+  String get milestoneCheckedIn;
+
+  /// No description provided for @milestoneNotCheckedIn.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa đến'**
+  String get milestoneNotCheckedIn;
+
+  /// No description provided for @milestoneCheckInButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Check In'**
+  String get milestoneCheckInButton;
+
+  /// No description provided for @milestoneAltitude.
+  ///
+  /// In vi, this message translates to:
+  /// **'{altitude} m so mực nước biển'**
+  String milestoneAltitude(String altitude);
+
+  /// No description provided for @milestoneProgress.
+  ///
+  /// In vi, this message translates to:
+  /// **'{checked}/{total} mốc'**
+  String milestoneProgress(int checked, int total);
+
+  /// No description provided for @journeyDetailMapTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'BẢN ĐỒ LỘ TRÌNH'**
+  String get journeyDetailMapTitle;
+
+  /// No description provided for @journeyDetailDownloadMap.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tải bản đồ Offline'**
+  String get journeyDetailDownloadMap;
+
+  /// No description provided for @journeyDetailViewMap.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem bản đồ Offline'**
+  String get journeyDetailViewMap;
+
+  /// No description provided for @journeyActionStart.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu hành trình'**
+  String get journeyActionStart;
+
+  /// No description provided for @journeyActionPause.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạm dừng hành trình'**
+  String get journeyActionPause;
+
+  /// No description provided for @journeyActionResume.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp tục hành trình'**
+  String get journeyActionResume;
+
+  /// No description provided for @journeyActionViewMap.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem bản đồ'**
+  String get journeyActionViewMap;
+
+  /// No description provided for @journeyRemainingTime.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thời gian còn lại'**
+  String get journeyRemainingTime;
+
+  /// No description provided for @journeyCurrentElevation.
+  ///
+  /// In vi, this message translates to:
+  /// **'Độ cao hiện tại'**
+  String get journeyCurrentElevation;
+
+  /// No description provided for @journeyProgressTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiến trình hành trình'**
+  String get journeyProgressTitle;
+
+  /// No description provided for @journeyCheckinPoints.
+  ///
+  /// In vi, this message translates to:
+  /// **'Điểm check-in'**
+  String get journeyCheckinPoints;
+
+  /// No description provided for @journeyStatusPlanned.
+  ///
+  /// In vi, this message translates to:
+  /// **'DỰ KIẾN'**
+  String get journeyStatusPlanned;
+
+  /// No description provided for @journeyStatusActive.
+  ///
+  /// In vi, this message translates to:
+  /// **'ĐANG ĐI'**
+  String get journeyStatusActive;
+
+  /// No description provided for @journeyStatusPaused.
+  ///
+  /// In vi, this message translates to:
+  /// **'TẠM DỪNG'**
+  String get journeyStatusPaused;
+
+  /// No description provided for @journeyStatusCompleted.
+  ///
+  /// In vi, this message translates to:
+  /// **'HOÀN THÀNH'**
+  String get journeyStatusCompleted;
+
+  /// No description provided for @journeyStatusCancelled.
+  ///
+  /// In vi, this message translates to:
+  /// **'ĐÃ HỦY'**
+  String get journeyStatusCancelled;
+
+  /// No description provided for @downloadOfflineMapTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tải bản đồ Offline'**
+  String get downloadOfflineMapTitle;
+
+  /// No description provided for @downloadOfflineMapSubtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu trữ dữ liệu địa hình ngoại tuyến để đề phòng mất sóng.'**
+  String get downloadOfflineMapSubtitle;
+
+  /// No description provided for @downloading.
+  ///
+  /// In vi, this message translates to:
+  /// **'ĐANG TẢI...'**
+  String get downloading;
+
+  /// No description provided for @cancelDownload.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hủy tải xuống'**
+  String get cancelDownload;
+
+  /// No description provided for @mapDataHeader.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dữ liệu {name} Map'**
+  String mapDataHeader(String name);
+
+  /// No description provided for @mapLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản đồ'**
+  String get mapLabel;
+
+  /// No description provided for @zoomLevelLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mức Zoom'**
+  String get zoomLevelLabel;
+
+  /// No description provided for @zoomLevelDetail.
+  ///
+  /// In vi, this message translates to:
+  /// **'12 – 17 (Chi tiết)'**
+  String get zoomLevelDetail;
+
+  /// No description provided for @fileSizeLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dung lượng'**
+  String get fileSizeLabel;
+
+  /// No description provided for @waypointsLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Điểm kiểm soát'**
+  String get waypointsLabel;
+
+  /// No description provided for @waypointsCount.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} Waypoints'**
+  String waypointsCount(int count);
+
+  /// No description provided for @trailSupportLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đường mòn'**
+  String get trailSupportLabel;
+
+  /// No description provided for @supported.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có hỗ trợ'**
+  String get supported;
+
+  /// No description provided for @mapReadyTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản đồ đã sẵn sàng!'**
+  String get mapReadyTitle;
+
+  /// No description provided for @mapReadySubtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mọi dữ liệu đã được lưu trữ an toàn ngoại tuyến.'**
+  String get mapReadySubtitle;
+
+  /// No description provided for @mapPackageInfoTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'THÔNG TIN GÓI BẢN ĐỒ'**
+  String get mapPackageInfoTitle;
+
+  /// No description provided for @offlineMapFeature.
+  ///
+  /// In vi, this message translates to:
+  /// **'Offline Map (Bản đồ ngoại tuyến)'**
+  String get offlineMapFeature;
+
+  /// No description provided for @hikingTrailFeature.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hiking Trail (Đường mòn chi tiết)'**
+  String get hikingTrailFeature;
+
+  /// No description provided for @waypointsFeature.
+  ///
+  /// In vi, this message translates to:
+  /// **'Waypoints (Các điểm dừng chân)'**
+  String get waypointsFeature;
+
+  /// No description provided for @backtrackFeature.
+  ///
+  /// In vi, this message translates to:
+  /// **'Backtrack (Chế độ quay lại tự động)'**
+  String get backtrackFeature;
 }
 
 class _AppLocalizationsDelegate

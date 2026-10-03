@@ -4,6 +4,7 @@ import '../../../core/widgets/cards/bottom_navigation.dart';
 import '../../community/views/community_screen.dart';
 import '../../home/view/home_screen.dart';
 import '../../explore/views/explore_screen.dart';
+import '../../journey/views/journey_screen.dart';
 import '../../profile/views/profile_screen.dart';
 import '../view_models/user_navigation_viewmodel.dart';
 
@@ -90,7 +91,7 @@ class _UserNavigationScreenState extends State<UserNavigationScreen> {
               ),
               const ExploreScreen(),
               const CommunityScreen(),
-              _buildPlaceholder(AppLocalizations.of(context)!.navJourney, Icons.route_outlined),
+              const JourneyScreen(),
               ProfileScreen(
                 onBackToHome: () => _viewModel.goToHome(),
               ),

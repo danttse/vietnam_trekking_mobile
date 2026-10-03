@@ -381,4 +381,262 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get createNewPostHintText => 'Chia sẻ trải nghiệm trekking của bạn';
+
+  @override
+  String get communityTabPosts => 'Bài viết';
+
+  @override
+  String get communityTabGroups => 'Nhóm';
+
+  @override
+  String get communityTabPersonal => 'Cá nhân';
+
+  @override
+  String get postHideThis => 'Ẩn bài viết này';
+
+  @override
+  String get postHideSubtitle =>
+      'Bớt nhìn thấy các bài viết tương tự trên bảng tin';
+
+  @override
+  String get postHiddenMessage => 'Đã ẩn bài viết';
+
+  @override
+  String get undo => 'Hoàn tác';
+
+  @override
+  String postHideAllFrom(String authorName) {
+    return 'Ẩn tất cả từ $authorName';
+  }
+
+  @override
+  String get thisPerson => 'người này';
+
+  @override
+  String get postReport => 'Báo cáo bài viết';
+
+  @override
+  String get postReportSuccess =>
+      'Cảm ơn bạn đã gửi báo cáo. Chúng tôi sẽ xem xét nội dung này.';
+
+  @override
+  String get communityNoPosts => 'Chưa có bài viết nào';
+
+  @override
+  String get commentsTitle => 'Bình luận';
+
+  @override
+  String get noCommentsYet => 'Chưa có bình luận nào';
+
+  @override
+  String get beFirstToComment => 'Hãy là người đầu tiên bình luận!';
+
+  @override
+  String replyingTo(String userName) {
+    return 'Đang trả lời $userName';
+  }
+
+  @override
+  String replyToHint(String userName) {
+    return 'Trả lời @$userName...';
+  }
+
+  @override
+  String get writeCommentHint => 'Viết bình luận...';
+
+  @override
+  String get journeyCompleted => 'Đã hoàn thành';
+
+  @override
+  String get journeyUpcoming => 'Sắp tới';
+
+  @override
+  String get journeyStatTrips => 'Chuyến đi';
+
+  @override
+  String get journeyStatDistance => 'Quãng đường';
+
+  @override
+  String get journeyStatCompanions => 'Người đồng hành';
+
+  @override
+  String get journeyEmptyList => 'Chưa có hành trình nào';
+
+  @override
+  String get createNewJourneyTitle => 'Tạo hành trình mới';
+
+  @override
+  String get journeyNameLabel => 'Tên chuyến đi';
+
+  @override
+  String get journeyNameHint => 'Nhập tên chuyến đi';
+
+  @override
+  String get journeyStartDateLabel => 'Ngày bắt đầu';
+
+  @override
+  String get journeyEndDateLabel => 'Ngày kết thúc';
+
+  @override
+  String get participantCountLabel => 'Số người tham gia';
+
+  @override
+  String get participantCountHint => 'Nhập số người tham gia';
+
+  @override
+  String get journeyNoteLabel => 'Ghi chú/Mô tả';
+
+  @override
+  String get journeyNoteHint => 'Nhập ghi chú hoặc mô tả cho chuyến đi';
+
+  @override
+  String get selectRouteLabel => 'Tuyến đường';
+
+  @override
+  String get selectRouteHint => 'Chọn tuyến đường trekking';
+
+  @override
+  String get selectRouteSheetTitle => 'Chọn tuyến đường';
+
+  @override
+  String get createJourneyButton => 'Tạo hành trình';
+
+  @override
+  String get createJourneySuccess => 'Đã tạo hành trình thành công!';
+
+  @override
+  String get milestonesSectionTitle => 'CÁC MỐC HÀNH TRÌNH';
+
+  @override
+  String get milestoneCheckedIn => 'Đã check-in';
+
+  @override
+  String get milestoneNotCheckedIn => 'Chưa đến';
+
+  @override
+  String get milestoneCheckInButton => 'Check In';
+
+  @override
+  String milestoneAltitude(String altitude) {
+    return '$altitude m so mực nước biển';
+  }
+
+  @override
+  String milestoneProgress(int checked, int total) {
+    return '$checked/$total mốc';
+  }
+
+  @override
+  String get journeyDetailMapTitle => 'BẢN ĐỒ LỘ TRÌNH';
+
+  @override
+  String get journeyDetailDownloadMap => 'Tải bản đồ Offline';
+
+  @override
+  String get journeyDetailViewMap => 'Xem bản đồ Offline';
+
+  @override
+  String get journeyActionStart => 'Bắt đầu hành trình';
+
+  @override
+  String get journeyActionPause => 'Tạm dừng hành trình';
+
+  @override
+  String get journeyActionResume => 'Tiếp tục hành trình';
+
+  @override
+  String get journeyActionViewMap => 'Xem bản đồ';
+
+  @override
+  String get journeyRemainingTime => 'Thời gian còn lại';
+
+  @override
+  String get journeyCurrentElevation => 'Độ cao hiện tại';
+
+  @override
+  String get journeyProgressTitle => 'Tiến trình hành trình';
+
+  @override
+  String get journeyCheckinPoints => 'Điểm check-in';
+
+  @override
+  String get journeyStatusPlanned => 'DỰ KIẾN';
+
+  @override
+  String get journeyStatusActive => 'ĐANG ĐI';
+
+  @override
+  String get journeyStatusPaused => 'TẠM DỪNG';
+
+  @override
+  String get journeyStatusCompleted => 'HOÀN THÀNH';
+
+  @override
+  String get journeyStatusCancelled => 'ĐÃ HỦY';
+
+  @override
+  String get downloadOfflineMapTitle => 'Tải bản đồ Offline';
+
+  @override
+  String get downloadOfflineMapSubtitle =>
+      'Lưu trữ dữ liệu địa hình ngoại tuyến để đề phòng mất sóng.';
+
+  @override
+  String get downloading => 'ĐANG TẢI...';
+
+  @override
+  String get cancelDownload => 'Hủy tải xuống';
+
+  @override
+  String mapDataHeader(String name) {
+    return 'Dữ liệu $name Map';
+  }
+
+  @override
+  String get mapLabel => 'Bản đồ';
+
+  @override
+  String get zoomLevelLabel => 'Mức Zoom';
+
+  @override
+  String get zoomLevelDetail => '12 – 17 (Chi tiết)';
+
+  @override
+  String get fileSizeLabel => 'Dung lượng';
+
+  @override
+  String get waypointsLabel => 'Điểm kiểm soát';
+
+  @override
+  String waypointsCount(int count) {
+    return '$count Waypoints';
+  }
+
+  @override
+  String get trailSupportLabel => 'Đường mòn';
+
+  @override
+  String get supported => 'Có hỗ trợ';
+
+  @override
+  String get mapReadyTitle => 'Bản đồ đã sẵn sàng!';
+
+  @override
+  String get mapReadySubtitle =>
+      'Mọi dữ liệu đã được lưu trữ an toàn ngoại tuyến.';
+
+  @override
+  String get mapPackageInfoTitle => 'THÔNG TIN GÓI BẢN ĐỒ';
+
+  @override
+  String get offlineMapFeature => 'Offline Map (Bản đồ ngoại tuyến)';
+
+  @override
+  String get hikingTrailFeature => 'Hiking Trail (Đường mòn chi tiết)';
+
+  @override
+  String get waypointsFeature => 'Waypoints (Các điểm dừng chân)';
+
+  @override
+  String get backtrackFeature => 'Backtrack (Chế độ quay lại tự động)';
 }

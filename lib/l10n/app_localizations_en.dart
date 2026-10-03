@@ -381,4 +381,260 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get createNewPostHintText => 'Share your trekking experience';
+
+  @override
+  String get communityTabPosts => 'Posts';
+
+  @override
+  String get communityTabGroups => 'Groups';
+
+  @override
+  String get communityTabPersonal => 'Personal';
+
+  @override
+  String get postHideThis => 'Hide this post';
+
+  @override
+  String get postHideSubtitle => 'See fewer posts like this on your feed';
+
+  @override
+  String get postHiddenMessage => 'Post hidden';
+
+  @override
+  String get undo => 'Undo';
+
+  @override
+  String postHideAllFrom(String authorName) {
+    return 'Hide all from $authorName';
+  }
+
+  @override
+  String get thisPerson => 'this person';
+
+  @override
+  String get postReport => 'Report post';
+
+  @override
+  String get postReportSuccess =>
+      'Thank you for your report. We will review this content.';
+
+  @override
+  String get communityNoPosts => 'No posts yet';
+
+  @override
+  String get commentsTitle => 'Comments';
+
+  @override
+  String get noCommentsYet => 'No comments yet';
+
+  @override
+  String get beFirstToComment => 'Be the first to comment!';
+
+  @override
+  String replyingTo(String userName) {
+    return 'Replying to $userName';
+  }
+
+  @override
+  String replyToHint(String userName) {
+    return 'Reply to @$userName...';
+  }
+
+  @override
+  String get writeCommentHint => 'Write a comment...';
+
+  @override
+  String get journeyCompleted => 'Completed';
+
+  @override
+  String get journeyUpcoming => 'Upcoming';
+
+  @override
+  String get journeyStatTrips => 'Trips';
+
+  @override
+  String get journeyStatDistance => 'Distance';
+
+  @override
+  String get journeyStatCompanions => 'Companions';
+
+  @override
+  String get journeyEmptyList => 'No journeys yet';
+
+  @override
+  String get createNewJourneyTitle => 'Create New Journey';
+
+  @override
+  String get journeyNameLabel => 'Journey Name';
+
+  @override
+  String get journeyNameHint => 'Enter journey name';
+
+  @override
+  String get journeyStartDateLabel => 'Start Date';
+
+  @override
+  String get journeyEndDateLabel => 'End Date';
+
+  @override
+  String get participantCountLabel => 'Number of Participants';
+
+  @override
+  String get participantCountHint => 'Enter number of participants';
+
+  @override
+  String get journeyNoteLabel => 'Notes/Description';
+
+  @override
+  String get journeyNoteHint => 'Enter notes or description for the journey';
+
+  @override
+  String get selectRouteLabel => 'Route';
+
+  @override
+  String get selectRouteHint => 'Select trekking route';
+
+  @override
+  String get selectRouteSheetTitle => 'Select Route';
+
+  @override
+  String get createJourneyButton => 'Create Journey';
+
+  @override
+  String get createJourneySuccess => 'Journey created successfully!';
+
+  @override
+  String get milestonesSectionTitle => 'MILESTONES';
+
+  @override
+  String get milestoneCheckedIn => 'Checked in';
+
+  @override
+  String get milestoneNotCheckedIn => 'Not yet';
+
+  @override
+  String get milestoneCheckInButton => 'Check In';
+
+  @override
+  String milestoneAltitude(String altitude) {
+    return '$altitude m asl';
+  }
+
+  @override
+  String milestoneProgress(int checked, int total) {
+    return '$checked/$total milestones';
+  }
+
+  @override
+  String get journeyDetailMapTitle => 'ROUTE MAP';
+
+  @override
+  String get journeyDetailDownloadMap => 'Download Offline Map';
+
+  @override
+  String get journeyDetailViewMap => 'View Offline Map';
+
+  @override
+  String get journeyActionStart => 'Start Journey';
+
+  @override
+  String get journeyActionPause => 'Pause Journey';
+
+  @override
+  String get journeyActionResume => 'Resume Journey';
+
+  @override
+  String get journeyActionViewMap => 'View Map';
+
+  @override
+  String get journeyRemainingTime => 'Remaining time';
+
+  @override
+  String get journeyCurrentElevation => 'Current elevation';
+
+  @override
+  String get journeyProgressTitle => 'Journey Progress';
+
+  @override
+  String get journeyCheckinPoints => 'Check-in points';
+
+  @override
+  String get journeyStatusPlanned => 'PLANNED';
+
+  @override
+  String get journeyStatusActive => 'IN PROGRESS';
+
+  @override
+  String get journeyStatusPaused => 'PAUSED';
+
+  @override
+  String get journeyStatusCompleted => 'COMPLETED';
+
+  @override
+  String get journeyStatusCancelled => 'CANCELLED';
+
+  @override
+  String get downloadOfflineMapTitle => 'Download Offline Map';
+
+  @override
+  String get downloadOfflineMapSubtitle =>
+      'Store offline terrain data to prevent signal loss.';
+
+  @override
+  String get downloading => 'DOWNLOADING...';
+
+  @override
+  String get cancelDownload => 'Cancel download';
+
+  @override
+  String mapDataHeader(String name) {
+    return '$name Map Data';
+  }
+
+  @override
+  String get mapLabel => 'Map';
+
+  @override
+  String get zoomLevelLabel => 'Zoom level';
+
+  @override
+  String get zoomLevelDetail => '12 – 17 (Detailed)';
+
+  @override
+  String get fileSizeLabel => 'Size';
+
+  @override
+  String get waypointsLabel => 'Control points';
+
+  @override
+  String waypointsCount(int count) {
+    return '$count Waypoints';
+  }
+
+  @override
+  String get trailSupportLabel => 'Trails';
+
+  @override
+  String get supported => 'Supported';
+
+  @override
+  String get mapReadyTitle => 'Map is ready!';
+
+  @override
+  String get mapReadySubtitle => 'All data has been safely stored offline.';
+
+  @override
+  String get mapPackageInfoTitle => 'MAP PACKAGE INFORMATION';
+
+  @override
+  String get offlineMapFeature => 'Offline Map';
+
+  @override
+  String get hikingTrailFeature => 'Hiking Trail (Detailed)';
+
+  @override
+  String get waypointsFeature => 'Waypoints (Rest points)';
+
+  @override
+  String get backtrackFeature => 'Backtrack (Auto return mode)';
 }
