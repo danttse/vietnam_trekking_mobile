@@ -3,7 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../../core/services/auth_event_bus.dart';
 import '../../../core/widgets/cards/bottom_navigation.dart';
+<<<<<<< HEAD
 import '../../auth/views/login_screen.dart';
+=======
+import '../../community/views/community_screen.dart';
+>>>>>>> 0d0cdff74107768d2522b7d5e7c5e978bab6ca9c
 import '../../home/view/home_screen.dart';
 import '../../explore/views/explore_screen.dart';
 // [TEST-ONLY] import màn hình detail tạm – xóa khi pull code dev frontend về
@@ -72,6 +76,7 @@ class _UserNavigationScreenState extends State<UserNavigationScreen> {
               HomeScreen(
                 onProfileTap: () => _viewModel.goToProfile(),
               ),
+<<<<<<< HEAD
               // [TEST-ONLY] onPlaceTap mở TestExploreDetailScreen tạm thời
               // Xóa đoạn này khi pull code dev frontend về, thay bằng ExploreScreen() gốc
               ExploreScreen(
@@ -82,6 +87,13 @@ class _UserNavigationScreenState extends State<UserNavigationScreen> {
                     ),
                   );
                 },
+=======
+              const ExploreScreen(),
+              const CommunityScreen(),
+              _buildPlaceholder(AppLocalizations.of(context)!.navJourney, Icons.route_outlined),
+              ProfileScreen(
+                onBackToHome: () => _viewModel.goToHome(),
+>>>>>>> 0d0cdff74107768d2522b7d5e7c5e978bab6ca9c
               ),
               const CommunityScreen(),
               const JourneyListScreen(),

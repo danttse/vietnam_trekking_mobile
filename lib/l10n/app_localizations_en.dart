@@ -393,4 +393,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get changePasswordSuccess => 'Password changed successfully!';
+
+  @override
+  String get createNewPostHintText => 'Share your trekking experience';
 }
