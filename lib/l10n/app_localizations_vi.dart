@@ -346,7 +346,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String featureComingSoon(String feature) {
-    return 'Tính năng $feature đang phát triển';
+    return 'Tính năng sắp ra mắt';
   }
 
   @override
@@ -639,4 +639,125 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get backtrackFeature => 'Backtrack (Chế độ quay lại tự động)';
+
+  @override
+  String get checkinControlPointTitle => 'Điểm kiểm soát Check-in';
+
+  @override
+  String get checkinTargetPointLabel => 'ĐIỂM CẦN ĐẾN';
+
+  @override
+  String checkinTargetAltitude(String altitude) {
+    return 'Độ cao mục tiêu: $altitude m';
+  }
+
+  @override
+  String checkinWithinRange(int distance) {
+    return 'Bạn đang ở trong phạm vi check-in! (Cách ${distance}m)';
+  }
+
+  @override
+  String get checkinNowButton => 'Check-in ngay';
+
+  @override
+  String get checkinAlreadySuccess => 'Đã check-in thành công';
+
+  @override
+  String get checkinRadiusNotice =>
+      'Bạn cần ở trong phạm vi bán kính 500m để có thể check-in thành công.';
+
+  @override
+  String checkinSuccessToast(String name) {
+    return 'Đã check-in thành công tại $name!';
+  }
+
+  @override
+  String get checkinCongratulation => 'CHÚC MỪNG!';
+
+  @override
+  String get checkinSuccessTitle => 'Check-in thành công!';
+
+  @override
+  String checkinSuccessMessage(String name) {
+    return 'Bạn đã hoàn thành điểm mốc $name.';
+  }
+
+  @override
+  String get achievementsEarnedTitle => 'HUY HIỆU ĐÃ ĐẠT ĐƯỢC';
+
+  @override
+  String get statNewBadge => 'Huy hiệu mới';
+
+  @override
+  String get statMaxElevation => 'Độ cao tối đa';
+
+  @override
+  String get statConqueredProvinces => 'Tỉnh đã chinh phục';
+
+  @override
+  String get continueJourneyButton => 'Tiếp tục hành trình';
+
+  @override
+  String get ratePlaceButton => 'Đánh giá địa điểm';
+
+  @override
+  String get shareAchievementButton => 'Chia sẻ thành tích';
+
+  @override
+  String milestoneConquerBadgeTitle(String name) {
+    return 'Chinh phục $name';
+  }
+
+  @override
+  String milestoneConquerBadgeDesc(String name, String altitude) {
+    return 'Ghi dấu chân thành công tại $name ở độ cao ${altitude}m';
+  }
+
+  @override
+  String milestoneConquerBadgeDescSimple(String name) {
+    return 'Ghi dấu chân thành công tại điểm mốc $name';
+  }
+
+  @override
+  String get ratePlaceTitle => 'Đánh giá địa điểm';
+
+  @override
+  String get rateSatisfactionLevel => 'MỨC ĐỘ HÀI LÒNG CỦA BẠN?';
+
+  @override
+  String get rateShareExperience => 'CHIA SẺ TRẢI NGHIỆM';
+
+  @override
+  String get rateExperienceHint =>
+      'Chia sẻ cảm nhận, lời khuyên và trải nghiệm về điểm mốc này...';
+
+  @override
+  String get rateAnonymousLabel => 'Đánh giá ẩn danh';
+
+  @override
+  String get rateAnonymousDesc => 'Tên của bạn sẽ không hiển thị công khai';
+
+  @override
+  String get rateSubmitButton => 'Gửi đánh giá';
+
+  @override
+  String get rateThankYouTitle => 'Cảm ơn bạn!';
+
+  @override
+  String get rateThankYouMessage =>
+      'Đánh giá của bạn đã được gửi thành công và sẽ giúp ích rất nhiều cho cộng đồng Trekker Việt Nam.';
+
+  @override
+  String get rateYourReviewTitle => 'ĐÁNH GIÁ CỦA BẠN';
+
+  @override
+  String rateStarsSummary(int rating, String name) {
+    return '$rating/5 sao - $name';
+  }
+
+  @override
+  String get rateViewOtherReviews => 'Xem đánh giá khác';
+
+  @override
+  String get rateBackToHome => 'Quay về trang chủ';
 }

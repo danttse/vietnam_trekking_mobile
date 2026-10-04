@@ -755,7 +755,7 @@ abstract class AppLocalizations {
   /// No description provided for @featureComingSoon.
   ///
   /// In vi, this message translates to:
-  /// **'Tính năng {feature} đang phát triển'**
+  /// **'Tính năng sắp ra mắt'**
   String featureComingSoon(String feature);
 
   /// No description provided for @changePasswordTitle.
@@ -1303,6 +1303,210 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Backtrack (Chế độ quay lại tự động)'**
   String get backtrackFeature;
+
+  /// No description provided for @checkinControlPointTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Điểm kiểm soát Check-in'**
+  String get checkinControlPointTitle;
+
+  /// No description provided for @checkinTargetPointLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'ĐIỂM CẦN ĐẾN'**
+  String get checkinTargetPointLabel;
+
+  /// No description provided for @checkinTargetAltitude.
+  ///
+  /// In vi, this message translates to:
+  /// **'Độ cao mục tiêu: {altitude} m'**
+  String checkinTargetAltitude(String altitude);
+
+  /// No description provided for @checkinWithinRange.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn đang ở trong phạm vi check-in! (Cách {distance}m)'**
+  String checkinWithinRange(int distance);
+
+  /// No description provided for @checkinNowButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Check-in ngay'**
+  String get checkinNowButton;
+
+  /// No description provided for @checkinAlreadySuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã check-in thành công'**
+  String get checkinAlreadySuccess;
+
+  /// No description provided for @checkinRadiusNotice.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn cần ở trong phạm vi bán kính 500m để có thể check-in thành công.'**
+  String get checkinRadiusNotice;
+
+  /// No description provided for @checkinSuccessToast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã check-in thành công tại {name}!'**
+  String checkinSuccessToast(String name);
+
+  /// No description provided for @checkinCongratulation.
+  ///
+  /// In vi, this message translates to:
+  /// **'CHÚC MỪNG!'**
+  String get checkinCongratulation;
+
+  /// No description provided for @checkinSuccessTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Check-in thành công!'**
+  String get checkinSuccessTitle;
+
+  /// No description provided for @checkinSuccessMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn đã hoàn thành điểm mốc {name}.'**
+  String checkinSuccessMessage(String name);
+
+  /// No description provided for @achievementsEarnedTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'HUY HIỆU ĐÃ ĐẠT ĐƯỢC'**
+  String get achievementsEarnedTitle;
+
+  /// No description provided for @statNewBadge.
+  ///
+  /// In vi, this message translates to:
+  /// **'Huy hiệu mới'**
+  String get statNewBadge;
+
+  /// No description provided for @statMaxElevation.
+  ///
+  /// In vi, this message translates to:
+  /// **'Độ cao tối đa'**
+  String get statMaxElevation;
+
+  /// No description provided for @statConqueredProvinces.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tỉnh đã chinh phục'**
+  String get statConqueredProvinces;
+
+  /// No description provided for @continueJourneyButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp tục hành trình'**
+  String get continueJourneyButton;
+
+  /// No description provided for @ratePlaceButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đánh giá địa điểm'**
+  String get ratePlaceButton;
+
+  /// No description provided for @shareAchievementButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chia sẻ thành tích'**
+  String get shareAchievementButton;
+
+  /// No description provided for @milestoneConquerBadgeTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chinh phục {name}'**
+  String milestoneConquerBadgeTitle(String name);
+
+  /// No description provided for @milestoneConquerBadgeDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi dấu chân thành công tại {name} ở độ cao {altitude}m'**
+  String milestoneConquerBadgeDesc(String name, String altitude);
+
+  /// No description provided for @milestoneConquerBadgeDescSimple.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi dấu chân thành công tại điểm mốc {name}'**
+  String milestoneConquerBadgeDescSimple(String name);
+
+  /// No description provided for @ratePlaceTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đánh giá địa điểm'**
+  String get ratePlaceTitle;
+
+  /// No description provided for @rateSatisfactionLevel.
+  ///
+  /// In vi, this message translates to:
+  /// **'MỨC ĐỘ HÀI LÒNG CỦA BẠN?'**
+  String get rateSatisfactionLevel;
+
+  /// No description provided for @rateShareExperience.
+  ///
+  /// In vi, this message translates to:
+  /// **'CHIA SẺ TRẢI NGHIỆM'**
+  String get rateShareExperience;
+
+  /// No description provided for @rateExperienceHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chia sẻ cảm nhận, lời khuyên và trải nghiệm về điểm mốc này...'**
+  String get rateExperienceHint;
+
+  /// No description provided for @rateAnonymousLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đánh giá ẩn danh'**
+  String get rateAnonymousLabel;
+
+  /// No description provided for @rateAnonymousDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên của bạn sẽ không hiển thị công khai'**
+  String get rateAnonymousDesc;
+
+  /// No description provided for @rateSubmitButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi đánh giá'**
+  String get rateSubmitButton;
+
+  /// No description provided for @rateThankYouTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cảm ơn bạn!'**
+  String get rateThankYouTitle;
+
+  /// No description provided for @rateThankYouMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đánh giá của bạn đã được gửi thành công và sẽ giúp ích rất nhiều cho cộng đồng Trekker Việt Nam.'**
+  String get rateThankYouMessage;
+
+  /// No description provided for @rateYourReviewTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'ĐÁNH GIÁ CỦA BẠN'**
+  String get rateYourReviewTitle;
+
+  /// No description provided for @rateStarsSummary.
+  ///
+  /// In vi, this message translates to:
+  /// **'{rating}/5 sao - {name}'**
+  String rateStarsSummary(int rating, String name);
+
+  /// No description provided for @rateViewOtherReviews.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem đánh giá khác'**
+  String get rateViewOtherReviews;
+
+  /// No description provided for @rateBackToHome.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quay về trang chủ'**
+  String get rateBackToHome;
 }
 
 class _AppLocalizationsDelegate

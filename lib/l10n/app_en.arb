@@ -264,5 +264,84 @@
     "offlineMapFeature": "Offline Map",
     "hikingTrailFeature": "Hiking Trail (Detailed)",
     "waypointsFeature": "Waypoints (Rest points)",
-    "backtrackFeature": "Backtrack (Auto return mode)"
+    "backtrackFeature": "Backtrack (Auto return mode)",
+
+    "checkinControlPointTitle": "Check-in Checkpoint",
+    "checkinTargetPointLabel": "TARGET DESTINATION",
+    "checkinTargetAltitude": "Target altitude: {altitude} m",
+    "@checkinTargetAltitude": {
+        "placeholders": {
+            "altitude": { "type": "String" }
+        }
+    },
+    "checkinWithinRange": "You are within check-in range! ({distance}m away)",
+    "@checkinWithinRange": {
+        "placeholders": {
+            "distance": { "type": "int" }
+        }
+    },
+    "checkinNowButton": "Check-in now",
+    "checkinAlreadySuccess": "Already checked in",
+    "checkinRadiusNotice": "You must be within a 500m radius to check-in successfully.",
+    "checkinSuccessToast": "Successfully checked in at {name}!",
+    "@checkinSuccessToast": {
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+    "checkinCongratulation": "CONGRATULATIONS!",
+    "checkinSuccessTitle": "Check-in successful!",
+    "checkinSuccessMessage": "You have completed the checkpoint {name}.",
+    "@checkinSuccessMessage": {
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+    "achievementsEarnedTitle": "ACHIEVEMENTS EARNED",
+    "statNewBadge": "New badges",
+    "statMaxElevation": "Max altitude",
+    "statConqueredProvinces": "Provinces conquered",
+    "continueJourneyButton": "Continue journey",
+    "ratePlaceButton": "Rate destination",
+    "shareAchievementButton": "Share achievement",
+    "featureComingSoon": "Feature coming soon",
+    "milestoneConquerBadgeTitle": "Conquer {name}",
+    "@milestoneConquerBadgeTitle": {
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+    "milestoneConquerBadgeDesc": "Successfully reached {name} at {altitude}m altitude",
+    "@milestoneConquerBadgeDesc": {
+        "placeholders": {
+            "name": { "type": "String" },
+            "altitude": { "type": "String" }
+        }
+    },
+    "milestoneConquerBadgeDescSimple": "Successfully reached checkpoint {name}",
+    "@milestoneConquerBadgeDescSimple": {
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+
+    "ratePlaceTitle": "Rate destination",
+    "rateSatisfactionLevel": "YOUR SATISFACTION LEVEL?",
+    "rateShareExperience": "SHARE YOUR EXPERIENCE",
+    "rateExperienceHint": "Share your thoughts, tips, and experience about this checkpoint...",
+    "rateAnonymousLabel": "Anonymous review",
+    "rateAnonymousDesc": "Your name will not be shown publicly",
+    "rateSubmitButton": "Submit review",
+    "rateThankYouTitle": "Thank you!",
+    "rateThankYouMessage": "Your review has been successfully submitted and will help the Trekker community tremendously.",
+    "rateYourReviewTitle": "YOUR REVIEW",
+    "rateStarsSummary": "{rating}/5 stars - {name}",
+    "@rateStarsSummary": {
+        "placeholders": {
+            "rating": { "type": "int" },
+            "name": { "type": "String" }
+        }
+    },
+    "rateViewOtherReviews": "View other reviews",
+    "rateBackToHome": "Back to home"
 }

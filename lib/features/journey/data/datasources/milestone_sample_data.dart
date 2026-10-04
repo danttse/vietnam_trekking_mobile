@@ -3,12 +3,52 @@ import '../models/milestone_model.dart';
 class MilestoneSampleData {
   static List<MilestoneModel> getMilestonesForRoute(String routeId) {
     switch (routeId) {
+      case 'route_tanang_01':
+        return _tanangMilestones;
       case 'route_fansipan_01':
         return _fansipanMilestones;
       default:
-        return _fansipanMilestones;
+        return _tanangMilestones;
     }
   }
+
+  static const List<MilestoneModel> _tanangMilestones = [
+    MilestoneModel(
+      id: 'ms_tan_01',
+      name: 'Bìa rừng Tà Năng',
+      sequence: 1,
+      altitude: 900,
+      isCheckedIn: true,
+    ),
+    MilestoneModel(
+      id: 'ms_tan_02',
+      name: 'Mốc 2 tỉnh (Tà Năng)',
+      sequence: 2,
+      altitude: 1100,
+      isCheckedIn: false,
+    ),
+    MilestoneModel(
+      id: 'ms_tan_03',
+      name: 'Đồi lính Tà Năng',
+      sequence: 3,
+      altitude: 1400,
+      isCheckedIn: false,
+    ),
+    MilestoneModel(
+      id: 'ms_tan_04',
+      name: 'Đồi cỏ cháy Phan Dũng',
+      sequence: 4,
+      altitude: 800,
+      isCheckedIn: false,
+    ),
+    MilestoneModel(
+      id: 'ms_tan_05',
+      name: 'Thác Lao Phào',
+      sequence: 5,
+      altitude: 500,
+      isCheckedIn: false,
+    ),
+  ];
 
   static const List<MilestoneModel> _fansipanMilestones = [
     MilestoneModel(

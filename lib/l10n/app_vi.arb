@@ -264,5 +264,84 @@
     "offlineMapFeature": "Offline Map (Bản đồ ngoại tuyến)",
     "hikingTrailFeature": "Hiking Trail (Đường mòn chi tiết)",
     "waypointsFeature": "Waypoints (Các điểm dừng chân)",
-    "backtrackFeature": "Backtrack (Chế độ quay lại tự động)"
+    "backtrackFeature": "Backtrack (Chế độ quay lại tự động)",
+
+    "checkinControlPointTitle": "Điểm kiểm soát Check-in",
+    "checkinTargetPointLabel": "ĐIỂM CẦN ĐẾN",
+    "checkinTargetAltitude": "Độ cao mục tiêu: {altitude} m",
+    "@checkinTargetAltitude": {
+        "placeholders": {
+            "altitude": { "type": "String" }
+        }
+    },
+    "checkinWithinRange": "Bạn đang ở trong phạm vi check-in! (Cách {distance}m)",
+    "@checkinWithinRange": {
+        "placeholders": {
+            "distance": { "type": "int" }
+        }
+    },
+    "checkinNowButton": "Check-in ngay",
+    "checkinAlreadySuccess": "Đã check-in thành công",
+    "checkinRadiusNotice": "Bạn cần ở trong phạm vi bán kính 500m để có thể check-in thành công.",
+    "checkinSuccessToast": "Đã check-in thành công tại {name}!",
+    "@checkinSuccessToast": {
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+    "checkinCongratulation": "CHÚC MỪNG!",
+    "checkinSuccessTitle": "Check-in thành công!",
+    "checkinSuccessMessage": "Bạn đã hoàn thành điểm mốc {name}.",
+    "@checkinSuccessMessage": {
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+    "achievementsEarnedTitle": "HUY HIỆU ĐÃ ĐẠT ĐƯỢC",
+    "statNewBadge": "Huy hiệu mới",
+    "statMaxElevation": "Độ cao tối đa",
+    "statConqueredProvinces": "Tỉnh đã chinh phục",
+    "continueJourneyButton": "Tiếp tục hành trình",
+    "ratePlaceButton": "Đánh giá địa điểm",
+    "shareAchievementButton": "Chia sẻ thành tích",
+    "featureComingSoon": "Tính năng sắp ra mắt",
+    "milestoneConquerBadgeTitle": "Chinh phục {name}",
+    "@milestoneConquerBadgeTitle": {
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+    "milestoneConquerBadgeDesc": "Ghi dấu chân thành công tại {name} ở độ cao {altitude}m",
+    "@milestoneConquerBadgeDesc": {
+        "placeholders": {
+            "name": { "type": "String" },
+            "altitude": { "type": "String" }
+        }
+    },
+    "milestoneConquerBadgeDescSimple": "Ghi dấu chân thành công tại điểm mốc {name}",
+    "@milestoneConquerBadgeDescSimple": {
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+
+    "ratePlaceTitle": "Đánh giá địa điểm",
+    "rateSatisfactionLevel": "MỨC ĐỘ HÀI LÒNG CỦA BẠN?",
+    "rateShareExperience": "CHIA SẺ TRẢI NGHIỆM",
+    "rateExperienceHint": "Chia sẻ cảm nhận, lời khuyên và trải nghiệm về điểm mốc này...",
+    "rateAnonymousLabel": "Đánh giá ẩn danh",
+    "rateAnonymousDesc": "Tên của bạn sẽ không hiển thị công khai",
+    "rateSubmitButton": "Gửi đánh giá",
+    "rateThankYouTitle": "Cảm ơn bạn!",
+    "rateThankYouMessage": "Đánh giá của bạn đã được gửi thành công và sẽ giúp ích rất nhiều cho cộng đồng Trekker Việt Nam.",
+    "rateYourReviewTitle": "ĐÁNH GIÁ CỦA BẠN",
+    "rateStarsSummary": "{rating}/5 sao - {name}",
+    "@rateStarsSummary": {
+        "placeholders": {
+            "rating": { "type": "int" },
+            "name": { "type": "String" }
+        }
+    },
+    "rateViewOtherReviews": "Xem đánh giá khác",
+    "rateBackToHome": "Quay về trang chủ"
 }

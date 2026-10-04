@@ -346,7 +346,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String featureComingSoon(String feature) {
-    return 'Feature $feature is under development';
+    return 'Feature coming soon';
   }
 
   @override
@@ -637,4 +637,125 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backtrackFeature => 'Backtrack (Auto return mode)';
+
+  @override
+  String get checkinControlPointTitle => 'Check-in Checkpoint';
+
+  @override
+  String get checkinTargetPointLabel => 'TARGET DESTINATION';
+
+  @override
+  String checkinTargetAltitude(String altitude) {
+    return 'Target altitude: $altitude m';
+  }
+
+  @override
+  String checkinWithinRange(int distance) {
+    return 'You are within check-in range! (${distance}m away)';
+  }
+
+  @override
+  String get checkinNowButton => 'Check-in now';
+
+  @override
+  String get checkinAlreadySuccess => 'Already checked in';
+
+  @override
+  String get checkinRadiusNotice =>
+      'You must be within a 500m radius to check-in successfully.';
+
+  @override
+  String checkinSuccessToast(String name) {
+    return 'Successfully checked in at $name!';
+  }
+
+  @override
+  String get checkinCongratulation => 'CONGRATULATIONS!';
+
+  @override
+  String get checkinSuccessTitle => 'Check-in successful!';
+
+  @override
+  String checkinSuccessMessage(String name) {
+    return 'You have completed the checkpoint $name.';
+  }
+
+  @override
+  String get achievementsEarnedTitle => 'ACHIEVEMENTS EARNED';
+
+  @override
+  String get statNewBadge => 'New badges';
+
+  @override
+  String get statMaxElevation => 'Max altitude';
+
+  @override
+  String get statConqueredProvinces => 'Provinces conquered';
+
+  @override
+  String get continueJourneyButton => 'Continue journey';
+
+  @override
+  String get ratePlaceButton => 'Rate destination';
+
+  @override
+  String get shareAchievementButton => 'Share achievement';
+
+  @override
+  String milestoneConquerBadgeTitle(String name) {
+    return 'Conquer $name';
+  }
+
+  @override
+  String milestoneConquerBadgeDesc(String name, String altitude) {
+    return 'Successfully reached $name at ${altitude}m altitude';
+  }
+
+  @override
+  String milestoneConquerBadgeDescSimple(String name) {
+    return 'Successfully reached checkpoint $name';
+  }
+
+  @override
+  String get ratePlaceTitle => 'Rate destination';
+
+  @override
+  String get rateSatisfactionLevel => 'YOUR SATISFACTION LEVEL?';
+
+  @override
+  String get rateShareExperience => 'SHARE YOUR EXPERIENCE';
+
+  @override
+  String get rateExperienceHint =>
+      'Share your thoughts, tips, and experience about this checkpoint...';
+
+  @override
+  String get rateAnonymousLabel => 'Anonymous review';
+
+  @override
+  String get rateAnonymousDesc => 'Your name will not be shown publicly';
+
+  @override
+  String get rateSubmitButton => 'Submit review';
+
+  @override
+  String get rateThankYouTitle => 'Thank you!';
+
+  @override
+  String get rateThankYouMessage =>
+      'Your review has been successfully submitted and will help the Trekker community tremendously.';
+
+  @override
+  String get rateYourReviewTitle => 'YOUR REVIEW';
+
+  @override
+  String rateStarsSummary(int rating, String name) {
+    return '$rating/5 stars - $name';
+  }
+
+  @override
+  String get rateViewOtherReviews => 'View other reviews';
+
+  @override
+  String get rateBackToHome => 'Back to home';
 }
