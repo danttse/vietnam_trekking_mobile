@@ -16,10 +16,7 @@ class AppTopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< HEAD
-    final cs = Theme.of(context).colorScheme;
-=======
->>>>>>> 0d0cdff74107768d2522b7d5e7c5e978bab6ca9c
+
     return SizedBox(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/widgets/app_bar/app_top_bar.dart';
 import '../../../core/widgets/cards/post_card.dart';
+import '../../../l10n/app_localizations.dart';
 import '../data/models/post_model.dart';
 import '../viewmodels/community_view_model.dart';
 import 'create_new_post_creen.dart';
@@ -15,7 +16,6 @@ class CommunityScreen extends StatefulWidget {
 
 class _CommunityScreenState extends State<CommunityScreen> {
   late final CommunityViewModel _viewModel;
-  static const List<String> _tabs = ['Bài viết', 'Nhóm', 'Cá nhân'];
 
   @override
   void initState() {
@@ -29,13 +29,19 @@ class _CommunityScreenState extends State<CommunityScreen> {
     super.dispose();
   }
 
-  Widget _buildFilterChips(ColorScheme colorScheme) {
+  Widget _buildFilterChips(ColorScheme colorScheme, AppLocalizations l10n) {
+    final tabs = [
+      l10n.communityTabPosts,
+      l10n.communityTabGroups,
+      l10n.communityTabPersonal,
+    ];
+
     return SizedBox(
       height: 38,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: _tabs.length,
+        itemCount: tabs.length,
         separatorBuilder: (_, _) => const SizedBox(width: 8),
         itemBuilder: (context, index) {
           final isSelected = _viewModel.selectedTab == index;
@@ -53,7 +59,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
               ),
               alignment: Alignment.center,
               child: Text(
-                _tabs[index],
+                tabs[index],
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight:
@@ -72,6 +78,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
 
   void _showPostOptions(BuildContext context, PostModel post) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
 
     showModalBottomSheet(
       context: context,
@@ -99,7 +106,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   leading: Icon(Icons.visibility_off_outlined,
                       color: colorScheme.onSurface),
                   title: Text(
-                    'Ẩn bài viết này',
+                    l10n.postHideThis,
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
@@ -107,7 +114,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                     ),
                   ),
                   subtitle: Text(
-                    'Bớt nhìn thấy các bài viết tương tự trên bảng tin',
+                    l10n.postHideSubtitle,
                     style: TextStyle(
                       fontSize: 12,
                       color: colorScheme.onSurfaceVariant,
@@ -118,9 +125,9 @@ class _CommunityScreenState extends State<CommunityScreen> {
                     _viewModel.hidePost(post.postId);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: const Text('Đã ẩn bài viết'),
+                        content: Text(l10n.postHiddenMessage),
                         action: SnackBarAction(
-                          label: 'Hoàn tác',
+                          label: l10n.undo,
                           textColor: colorScheme.primary,
                           onPressed: () {
                             _viewModel.unhidePost(post.postId);
@@ -135,7 +142,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   leading: Icon(Icons.person_off_outlined,
                       color: colorScheme.onSurface),
                   title: Text(
-                    'Ẩn tất cả từ ${post.authorName ?? "người này"}',
+                    l10n.postHideAllFrom(post.authorName ?? l10n.thisPerson),
                     style: TextStyle(
                       fontSize: 15,
                       color: colorScheme.onSurface,
@@ -148,15 +155,15 @@ class _CommunityScreenState extends State<CommunityScreen> {
                 ),
                 ListTile(
                   leading: const Icon(Icons.flag_outlined, color: Colors.redAccent),
-                  title: const Text(
-                    'Báo cáo bài viết',
-                    style: TextStyle(fontSize: 15, color: Colors.redAccent),
+                  title: Text(
+                    l10n.postReport,
+                    style: const TextStyle(fontSize: 15, color: Colors.redAccent),
                   ),
                   onTap: () {
                     Navigator.pop(modalContext);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Cảm ơn bạn đã gửi báo cáo. Chúng tôi sẽ xem xét nội dung này.'),
+                      SnackBar(
+                        content: Text(l10n.postReportSuccess),
                       ),
                     );
                   },
@@ -172,6 +179,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
 
     return SafeArea(
       child: Scaffold(
@@ -188,7 +196,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   fit: BoxFit.cover,
                 ),
               ),
-              title: 'TrekViệt',
+              title: l10n.appName,
               icon: Icons.notifications_none_outlined,
               onClickIcon: () {
               },
@@ -197,7 +205,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
             // Tab bar
             ListenableBuilder(
               listenable: _viewModel,
-              builder: (context, _) => _buildFilterChips(colorScheme),
+              builder: (context, _) => _buildFilterChips(colorScheme, l10n),
             ),
             const SizedBox(height: 8),
             Expanded(
@@ -218,7 +226,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                           ),
                           const SizedBox(height: 12),
                           Text(
-                            'Chưa có bài viết nào',
+                            l10n.communityNoPosts,
                             style: TextStyle(
                               color: colorScheme.onSurfaceVariant,
                               fontSize: 14,

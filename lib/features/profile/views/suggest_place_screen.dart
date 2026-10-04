@@ -261,11 +261,13 @@ Widget _buildDropdownField({
             color: colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.25),
+              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.15),
+              width: 1,
             ),
           ),
           child: DropdownButtonHideUnderline(
             child: DropdownButton<String>(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
               value: value,
               isExpanded: true,
               dropdownColor: colorScheme.surfaceContainerHighest,

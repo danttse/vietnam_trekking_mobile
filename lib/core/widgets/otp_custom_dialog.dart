@@ -4,7 +4,6 @@ import '../../../l10n/app_localizations.dart';
 typedef OtpCustom = OtpDialog;
 typedef OtpCustomDialog = OtpDialog;
 
-/// Widget Otp Input Custom gồm 6 ô số
 class OtpCustomInput extends StatefulWidget {
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onCompleted;

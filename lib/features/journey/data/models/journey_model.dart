@@ -1,135 +1,135 @@
-/// Model Journey trả về từ API server.
-class JourneyModel {
-  final String journeyId;
-  final String userId;
-  final String trekkingPlaceId;
-  final String trekkingRouteId;
-  final String? provinceId;
-  final String name;
-  final String status; // PLANNED | ACTIVE | PAUSED | COMPLETED | CANCELLED
-  final DateTime? plannedStartAt;
-  final DateTime? startedAt;
-  final DateTime? completedAt;
+import 'package:flutter/material.dart';
+import '../../../route/data/models/route_model.dart';
+
+enum JourneyStatus {
+  planned,
+  active,
+  paused,
+  completed,
+  cancelled,
+}
+
+extension JourneyStatusExt on JourneyStatus {
+  String get label {
+    switch (this) {
+      case JourneyStatus.planned:
+        return 'DỰ KIẾN';
+      case JourneyStatus.active:
+        return 'ĐANG ĐI';
+      case JourneyStatus.paused:
+        return 'TẠM DỪNG';
+      case JourneyStatus.completed:
+        return 'HOÀN THÀNH';
+      case JourneyStatus.cancelled:
+        return 'ĐÃ HỦY';
+    }
+  }
+
+  Color get color {
+    switch (this) {
+      case JourneyStatus.planned:
+        return const Color(0xFFFF6E40);
+      case JourneyStatus.active:
+        return const Color(0xFFb9dbc0);
+      case JourneyStatus.paused:
+        return const Color(0xFFFFA502);
+      case JourneyStatus.completed:
+        return const Color(0xFF207335);
+      case JourneyStatus.cancelled:
+        return const Color.fromARGB(255, 178, 2, 2);
+    }
+  }
+
+  Color get backgroundColor => color.withValues(alpha: 0.15);
+}
+
+class JourneyStatistics {
   final double distanceMeters;
-  final int durationSeconds;
+  final Duration duration;
   final double elevationGain;
-  final double? maxAltitude;
+  final double maxAltitude;
   final int checkinCount;
   final int markerCount;
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
 
-  // Denormalized từ route/place để hiển thị trong list
-  final String? placeName;
-  final String? placeAddress;
-  final String? routeName;
-  final String? placeImageUrl;
-  final double? routeDistanceMeters;
-  final int? totalMilestones;
-  final int? memberCount;
-  // clientJourneyId — backend echo về, dùng để map offline↔server
-  final String? clientJourneyId;
+  const JourneyStatistics({
+    required this.distanceMeters,
+    required this.duration,
+    required this.elevationGain,
+    required this.maxAltitude,
+    required this.checkinCount,
+    required this.markerCount,
+  });
+
+  double get distanceKm => distanceMeters / 1000.0;
+}
+
+class JourneyModel {
+  final String journeyId;
+  final String name;
+  final RouteModel route;
+  final DateTime? plannedStartAt;
+  final DateTime? plannedEndAt;
+  final int participantCount;
+  final String? note;
+  final JourneyStatus status;
+  final DateTime? startedAt;
+  final DateTime? completedAt;
+  final JourneyStatistics? statistics;
 
   const JourneyModel({
     required this.journeyId,
-    required this.userId,
-    required this.trekkingPlaceId,
-    required this.trekkingRouteId,
-    this.provinceId,
     required this.name,
-    required this.status,
+    required this.route,
     this.plannedStartAt,
+    this.plannedEndAt,
+    this.participantCount = 1,
+    this.note,
+    required this.status,
     this.startedAt,
     this.completedAt,
-    this.distanceMeters = 0,
-    this.durationSeconds = 0,
-    this.elevationGain = 0,
-    this.maxAltitude,
-    this.checkinCount = 0,
-    this.markerCount = 0,
-    this.createdAt,
-    this.updatedAt,
-    this.placeName,
-    this.placeAddress,
-    this.routeName,
-    this.placeImageUrl,
-    this.routeDistanceMeters,
-    this.totalMilestones,
-    this.memberCount,
-    this.clientJourneyId,
+    this.statistics,
   });
 
-  factory JourneyModel.fromJson(Map<String, dynamic> json) {
-    // Backend lồng thống kê trong sub-object "statistics"
-    final stats = json['statistics'] as Map<String, dynamic>? ?? {};
+  DateTime get primaryDate => startedAt ?? plannedStartAt ?? DateTime.now();
 
-    return JourneyModel(
-      journeyId: json['journeyId'] as String? ?? json['id'] as String,
-      userId: json['userId'] as String? ?? '',
-      trekkingPlaceId: json['trekkingPlaceId'] as String? ?? '',
-      trekkingRouteId: json['trekkingRouteId'] as String? ?? '',
-      provinceId: json['provinceId'] as String?,
-      name: json['name'] as String? ?? '',
-      status: json['status'] as String? ?? 'PLANNED',
-      plannedStartAt: json['plannedStartAt'] != null
-          ? DateTime.tryParse(json['plannedStartAt'] as String)
-          : null,
-      startedAt: json['startedAt'] != null
-          ? DateTime.tryParse(json['startedAt'] as String)
-          : null,
-      completedAt: json['completedAt'] != null
-          ? DateTime.tryParse(json['completedAt'] as String)
-          : null,
-      // Thống kê lấy từ sub-object "statistics" hoặc flat (offline fallback)
-      distanceMeters: (stats['distanceMeters'] as num?)?.toDouble() ??
-          (json['distanceMeters'] as num?)?.toDouble() ?? 0,
-      durationSeconds: stats['durationSeconds'] as int? ??
-          json['durationSeconds'] as int? ?? 0,
-      elevationGain: (stats['elevationGain'] as num?)?.toDouble() ??
-          (json['elevationGain'] as num?)?.toDouble() ?? 0,
-      maxAltitude: (stats['maxAltitude'] as num?)?.toDouble() ??
-          (json['maxAltitude'] as num?)?.toDouble(),
-      checkinCount: json['checkinCount'] as int? ?? 0,
-      markerCount: json['markerCount'] as int? ?? 0,
-      createdAt: json['createdAt'] != null
-          ? DateTime.tryParse(json['createdAt'] as String)
-          : null,
-      updatedAt: json['updatedAt'] != null
-          ? DateTime.tryParse(json['updatedAt'] as String)
-          : null,
-      placeName: json['placeName'] as String?,
-      placeAddress: json['placeAddress'] as String?,
-      routeName: json['routeName'] as String?,
-      placeImageUrl: json['placeImageUrl'] as String?,
-      routeDistanceMeters:
-          (json['routeDistanceMeters'] as num?)?.toDouble(),
-      totalMilestones: json['totalMilestones'] as int?,
-      // Backend dùng "participantCount", frontend dùng "memberCount"
-      memberCount: json['participantCount'] as int? ??
-          json['memberCount'] as int?,
-      // Backend echo lại clientJourneyId khi tạo journey
-      clientJourneyId: json['clientJourneyId'] as String?,
-    );
+  String get dateRangeText {
+    final start = startedAt ?? plannedStartAt;
+    final end = completedAt ?? plannedEndAt;
+
+    if (start == null && end == null) return '';
+    if (start != null && end == null) {
+      return '${_formatDayMonth(start)}/${start.year}';
+    }
+    if (start != null && end != null) {
+      if (start.year == end.year) {
+        return '${_formatDayMonth(start)} - ${_formatDayMonth(end)}/${end.year}';
+      }
+      return '${_formatDayMonth(start)}/${start.year} - ${_formatDayMonth(end)}/${end.year}';
+    }
+    return '';
   }
 
-  Map<String, dynamic> toJson() => {
-        'journeyId': journeyId,
-        'userId': userId,
-        'trekkingPlaceId': trekkingPlaceId,
-        'trekkingRouteId': trekkingRouteId,
-        if (provinceId != null) 'provinceId': provinceId,
-        'name': name,
-        'status': status,
-        if (plannedStartAt != null)
-          'plannedStartAt': plannedStartAt!.toIso8601String(),
-        if (startedAt != null) 'startedAt': startedAt!.toIso8601String(),
-        if (completedAt != null)
-          'completedAt': completedAt!.toIso8601String(),
-        'distanceMeters': distanceMeters,
-        'durationSeconds': durationSeconds,
-        'elevationGain': elevationGain,
-        if (maxAltitude != null) 'maxAltitude': maxAltitude,
-        'checkinCount': checkinCount,
-        'markerCount': markerCount,
-      };
+  String get summarySubtitle {
+    final parts = <String>[];
+    if (route.province != null && route.province!.isNotEmpty) {
+      parts.add(route.province!);
+    }
+    if (participantCount > 0) {
+      parts.add('$participantCount thành viên');
+    }
+
+    final double km = statistics != null
+        ? statistics!.distanceKm
+        : route.distanceKm;
+
+    final String kmFormatted = km.truncateToDouble() == km
+        ? km.toStringAsFixed(0)
+        : km.toStringAsFixed(1);
+    parts.add('$kmFormatted km');
+
+    return parts.join(' • ');
+  }
+
+  static String _formatDayMonth(DateTime d) =>
+      '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}';
 }
