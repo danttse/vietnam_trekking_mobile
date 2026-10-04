@@ -242,6 +242,8 @@ class _JourneyScreenState extends State<JourneyScreen> {
               );
               if (newJourney != null) {
                 _viewModel.addJourney(newJourney);
+              } else {
+                _viewModel.loadJourneys();
               }
             },
             child: const Icon(Icons.add, size: 28),

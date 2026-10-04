@@ -3,6 +3,8 @@ import '../../../core/widgets/app_bar/app_top_bar_with_back.dart';
 import '../../../core/widgets/buttons/btn_login_style.dart';
 import '../../../core/widgets/buttons/btn_outline_style.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../journey/data/datasources/journey_sample_data.dart';
+import '../../journey/views/journey_detail_screen.dart';
 import '../data/models/route_model.dart';
 import '../viewmodel/download_offline_map_viewmodel.dart';
 
@@ -289,7 +291,19 @@ class _DownloadOfflineMapScreenState extends State<DownloadOfflineMapScreen> {
                 width: double.infinity,
                 child: BtnLoginPrimary(
                   text: l10n.journeyActionStart,
-                  onPressed: () => Navigator.pop(context, true),
+                  onPressed: () {
+                    final journey =
+                        JourneySampleData.getOrCreateJourneyForRoute(widget.route);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => JourneyDetailScreen(
+                          route: journey,
+                        ),
+                      ),
+                      result: true,
+                    );
+                  },
                 ),
               ),
               const SizedBox(height: 12),

@@ -1,9 +1,53 @@
 import '../../../route/data/datasources/route_sample_data.dart';
+import '../../../route/data/models/route_model.dart';
 import '../models/journey_group_model.dart';
 import '../models/journey_model.dart';
 
 class JourneySampleData {
+  static List<JourneyModel>? _sampleJourneys;
+
   static List<JourneyModel> getSampleJourneys() {
+    _sampleJourneys ??= _initialJourneys();
+    return _sampleJourneys!;
+  }
+
+  static void addJourney(JourneyModel journey) {
+    _sampleJourneys ??= _initialJourneys();
+    _sampleJourneys!.insert(0, journey);
+  }
+
+  static void updateJourney(JourneyModel journey) {
+    _sampleJourneys ??= _initialJourneys();
+    final index = _sampleJourneys!.indexWhere((j) => j.journeyId == journey.journeyId);
+    if (index != -1) {
+      _sampleJourneys![index] = journey;
+    } else {
+      _sampleJourneys!.insert(0, journey);
+    }
+  }
+
+  static JourneyModel getOrCreateJourneyForRoute(RouteModel? route) {
+    final journeys = getSampleJourneys();
+    if (route != null) {
+      for (final j in journeys) {
+        if (j.route.routeId == route.routeId || j.route.name == route.name) {
+          return j;
+        }
+      }
+    }
+
+    final newJourney = JourneyModel(
+      journeyId: 'jn_${DateTime.now().millisecondsSinceEpoch}',
+      name: route?.name ?? 'Hành trình trekking',
+      route: route ?? RouteSampleData.getSampleRoutes().first,
+      startedAt: DateTime.now(),
+      status: JourneyStatus.active,
+    );
+    addJourney(newJourney);
+    return newJourney;
+  }
+
+  static List<JourneyModel> _initialJourneys() {
     final routes = RouteSampleData.getSampleRoutes();
 
     return [

@@ -5,6 +5,7 @@ import '../../../core/widgets/inputs/login_input_field.dart';
 import '../../../core/widgets/sheet/select_route_sheet.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../route/data/models/route_model.dart';
+import '../../route/view/route_detail_screen.dart';
 import '../viewmodels/create_new_journey_viewmodel.dart';
 
 class CreateNewJourneyScreen extends StatefulWidget {
@@ -226,7 +227,14 @@ class _CreateNewJourneyScreenState extends State<CreateNewJourneyScreen> {
                               backgroundColor: Colors.green,
                             ),
                           );
-                          Navigator.pop(context, createdJourney);
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RouteDetailScreen(
+                                route: createdJourney.route,
+                              ),
+                            ),
+                          );
                         }
                       },
                     );
