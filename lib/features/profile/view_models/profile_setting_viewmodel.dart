@@ -9,11 +9,6 @@ import '../views/change_password_screen.dart';
 import '../views/edit_avatar_screen.dart';
 import '../views/suggest_place_screen.dart';
 
-// [BACKEND TEST TEMP IMPORTS - for screens dev frontend hasn't implemented yet]
-import '../views/temp_test/support_feedback_screen.dart';
-import '../views/temp_test/terms_of_use_screen.dart';
-import '../views/temp_test/privacy_policy_screen.dart';
-
 class ProfileSettingViewModel extends ChangeNotifier {
   final AppLanguageViewModel _appLanguageViewModel = AppLanguageViewModel();
   final AuthRepository _authRepository;
@@ -62,30 +57,6 @@ class ProfileSettingViewModel extends ChangeNotifier {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => const SuggestPlaceScreen()),
-    );
-  }
-
-  // [BACKEND TEST TEMP NAVIGATION]
-  Future<void> supportAndFeedback(BuildContext context) async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const SupportFeedbackScreen()),
-    );
-  }
-
-  // [BACKEND TEST TEMP NAVIGATION]
-  Future<void> openTermsOfUse(BuildContext context) async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const TermsOfUseScreen()),
-    );
-  }
-
-  // [BACKEND TEST TEMP NAVIGATION]
-  Future<void> openPrivacyPolicy(BuildContext context) async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const PrivacyPolicyScreen()),
     );
   }
 

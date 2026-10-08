@@ -8,9 +8,6 @@ import 'profile_setting_screen.dart';
 import 'badge_detail_screen.dart';
 import '../../../core/widgets/app_bar/app_top_bar.dart';
 
-// [BACKEND TEST TEMP IMPORTS]
-import 'temp_test/badge_detail_screen.dart';
-
 class ProfileScreen extends StatefulWidget {
   final VoidCallback? onBackToHome;
   final ValueChanged<int>? onTabChanged;
