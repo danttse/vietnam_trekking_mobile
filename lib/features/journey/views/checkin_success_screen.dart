@@ -8,6 +8,7 @@ import '../../profile/data/models/profile_model.dart';
 import '../data/models/journey_model.dart';
 import '../data/models/milestone_model.dart';
 import '../viewmodels/checkin_success_viewmodel.dart';
+import '../../profile/views/badge_detail_screen.dart';
 import 'rate_milestone_screen.dart';
 
 class CheckinSuccessScreen extends StatefulWidget {
@@ -63,22 +64,38 @@ class _CheckinSuccessScreenState extends State<CheckinSuccessScreen> {
                 children: [
                   const SizedBox(height: 24),
                   Center(
-                    child: Container(
-                      width: 120,
-                      height: 120,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: colorScheme.surfaceContainerHighest,
-                        border: Border.all(
-                          color: colorScheme.primary,
-                          width: 2,
+                    child: InkWell(
+                      onTap: () {
+                        final items = _viewModel.getAchievements(l10n);
+                        if (items.isNotEmpty) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BadgeDetailScreen(
+                                badge: items.first,
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                      borderRadius: BorderRadius.circular(60),
+                      child: Container(
+                        width: 120,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: colorScheme.surfaceContainerHighest,
+                          border: Border.all(
+                            color: colorScheme.primary,
+                            width: 2,
+                          ),
                         ),
-                      ),
-                      child: const Center(
-                        child: Icon(
-                          Icons.terrain,
-                          size: 54,
-                          color: Color(0xFF6ECB8E),
+                        child: const Center(
+                          child: Icon(
+                            Icons.terrain,
+                            size: 54,
+                            color: Color(0xFF6ECB8E),
+                          ),
                         ),
                       ),
                     ),
@@ -137,6 +154,16 @@ class _CheckinSuccessScreenState extends State<CheckinSuccessScreen> {
                         description: item.description,
                         icon: item.icon,
                         isUnlocked: item.isUnlocked,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BadgeDetailScreen(
+                                badge: item,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     );
                   }),

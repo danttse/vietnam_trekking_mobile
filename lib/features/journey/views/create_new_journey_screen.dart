@@ -221,20 +221,24 @@ class _CreateNewJourneyScreenState extends State<CreateNewJourneyScreen> {
                       onPressed: () async {
                         final createdJourney = await _viewModel.submit();
                         if (createdJourney != null && context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(l10n.createJourneySuccess),
-                              backgroundColor: Colors.green,
-                            ),
-                          );
-                          Navigator.pushReplacement(
+                          final result = await Navigator.push<dynamic>(
                             context,
                             MaterialPageRoute(
                               builder: (context) => RouteDetailScreen(
                                 route: createdJourney.route,
+                                pendingJourney: createdJourney,
                               ),
                             ),
                           );
+                          if (result == true && context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(l10n.createJourneySuccess),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                            Navigator.pop(context, createdJourney);
+                          }
                         }
                       },
                     );

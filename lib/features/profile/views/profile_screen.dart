@@ -5,6 +5,7 @@ import '../../../l10n/app_localizations.dart';
 import '../view_models/profile_viewmodel.dart';
 import '../widgets/profile_widgets.dart';
 import 'profile_setting_screen.dart';
+import 'badge_detail_screen.dart';
 import '../../../core/widgets/app_bar/app_top_bar.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -137,6 +138,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           description: achievement.description,
                           icon: achievement.icon,
                           isUnlocked: achievement.isUnlocked,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BadgeDetailScreen(
+                                  badge: achievement,
+                                  allBadges: profile.achievements,
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       );
                     }),

@@ -186,10 +186,12 @@ class _JourneyDetailScreenState extends State<JourneyDetailScreen> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: colorScheme.surface,
-        body: Column(crossAxisAlignment: CrossAxisAlignment.start,
+    return Scaffold(
+      backgroundColor: colorScheme.surface,
+      body: SafeArea(
+        top: false,
+        bottom: true,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AspectRatio(
             aspectRatio: 16 / 9,
@@ -223,7 +225,7 @@ class _JourneyDetailScreenState extends State<JourneyDetailScreen> {
                   ),
                 ),
                 Positioned(
-                  top: 12,
+                  top: 30,
                   left: 12,
                   right: 12,
                   child: Row(children: [
@@ -319,7 +321,7 @@ class _JourneyDetailScreenState extends State<JourneyDetailScreen> {
             child: Transform.translate(
               offset: const Offset(0, -20),
               child: Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.fromLTRB(16, 25, 16, 0),
                 decoration: BoxDecoration(
                   color: colorScheme.surface,
                   borderRadius: const BorderRadius.only(

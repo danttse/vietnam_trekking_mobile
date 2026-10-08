@@ -179,7 +179,18 @@ class _RateMilestoneScreenState extends State<RateMilestoneScreen> {
                   child: Row(
                     children: [
                       InkWell(
-                        onTap: () => _viewModel.pickMultiImages(),
+                        onTap: () {
+                          if (_viewModel.selectedImages.length >=
+                              RateMilestoneViewModel.maxImages) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Chỉ được chọn tối đa 5 hình ảnh'),
+                              ),
+                            );
+                          } else {
+                            _viewModel.pickMultiImages();
+                          }
+                        },
                         borderRadius: BorderRadius.circular(12),
                         child: Container(
                           width: 72,
@@ -188,7 +199,12 @@ class _RateMilestoneScreenState extends State<RateMilestoneScreen> {
                             color: colorScheme.surfaceContainerHighest,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.25),
+                              color: colorScheme.onSurfaceVariant.withValues(
+                                alpha: _viewModel.selectedImages.length >=
+                                        RateMilestoneViewModel.maxImages
+                                    ? 0.1
+                                    : 0.25,
+                              ),
                             ),
                           ),
                           child: Column(
@@ -197,13 +213,21 @@ class _RateMilestoneScreenState extends State<RateMilestoneScreen> {
                               Icon(
                                 Icons.camera_alt_outlined,
                                 size: 24,
-                                color: colorScheme.onSurfaceVariant,
+                                color: _viewModel.selectedImages.length >=
+                                        RateMilestoneViewModel.maxImages
+                                    ? colorScheme.onSurfaceVariant
+                                        .withValues(alpha: 0.3)
+                                    : colorScheme.onSurfaceVariant,
                               ),
                               const SizedBox(height: 4),
                               Text(
                                 l10n.addPhoto,
                                 style: TextStyle(
-                                  color: colorScheme.onSurfaceVariant,
+                                  color: _viewModel.selectedImages.length >=
+                                          RateMilestoneViewModel.maxImages
+                                      ? colorScheme.onSurfaceVariant
+                                          .withValues(alpha: 0.3)
+                                      : colorScheme.onSurfaceVariant,
                                   fontSize: 10,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -231,9 +255,21 @@ class _RateMilestoneScreenState extends State<RateMilestoneScreen> {
                     ],
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      '${_viewModel.selectedImages.length}/${RateMilestoneViewModel.maxImages}',
+                      textAlign: TextAlign.end,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 20),
-
-                // Switch đánh giá ẩn danh
                 Row(
                   children: [
                     Expanded(

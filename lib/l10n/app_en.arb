@@ -343,5 +343,15 @@
         }
     },
     "rateViewOtherReviews": "View other reviews",
-    "rateBackToHome": "Back to home"
+    "rateBackToHome": "Back to home",
+    "badgeDetailTitle": "Badge Details",
+    "missionProgressTitle": "MISSION PROGRESS",
+    "otherBadgesTitle": "YOUR OTHER BADGES",
+    "achievedDatePrefix": "Achieved on: {date}",
+    "@achievedDatePrefix": {
+        "placeholders": {
+            "date": { "type": "String" }
+        }
+    },
+    "allBadgesTitle": "All Badges"
 }

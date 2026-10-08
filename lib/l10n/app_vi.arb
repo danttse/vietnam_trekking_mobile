@@ -343,5 +343,15 @@
         }
     },
     "rateViewOtherReviews": "Xem đánh giá khác",
-    "rateBackToHome": "Quay về trang chủ"
+    "rateBackToHome": "Quay về trang chủ",
+    "badgeDetailTitle": "Chi tiết huy hiệu",
+    "missionProgressTitle": "TIẾN TRÌNH NHIỆM VỤ",
+    "otherBadgesTitle": "HUY HIỆU KHÁC CỦA BẠN",
+    "achievedDatePrefix": "Ngày đạt được: {date}",
+    "@achievedDatePrefix": {
+        "placeholders": {
+            "date": { "type": "String" }
+        }
+    },
+    "allBadgesTitle": "Tất cả huy hiệu"
 }

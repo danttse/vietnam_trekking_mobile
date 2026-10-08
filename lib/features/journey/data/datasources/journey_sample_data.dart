@@ -13,7 +13,13 @@ class JourneySampleData {
 
   static void addJourney(JourneyModel journey) {
     _sampleJourneys ??= _initialJourneys();
-    _sampleJourneys!.insert(0, journey);
+    final index =
+        _sampleJourneys!.indexWhere((j) => j.journeyId == journey.journeyId);
+    if (index != -1) {
+      _sampleJourneys![index] = journey;
+    } else {
+      _sampleJourneys!.insert(0, journey);
+    }
   }
 
   static void updateJourney(JourneyModel journey) {

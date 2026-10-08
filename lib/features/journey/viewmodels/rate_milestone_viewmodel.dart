@@ -59,11 +59,22 @@ class RateMilestoneViewModel extends ChangeNotifier {
     }
   }
 
+  static const int maxImages = 5;
+
   Future<void> pickMultiImages() async {
+    if (_selectedImages.length >= maxImages) {
+      return;
+    }
+
     final List<XFile> pickedFiles =
         await _picker.pickMultiImage(imageQuality: 80);
     if (pickedFiles.isNotEmpty) {
-      _selectedImages.addAll(pickedFiles.map((x) => File(x.path)));
+      final remainingSlots = maxImages - _selectedImages.length;
+      final filesToAdd = pickedFiles
+          .take(remainingSlots)
+          .map((x) => File(x.path))
+          .toList();
+      _selectedImages.addAll(filesToAdd);
       notifyListeners();
     }
   }

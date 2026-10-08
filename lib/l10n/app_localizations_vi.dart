@@ -760,4 +760,21 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get rateBackToHome => 'Quay về trang chủ';
+
+  @override
+  String get badgeDetailTitle => 'Chi tiết huy hiệu';
+
+  @override
+  String get missionProgressTitle => 'TIẾN TRÌNH NHIỆM VỤ';
+
+  @override
+  String get otherBadgesTitle => 'HUY HIỆU KHÁC CỦA BẠN';
+
+  @override
+  String achievedDatePrefix(String date) {
+    return 'Ngày đạt được: $date';
+  }
+
+  @override
+  String get allBadgesTitle => 'Tất cả huy hiệu';
 }

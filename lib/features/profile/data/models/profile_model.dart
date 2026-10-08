@@ -6,6 +6,11 @@ class AchievementModel {
   final String description;
   final IconData icon;
   final bool isUnlocked;
+  final String? achievedDate;
+  final int currentProgress;
+  final int totalProgress;
+  final String progressUnit;
+  final Color? badgeColor;
 
   const AchievementModel({
     required this.id,
@@ -13,7 +18,38 @@ class AchievementModel {
     required this.description,
     required this.icon,
     this.isUnlocked = true,
+    this.achievedDate,
+    this.currentProgress = 0,
+    this.totalProgress = 0,
+    this.progressUnit = '',
+    this.badgeColor,
   });
+
+  AchievementModel copyWith({
+    String? id,
+    String? title,
+    String? description,
+    IconData? icon,
+    bool? isUnlocked,
+    String? achievedDate,
+    int? currentProgress,
+    int? totalProgress,
+    String? progressUnit,
+    Color? badgeColor,
+  }) {
+    return AchievementModel(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      icon: icon ?? this.icon,
+      isUnlocked: isUnlocked ?? this.isUnlocked,
+      achievedDate: achievedDate ?? this.achievedDate,
+      currentProgress: currentProgress ?? this.currentProgress,
+      totalProgress: totalProgress ?? this.totalProgress,
+      progressUnit: progressUnit ?? this.progressUnit,
+      badgeColor: badgeColor ?? this.badgeColor,
+    );
+  }
 }
 
 class UserProfileModel {

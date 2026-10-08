@@ -758,4 +758,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rateBackToHome => 'Back to home';
+
+  @override
+  String get badgeDetailTitle => 'Badge Details';
+
+  @override
+  String get missionProgressTitle => 'MISSION PROGRESS';
+
+  @override
+  String get otherBadgesTitle => 'YOUR OTHER BADGES';
+
+  @override
+  String achievedDatePrefix(String date) {
+    return 'Achieved on: $date';
+  }
+
+  @override
+  String get allBadgesTitle => 'All Badges';
 }

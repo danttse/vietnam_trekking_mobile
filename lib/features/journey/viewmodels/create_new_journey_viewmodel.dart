@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../home/data/datasources/province_sample_data.dart';
 import '../../route/data/datasources/route_sample_data.dart';
 import '../../route/data/models/route_model.dart';
-import '../data/datasources/journey_sample_data.dart';
 import '../data/models/journey_model.dart';
 
 class CreateNewJourneyViewModel extends ChangeNotifier {
@@ -119,8 +118,6 @@ class CreateNewJourneyViewModel extends ChangeNotifier {
           : null,
       status: JourneyStatus.planned,
     );
-
-    JourneySampleData.addJourney(newJourney);
 
     _isLoading = false;
     notifyListeners();

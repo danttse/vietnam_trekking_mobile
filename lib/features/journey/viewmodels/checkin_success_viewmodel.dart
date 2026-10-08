@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
+import '../../../core/utils/badge_icon_helper.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../profile/data/models/profile_model.dart';
 import '../data/models/journey_model.dart';
 import '../data/models/milestone_model.dart';
+import 'package:flutter/material.dart';
 
 class CheckinSuccessViewModel extends ChangeNotifier {
   final MilestoneModel? milestone;
@@ -47,6 +48,10 @@ class CheckinSuccessViewModel extends ChangeNotifier {
     }
     return journey?.name ?? '';
   }
+  List<AchievementModel> get achievementsEarned {
+    return _customAchievements ?? const [];
+  }
+
   List<AchievementModel> getAchievements(AppLocalizations l10n) {
     final custom = _customAchievements;
     if (custom != null && custom.isNotEmpty) {
@@ -75,32 +80,6 @@ class CheckinSuccessViewModel extends ChangeNotifier {
   }
 
   IconData _resolveMilestoneIcon(String name, double altitude) {
-    final lower = name.toLowerCase();
-    if (lower.contains('đỉnh') || lower.contains('peak') || altitude >= 2000) {
-      return Icons.terrain;
-    }
-    if (lower.contains('thác') ||
-        lower.contains('waterfall') ||
-        lower.contains('suối')) {
-      return Icons.water_drop_outlined;
-    }
-    if (lower.contains('đèo') ||
-        lower.contains('đồi') ||
-        lower.contains('pass') ||
-        lower.contains('hill')) {
-      return Icons.landscape_outlined;
-    }
-    if (lower.contains('trạm') ||
-        lower.contains('trại') ||
-        lower.contains('camp') ||
-        lower.contains('station')) {
-      return Icons.cabin_outlined;
-    }
-    if (lower.contains('mốc') ||
-        lower.contains('cột') ||
-        lower.contains('border')) {
-      return Icons.flag_outlined;
-    }
-    return Icons.explore_outlined;
+    return BadgeIconHelper.resolve(name, altitude);
   }
 }

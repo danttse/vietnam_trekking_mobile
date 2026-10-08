@@ -1507,6 +1507,36 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Quay về trang chủ'**
   String get rateBackToHome;
+
+  /// No description provided for @badgeDetailTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chi tiết huy hiệu'**
+  String get badgeDetailTitle;
+
+  /// No description provided for @missionProgressTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'TIẾN TRÌNH NHIỆM VỤ'**
+  String get missionProgressTitle;
+
+  /// No description provided for @otherBadgesTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'HUY HIỆU KHÁC CỦA BẠN'**
+  String get otherBadgesTitle;
+
+  /// No description provided for @achievedDatePrefix.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày đạt được: {date}'**
+  String achievedDatePrefix(String date);
+
+  /// No description provided for @allBadgesTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tất cả huy hiệu'**
+  String get allBadgesTitle;
 }
 
 class _AppLocalizationsDelegate

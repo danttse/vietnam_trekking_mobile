@@ -234,16 +234,18 @@ class _JourneyScreenState extends State<JourneyScreen> {
             shape: const CircleBorder(),
             elevation: 4,
             onPressed: () async {
-              final newJourney = await Navigator.push<JourneyModel>(
+              final newJourney = await Navigator.push<dynamic>(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const CreateNewJourneyScreen(),
                 ),
               );
-              if (newJourney != null) {
-                _viewModel.addJourney(newJourney);
-              } else {
-                _viewModel.loadJourneys();
+              await _viewModel.loadJourneys();
+              if (newJourney is JourneyModel) {
+                _viewModel.setTab(
+                    newJourney.status == JourneyStatus.completed ? 0 : 1);
+              } else if (newJourney != null) {
+                _viewModel.setTab(1);
               }
             },
             child: const Icon(Icons.add, size: 28),

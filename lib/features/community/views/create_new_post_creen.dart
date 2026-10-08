@@ -81,10 +81,10 @@ class _CreateNewPostState extends State<CreateNewPostCreen> {
   Widget build(BuildContext context) {
     final colorScheme=Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context);
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: colorScheme.surface,
-        body: Column(
+    return Scaffold(
+      backgroundColor: colorScheme.surface,
+      body: SafeArea(
+        child: Column(
           children: [
             AppTopBarWithBack(title: "Tạo bài viết mới"),
             Expanded(
@@ -129,7 +129,18 @@ class _CreateNewPostState extends State<CreateNewPostCreen> {
                         context,
                         "Thêm ảnh",
                         Icons.camera_alt,
-                        () => _createNewPostViewModel.pickMultiImages(),
+                        () {
+                          if (_createNewPostViewModel.imageCount >=
+                              CreateNewPostViewModel.maxImages) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Chỉ được chọn tối đa 5 hình ảnh'),
+                              ),
+                            );
+                          } else {
+                            _createNewPostViewModel.pickMultiImages();
+                          }
+                        },
                         _createNewPostViewModel.selectedImages.isNotEmpty
                             ? "${_createNewPostViewModel.selectedImages.length} ảnh đã chọn"
                             : "",
@@ -137,28 +148,44 @@ class _CreateNewPostState extends State<CreateNewPostCreen> {
                       _buildItemSelection(context, "Gắn thẻ địa điểm", Icons.location_pin, () {}, ""),
                     ],
                   ),
-                  const SizedBox(height: 10),
-                  SizedBox(
-                    height: 72,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: _createNewPostViewModel.selectedImages.length,
-                          itemBuilder: (context,index) {
-                            return Padding(
-                              padding: const EdgeInsets.only(right:10),
-                              child: ImageLoadCard(
-                                imageUrl: _createNewPostViewModel.selectedImages[index],
-                                onTapRemove: () => _createNewPostViewModel.removeImage(index),
-                              ),
-                            );
-                          },
-                        )
+                  if (_createNewPostViewModel.selectedImages.isNotEmpty) ...[
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      height: 72,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: _createNewPostViewModel.selectedImages.length,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 10),
+                                  child: ImageLoadCard(
+                                    imageUrl: _createNewPostViewModel.selectedImages[index],
+                                    onTapRemove: () => _createNewPostViewModel.removeImage(index),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        '${_createNewPostViewModel.imageCount}/${CreateNewPostViewModel.maxImages}',
+                        textAlign: TextAlign.end,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: colorScheme.onSurfaceVariant,
                         ),
-                      ]
-                    )
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 12),
                   BtnLoginPrimary(
