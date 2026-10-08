@@ -10,139 +10,85 @@ import '../../auth/repository/auth_repository_impl.dart';
 import '../data/models/profile_model.dart';
 
 class ProfileViewModel extends ChangeNotifier {
-  late final AuthRepositoryImpl _repository;
+  UserProfileModel _profile = const UserProfileModel(
+    id: 'user_1',
+    name: 'Minh Trần',
+    isPro: true,
+    memberSince: 'Tháng 3, 2024',
+    bio: 'Yêu thích cung đường núi cao & mây ngàn Việt Nam',
+    email: 'minhtran@email.com',
+    visitedProvinces: 12,
+    totalDistanceKm: 384,
+    completedTrips: 18,
+    totalDays: 42,
+    achievements: [
+      AchievementModel(
+        id: 'ach_1',
+        title: 'Nhà thám hiểm',
+        description: 'Đã trekking qua trên 5 tỉnh thành khác nhau.',
+        icon: Icons.military_tech_outlined,
+        isUnlocked: true,
+        achievedDate: '15/12/2025',
+        currentProgress: 5,
+        totalProgress: 5,
+        progressUnit: 'Tỉnh thành',
+        badgeColor: Color(0xFFE57A58),
+      ),
+      AchievementModel(
+        id: 'ach_2',
+        title: 'Chinh phục',
+        description: 'Đã leo thành công đỉnh Fansipan cao 3,143m.',
+        icon: Icons.terrain,
+        isUnlocked: true,
+        achievedDate: '20/11/2025',
+        currentProgress: 1,
+        totalProgress: 1,
+        progressUnit: 'Đỉnh núi',
+        badgeColor: Color(0xFF2ED573),
+      ),
+      AchievementModel(
+        id: 'ach_3',
+        title: 'Định hướng',
+        description: 'Hoàn thành 3 cung đường định vị bằng la bàn.',
+        icon: Icons.explore_outlined,
+        isUnlocked: true,
+        achievedDate: '05/10/2025',
+        currentProgress: 3,
+        totalProgress: 3,
+        progressUnit: 'Cung đường',
+        badgeColor: Color(0xFFE57A58),
+      ),
+      AchievementModel(
+        id: 'ach_4',
+        title: 'Dấu chân',
+        description: 'Đã chinh phục hết các tỉnh thành Nam Bộ.',
+        icon: Icons.directions_walk,
+        isUnlocked: false,
+        achievedDate: null,
+        currentProgress: 2,
+        totalProgress: 6,
+        progressUnit: 'Tỉnh thành',
+        badgeColor: Color(0xFF8E9BAE),
+      ),
+    ],
+  );
 
   // ── State ──────────────────────────────────────────────────────────────────
 
-  UserDto? _user;
-  bool _isLoading = false;
-  String? _errorMessage;
-
-  // Hardcoded stat/achievement data until a stats API exists
-  static const List<AchievementModel> _defaultAchievements = [
-    AchievementModel(
-      id: 'ach_1',
-      title: 'Nhà thám hiểm',
-      description: 'Đã trekking qua trên 5 tỉnh thành khác nhau.',
-      icon: Icons.explore_outlined,
-      isUnlocked: true,
-    ),
-    AchievementModel(
-      id: 'ach_2',
-      title: 'Chinh phục đỉnh cao',
-      description: 'Đã leo thành công đỉnh Fansipan cao 3,143m.',
-      icon: Icons.landscape_outlined,
-      isUnlocked: true,
-    ),
-    AchievementModel(
-      id: 'ach_3',
-      title: 'Dấu chân miền Nam',
-      description: 'Đã chinh phục hết các tỉnh thành Nam Bộ.',
-      icon: Icons.directions_walk,
-      isUnlocked: false,
-    ),
-  ];
-
   // ── Getters ────────────────────────────────────────────────────────────────
 
-  bool get isLoading => _isLoading;
-  String? get errorMessage => _errorMessage;
-  UserDto? get user => _user;
-
-  /// Returns a [UserProfileModel] merging live API user data with local stats.
-  UserProfileModel get profile {
-    final u = _user;
-    return UserProfileModel(
-      id: u?.userId ?? '',
-      name: u?.displayName ?? '...',
-      isPro: false,
-      memberSince: _formatMemberSince(u?.emailVerifiedAt),
-      bio: u?.bio ?? 'Yêu thích khám phá Việt Nam',
-      email: u?.email,
-      avatarUrl: u?.avatarUrl,
-      visitedProvinces: 0,
-      totalDistanceKm: 0,
-      completedTrips: 0,
-      totalDays: 0,
-      achievements: _defaultAchievements,
-    );
-  }
+  /// Returns a [UserProfileModel]
+  UserProfileModel get profile => _profile;
 
   // ── Constructor ────────────────────────────────────────────────────────────
 
-  ProfileViewModel() {
-    final tokenStorage = const SecureTokenStorage();
-    final eventBus = AuthEventBus();
-    final dio = DioClient.createDio(tokenStorage: tokenStorage, eventBus: eventBus);
-    _repository = AuthRepositoryImpl(dio: dio, tokenStorage: tokenStorage);
-    loadUser();
-  }
+  ProfileViewModel();
 
   // ── Public API ─────────────────────────────────────────────────────────────
 
-  Future<void> loadUser() async {
-    _isLoading = true;
-    _errorMessage = null;
-    notifyListeners();
-
-    try {
-      _user = await _repository.getMe();
-      _isLoading = false;
-      notifyListeners();
-    } on AuthException catch (e) {
-      _isLoading = false;
-      _errorMessage = e.message;
-      if (kDebugMode) debugPrint('[ProfileViewModel] AuthException: ${e.message}');
-      notifyListeners();
-    } catch (e) {
-      _isLoading = false;
-      _errorMessage = 'Không thể tải thông tin người dùng';
-      if (kDebugMode) debugPrint('[ProfileViewModel] Error: $e');
-      notifyListeners();
-    }
-  }
-
-  /// Refresh lại user data từ API — alias cho [loadUser].
-  Future<void> refresh() => loadUser();
-
   /// Cập nhật profile local
   void updateProfile(UserProfileModel newProfile) {
-    if (_user != null) {
-      _user = UserDto(
-        userId: _user!.userId,
-        displayName: newProfile.name,
-        email: _user!.email,
-        role: _user!.role,
-        status: _user!.status,
-        bio: newProfile.bio,
-        avatarUrl: newProfile.avatarUrl,
-        emailVerifiedAt: _user!.emailVerifiedAt,
-      );
-    }
+    _profile = newProfile;
     notifyListeners();
-  }
-
-  /// Cập nhật user local từ kết quả trả về của API (avatar/bio update)
-  /// mà không cần gọi lại GET /users/me.
-  void updateUserLocal(UserDto updatedUser) {
-    _user = updatedUser;
-    notifyListeners();
-  }
-
-  // ── Helpers ────────────────────────────────────────────────────────────────
-
-  String _formatMemberSince(String? isoDate) {
-    if (isoDate == null) return '';
-    try {
-      final dt = DateTime.parse(isoDate).toLocal();
-      const months = [
-        'Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4',
-        'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8',
-        'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12',
-      ];
-      return '${months[dt.month - 1]}, ${dt.year}';
-    } catch (_) {
-      return '';
-    }
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vietnam_trekking_mobile/core/widgets/buttons/btn_login_style.dart';
 import 'package:vietnam_trekking_mobile/core/widgets/buttons/btn_outline_style.dart';
+import '../../journey/data/models/journey_model.dart';
 import '../data/models/route_model.dart';
 import '../viewmodel/route_detail_viewmodel.dart';
 import 'download_offline_map_screen.dart';
@@ -8,7 +9,8 @@ import '../../../core/widgets/cards/card_home_stats.dart';
 
 class RouteDetailScreen extends StatefulWidget {
   final RouteModel? route;
-  const RouteDetailScreen({super.key, this.route});
+  final JourneyModel? pendingJourney;
+  const RouteDetailScreen({super.key, this.route, this.pendingJourney});
 
   @override
   State<RouteDetailScreen> createState() => _RouteDetailScreenState();
@@ -29,10 +31,12 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: colorScheme.surface,
-        body: Column(children: [
+    return Scaffold(
+      backgroundColor: colorScheme.surface,
+      body: SafeArea(
+        top: false,
+        bottom: true,
+        child: Column(children: [
           AspectRatio(
             aspectRatio: 16 / 9,
             child: Stack(
@@ -65,7 +69,7 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                   ),
                 ),
                 Positioned(
-                  top: 12,
+                  top: 30,
                   left: 12,
                   right: 12,
                   child: Row(children: [
@@ -155,7 +159,7 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
             child: Transform.translate(
               offset: const Offset(0, -20),
               child: Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.fromLTRB(16, 25, 16, 0),
                 decoration: BoxDecoration(
                   color: colorScheme.surface,
                   borderRadius: const BorderRadius.only(
@@ -258,11 +262,15 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                                     MaterialPageRoute(
                                       builder: (context) => DownloadOfflineMapScreen(
                                         route: _viewModel.route,
+                                        pendingJourney: widget.pendingJourney,
                                       ),
                                     ),
                                   );
                                   if (result == true) {
                                     _viewModel.setDownloaded(true);
+                                    if (widget.pendingJourney != null && context.mounted) {
+                                      Navigator.pop(context, true);
+                                    }
                                   }
                                 },
                               );

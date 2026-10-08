@@ -1,226 +1,251 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/buttons/btn_login_style.dart';
+import '../../../core/widgets/buttons/btn_outline_style.dart';
+import '../../../core/widgets/cards/profile_achievement_card.dart';
+import '../../../core/widgets/cards/profile_stat_card.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../profile/data/models/profile_model.dart';
+import '../data/models/journey_model.dart';
 import '../data/models/milestone_model.dart';
-import 'widgets/trekking_button.dart';
+import '../viewmodels/checkin_success_viewmodel.dart';
+import '../../profile/views/badge_detail_screen.dart';
+import 'rate_milestone_screen.dart';
 
-/// Màn hình "Check-in thành công!" với badge + stats.
-class CheckinSuccessScreen extends StatelessWidget {
-  final MilestoneModel milestone;
-  final Map<String, dynamic> checkinResult;
+class CheckinSuccessScreen extends StatefulWidget {
+  final MilestoneModel? milestone;
+  final JourneyModel? journey;
+  final List<AchievementModel>? achievements;
 
   const CheckinSuccessScreen({
     super.key,
-    required this.milestone,
-    required this.checkinResult,
+    this.milestone,
+    this.journey,
+    this.achievements,
   });
 
   @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final badgeName = checkinResult['badgeName'] as String? ??
-        'Nhà chinh phục ${milestone.name}';
-    final badgeDesc = checkinResult['badgeDescription'] as String? ??
-        'Mở khóa danh hiệu';
-    final xpGained = checkinResult['xpGained'] as int? ?? 1;
-    final altReached =
-        checkinResult['altitudeReached'] as num? ??
-            milestone.altitude ??
-            1000;
-    final totalCheckins =
-        checkinResult['totalCheckins'] as int? ?? 0;
-    final totalMilestones =
-        checkinResult['totalMilestones'] as int? ?? 63;
-
-    return Scaffold(
-      backgroundColor: cs.surface,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            children: [
-              const Spacer(),
-
-              // ── Success icon ──────────────────────────────────────────
-              Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                      color: const Color(0xFF4CAF50), width: 2),
-                ),
-                child: const Icon(Icons.landscape_outlined,
-                    color: Color(0xFF4CAF50), size: 48),
-              ),
-
-              const SizedBox(height: 20),
-              Text(
-                'CHÚC MỪNG!',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: const Color(0xFF4CAF50),
-                  letterSpacing: 2,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Check-in thành công!',
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w800,
-                  color: cs.onSurface,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Bạn đã hoàn thành đánh dấu mốc chinh phục đỉnh ${milestone.name} huyền thoại.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 13, color: cs.onSurfaceVariant),
-              ),
-
-              const SizedBox(height: 28),
-
-              // ── Badge earned ──────────────────────────────────────────
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: cs.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(
-                    color: const Color(0xFFE8620A)
-                        .withValues(alpha: 0.3),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFE8620A)
-                            .withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Icon(Icons.military_tech,
-                          color: Color(0xFFE8620A), size: 26),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment:
-                            CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'HUY HIỆU ĐẠT ĐƯỢC',
-                            style: TextStyle(
-                                fontSize: 9,
-                                fontWeight: FontWeight.w700,
-                                color: const Color(0xFFE8620A),
-                                letterSpacing: 0.5),
-                          ),
-                          const SizedBox(height: 3),
-                          Text(badgeName,
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: cs.onSurface)),
-                          Text(badgeDesc,
-                              style: TextStyle(
-                                  fontSize: 11,
-                                  color: cs.onSurfaceVariant)),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              // ── Stats row ─────────────────────────────────────────────
-              Row(
-                children: [
-                  _StatChip(
-                      value: '+$xpGained',
-                      label: 'Huy hiệu mới'),
-                  const SizedBox(width: 10),
-                  _StatChip(
-                      value: '${altReached.toInt()}m',
-                      label: 'Độ cao tới đó'),
-                  const SizedBox(width: 10),
-                  _StatChip(
-                      value: '$totalCheckins / $totalMilestones',
-                      label: 'Tỉnh đã chinh phục'),
-                ],
-              ),
-
-              const Spacer(),
-
-              // ── CTAs ──────────────────────────────────────────────────
-              TrekkingPrimaryButton(
-                label: 'Tiếp tục hành trình',
-                onPressed: () {
-                  // Pop back to journey detail (pop 2 screens)
-                  Navigator.of(context)
-                    ..pop()
-                    ..pop();
-                },
-              ),
-              const SizedBox(height: 10),
-              TrekkingSecondaryButton(
-                label: '☆  Đánh giá địa điểm',
-                onPressed: () => Navigator.of(context).pop(),
-                borderColor:
-                    cs.onSurface.withValues(alpha: 0.2),
-                textColor: cs.onSurface,
-              ),
-              const SizedBox(height: 10),
-              TrekkingSecondaryButton(
-                label: 'Chia sẻ thành tích',
-                onPressed: () {},
-                borderColor:
-                    cs.onSurface.withValues(alpha: 0.2),
-                textColor: cs.onSurfaceVariant,
-              ),
-              const SizedBox(height: 8),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  State<CheckinSuccessScreen> createState() => _CheckinSuccessScreenState();
 }
 
-class _StatChip extends StatelessWidget {
-  final String value;
-  final String label;
-  const _StatChip({required this.value, required this.label});
+class _CheckinSuccessScreenState extends State<CheckinSuccessScreen> {
+  late final CheckinSuccessViewModel _viewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    _viewModel = CheckinSuccessViewModel(
+      milestone: widget.milestone,
+      journey: widget.journey,
+      achievements: widget.achievements,
+    );
+  }
+
+  @override
+  void dispose() {
+    _viewModel.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        decoration: BoxDecoration(
-          color: cs.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Column(
-          children: [
-            Text(value,
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: cs.onSurface)),
-            const SizedBox(height: 2),
-            Text(label,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 9, color: cs.onSurfaceVariant)),
-          ],
+    final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
+
+    return Scaffold(
+      backgroundColor: colorScheme.surface,
+      body: SafeArea(
+        child: ListenableBuilder(
+          listenable: _viewModel,
+          builder: (context, _) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 24),
+                  Center(
+                    child: InkWell(
+                      onTap: () {
+                        final items = _viewModel.getAchievements(l10n);
+                        if (items.isNotEmpty) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BadgeDetailScreen(
+                                badge: items.first,
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                      borderRadius: BorderRadius.circular(60),
+                      child: Container(
+                        width: 120,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: colorScheme.surfaceContainerHighest,
+                          border: Border.all(
+                            color: colorScheme.primary,
+                            width: 2,
+                          ),
+                        ),
+                        child: const Center(
+                          child: Icon(
+                            Icons.terrain,
+                            size: 54,
+                            color: Color(0xFF6ECB8E),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    l10n.checkinCongratulation,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.2,
+                      color: colorScheme.primary,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    l10n.checkinSuccessTitle,
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      l10n.checkinSuccessMessage(_viewModel.destinationName),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 13,
+                        height: 1.4,
+                        color: colorScheme.onSurfaceVariant.withValues(alpha: 0.85),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      l10n.achievementsEarnedTitle,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.8,
+                        color: colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  ..._viewModel.getAchievements(l10n).map((item) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: ProfileAchievementCard(
+                        title: item.title,
+                        description: item.description,
+                        icon: item.icon,
+                        isUnlocked: item.isUnlocked,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BadgeDetailScreen(
+                                badge: item,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  }),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ProfileStatCard(
+                          value: _viewModel.countAchieveText,
+                          label: l10n.statNewBadge,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: ProfileStatCard(
+                          value: _viewModel.maxElevationText,
+                          label: l10n.statMaxElevation,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: ProfileStatCard(
+                          value: _viewModel.conqueredProvincesText,
+                          label: l10n.statConqueredProvinces,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 28),
+                  SizedBox(
+                    width: double.infinity,
+                    child: BtnLoginPrimary(
+                      text: l10n.continueJourneyButton,
+                      onPressed: () {
+                        Navigator.pop(context, true);
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: BtnOutlineStyle(
+                      text: l10n.ratePlaceButton,
+                      icon: Icon(
+                        Icons.star_outline,
+                        color: colorScheme.primary,
+                        size: 20,
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RateMilestoneScreen(
+                              milestone: widget.milestone,
+                              journey: widget.journey,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: BtnOutlineStyle(
+                      text: l10n.shareAchievementButton,
+                      icon: const SizedBox.shrink(),
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(l10n.featureComingSoon(l10n.shareAchievementButton)),
+                            duration: const Duration(seconds: 1),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );

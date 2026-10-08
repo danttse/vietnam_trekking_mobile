@@ -5,6 +5,7 @@ import '../../../l10n/app_localizations.dart';
 import '../view_models/profile_viewmodel.dart';
 import '../widgets/profile_widgets.dart';
 import 'profile_setting_screen.dart';
+import 'badge_detail_screen.dart';
 import '../../../core/widgets/app_bar/app_top_bar.dart';
 
 // [BACKEND TEST TEMP IMPORTS]
@@ -145,11 +146,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => BadgeDetailScreen(
-                                  title: achievement.title,
-                                  description: achievement.description,
-                                  achievedDate: '15/12/2025',
-                                  currentProgress: '5',
-                                  totalProgress: '5 Tỉnh thành',
+                                  badge: achievement,
+                                  allBadges: profile.achievements,
                                 ),
                               ),
                             );

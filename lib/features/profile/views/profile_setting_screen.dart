@@ -10,6 +10,8 @@ import '../view_models/profile_viewmodel.dart';
 import '../view_models/profile_setting_viewmodel.dart';
 import '../widgets/profile_widgets.dart';
 import '../../../core/widgets/buttons/btn_outline_style.dart';
+import 'terms_of_use_screen.dart';
+import 'privacy_policy_screen.dart';
 
 class ProfileSettingScreen extends StatefulWidget {
   const ProfileSettingScreen({super.key});
@@ -172,12 +174,26 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                   ProfileSettingItem(
                     mainTitle: l10n.settingsTermsOfUse,
                     icon: Icons.description_outlined,
-                    onTapAction: () => _settingViewModel.openTermsOfUse(context),
+                    onTapAction: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const TermsOfUseScreen(),
+                        ),
+                      );
+                    },
                   ),
                   ProfileSettingItem(
                     mainTitle: l10n.settingsPrivacyPolicy,
                     icon: Icons.privacy_tip_outlined,
-                    onTapAction: () => _settingViewModel.openPrivacyPolicy(context),
+                    onTapAction: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const PrivacyPolicyScreen(),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),

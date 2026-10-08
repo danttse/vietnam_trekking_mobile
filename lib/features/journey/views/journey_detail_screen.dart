@@ -5,6 +5,7 @@ import '../../../l10n/app_localizations.dart';
 import '../data/models/journey_model.dart';
 import '../data/models/milestone_model.dart';
 import '../viewmodels/journey_detail_viewmodel.dart';
+import 'milestone_checkin_screen.dart';
 import '../../../core/widgets/cards/profile_stat_card.dart';
 import '../../../core/widgets/cards/profile_progress_bar.dart';
 
@@ -39,97 +40,116 @@ class _JourneyDetailScreenState extends State<JourneyDetailScreen> {
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-    Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        children: [
-          Container(
-            width: 28,
-            height: 28,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: isCheckedIn
-                  ? colorScheme.primary
-                  : colorScheme.surfaceContainerHighest,
-              border: Border.all(
-                color: isCheckedIn
-                    ? colorScheme.primary
-                    : colorScheme.onSurfaceVariant.withValues(alpha: 0.3),
+      children: [
+        InkWell(
+          borderRadius: BorderRadius.circular(8),
+          onTap: () async {
+            final result = await Navigator.push<bool>(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MilestoneCheckinScreen(
+                  milestone: milestone,
+                  journey: _viewModel.journey,
+                  mapImageUrl: _viewModel.mapImageUrl,
+                ),
               ),
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              '${milestone.sequence}',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: isCheckedIn ? Colors.white : colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            );
+            if (result == true) {
+              _viewModel.checkIn(milestone.id);
+            }
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+            child: Row(
               children: [
-                Text(
-                  milestone.name,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
+                Container(
+                  width: 28,
+                  height: 28,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
                     color: isCheckedIn
-                        ? colorScheme.onSurface
-                        : colorScheme.onSurfaceVariant,
+                        ? colorScheme.primary
+                        : colorScheme.surfaceContainerHighest,
+                    border: Border.all(
+                      color: isCheckedIn
+                          ? colorScheme.primary
+                          : colorScheme.onSurfaceVariant.withValues(alpha: 0.3),
+                    ),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    '${milestone.sequence}',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: isCheckedIn ? Colors.white : colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  l10n.milestoneAltitude(milestone.altitude.toInt().toString()),
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        milestone.name,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: isCheckedIn
+                              ? colorScheme.onSurface
+                              : colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        l10n.milestoneAltitude(milestone.altitude.toInt().toString()),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
+                const SizedBox(width: 8),
+                if (isCheckedIn)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: colorScheme.primary.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      l10n.milestoneCheckedIn,
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: colorScheme.primary,
+                      ),
+                    ),
+                  )
+                else
+                  Text(
+                    l10n.milestoneNotCheckedIn,
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+                    ),
+                  ),
               ],
             ),
           ),
-          const SizedBox(width: 8),
-          if (isCheckedIn)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: colorScheme.primary.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: Text(
-                l10n.milestoneCheckedIn,
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: colorScheme.primary,
-                ),
-              ),
-            )
-          else
-            Text(
-              l10n.milestoneNotCheckedIn,
-              style: TextStyle(
-                fontSize: 11,
-                color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
-              ),
-            ),
-        ],
-      ),
-    ),
-    if (!isLast)
-      Container(
-        margin: const EdgeInsets.only(left: 13),
-        width: 2,
-        height: 24,
-        color: Colors.grey.shade400,
-      ),
-    ]);
+        ),
+        if (!isLast)
+          Container(
+            margin: const EdgeInsets.only(left: 17),
+            width: 2,
+            height: 24,
+            color: Colors.grey.shade400,
+          ),
+      ],
+    );
   }
 
   String _getStatusLabel(JourneyStatus status, AppLocalizations l10n) {
@@ -166,10 +186,12 @@ class _JourneyDetailScreenState extends State<JourneyDetailScreen> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: colorScheme.surface,
-        body: Column(crossAxisAlignment: CrossAxisAlignment.start,
+    return Scaffold(
+      backgroundColor: colorScheme.surface,
+      body: SafeArea(
+        top: false,
+        bottom: true,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AspectRatio(
             aspectRatio: 16 / 9,
@@ -203,7 +225,7 @@ class _JourneyDetailScreenState extends State<JourneyDetailScreen> {
                   ),
                 ),
                 Positioned(
-                  top: 12,
+                  top: 30,
                   left: 12,
                   right: 12,
                   child: Row(children: [
@@ -299,7 +321,7 @@ class _JourneyDetailScreenState extends State<JourneyDetailScreen> {
             child: Transform.translate(
               offset: const Offset(0, -20),
               child: Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.fromLTRB(16, 25, 16, 0),
                 decoration: BoxDecoration(
                   color: colorScheme.surface,
                   borderRadius: const BorderRadius.only(
@@ -449,7 +471,26 @@ class _JourneyDetailScreenState extends State<JourneyDetailScreen> {
                               color: Colors.white,
                               size: 24,
                             ),
-                            onPressed: () {},
+                            onPressed: () async {
+                              if (_viewModel.milestones.isEmpty) return;
+                              final targetMilestone = _viewModel.milestones.firstWhere(
+                                (m) => !m.isCheckedIn,
+                                orElse: () => _viewModel.milestones.first,
+                              );
+                              final result = await Navigator.push<bool>(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MilestoneCheckinScreen(
+                                    milestone: targetMilestone,
+                                    journey: _viewModel.journey,
+                                    mapImageUrl: _viewModel.mapImageUrl,
+                                  ),
+                                ),
+                              );
+                              if (result == true) {
+                                _viewModel.checkIn(targetMilestone.id);
+                              }
+                            },
                           ),
                         ),
                       ),

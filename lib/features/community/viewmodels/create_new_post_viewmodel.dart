@@ -4,6 +4,8 @@ import 'package:image_picker/image_picker.dart';
 import '../data/models/post_model.dart';
 
 class CreateNewPostViewModel extends ChangeNotifier {
+  static const int maxImages = 5;
+
   final TextEditingController contentController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
   final List<File> _selectedImages = [];
