@@ -10,6 +10,8 @@ import '../../explore/views/explore_screen.dart';
 import '../../journey/views/journey_screen.dart';
 import '../../profile/views/profile_screen.dart';
 import '../view_models/user_navigation_viewmodel.dart';
+import '../../route/view/route_detail_screen.dart';
+import '../../route/data/datasources/route_sample_data.dart';
 
 /// Màn hình điều phối chính phía người dùng (User Shell Navigation)
 class UserNavigationScreen extends StatefulWidget {
@@ -70,7 +72,32 @@ class _UserNavigationScreenState extends State<UserNavigationScreen> {
               HomeScreen(
                 onProfileTap: () => _viewModel.goToProfile(),
               ),
-              const ExploreScreen(),
+              ExploreScreen(
+                onPlaceTap: (place) {
+                  // Tìm route đầu tiên làm demo (có thể match theo placeId sau)
+                  final routes = RouteSampleData.getSampleRoutes();
+                  final route = routes.isNotEmpty ? routes.first : null;
+                  if (route != null) {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => RouteDetailScreen(route: route),
+                      ),
+                    );
+                  }
+                },
+                onTrailTap: (trail) {
+                  // Tương tự cho trail
+                  final routes = RouteSampleData.getSampleRoutes();
+                  final route = routes.isNotEmpty ? routes.first : null;
+                  if (route != null) {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => RouteDetailScreen(route: route),
+                      ),
+                    );
+                  }
+                },
+              ),
               const CommunityScreen(),
               const JourneyScreen(),
               ProfileScreen(
