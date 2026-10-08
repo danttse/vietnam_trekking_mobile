@@ -22,8 +22,8 @@ class PrivacyPolicyScreen extends StatelessWidget {
               children: [
                 TextSpan(
                   text: '$number.  ',
-                  style: const TextStyle(
-                    color: Color(0xFFE57A58),
+                  style: TextStyle(
+                    color: colorScheme.primary,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
@@ -31,7 +31,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                 TextSpan(
                   text: title,
                   style: TextStyle(
-                    color: colorScheme.onSurface,
+                    color: colorScheme.onSurfaceVariant,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
