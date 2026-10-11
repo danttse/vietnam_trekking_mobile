@@ -4,6 +4,7 @@ import '../../../app/language/app_language_viewmodel.dart';
 import '../views/change_password_screen.dart';
 import '../views/edit_avatar_screen.dart';
 import '../views/suggest_place_screen.dart';
+import '../views/support_feedback_screen.dart';
 
 class ProfileSettingViewModel extends ChangeNotifier {
   final AppLanguageViewModel _appLanguageViewModel = AppLanguageViewModel();
@@ -46,8 +47,11 @@ class ProfileSettingViewModel extends ChangeNotifier {
     );
   }
 
-  Future<void> supportAndFeedback() async {
-    // TODO: Implement support & feedback logic
+  Future<void> supportAndFeedback(BuildContext context) async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const SupportFeedbackScreen()),
+    );
   }
 
   Future<void> openTermsOfUse() async {

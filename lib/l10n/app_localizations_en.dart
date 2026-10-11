@@ -775,4 +775,169 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get allBadgesTitle => 'All Badges';
+
+  @override
+  String get promoteSkip => 'Skip';
+
+  @override
+  String get promoteNext => 'Next';
+
+  @override
+  String get promoteStart => 'Get Started';
+
+  @override
+  String get promoteExploreTitle =>
+      'Explore trekking destinations across Vietnam';
+
+  @override
+  String get promoteExploreDesc =>
+      'Discover trails, scenic spots, detailed info, and community reviews.';
+
+  @override
+  String get promoteGpsTitle => 'Create journeys and record GPS';
+
+  @override
+  String get promoteGpsDesc =>
+      'Plan trips, record real-time tracks, check-in milestones, and review track logs.';
+
+  @override
+  String get promoteGpsRecording => 'RECORDING';
+
+  @override
+  String get promoteGpsDistance => 'Distance';
+
+  @override
+  String get promoteGpsElevation => 'Elevation';
+
+  @override
+  String get promoteGpsSpeed => 'Speed';
+
+  @override
+  String get promoteOfflineTitle => 'Work offline\nanytime, anywhere';
+
+  @override
+  String get promoteOfflineDesc =>
+      'Download maps and location data to use even without Internet.';
+
+  @override
+  String get promoteOfflineMapTitle => 'Offline maps (MBTiles)';
+
+  @override
+  String get promoteOfflineMapSubtitle => 'Optimized storage, fast download';
+
+  @override
+  String get promoteOfflineFavoriteTitle => 'Save favorite places';
+
+  @override
+  String get promoteOfflineFavoriteSubtitle =>
+      'Never lose track of important coordinates';
+
+  @override
+  String get promoteOfflineGpsTitle => 'Record GPS & check-in';
+
+  @override
+  String get promoteOfflineGpsSubtitle => 'Full trip history is safely kept';
+
+  @override
+  String get promoteStatsTitle => 'Track journeys and\nachievements';
+
+  @override
+  String get promoteStatsDesc =>
+      'Mark 34 explored provinces, collect badges, and view your travel stats.';
+
+  @override
+  String get promoteStatsProvinces => 'Provinces visited';
+
+  @override
+  String get promoteStatsDistance => 'Distance traveled';
+
+  @override
+  String get promoteStatsBadgeMountain => 'Mountains & Forests';
+
+  @override
+  String get promoteStatsBadgeMountainSub => '5 peaks conquered';
+
+  @override
+  String get promoteStatsBadgeIsland => 'Islands & Bays';
+
+  @override
+  String get promoteStatsBadgeIslandSub => '3 bays visited';
+
+  @override
+  String get promoteStatsBadgeExplore => 'Explorer';
+
+  @override
+  String get promoteStatsBadgeExploreSub => '10 provinces';
+
+  @override
+  String get promoteCommunityTitle => 'Connect with trekking lovers';
+
+  @override
+  String get promoteCommunityDesc =>
+      'Share journeys, photos, experience, and interact with people of the same passion.';
+
+  @override
+  String get supportFaqHeader => 'FREQUENTLY ASKED QUESTIONS';
+
+  @override
+  String get supportFeedbackHeader => 'SEND US FEEDBACK';
+
+  @override
+  String get supportIssueTypeLabel => 'ISSUE TYPE';
+
+  @override
+  String get supportDescriptionLabel => 'DETAILED DESCRIPTION';
+
+  @override
+  String get supportDescriptionHint =>
+      'Describe your issue or suggestion here...';
+
+  @override
+  String get supportSubmitButton => 'Submit Feedback';
+
+  @override
+  String get supportDirectEmail => 'Or email us directly at';
+
+  @override
+  String get supportEmptyError => 'Please enter your detailed description';
+
+  @override
+  String get supportSuccessMessage =>
+      'Thank you for your feedback! We will get back to you soon.';
+
+  @override
+  String get supportIssueGpsMap => 'GPS / Map issue';
+
+  @override
+  String get supportIssueAccount => 'Account / Login issue';
+
+  @override
+  String get supportIssueContent => 'Content / Destination contribution';
+
+  @override
+  String get supportIssueAppExperience => 'App experience feedback';
+
+  @override
+  String get supportIssueOther => 'Other issue';
+
+  @override
+  String get supportFaq1Q => 'How do I check-in at a milestone?';
+
+  @override
+  String get supportFaq1A =>
+      'Enable GPS on your phone, move within 50m of the milestone, and tap \'Check-in now\' on the Journey Map screen.';
+
+  @override
+  String get supportFaq2Q => 'How do badges work?';
+
+  @override
+  String get supportFaq2A =>
+      'Badges are automatically unlocked when you complete trekking challenges, conquer peaks, or achieve province exploration milestones.';
+
+  @override
+  String get supportFaq3Q => 'How to create a new journey?';
+
+  @override
+  String get supportFaq3A =>
+      'Go to the Journey tab, tap the (+) icon or \'Start journey\' button to enable real-time GPS tracking and save your trail.';
 }

@@ -127,7 +127,7 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                   ProfileSettingItem(
                     mainTitle: l10n.settingsSupportFeedback,
                     icon: Icons.help_outline,
-                    onTapAction: () {},
+                    onTapAction: () => _settingViewModel.supportAndFeedback(context),
                   ),
                 ],
               ),

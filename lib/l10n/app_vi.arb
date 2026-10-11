@@ -353,5 +353,65 @@
             "date": { "type": "String" }
         }
     },
-    "allBadgesTitle": "Tất cả huy hiệu"
+    "allBadgesTitle": "Tất cả huy hiệu",
+
+    "promoteSkip": "Bỏ qua",
+    "promoteNext": "Tiếp theo",
+    "promoteStart": "Bắt đầu sử dụng",
+
+    "promoteExploreTitle": "Khám phá địa điểm trekking khắp Việt Nam",
+    "promoteExploreDesc": "Tìm hiểu các cung đường, địa điểm đẹp, thông tin chi tiết, đánh giá từ cộng đồng.",
+
+    "promoteGpsTitle": "Tạo hành trình và ghi lại GPS",
+    "promoteGpsDesc": "Lên kế hoạch, ghi lại hành trình thực tế, check-in cột mốc và xem lại đường đi (track logs).",
+    "promoteGpsRecording": "ĐANG GHI",
+    "promoteGpsDistance": "Quãng đường",
+    "promoteGpsElevation": "Độ cao",
+    "promoteGpsSpeed": "Vận tốc",
+
+    "promoteOfflineTitle": "Hoạt động offline\nmọi lúc mọi nơi",
+    "promoteOfflineDesc": "Tải bản đồ, dữ liệu địa điểm để sử dụng ngay cả khi không có Internet.",
+    "promoteOfflineMapTitle": "Bản đồ offline (MBTiles)",
+    "promoteOfflineMapSubtitle": "Dung lượng tối ưu, tải nhanh chóng",
+    "promoteOfflineFavoriteTitle": "Lưu địa điểm yêu thích",
+    "promoteOfflineFavoriteSubtitle": "Không lo mất dấu tọa độ quan trọng",
+    "promoteOfflineGpsTitle": "Ghi GPS và check-in",
+    "promoteOfflineGpsSubtitle": "Vẫn lưu đầy đủ lịch sử chuyến đi",
+
+    "promoteStatsTitle": "Theo dõi hành trình và\nthành tựu",
+    "promoteStatsDesc": "Lưu dấu 34 tỉnh đã đi, thu thập huy hiệu và xem thống kê hành trình của bạn.",
+    "promoteStatsProvinces": "Tỉnh thành đã đi",
+    "promoteStatsDistance": "Quãng đường đã đi",
+    "promoteStatsBadgeMountain": "Núi rừng",
+    "promoteStatsBadgeMountainSub": "5 đỉnh chinh phục",
+    "promoteStatsBadgeIsland": "Biển đảo",
+    "promoteStatsBadgeIslandSub": "3 vùng vịnh",
+    "promoteStatsBadgeExplore": "Khám phá",
+    "promoteStatsBadgeExploreSub": "10 tỉnh thành",
+
+    "promoteCommunityTitle": "Kết nối cộng đồng yêu trekking",
+    "promoteCommunityDesc": "Chia sẻ hành trình, ảnh, kinh nghiệm và tương tác với những người có cùng đam mê.",
+
+    "supportFaqHeader": "CÂU HỎI THƯỜNG GẶP",
+    "supportFeedbackHeader": "GỬI PHẢN HỒI CHO CHÚNG TÔI",
+    "supportIssueTypeLabel": "LOẠI VẤN ĐỀ",
+    "supportDescriptionLabel": "MÔ TẢ CHI TIẾT",
+    "supportDescriptionHint": "Mô tả lỗi hoặc đề xuất của bạn tại đây...",
+    "supportSubmitButton": "Gửi phản hồi",
+    "supportDirectEmail": "Hoặc gửi thư trực tiếp đến chúng tôi qua",
+    "supportEmptyError": "Vui lòng nhập mô tả chi tiết của bạn",
+    "supportSuccessMessage": "Cảm ơn bạn đã gửi phản hồi! Chúng tôi sẽ phản hồi sớm nhất.",
+
+    "supportIssueGpsMap": "Lỗi định vị GPS / Bản đồ",
+    "supportIssueAccount": "Lỗi tài khoản / Đăng nhập",
+    "supportIssueContent": "Đóng góp nội dung / Địa điểm",
+    "supportIssueAppExperience": "Góp ý trải nghiệm ứng dụng",
+    "supportIssueOther": "Vấn đề khác",
+
+    "supportFaq1Q": "Làm sao để check-in tại cột mốc?",
+    "supportFaq1A": "Bật định vị GPS trên điện thoại của bạn, di chuyển đến phạm vi 50m quanh cột mốc và nhấn nút ‘Check-in ngay’ trên màn hình Bản đồ hành trình.",
+    "supportFaq2Q": "Huy hiệu hoạt động như thế nào?",
+    "supportFaq2A": "Huy hiệu sẽ tự động được mở khóa khi bạn hoàn thành các thử thách trekking, chinh phục các đỉnh núi hoặc hoàn thành các mốc khám phá tỉnh thành.",
+    "supportFaq3Q": "Cách tạo hành trình mới?",
+    "supportFaq3A": "Vào mục Hành trình, nhấn biểu tượng dấu (+) hoặc nút ‘Bắt đầu hành trình’ để bật chế độ ghi GPS thời gian thực và lưu lại cung đường của bạn."
 }

@@ -8,6 +8,7 @@ class PostModel {
   final String type;
   final String? journeyId;
   final String? trekkingPlaceId;
+  final String? trekPlaceName;
   final int reactionCount;
   final int commentCount;
   final bool isLiked;
@@ -25,6 +26,7 @@ class PostModel {
     this.type = 'NORMAL',
     this.journeyId,
     this.trekkingPlaceId,
+    this.trekPlaceName,
     this.reactionCount = 0,
     this.commentCount = 0,
     this.isLiked = false,
@@ -54,6 +56,7 @@ class PostModel {
     String? type,
     String? journeyId,
     String? trekkingPlaceId,
+    String? trekPlaceName,
     int? reactionCount,
     int? commentCount,
     bool? isLiked,
@@ -71,6 +74,7 @@ class PostModel {
       type: type ?? this.type,
       journeyId: journeyId ?? this.journeyId,
       trekkingPlaceId: trekkingPlaceId ?? this.trekkingPlaceId,
+      trekPlaceName: trekPlaceName ?? this.trekPlaceName,
       reactionCount: reactionCount ?? this.reactionCount,
       commentCount: commentCount ?? this.commentCount,
       isLiked: isLiked ?? this.isLiked,
