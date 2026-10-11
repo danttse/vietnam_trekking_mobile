@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+
 import '../models/journey_model.dart';
 import '../models/route_model.dart';
 import '../models/milestone_model.dart';
@@ -171,7 +172,10 @@ class JourneyRemoteDataSource {
     String? clientMarkerId,
   }) async {
     // Đảm bảo location được gửi theo GeoJSON nếu body có lat/lng flat
-    final enrichedBody = _enrichMarkerBody(body, clientMarkerId: clientMarkerId);
+    final enrichedBody = _enrichMarkerBody(
+      body,
+      clientMarkerId: clientMarkerId,
+    );
     final resp = await _dio.post(
       '/journeys/$journeyId/markers',
       data: enrichedBody,
@@ -223,6 +227,11 @@ class JourneyRemoteDataSource {
     );
     final data = _unwrapList(resp.data);
     return data.map((e) => ReviewModel.fromJson(e)).toList();
+  }
+
+  Future<Map<String, dynamic>> getReviewEligibility(String placeId) async {
+    final resp = await _dio.get('/places/$placeId/reviews/eligibility');
+    return Map<String, dynamic>.from(_unwrap(resp.data));
   }
 
   Future<ReviewModel?> getMyReview(String placeId) async {
@@ -384,15 +393,14 @@ class JourneyStatistics {
     required this.totalDurationSeconds,
   });
 
-  factory JourneyStatistics.fromJson(Map<String, dynamic> json) =>
-      JourneyStatistics(
-        totalJourneys: json['totalJourneys'] as int? ?? 0,
-        totalDistanceMeters:
-            (json['totalDistanceMeters'] as num?)?.toDouble() ?? 0,
-        totalElevationGain:
-            (json['totalElevationGain'] as num?)?.toDouble() ?? 0,
-        totalDurationSeconds: json['totalDurationSeconds'] as int? ?? 0,
-      );
+  factory JourneyStatistics.fromJson(
+    Map<String, dynamic> json,
+  ) => JourneyStatistics(
+    totalJourneys: json['totalJourneys'] as int? ?? 0,
+    totalDistanceMeters: (json['totalDistanceMeters'] as num?)?.toDouble() ?? 0,
+    totalElevationGain: (json['totalElevationGain'] as num?)?.toDouble() ?? 0,
+    totalDurationSeconds: json['totalDurationSeconds'] as int? ?? 0,
+  );
 
   double get totalDistanceKm => totalDistanceMeters / 1000;
 }

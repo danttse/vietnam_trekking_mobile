@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import '../../../l10n/app_localizations.dart';
+
 import 'package:vietnam_trekking_mobile/core/widgets/cards/card_home_stats.dart';
 import 'package:vietnam_trekking_mobile/core/widgets/cards/home_journey_map.dart';
 import 'package:vietnam_trekking_mobile/core/widgets/cards/recent_place_card.dart';
 import 'package:vietnam_trekking_mobile/core/widgets/sheet/select_province_sheet.dart';
 import 'package:vietnam_trekking_mobile/features/profile/views/profile_screen.dart';
+
 import '../viewmodel/home_view_model.dart';
-import '../viewmodel/home_user_viewmodel.dart';
+import '../../profile/view_models/profile_viewmodel.dart';
+import '../widgets/home_profile_button.dart';
+import '../../explore/views/place_detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final VoidCallback? onProfileTap;
 
-  const HomeScreen({
-    super.key,
-    this.onProfileTap,
-  });
+  const HomeScreen({super.key, this.onProfileTap});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -22,18 +25,25 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late final HomeViewModel viewModel;
-  final HomeUserViewModel _userViewModel = HomeUserViewModel();
 
   @override
   void initState() {
     super.initState();
     viewModel = HomeViewModel.create();
+    viewModel.addListener(_onActivityChanged);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) context.read<ProfileViewModel>().ensureLoaded();
+    });
+  }
+
+  void _onActivityChanged() {
+    if (mounted) setState(() {});
   }
 
   @override
   void dispose() {
+    viewModel.removeListener(_onActivityChanged);
     viewModel.dispose();
-    _userViewModel.dispose();
     super.dispose();
   }
 
@@ -41,16 +51,25 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
+    final user = context.watch<ProfileViewModel>();
 
     return SafeArea(
       child: Column(
         children: [
+          if (viewModel.activityError != null)
+            ListTile(
+              title: Text(viewModel.activityError!),
+              trailing: TextButton(
+                onPressed: viewModel.loadActivity,
+                child: const Text('Thử lại'),
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 8),
+                const SizedBox(height: 4),
                 Row(
                   children: [
                     ClipRRect(
@@ -63,61 +82,41 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    Text(
-                      l10n.appName,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                    Expanded(
+                      child: Text(
+                        l10n.appName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                    const Spacer(),
-                    InkWell(
-                      onTap: () {
-                        if (widget.onProfileTap != null) {
-                          widget.onProfileTap!();
-                        } else {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ProfileScreen(),
-                            ),
-                          );
-                        }
-                      },
-                      borderRadius: BorderRadius.circular(8),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                        child: ListenableBuilder(
-                          listenable: _userViewModel,
-                          builder: (context, _) {
-                            final user = _userViewModel.user;
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  l10n.homeRankLabel,
-                                  style: TextStyle(
-                                    color: colorScheme.onSurfaceVariant,
-                                    fontSize: 9,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  user?.displayName ?? '...',
-                                  style: TextStyle(
-                                    color: colorScheme.onSurfaceVariant,
-                                    fontSize: 9,
-                                  ),
-                                ),
-                              ],
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: HomeProfileButton(
+                        name: user.profile.name,
+                        avatarUrl: user.profile.avatarUrl,
+                        rank: user.rankProfile?.rank,
+                        isLoading: user.isLoading || user.isRankLoading,
+                        onTap: () {
+                          if (widget.onProfileTap != null) {
+                            widget.onProfileTap!();
+                          } else {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const ProfileScreen(),
+                              ),
                             );
-                          },
-                        ),
+                          }
+                        },
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
                 Row(
                   children: [
                     Expanded(
@@ -137,7 +136,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: CardHomeStats(
                         icon: Icons.route,
                         iconColor: Colors.green,
-                        value: '384 km',
+                        value:
+                            '${viewModel.totalDistanceKm.toStringAsFixed(1)} km',
                         title: l10n.homeStatDistance,
                       ),
                     ),
@@ -146,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: CardHomeStats(
                         icon: Icons.terrain,
                         iconColor: Colors.green,
-                        value: '12',
+                        value: '${viewModel.completedTrips}',
                         title: l10n.homeStatTrips,
                       ),
                     ),
@@ -155,7 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
           Expanded(
             child: Center(
               child: ListenableBuilder(
@@ -167,7 +167,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     return Stack(
                       alignment: Alignment.center,
                       children: [
-                        HomeJourneyMap(provinces: viewModel.provinces),
+                        HomeJourneyMap(
+                          provinces: viewModel.provinces,
+                          maxHeight: double.infinity,
+                        ),
                         Container(
                           color: Colors.black.withValues(alpha: 0.15),
                           child: const Center(
@@ -177,7 +180,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     );
                   }
-                  return HomeJourneyMap(provinces: viewModel.provinces);
+                  return HomeJourneyMap(
+                    provinces: viewModel.provinces,
+                    maxHeight: double.infinity,
+                  );
                 },
               ),
             ),
@@ -187,7 +193,9 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                l10n.homeRecentCheckin,
+                viewModel.recentPlaces.isNotEmpty
+                    ? l10n.homeRecentCheckin
+                    : l10n.recommendedForYou,
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
@@ -198,21 +206,56 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 8),
           SizedBox(
-            height: 64,
+            height:
+                56 +
+                MediaQuery.textScalerOf(context).scale(10) * 1.2 +
+                (viewModel.recentPlaces.isNotEmpty
+                    ? 2 + MediaQuery.textScalerOf(context).scale(9) * 1.2
+                    : 0),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: ListenableBuilder(
                     listenable: viewModel,
                     builder: (context, _) {
+                      final places = viewModel.displayedPlaces;
+                      if (places.isEmpty) {
+                        if (viewModel.isLoadingPlaces) {
+                          return const Center(
+                            child: SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          );
+                        }
+                        return Center(
+                          child: viewModel.placesError != null
+                              ? TextButton(
+                                  onPressed: viewModel.loadPlaces,
+                                  child: Text(viewModel.placesError!),
+                                )
+                              : const Text('Chưa có địa điểm để khám phá'),
+                        );
+                      }
                       return ListView.separated(
                         scrollDirection: Axis.horizontal,
                         padding: const EdgeInsets.only(left: 20),
-                        itemCount: viewModel.recentPlaces.length,
+                        itemCount: places.length,
                         separatorBuilder: (_, _) => const SizedBox(width: 8),
                         itemBuilder: (context, index) {
                           return RecentProvinceCard(
-                            recentPlace: viewModel.recentPlaces[index],
+                            recentPlace: places[index],
+                            onTap: places[index].placeId == null
+                                ? null
+                                : () => Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (_) => PlaceDetailScreen(
+                                        placeId: places[index].placeId!,
+                                      ),
+                                    ),
+                                  ),
                           );
                         },
                       );
@@ -221,16 +264,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(width: 8),
                 Padding(
-                  padding: const EdgeInsets.only(right: 20),
+                  padding: const EdgeInsets.only(right: 20, top: 4),
                   child: FloatingActionButton.small(
                     onPressed: () {
                       showModalBottomSheet(
                         context: context,
                         isScrollControlled: true,
                         backgroundColor: colorScheme.surfaceContainerHighest,
-                        builder: (context) => SelectProvinceSheet(
-                          homeViewModel: viewModel,
-                        ),
+                        builder: (context) =>
+                            SelectProvinceSheet(homeViewModel: viewModel),
                       );
                     },
                     child: const Icon(Icons.add),

@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -11,7 +12,7 @@ import 'checkin_success_screen.dart';
 class CheckinScreen extends StatefulWidget {
   final MilestoneModel milestone;
   final String journeyId; // localJourneyId
-  final String userId;    // từ auth state — không hard-code
+  final String userId; // từ auth state — không hard-code
 
   const CheckinScreen({
     super.key,
@@ -72,8 +73,11 @@ class _CheckinScreenState extends State<CheckinScreen>
           timeLimit: Duration(seconds: 8),
         ),
       );
-      if (mounted) _vm.updateLocation(pos.latitude, pos.longitude, pos.accuracy);
-    } catch (_) {/* ignore — stream sẽ cập nhật tiếp */}
+      if (mounted)
+        _vm.updateLocation(pos.latitude, pos.longitude, pos.accuracy);
+    } catch (_) {
+      /* ignore — stream sẽ cập nhật tiếp */
+    }
 
     // Subscribe stream liên tục
     const settings = LocationSettings(
@@ -82,8 +86,9 @@ class _CheckinScreenState extends State<CheckinScreen>
     );
     _locationSub = Geolocator.getPositionStream(locationSettings: settings)
         .listen((pos) {
-      if (mounted) _vm.updateLocation(pos.latitude, pos.longitude, pos.accuracy);
-    });
+          if (mounted)
+            _vm.updateLocation(pos.latitude, pos.longitude, pos.accuracy);
+        });
   }
 
   // ── ViewModel listener ────────────────────────────────────────────────────
@@ -93,10 +98,7 @@ class _CheckinScreenState extends State<CheckinScreen>
     if (_vm.submitState == CheckinSubmitState.success) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (_) => CheckinSuccessScreen(
-            milestone: widget.milestone,
-            checkinResult: _vm.checkinResult ?? {},
-          ),
+          builder: (_) => CheckinSuccessScreen(milestone: widget.milestone),
         ),
       );
     } else if (_vm.submitState == CheckinSubmitState.error) {
@@ -209,8 +211,10 @@ class _CheckinScreenState extends State<CheckinScreen>
                         _vm.gpsState == CheckinGpsState.acquiring
                             ? 'GPS: Đang xác định vị trí...'
                             : 'GPS: Đã kết nối vị trí',
-                        style:
-                            TextStyle(fontSize: 12, color: cs.onSurfaceVariant),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: cs.onSurfaceVariant,
+                        ),
                       ),
                     ],
                   ),
@@ -219,9 +223,7 @@ class _CheckinScreenState extends State<CheckinScreen>
                 const SizedBox(height: 12),
 
                 // ── Radar ─────────────────────────────────────────────────
-                Expanded(
-                  child: Center(child: _buildRadar(cs, inRange)),
-                ),
+                Expanded(child: Center(child: _buildRadar(cs, inRange))),
 
                 // ── Milestone info ────────────────────────────────────────
                 Padding(
@@ -257,14 +259,13 @@ class _CheckinScreenState extends State<CheckinScreen>
                                 color: cs.onSurface,
                               ),
                             ),
-                            if (widget.milestone.altitude != null)
-                              Text(
-                                widget.milestone.altitudeLabel,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: cs.onSurfaceVariant,
-                                ),
+                            Text(
+                              widget.milestone.altitudeLabel,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: cs.onSurfaceVariant,
                               ),
+                            ),
                           ],
                         ),
                       ),
@@ -308,8 +309,8 @@ class _CheckinScreenState extends State<CheckinScreen>
                             inRange
                                 ? 'Bạn đang trong phạm vi check-in! (Cách ${_vm.distanceLabel})'
                                 : 'Cần ở trong vòng bán kính '
-                                    '${widget.milestone.checkinRadiusMeters.toInt()}m. '
-                                    'Khoảng cách hiện tại: ${_vm.distanceLabel}',
+                                      '${widget.milestone.checkinRadiusMeters.toInt()}m. '
+                                      'Khoảng cách hiện tại: ${_vm.distanceLabel}',
                             style: TextStyle(
                               fontSize: 12,
                               color: inRange
@@ -330,8 +331,7 @@ class _CheckinScreenState extends State<CheckinScreen>
                   padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                   child: TrekkingPrimaryButton(
                     label: 'Check-in ngay',
-                    loading:
-                        _vm.submitState == CheckinSubmitState.submitting,
+                    loading: _vm.submitState == CheckinSubmitState.submitting,
                     onPressed: _vm.canCheckin ? _performCheckin : null,
                   ),
                 ),
@@ -377,8 +377,9 @@ class _CheckinScreenState extends State<CheckinScreen>
   }
 
   Widget _buildRadar(ColorScheme cs, bool inRange) {
-    final radarColor =
-        inRange ? const Color(0xFF4CAF50) : const Color(0xFF2E4A2E);
+    final radarColor = inRange
+        ? const Color(0xFF4CAF50)
+        : const Color(0xFF2E4A2E);
 
     return SizedBox(
       width: 260,
@@ -408,14 +409,18 @@ class _CheckinScreenState extends State<CheckinScreen>
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFFE8620A).withValues(alpha: 0.4),
+                            color: const Color(0xFFE8620A)
+                                .withValues(alpha: 0.4),
                             blurRadius: 12,
                             spreadRadius: 2,
                           ),
                         ],
                       ),
-                      child: const Icon(Icons.flag_rounded,
-                          color: Colors.white, size: 22),
+                      child: const Icon(
+                        Icons.flag_rounded,
+                        color: Colors.white,
+                        size: 22,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -447,14 +452,19 @@ class _CheckinScreenState extends State<CheckinScreen>
                                 : cs.primary,
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.person,
-                              color: Colors.white, size: 16),
+                          child: const Icon(
+                            Icons.person,
+                            color: Colors.white,
+                            size: 16,
+                          ),
                         ),
                         Text(
                           'Bạn\n(${_vm.distanceLabel})',
                           textAlign: TextAlign.center,
                           style: const TextStyle(
-                              color: Colors.white, fontSize: 9),
+                            color: Colors.white,
+                            fontSize: 9,
+                          ),
                         ),
                       ],
                     ),

@@ -345,11 +345,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get chooseFromLibrary => 'Chọn từ thư viện';
 
   @override
-  String featureComingSoon(String feature) {
-    return 'Tính năng sắp ra mắt';
-  }
-
-  @override
   String get otpVerificationTitle => 'Xác thực Email';
 
   @override
@@ -530,6 +525,25 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get milestoneCheckInButton => 'Check In';
+
+  @override
+  String get journeyMilestonesLoading => 'Đang tải điểm check-in…';
+
+  @override
+  String get journeyMilestonesLoadFailed => 'Chưa tải được điểm check-in';
+
+  @override
+  String get journeyMilestonesEmpty => 'Chưa có điểm check-in';
+
+  @override
+  String get journeyMilestonesEmptyMessage =>
+      'Cung đường này chưa có cột mốc check-in chính thức. Quản trị viên cần thêm cột mốc cho cung đường trước khi bạn có thể check-in. Bạn vẫn có thể mở bản đồ để đánh dấu mốc cá nhân.';
+
+  @override
+  String get journeyReloadMilestones => 'Tải lại cột mốc';
+
+  @override
+  String get journeyCheckinClose => 'Đóng';
 
   @override
   String milestoneAltitude(String altitude) {
@@ -719,6 +733,11 @@ class AppLocalizationsVi extends AppLocalizations {
   String get shareAchievementButton => 'Chia sẻ thành tích';
 
   @override
+  String featureComingSoon(String feature) {
+    return 'Tính năng sắp ra mắt';
+  }
+
+  @override
   String milestoneConquerBadgeTitle(String name) {
     return 'Chinh phục $name';
   }
@@ -792,4 +811,156 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get allBadgesTitle => 'Tất cả huy hiệu';
+
+  @override
+  String get rankSectionTitle => 'HẠNG TREKKING CỦA BẠN';
+
+  @override
+  String rankXpEarned(String xp) {
+    return 'Bạn nhận được +$xp XP';
+  }
+
+  @override
+  String rankPromoted(String name, int level) {
+    return 'Lên hạng $name · Level $level!';
+  }
+
+  @override
+  String get rankDetailTitle => 'Hạng và XP';
+
+  @override
+  String rankLevel(int level) {
+    return 'Level $level';
+  }
+
+  @override
+  String get rankViewDetails => 'Xem chi tiết các hạng';
+
+  @override
+  String get rankCurrentXp => 'XP hiện tại';
+
+  @override
+  String rankNextTarget(String name) {
+    return 'Hạng tiếp theo: $name';
+  }
+
+  @override
+  String rankXpRemaining(String xp) {
+    return 'Cần thêm $xp XP để đạt mốc XP tiếp theo';
+  }
+
+  @override
+  String get rankXpReached =>
+      'Đã đủ XP. Hoàn thành các điều kiện còn lại để lên hạng.';
+
+  @override
+  String get rankHighest => 'Bạn đã đạt hạng cao nhất!';
+
+  @override
+  String get rankRequirementsTitle => 'ĐIỀU KIỆN LÊN HẠNG';
+
+  @override
+  String get rankRequirementsHint =>
+      'Cần đạt đủ các điều kiện. Hạng được cập nhật theo hoạt động đã xác nhận của bạn.';
+
+  @override
+  String get rankAllTitle => 'TẤT CẢ CÁC HẠNG';
+
+  @override
+  String get rankCurrent => 'Hiện tại';
+
+  @override
+  String get rankUnavailable => 'Chưa tải được hạng của bạn';
+
+  @override
+  String get rankLoading => 'Đang tải hạng…';
+
+  @override
+  String get rankCatalogEmpty => 'Chưa có danh sách hạng';
+
+  @override
+  String get rankRetry => 'Thử lại';
+
+  @override
+  String get rankXpLabel => 'Điểm XP';
+
+  @override
+  String get rankJourneysLabel => 'Hành trình hoàn thành';
+
+  @override
+  String get rankProvincesLabel => 'Tỉnh thành đã đi';
+
+  @override
+  String get rankBadgesLabel => 'Huy hiệu';
+
+  @override
+  String get rankDistanceLabel => 'Quãng đường (km)';
+
+  @override
+  String get rankContributionsLabel => 'Đóng góp được duyệt';
+
+  @override
+  String rankOverallProgress(String percent) {
+    return 'Tiến độ các điều kiện: $percent%';
+  }
+
+  @override
+  String get rankPromotionTitle => 'Chúc mừng bạn thăng hạng!';
+
+  @override
+  String get xpHistoryHint =>
+      'XP được tự động cập nhật sau hoạt động đã xác nhận. Xem lại các lần nhận và điều chỉnh XP tại đây.';
+
+  @override
+  String get xpRouteApproved => 'Đóng góp cung đường được duyệt';
+
+  @override
+  String get xpJourneyCompleted => 'Hoàn thành hành trình';
+
+  @override
+  String get xpHistoryTitle => 'Lịch sử XP';
+
+  @override
+  String get xpReversal => 'Thu hồi XP';
+
+  @override
+  String get xpMilestoneCheckin => 'Check-in cột mốc';
+
+  @override
+  String get xpHistoryLoadMore => 'Xem thêm';
+
+  @override
+  String get xpJourneyElevation => 'Độ cao đã chinh phục';
+
+  @override
+  String get xpOtherActivity => 'Phần thưởng hoạt động';
+
+  @override
+  String get xpAdminAdjustment => 'Điều chỉnh XP';
+
+  @override
+  String get xpJourneyDistance => 'Quãng đường đã đi';
+
+  @override
+  String get xpProvinceVisited => 'Khám phá tỉnh mới';
+
+  @override
+  String get rankPromotionMessage =>
+      'Những hành trình của bạn đã tạo nên một cột mốc mới. Tiếp tục khám phá nhé!';
+
+  @override
+  String get xpPlaceApproved => 'Đóng góp địa điểm được duyệt';
+
+  @override
+  String get xpPlaceVisited => 'Ghé thăm địa điểm';
+
+  @override
+  String get rankPromotionContinue => 'Tiếp tục khám phá';
+
+  @override
+  String get xpBadgeEarned => 'Nhận huy hiệu';
+
+  @override
+  String get xpHistoryEmpty =>
+      'Bạn chưa có lịch sử XP. Bắt đầu hành trình khám phá nhé!';
 }

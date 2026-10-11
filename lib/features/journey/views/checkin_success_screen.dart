@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
 import '../../../core/widgets/buttons/btn_login_style.dart';
 import '../../../core/widgets/buttons/btn_outline_style.dart';
 import '../../../core/widgets/cards/profile_achievement_card.dart';
@@ -15,12 +17,14 @@ class CheckinSuccessScreen extends StatefulWidget {
   final MilestoneModel? milestone;
   final JourneyModel? journey;
   final List<AchievementModel>? achievements;
+  final bool journeyFinished;
 
   const CheckinSuccessScreen({
     super.key,
     this.milestone,
     this.journey,
     this.achievements,
+    this.journeyFinished = false,
   });
 
   @override
@@ -71,9 +75,8 @@ class _CheckinSuccessScreenState extends State<CheckinSuccessScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => BadgeDetailScreen(
-                                badge: items.first,
-                              ),
+                              builder: (context) =>
+                                  BadgeDetailScreen(badge: items.first),
                             ),
                           );
                         }
@@ -128,23 +131,28 @@ class _CheckinSuccessScreenState extends State<CheckinSuccessScreen> {
                       style: TextStyle(
                         fontSize: 13,
                         height: 1.4,
-                        color: colorScheme.onSurfaceVariant.withValues(alpha: 0.85),
+                        color: colorScheme.onSurfaceVariant.withValues(
+                          alpha: 0.85,
+                        ),
                       ),
                     ),
                   ),
                   const SizedBox(height: 24),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      l10n.achievementsEarnedTitle,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 0.8,
-                        color: colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+                  if (_viewModel.achievementsEarned.isNotEmpty)
+                    Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        l10n.achievementsEarnedTitle,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.8,
+                          color: colorScheme.onSurfaceVariant.withValues(
+                            alpha: 0.8,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
                   const SizedBox(height: 12),
                   ..._viewModel.getAchievements(l10n).map((item) {
                     return Padding(
@@ -158,9 +166,8 @@ class _CheckinSuccessScreenState extends State<CheckinSuccessScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => BadgeDetailScreen(
-                                badge: item,
-                              ),
+                              builder: (context) =>
+                                  BadgeDetailScreen(badge: item),
                             ),
                           );
                         },
@@ -196,35 +203,39 @@ class _CheckinSuccessScreenState extends State<CheckinSuccessScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: BtnLoginPrimary(
-                      text: l10n.continueJourneyButton,
+                      text: widget.journeyFinished
+                          ? 'Quay lại hành trình'
+                          : l10n.continueJourneyButton,
                       onPressed: () {
                         Navigator.pop(context, true);
                       },
                     ),
                   ),
                   const SizedBox(height: 12),
-                  SizedBox(
-                    width: double.infinity,
-                    child: BtnOutlineStyle(
-                      text: l10n.ratePlaceButton,
-                      icon: Icon(
-                        Icons.star_outline,
-                        color: colorScheme.primary,
-                        size: 20,
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => RateMilestoneScreen(
-                              milestone: widget.milestone,
-                              journey: widget.journey,
+                  if (widget.journeyFinished)
+                    SizedBox(
+                      width: double.infinity,
+                      child: BtnOutlineStyle(
+                        text: l10n.ratePlaceButton,
+                        icon: Icon(
+                          Icons.star_outline,
+                          color: colorScheme.primary,
+                          size: 20,
+                        ),
+                        onPressed: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RateMilestoneScreen(
+                                milestone: widget.milestone,
+                                journey: widget.journey,
+                              ),
                             ),
-                          ),
-                        );
-                      },
+                          );
+                          if (context.mounted) Navigator.pop(context, true);
+                        },
+                      ),
                     ),
-                  ),
                   const SizedBox(height: 12),
                   SizedBox(
                     width: double.infinity,
@@ -232,10 +243,50 @@ class _CheckinSuccessScreenState extends State<CheckinSuccessScreen> {
                       text: l10n.shareAchievementButton,
                       icon: const SizedBox.shrink(),
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(l10n.featureComingSoon(l10n.shareAchievementButton)),
-                            duration: const Duration(seconds: 1),
+                        final text =
+                            'Mình đã check-in ${_viewModel.destinationName}! '
+                            'Cao độ: ${_viewModel.maxElevationText}. '
+                            '${widget.journey?.name ?? ''} #TrekViet';
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (sheetContext) => SafeArea(
+                            child: Padding(
+                              padding: const EdgeInsets.all(24),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    l10n.shareAchievementButton,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  SelectableText(text),
+                                  const SizedBox(height: 16),
+                                  BtnLoginPrimary(
+                                    text: 'Sao chép để chia sẻ',
+                                    onPressed: () async {
+                                      await Clipboard.setData(
+                                        ClipboardData(text: text),
+                                      );
+                                      if (!sheetContext.mounted) return;
+                                      Navigator.pop(sheetContext);
+                                      if (context.mounted)
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                  'Đã sao chép thành tích.',
+                                                ),
+                                              ),
+                                            );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         );
                       },

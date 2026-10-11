@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+
 import '../../../app/app_fonts.dart';
 
 class VietNamMapPainter extends CustomPainter {
@@ -44,8 +45,7 @@ class VietNamMapPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final fillPaint = Paint()
-      ..style = PaintingStyle.fill;
+    final fillPaint = Paint()..style = PaintingStyle.fill;
 
     final strokePaint = Paint()
       ..style = PaintingStyle.stroke
@@ -54,10 +54,7 @@ class VietNamMapPainter extends CustomPainter {
 
     final shadowPaint = Paint()
       ..color = Colors.black.withValues(alpha: 0.4)
-      ..maskFilter = const MaskFilter.blur(
-        BlurStyle.normal,
-        4.0,
-      );
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4.0);
 
     // ============================================================
     // 1. SHADOW MAP
@@ -68,10 +65,7 @@ class VietNamMapPainter extends CustomPainter {
     canvas.translate(0, 10);
 
     for (final path in paths) {
-      canvas.drawPath(
-        path,
-        shadowPaint,
-      );
+      canvas.drawPath(path, shadowPaint);
     }
 
     canvas.restore();
@@ -89,10 +83,7 @@ class VietNamMapPainter extends CustomPainter {
     canvas.translate(0, 5);
 
     for (final path in paths) {
-      canvas.drawPath(
-        path,
-        deepPaint,
-      );
+      canvas.drawPath(path, deepPaint);
     }
 
     canvas.restore();
@@ -109,37 +100,25 @@ class VietNamMapPainter extends CustomPainter {
 
       // Shadow cho tỉnh đang chọn
       if (isSelected) {
-        canvas.drawShadow(
-          path,
-          Colors.black,
-          10,
-          true,
-        );
+        canvas.drawShadow(path, Colors.black, 10, true);
       }
 
       // Màu tỉnh
       fillPaint.color = isSelected
           ? _colorSelected
           : isVisited
-              ? _colorVisited
-              : _colorNormal;
+          ? _colorVisited
+          : _colorNormal;
 
-      canvas.drawPath(
-        path,
-        fillPaint,
-      );
+      canvas.drawPath(path, fillPaint);
 
-      canvas.drawPath(
-        path,
-        strokePaint,
-      );
+      canvas.drawPath(path, strokePaint);
 
       // ========================================================
       // PATTERN CHECK-IN
       // ========================================================
 
-      if (checkinPathIndices.contains(i) &&
-          paternImage != null) {
+      if (checkinPathIndices.contains(i) && paternImage != null) {
         canvas.save();
 
         canvas.clipPath(path);
@@ -147,14 +126,8 @@ class VietNamMapPainter extends CustomPainter {
         final bounds = path.getBounds();
 
         final matrix = Matrix4.identity()
-          ..translate(
-            bounds.left,
-            bounds.top,
-          )
-          ..scale(
-            0.06,
-            0.06,
-          );
+          ..translate(bounds.left, bounds.top)
+          ..scale(0.06, 0.06);
 
         final patternShader = ui.ImageShader(
           paternImage!,
@@ -165,13 +138,9 @@ class VietNamMapPainter extends CustomPainter {
 
         final patternPaint = Paint()
           ..shader = patternShader
-          ..color = const Color(0xFFFFFFFF)
-              .withValues(alpha: 0.75);
+          ..color = const Color(0xFFFFFFFF).withValues(alpha: 0.75);
 
-        canvas.drawRect(
-          bounds,
-          patternPaint,
-        );
+        canvas.drawRect(bounds, patternPaint);
 
         canvas.restore();
       }
@@ -213,7 +182,6 @@ class VietNamMapPainter extends CustomPainter {
         title: 'Đ. Phú Quốc',
         subTitle: 'An Giang',
         posCenter: phuQuoc,
-        showLogo: true,
       );
     }
   }
@@ -229,7 +197,8 @@ class VietNamMapPainter extends CustomPainter {
     required Offset posCenter,
     bool showLogo = false,
   }) {
-    const logoSize = 8.0;
+    const logoWidth = 12.0;
+    const logoHeight = 8.0;
     const spacing = 2.0;
 
     // ------------------------------------------------------------
@@ -240,9 +209,7 @@ class VietNamMapPainter extends CustomPainter {
       text: TextSpan(
         text: title,
         style: TextStyle(
-          color: Theme.of(context)
-              .colorScheme
-              .onSurface,
+          color: Theme.of(context).colorScheme.onSurface,
           fontSize: 6,
           fontWeight: FontWeight.bold,
           fontFamily: AppFonts.primary,
@@ -260,9 +227,7 @@ class VietNamMapPainter extends CustomPainter {
       text: TextSpan(
         text: '($subTitle)',
         style: TextStyle(
-          color: Theme.of(context)
-              .colorScheme
-              .onSurfaceVariant,
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
           fontSize: 5,
           fontStyle: FontStyle.italic,
           fontFamily: AppFonts.primary,
@@ -279,25 +244,20 @@ class VietNamMapPainter extends CustomPainter {
     final hasLogo = showLogo && logoImage != null;
 
     final titleRowWidth =
-        titlePainter.width +
-        (hasLogo ? logoSize + spacing : 0);
+        titlePainter.width + (hasLogo ? logoWidth + spacing : 0);
 
     final totalWidth = titleRowWidth > subTitlePainter.width
         ? titleRowWidth
         : subTitlePainter.width;
 
     final totalHeight =
-        (titlePainter.height > logoSize
-                ? titlePainter.height
-                : logoSize) +
-            subTitlePainter.height +
-            1;
+        (titlePainter.height > logoHeight ? titlePainter.height : logoHeight) +
+        subTitlePainter.height +
+        1;
 
-    final startX =
-        posCenter.dx - totalWidth / 2;
+    final startX = posCenter.dx - totalWidth / 2;
 
-    final startY =
-        posCenter.dy - totalHeight / 2;
+    final startY = posCenter.dy - totalHeight / 2;
 
     // ------------------------------------------------------------
     // LOGO
@@ -313,58 +273,39 @@ class VietNamMapPainter extends CustomPainter {
         logoImage!.height.toDouble(),
       );
 
-      final dst = Rect.fromLTWH(
-        startX,
-        startY,
-        logoSize,
-        logoSize,
-      );
+      final dst = Rect.fromLTWH(startX, startY, logoWidth, logoHeight);
 
       canvas.drawImageRect(
         logoImage!,
         src,
         dst,
-        Paint()
-          ..filterQuality =
-              FilterQuality.high,
+        Paint()..filterQuality = FilterQuality.high,
       );
 
-      titleX += logoSize + spacing;
+      titleX += logoWidth + spacing;
     }
 
     // ------------------------------------------------------------
     // TITLE DRAW
     // ------------------------------------------------------------
 
-    final titleY = startY +
-        ((logoSize - titlePainter.height)
-                .clamp(0.0, double.infinity) /
-            2);
+    final titleY =
+        startY +
+        ((logoHeight - titlePainter.height).clamp(0.0, double.infinity) / 2);
 
-    titlePainter.paint(
-      canvas,
-      Offset(
-        titleX,
-        titleY,
-      ),
-    );
+    titlePainter.paint(canvas, Offset(titleX, titleY));
 
     // ------------------------------------------------------------
     // SUBTITLE DRAW
     // ------------------------------------------------------------
 
-    final rowHeight =
-        titlePainter.height > logoSize
-            ? titlePainter.height
-            : logoSize;
+    final rowHeight = titlePainter.height > logoHeight
+        ? titlePainter.height
+        : logoHeight;
 
     subTitlePainter.paint(
       canvas,
-      Offset(
-        posCenter.dx -
-            subTitlePainter.width / 2,
-        startY + rowHeight + 1,
-      ),
+      Offset(posCenter.dx - subTitlePainter.width / 2, startY + rowHeight + 1),
     );
   }
 
@@ -373,26 +314,16 @@ class VietNamMapPainter extends CustomPainter {
   // ==============================================================
 
   @override
-  bool shouldRepaint(
-    covariant VietNamMapPainter oldDelegate,
-  ) {
-    return oldDelegate.selectedPathIndex !=
-            selectedPathIndex ||
+  bool shouldRepaint(covariant VietNamMapPainter oldDelegate) {
+    return oldDelegate.selectedPathIndex != selectedPathIndex ||
         oldDelegate.paths != paths ||
-        oldDelegate.visitedPathIndices !=
-            visitedPathIndices ||
-        oldDelegate.checkinPathIndices !=
-            checkinPathIndices ||
-        oldDelegate.paternImage !=
-            paternImage ||
-        oldDelegate.logoImage !=
-            logoImage ||
-        oldDelegate.posHoangSa !=
-            posHoangSa ||
-        oldDelegate.posTruongSa !=
-            posTruongSa ||
-        oldDelegate.posPhuQuoc !=
-            posPhuQuoc;
+        oldDelegate.visitedPathIndices != visitedPathIndices ||
+        oldDelegate.checkinPathIndices != checkinPathIndices ||
+        oldDelegate.paternImage != paternImage ||
+        oldDelegate.logoImage != logoImage ||
+        oldDelegate.posHoangSa != posHoangSa ||
+        oldDelegate.posTruongSa != posTruongSa ||
+        oldDelegate.posPhuQuoc != posPhuQuoc;
   }
 
   // ==============================================================

@@ -22,7 +22,8 @@ class ForgotPasswordScreen extends StatefulWidget {
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   late final SecureTokenStorage _tokenStorage;
   late final AuthEventBus _eventBus;
@@ -35,7 +36,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     super.initState();
     _tokenStorage = const SecureTokenStorage();
     _eventBus = AuthEventBus(); // singleton
-    _dio = DioClient.createDio(tokenStorage: _tokenStorage, eventBus: _eventBus);
+    _dio = DioClient.createDio(
+      tokenStorage: _tokenStorage,
+      eventBus: _eventBus,
+    );
     _repository = AuthRepositoryImpl(dio: _dio, tokenStorage: _tokenStorage);
     viewModel = ForgotPasswordViewModel(repository: _repository);
 
@@ -74,7 +78,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               Navigator.of(dialogContext).pop();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(AppLocalizations.of(context)!.otpVerifiedSuccess),
+                  content: Text(
+                    AppLocalizations.of(context)!.otpVerifiedSuccess,
+                  ),
                   backgroundColor: Colors.green,
                 ),
               );
@@ -166,13 +172,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         : _buildEnterEmailAddress(),
 
                     const SizedBox(height: 32),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         Text(
                           l10n.backToLogin,
-                          style: TextStyle(
-                              color: colorScheme.onSurfaceVariant),
+                          style: TextStyle(color: colorScheme.onSurfaceVariant),
                         ),
                         TextButton(
                           onPressed: () => Navigator.pop(context),
@@ -232,10 +238,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         Text(
           l10n.resetPasswordDescription,
           textAlign: TextAlign.center,
-          style: TextStyle(
-            color: colorScheme.onSurfaceVariant,
-            fontSize: 12,
-          ),
+          style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: 12),
         ),
         const SizedBox(height: 16),
         EditTextAuthCustom(
@@ -245,7 +248,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           controller: _passwordController,
           suffixIcon: IconButton(
             icon: Icon(
-              viewModel.isPasswordObscured ? Icons.visibility_off : Icons.visibility,
+              viewModel.isPasswordObscured
+                  ? Icons.visibility_off
+                  : Icons.visibility,
               color: colorScheme.onSurfaceVariant,
             ),
             onPressed: () => viewModel.togglePasswordVisibility(),
@@ -259,7 +264,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           controller: _confirmPasswordController,
           suffixIcon: IconButton(
             icon: Icon(
-              viewModel.isConfirmPasswordObscured ? Icons.visibility_off : Icons.visibility,
+              viewModel.isConfirmPasswordObscured
+                  ? Icons.visibility_off
+                  : Icons.visibility,
               color: colorScheme.onSurfaceVariant,
             ),
             onPressed: () => viewModel.toggleConfirmPasswordVisibility(),

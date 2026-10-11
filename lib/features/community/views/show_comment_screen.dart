@@ -25,7 +25,7 @@ class _ShowCommentScreenState extends State<ShowCommentScreen> {
   @override
   void initState() {
     super.initState();
-    final targetPostId = widget.post?.postId ?? widget.postId;
+    final targetPostId = widget.post.postId;
     _viewModel = CommentViewModel(postId: targetPostId);
   }
 

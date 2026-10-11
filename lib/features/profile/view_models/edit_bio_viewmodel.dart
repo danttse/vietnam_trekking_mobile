@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+
 import '../data/models/profile_model.dart';
+import '../../../core/services/user_api_service.dart';
 
 class EditBioViewModel extends ChangeNotifier {
-  static const int maxBioLength = 160;
+  static const int maxBioLength = 500;
+  final UserApiService _api;
+  bool _disposed = false;
+  EditBioViewModel({UserApiService? api}) : _api = api ?? UserApiService();
 
   final TextEditingController bioController = TextEditingController();
 
@@ -35,11 +40,6 @@ class EditBioViewModel extends ChangeNotifier {
 
   /// Validate bio trước khi lưu
   bool _validate() {
-    if (bioController.text.trim().isEmpty) {
-      _errorMessage = 'Bio không được để trống.';
-      notifyListeners();
-      return false;
-    }
     if (isOverLimit) {
       _errorMessage = 'Bio không được vượt quá $maxBioLength ký tự.';
       notifyListeners();
@@ -63,13 +63,10 @@ class EditBioViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // TODO: Thay bằng API call thực tế
-      await Future.delayed(const Duration(milliseconds: 600));
+      final savedBio = await _api.updateBio(bioController.text.trim());
+      if (_disposed) return;
 
-      final updatedProfile = _copyProfileWithBio(
-        currentProfile,
-        bioController.text.trim(),
-      );
+      final updatedProfile = _copyProfileWithBio(currentProfile, savedBio);
 
       // Gọi callback → cập nhật ProfileViewModel từ Provider
       onSaved(updatedProfile);
@@ -79,11 +76,12 @@ class EditBioViewModel extends ChangeNotifier {
 
       if (context.mounted) Navigator.of(context).pop();
     } catch (e) {
+      if (_disposed) return;
       _errorMessage = 'Lưu bio thất bại. Vui lòng thử lại.';
       notifyListeners();
     } finally {
       _isLoading = false;
-      notifyListeners();
+      if (!_disposed) notifyListeners();
     }
   }
 
@@ -111,6 +109,7 @@ class EditBioViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
+    _disposed = true;
     bioController.removeListener(_onTextChanged);
     bioController.dispose();
     super.dispose();

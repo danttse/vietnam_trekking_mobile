@@ -4,16 +4,38 @@ import 'package:path/path.dart';
 /// Singleton quản lý SQLite database cho TrekVN offline-first.
 class DatabaseHelper {
   static const String _dbName = 'trekvn_local.db';
-  static const int _dbVersion = 2;
+  static const int _dbVersion = 4;
 
   DatabaseHelper._internal();
   static final DatabaseHelper instance = DatabaseHelper._internal();
 
   Database? _db;
+  Future<Database>? _opening;
+
+  /// Isolated database for SQLite migration/integration tests.
+  DatabaseHelper.forTesting(Database database) : _db = database;
+
+  static Future<DatabaseHelper> openForTesting(String path) async {
+    final helper = DatabaseHelper._internal();
+    helper._db = await openDatabase(
+      path,
+      version: _dbVersion,
+      onConfigure: helper._onConfigure,
+      onCreate: helper._onCreate,
+      onUpgrade: helper._onUpgrade,
+      singleInstance: false,
+    );
+    return helper;
+  }
 
   Future<Database> get database async {
-    _db ??= await _initDatabase();
-    return _db!;
+    if (_db != null) return _db!;
+    try {
+      _db = await (_opening ??= _initDatabase());
+      return _db!;
+    } finally {
+      _opening = null;
+    }
   }
 
   Future<Database> _initDatabase() async {
@@ -37,37 +59,101 @@ class DatabaseHelper {
   Future<void> _onCreate(Database db, int version) async {
     await _createTables(db);
     await _createIndexes(db);
+    await _migrateV3toV4(db);
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 2) {
       await _migrateV1toV2(db);
     }
+    if (oldVersion < 3) {
+      await _migrateV2toV3(db);
+    }
+    if (oldVersion < 4) await _migrateV3toV4(db);
+    await _createIndexes(db);
   }
 
   /// Migration v1 → v2:
   /// Thêm các cột gamification vào bảng local_user.
   Future<void> _migrateV1toV2(Database db) async {
-    final batch = db.batch();
+    for (final definition in [
+      'currentRankCode TEXT',
+      'currentRankName TEXT',
+      'currentRankLevel INTEGER',
+      'totalXp INTEGER NOT NULL DEFAULT 0',
+      'nextRankCode TEXT',
+      'nextRankXp INTEGER',
+      'rankUpdatedAt TEXT',
+    ]) {
+      await _addColumn(db, 'local_user', definition);
+    }
+  }
 
-    // Thêm từng cột mới — SQLite không hỗ trợ ADD MULTIPLE COLUMNS
-    // nên phải chạy từng câu lệnh riêng.
-    batch.execute(
-        'ALTER TABLE local_user ADD COLUMN currentRankCode TEXT');
-    batch.execute(
-        'ALTER TABLE local_user ADD COLUMN currentRankName TEXT');
-    batch.execute(
-        'ALTER TABLE local_user ADD COLUMN currentRankLevel INTEGER');
-    batch.execute(
-        'ALTER TABLE local_user ADD COLUMN totalXp INTEGER NOT NULL DEFAULT 0');
-    batch.execute(
-        'ALTER TABLE local_user ADD COLUMN nextRankCode TEXT');
-    batch.execute(
-        'ALTER TABLE local_user ADD COLUMN nextRankXp INTEGER');
-    batch.execute(
-        'ALTER TABLE local_user ADD COLUMN rankUpdatedAt TEXT');
+  Future<void> _addColumn(Database db, String table, String definition) async {
+    final columns = await db.rawQuery('PRAGMA table_info($table)');
+    if (!columns.any((row) => row['name'] == definition.split(' ').first)) {
+      await db.execute('ALTER TABLE $table ADD COLUMN $definition');
+    }
+  }
 
-    await batch.commit(noResult: true);
+  Future<void> _migrateV2toV3(Database db) async {
+    for (final d in [
+      'scope TEXT NOT NULL DEFAULT "ROUTE"',
+      'waypointCount INTEGER DEFAULT 0',
+    ]) {
+      await _addColumn(db, 'downloaded_maps', d);
+    }
+    for (final d in [
+      'elevationMeters INTEGER',
+      'imageMapUrl TEXT',
+      'offlineMapAvailable INTEGER DEFAULT 0',
+      'offlineMapVersion INTEGER',
+      'offlineMapSizeBytes INTEGER',
+    ]) {
+      await _addColumn(db, 'cached_places', d);
+    }
+    for (final d in ['note TEXT', 'participantCount INTEGER DEFAULT 1']) {
+      await _addColumn(db, 'local_journeys', d);
+    }
+  }
+
+  Future<void> _migrateV3toV4(Database db) async {
+    await _addColumn(db, 'local_journeys', 'plannedEndAt TEXT');
+    final visitColumns = await db.rawQuery(
+      'PRAGMA table_info(visited_provinces)',
+    );
+    if (!visitColumns.any((row) => row['name'] == 'ownerId')) {
+      await db.execute(
+        'ALTER TABLE visited_provinces RENAME TO visited_provinces_v3',
+      );
+      await db.execute(
+        '''CREATE TABLE visited_provinces (
+        ownerId TEXT NOT NULL, provinceId TEXT NOT NULL, name TEXT NOT NULL,
+        firstVisitedAt TEXT, lastVisitedAt TEXT, visitCount INTEGER DEFAULT 1,
+        source TEXT, syncStatus TEXT DEFAULT 'SYNCED', updatedAt TEXT,
+        PRIMARY KEY(ownerId, provinceId), FOREIGN KEY(provinceId) REFERENCES cached_provinces(provinceId))''',
+      );
+      // Old rows contain no account identity. Preserve them without exposing
+      // them to whichever user happens to sign in after the upgrade.
+      await db.execute(
+        "INSERT INTO visited_provinces SELECT '', provinceId, name, firstVisitedAt, lastVisitedAt, visitCount, source, syncStatus, updatedAt FROM visited_provinces_v3",
+      );
+      await db.execute('DROP TABLE visited_provinces_v3');
+    }
+    await db.execute(
+      'CREATE INDEX IF NOT EXISTS idx_visited_owner ON visited_provinces(ownerId, lastVisitedAt)',
+    );
+    await db.execute('''CREATE TABLE IF NOT EXISTS offline_snapshots (
+      ownerId TEXT NOT NULL DEFAULT '', resource TEXT NOT NULL, payload TEXT NOT NULL,
+      updatedAt TEXT NOT NULL, PRIMARY KEY(ownerId, resource))''');
+    await db.execute('''CREATE TABLE IF NOT EXISTS offline_outbox (
+      operationId TEXT PRIMARY KEY, ownerId TEXT NOT NULL, method TEXT NOT NULL,
+      path TEXT NOT NULL, body TEXT NOT NULL, journeyRef TEXT,
+      state TEXT NOT NULL DEFAULT 'PENDING', attempts INTEGER NOT NULL DEFAULT 0,
+      lastError TEXT, createdAt TEXT NOT NULL)''');
+    await db.execute(
+      'CREATE INDEX IF NOT EXISTS idx_offline_outbox_owner ON offline_outbox(ownerId, state, createdAt)',
+    );
   }
 
   // ---------------------------------------------------------------------------
@@ -121,9 +207,14 @@ class DatabaseHelper {
         description             TEXT,
         difficulty              TEXT,
         averageDurationMinutes  INTEGER,
+        elevationMeters         INTEGER,
         imageUrl                TEXT,
+        imageMapUrl             TEXT,
         ratingAverage           REAL,
         ratingCount             INTEGER,
+        offlineMapAvailable     INTEGER DEFAULT 0,
+        offlineMapVersion       INTEGER,
+        offlineMapSizeBytes     INTEGER,
         status                  TEXT,
         cachedAt                TEXT,
         updatedAt               TEXT,
@@ -189,6 +280,8 @@ class DatabaseHelper {
         provinceId        TEXT,
         name              TEXT NOT NULL,
         status            TEXT NOT NULL DEFAULT 'PLANNED',
+        note              TEXT,
+        participantCount  INTEGER DEFAULT 1,
         plannedStartAt    TEXT,
         startedAt         TEXT,
         completedAt       TEXT,
@@ -318,12 +411,14 @@ class DatabaseHelper {
     batch.execute('''
       CREATE TABLE IF NOT EXISTS downloaded_maps (
         mapId             TEXT PRIMARY KEY,
+        scope             TEXT NOT NULL DEFAULT 'ROUTE',
         trekkingPlaceId   TEXT,
         trekkingRouteId   TEXT,
         mapName           TEXT NOT NULL,
         localPath         TEXT NOT NULL,
         mapVersion        INTEGER,
         sizeBytes         INTEGER,
+        waypointCount     INTEGER DEFAULT 0,
         minZoom           INTEGER,
         maxZoom           INTEGER,
         minLatitude       REAL,
@@ -480,12 +575,24 @@ class DatabaseHelper {
 
     // downloaded_maps
     batch.execute('''
+      CREATE INDEX IF NOT EXISTS idx_maps_scope
+      ON downloaded_maps(scope)
+    ''');
+    batch.execute('''
       CREATE INDEX IF NOT EXISTS idx_maps_route
       ON downloaded_maps(trekkingRouteId)
     ''');
     batch.execute('''
       CREATE INDEX IF NOT EXISTS idx_maps_place
       ON downloaded_maps(trekkingPlaceId)
+    ''');
+    batch.execute('''
+      CREATE INDEX IF NOT EXISTS idx_maps_scope_place
+      ON downloaded_maps(scope, trekkingPlaceId)
+    ''');
+    batch.execute('''
+      CREATE INDEX IF NOT EXISTS idx_maps_scope_route
+      ON downloaded_maps(scope, trekkingRouteId)
     ''');
 
     // sync_queue
@@ -541,6 +648,8 @@ class DatabaseHelper {
   }
 
   static const List<String> _tableDeletionOrder = [
+    'offline_outbox',
+    'offline_snapshots',
     'local_contributions',
     'sync_queue',
     'downloaded_maps',

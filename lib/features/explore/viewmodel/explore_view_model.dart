@@ -1,104 +1,157 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import '../data/datasources/explore_sample_data.dart';
+
+import '../../../core/services/trekking_catalog_service.dart';
+import '../../../core/network/api_error_handler.dart';
 import '../data/models/explore_place_model.dart';
+import '../../route/data/models/route_model.dart';
 import '../data/models/popular_trail_model.dart';
 
+/// One source for chip order, labels and the backend region parameter.
+enum ExploreFilter {
+  all('Tất cả', null),
+  popular('Phổ biến', null),
+  north('Miền Bắc', 'NORTH'),
+  central('Miền Trung', 'CENTRAL'),
+  south('Miền Nam', 'SOUTH');
+
+  final String label;
+  final String? region;
+
+  const ExploreFilter(this.label, this.region);
+}
+
 class ExploreViewModel extends ChangeNotifier {
+  final TrekkingCatalogService _service;
+  ExploreViewModel({TrekkingCatalogService? service, bool autoLoad = true})
+    : _service = service ?? TrekkingCatalogService() {
+    if (autoLoad) load();
+  }
   String _searchQuery = '';
-  int _selectedRegion = 0;
-
+  ExploreFilter _selectedFilter = ExploreFilter.all;
+  bool isLoading = false;
+  String? error;
+  String? routesError;
+  bool _disposed = false;
+  int _request = 0;
+  Timer? _debounce;
+  List<ExplorePlaceModel> _places = [];
+  List<PopularTrailModel> _trails = [];
   String get searchQuery => _searchQuery;
-  int get selectedRegion => _selectedRegion;
+  int get selectedRegion => _selectedFilter.index;
+  ExploreFilter get selectedFilter => _selectedFilter;
+  List<ExplorePlaceModel> get featuredPlaces => _places.take(5).toList();
+  List<PopularTrailModel> get popularTrails => _trails;
+  List<ExplorePlaceModel> get recommendedPlaces => _places;
 
-  //SAMPLE
-  static const List<String> _northProvinces = [
-    'Lào Cai',
-    'Lai Châu',
-    'Yên Bái',
-    'Sơn La',
-    'Hà Giang',
-    'Hà Nội',
-    'Hòa Bình',
-    'Điện Biên',
-  ];
-
-  static const List<String> _centralProvinces = [
-    'Quảng Bình',
-    'Thừa Thiên Huế',
-    'Lâm Đồng',
-    'Đà Nẵng',
-    'Quảng Nam',
-    'Phú Yên',
-    'Khánh Hòa',
-  ];
-
-  static const List<String> _southProvinces = [
-    'Tây Ninh',
-    'Đồng Nai',
-    'Bình Thuận',
-    'TP.HCM',
-    'Bà Rịa',
-    'Long An',
-  ];
-
-  void setSearchQuery(String query) {
-    _searchQuery = query.trim();
+  void setSearchQuery(String value) {
+    _searchQuery = value.trim();
+    _request++;
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 350), load);
     notifyListeners();
   }
 
-  void setRegion(int index) {
-    if (_selectedRegion == index) return;
-    _selectedRegion = index;
+  Future<void> setRegion(int index) async {
+    if (index < 0 || index >= ExploreFilter.values.length) return;
+    final filter = ExploreFilter.values[index];
+    if (filter == _selectedFilter) return;
+    _selectedFilter = filter;
+    _debounce?.cancel();
+    await load();
+  }
+
+  Future<void> load() async {
+    final request = ++_request;
+    final filter = _selectedFilter;
+    final query = _searchQuery;
+    isLoading = true;
+    error = null;
+    routesError = null;
     notifyListeners();
-  }
-
-  bool _matchesRegion(String locationText) {
-    switch (_selectedRegion) {
-      case 0:
-        return _northProvinces.any((p) => locationText.contains(p));
-      case 1:
-        return _centralProvinces.any((p) => locationText.contains(p));
-      case 2:
-        return _southProvinces.any((p) => locationText.contains(p));
-      case 3:
-        return true;
-      default:
-        return true;
+    try {
+      final places = await _service.getPlaces(
+        query: query,
+        region: filter.region,
+      );
+      final routes = <List<RouteModel>>[];
+      String? routeFailure;
+      // Bound concurrent route calls while preserving the server's place order.
+      for (var start = 0; start < places.length; start += 6) {
+        if (_disposed || request != _request) return;
+        routes.addAll(
+          await Future.wait(
+            places.skip(start).take(6).map((p) async {
+              try {
+                return await _service.getRoutes(
+                  p['trekkingPlaceId'].toString(),
+                  place: p,
+                );
+              } catch (e) {
+                routeFailure = ApiErrorHandler.handle(e);
+                return <RouteModel>[];
+              }
+            }),
+          ),
+        );
+      }
+      if (_disposed || request != _request) return;
+      routesError = routeFailure;
+      _places = places.map((p) {
+        final images = p['images'] as List? ?? [];
+        return ExplorePlaceModel(
+          id: p['trekkingPlaceId'].toString(),
+          name: p['name'] as String? ?? '',
+          province: (p['address'] ?? '').toString(),
+          elevation: p['elevationMeters'] == null
+              ? '—'
+              : '${p['elevationMeters']} m',
+          difficulty: (p['difficulty'] ?? '').toString(),
+          rating: (p['ratingAverage'] as num? ?? 0).toDouble(),
+          reviewCount: (p['ratingCount'] as num? ?? 0).toInt(),
+          distance: '',
+          duration: p['averageDurationMinutes'] == null
+              ? '—'
+              : '${p['averageDurationMinutes']} phút',
+          imageUrl: images.isEmpty ? '' : images.first.toString(),
+        );
+      }).toList();
+      if (filter == ExploreFilter.popular) {
+        _places.sort((a, b) => b.rating.compareTo(a.rating));
+      }
+      _trails = routes
+          .expand((r) => r)
+          .map(
+            (r) => PopularTrailModel(
+              id: r.routeId,
+              name: r.name,
+              location: r.province ?? '',
+              length: '${r.distanceKm.toStringAsFixed(1)} km',
+              duration: '${r.estimatedDuration.inMinutes} phút',
+              difficulty: r.difficulty.name,
+              rating: 0,
+              imageUrl: r.imageUrl ?? '',
+            ),
+          )
+          .toList();
+    } catch (e) {
+      if (_disposed || request != _request) return;
+      error = ApiErrorHandler.handle(e);
+      _places = [];
+      _trails = [];
+    } finally {
+      if (!_disposed && request == _request) {
+        isLoading = false;
+        notifyListeners();
+      }
     }
   }
 
-  bool _matchesSearch(String name, String locationText) {
-    if (_searchQuery.isEmpty) return true;
-    final query = _searchQuery.toLowerCase();
-    return name.toLowerCase().contains(query) ||
-        locationText.toLowerCase().contains(query);
+  @override
+  void dispose() {
+    _disposed = true;
+    _debounce?.cancel();
+    super.dispose();
   }
-
-  List<ExplorePlaceModel> get featuredPlaces {
-    return ExploreSampleData.featuredPlaces.where((place) {
-      return _matchesRegion(place.province) &&
-          _matchesSearch(place.name, place.province);
-    }).toList();
-  }
-
-  List<PopularTrailModel> get popularTrails {
-    return ExploreSampleData.popularTrails.where((trail) {
-      return _matchesRegion(trail.location) &&
-          _matchesSearch(trail.name, trail.location);
-    }).toList();
-  }
-
-  List<ExplorePlaceModel> get recommendedPlaces {
-    final filtered = ExploreSampleData.recommendedPlaces.where((place) {
-      return _matchesRegion(place.province) &&
-          _matchesSearch(place.name, place.province);
-    }).toList();
-
-    if (_selectedRegion == 3) {
-      filtered.sort((a, b) => b.rating.compareTo(a.rating));
-    }
-
-    return filtered;
-  }
-
 }

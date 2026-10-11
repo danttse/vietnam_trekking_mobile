@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../../core/widgets/app_bar/app_top_bar_with_back.dart';
 import '../../../core/widgets/buttons/btn_login_style.dart';
 import '../../../core/widgets/inputs/login_input_field.dart';
@@ -6,6 +7,7 @@ import '../../../core/widgets/sheet/select_route_sheet.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../route/data/models/route_model.dart';
 import '../../route/view/route_detail_screen.dart';
+import '../data/models/journey_model.dart';
 import '../viewmodels/create_new_journey_viewmodel.dart';
 
 class CreateNewJourneyScreen extends StatefulWidget {
@@ -30,7 +32,8 @@ class _CreateNewJourneyScreenState extends State<CreateNewJourneyScreen> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => SelectRouteSheet(
-        routes: _viewModel.routes,
+        routes: const [],
+        places: _viewModel.places,
         selectedRoute: _viewModel.selectedRoute,
         onRouteSelected: _viewModel.setRoute,
       ),
@@ -106,15 +109,16 @@ class _CreateNewJourneyScreenState extends State<CreateNewJourneyScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            AppTopBarWithBack(
-              title: l10n.createNewJourneyTitle,
-            ),
+            AppTopBarWithBack(title: l10n.createNewJourneyTitle),
             Expanded(
               child: ListenableBuilder(
                 listenable: _viewModel,
                 builder: (context, _) {
                   return SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -146,12 +150,24 @@ class _CreateNewJourneyScreenState extends State<CreateNewJourneyScreen> {
                         ),
                         const SizedBox(height: 16),
                         _buildRoutePickerField(
-                          label: l10n.selectRouteLabel,
-                          hintText: l10n.selectRouteHint,
+                          label: 'Địa điểm / cung đường',
+                          hintText: _viewModel.loadingPlaces
+                              ? 'Đang tải địa điểm…'
+                              : 'Chọn địa điểm, sau đó chọn cung đường',
                           selectedRoute: _viewModel.selectedRoute,
                           onTap: () => _showSelectRouteBottomSheet(context),
                           colorScheme: colorScheme,
                         ),
+                        if (_viewModel.selectedPlaceName != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: Text(
+                              'Địa điểm: ${_viewModel.selectedPlaceName}',
+                              style: TextStyle(
+                                color: colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ),
                         const SizedBox(height: 16),
                         EditTextAuthCustom(
                           label: l10n.participantCountLabel,
@@ -185,7 +201,8 @@ class _CreateNewJourneyScreenState extends State<CreateNewJourneyScreen> {
                                   Text(
                                     "Tự động lưu dấu chân và mở khóa huy hiệu khi đến địa điểm",
                                     style: TextStyle(
-                                      color: colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+                                      color: colorScheme.onSurfaceVariant
+                                          .withValues(alpha: 0.8),
                                       fontSize: 11,
                                     ),
                                     maxLines: 1,
@@ -198,7 +215,8 @@ class _CreateNewJourneyScreenState extends State<CreateNewJourneyScreen> {
                             Switch.adaptive(
                               value: _viewModel.isCheckInFeatureEnabled,
                               activeTrackColor: colorScheme.primary,
-                              onChanged: (value) => _viewModel.setCheckInFeatureEnabled(value),
+                              onChanged: (value) =>
+                                  _viewModel.setCheckInFeatureEnabled(value),
                             ),
                           ],
                         ),
@@ -220,6 +238,15 @@ class _CreateNewJourneyScreenState extends State<CreateNewJourneyScreen> {
                       isLoading: _viewModel.isLoading,
                       onPressed: () async {
                         final createdJourney = await _viewModel.submit();
+                        if (createdJourney == null && context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                _viewModel.error ?? 'Vui lòng chọn cung đường.',
+                              ),
+                            ),
+                          );
+                        }
                         if (createdJourney != null && context.mounted) {
                           final result = await Navigator.push<dynamic>(
                             context,
@@ -230,14 +257,17 @@ class _CreateNewJourneyScreenState extends State<CreateNewJourneyScreen> {
                               ),
                             ),
                           );
-                          if (result == true && context.mounted) {
+                          if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(l10n.createJourneySuccess),
                                 backgroundColor: Colors.green,
                               ),
                             );
-                            Navigator.pop(context, createdJourney);
+                            Navigator.pop(
+                              context,
+                              result is JourneyModel ? result : createdJourney,
+                            );
                           }
                         }
                       },
@@ -299,10 +329,7 @@ class _CreateNewJourneyScreenState extends State<CreateNewJourneyScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
             child: Text(
               controller.text,
-              style: TextStyle(
-                color: colorScheme.onSurface,
-                fontSize: 14,
-              ),
+              style: TextStyle(color: colorScheme.onSurface, fontSize: 14),
             ),
           ),
         ),

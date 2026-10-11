@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../../core/widgets/app_bar/app_top_bar_with_back.dart';
 import '../../../core/widgets/buttons/btn_login_style.dart';
 import '../../../l10n/app_localizations.dart';
@@ -6,17 +7,20 @@ import '../data/models/journey_model.dart';
 import '../data/models/milestone_model.dart';
 import '../viewmodels/milestone_checkin_viewmodel.dart';
 import 'checkin_success_screen.dart';
+import 'widgets/checkin_gps_card.dart';
 
 class MilestoneCheckinScreen extends StatefulWidget {
   final MilestoneModel milestone;
   final JourneyModel? journey;
   final String? mapImageUrl;
+  final MilestoneCheckinViewModel? viewModel;
 
   const MilestoneCheckinScreen({
     super.key,
     required this.milestone,
     this.journey,
     this.mapImageUrl,
+    this.viewModel,
   });
 
   @override
@@ -29,59 +33,54 @@ class _MilestoneCheckinScreenState extends State<MilestoneCheckinScreen> {
   @override
   void initState() {
     super.initState();
-    _viewModel = MilestoneCheckinViewModel(
-      milestone: widget.milestone,
-      journey: widget.journey,
-      mapImageUrl: widget.mapImageUrl,
-    );
+    _viewModel =
+        widget.viewModel ??
+        MilestoneCheckinViewModel(
+          milestone: widget.milestone,
+          journey: widget.journey,
+          mapImageUrl: widget.mapImageUrl,
+        );
+    if (widget.viewModel == null) _viewModel.location.initialize();
   }
 
   @override
   void dispose() {
-    _viewModel.dispose();
+    if (widget.viewModel == null) _viewModel.dispose();
     super.dispose();
   }
 
   Future<void> _handleCheckIn() async {
     final success = await _viewModel.checkIn();
+    if (!success && mounted && _viewModel.error != null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(_viewModel.error!)));
+    }
     if (success && mounted) {
-      Navigator.pushReplacement(
+      await Navigator.push<bool>(
         context,
         MaterialPageRoute(
           builder: (context) => CheckinSuccessScreen(
             milestone: _viewModel.milestone,
             journey: _viewModel.journey,
+            journeyFinished: _viewModel.finishesJourney,
           ),
         ),
       );
+      if (mounted) Navigator.pop(context, true);
+    }
+  }
+
+  Future<void> _handleActivateJourney() async {
+    final success = await _viewModel.activateJourney();
+    if (!mounted) return;
+    if (!success && _viewModel.error != null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(_viewModel.error!)));
     }
   }
 
   Widget _buildGpsMapCard(BuildContext context, ColorScheme colorScheme) {
-    return AspectRatio(
-      aspectRatio: 1/1,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child:
-          Image.network(
-            _viewModel.mapImageUrl,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => Container(
-              color: colorScheme.surfaceContainerHigh,
-              child: Icon(
-                Icons.terrain,
-                size: 48,
-                color: colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
-              ),
-            ),
-          ),
-        )
-        ]
-      )
-    );
+    return CheckinGpsCard(viewModel: _viewModel);
   }
 
   Widget _buildCheckInInfoCard(
@@ -130,10 +129,18 @@ class _MilestoneCheckinScreenState extends State<MilestoneCheckinScreen> {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             decoration: BoxDecoration(
-              color: const Color(0xFF2ED573).withValues(alpha: 0.08),
+              color:
+                  (_viewModel.isWithinRange
+                          ? colorScheme.primary
+                          : colorScheme.error)
+                      .withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: const Color(0xFF2ED573).withValues(alpha: 0.4),
+                color:
+                    (_viewModel.isWithinRange
+                            ? colorScheme.primary
+                            : colorScheme.error)
+                        .withValues(alpha: 0.4),
                 width: 1,
               ),
             ),
@@ -142,19 +149,23 @@ class _MilestoneCheckinScreenState extends State<MilestoneCheckinScreen> {
                 Container(
                   width: 8,
                   height: 8,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Color(0xFF2ED573),
+                    color: _viewModel.isWithinRange
+                        ? colorScheme.primary
+                        : colorScheme.error,
                   ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
-                    l10n.checkinWithinRange(_viewModel.distanceMeters),
-                    style: const TextStyle(
+                    _viewModel.locationStatus,
+                    style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF2ED573),
+                      color: _viewModel.isWithinRange
+                          ? colorScheme.primary
+                          : colorScheme.error,
                     ),
                   ),
                 ),
@@ -165,17 +176,25 @@ class _MilestoneCheckinScreenState extends State<MilestoneCheckinScreen> {
           SizedBox(
             width: double.infinity,
             child: BtnLoginPrimary(
-              text: _viewModel.isCheckedIn
+              text: _viewModel.canActivateJourney
+                  ? _viewModel.activateJourneyLabel
+                  : _viewModel.isCheckedIn
                   ? l10n.checkinAlreadySuccess
                   : l10n.checkinNowButton,
               isLoading: _viewModel.isLoading,
-              onPressed: _viewModel.isCheckedIn ? null : _handleCheckIn,
+              onPressed: _viewModel.isLoading
+                  ? null
+                  : _viewModel.canActivateJourney
+                  ? _handleActivateJourney
+                  : _viewModel.canCheckIn
+                  ? _handleCheckIn
+                  : null,
             ),
           ),
           const SizedBox(height: 12),
           Center(
             child: Text(
-              l10n.checkinRadiusNotice,
+              'Bạn cần ở trong bán kính ${_viewModel.allowedRadiusMeters} m và GPS có sai số tối đa 50 m.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 11.5,
@@ -183,6 +202,14 @@ class _MilestoneCheckinScreenState extends State<MilestoneCheckinScreen> {
               ),
             ),
           ),
+          if (_viewModel.location.error != null)
+            Center(
+              child: TextButton.icon(
+                onPressed: _viewModel.location.recover,
+                icon: const Icon(Icons.location_on_outlined),
+                label: const Text('Bật / cấp quyền vị trí'),
+              ),
+            ),
         ],
       ),
     );
@@ -198,9 +225,7 @@ class _MilestoneCheckinScreenState extends State<MilestoneCheckinScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            AppTopBarWithBack(
-              title: l10n.checkinControlPointTitle,
-            ),
+            AppTopBarWithBack(title: l10n.checkinControlPointTitle),
             Expanded(
               child: ListenableBuilder(
                 listenable: _viewModel,

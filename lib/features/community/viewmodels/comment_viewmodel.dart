@@ -1,17 +1,30 @@
 import 'package:flutter/material.dart';
+
 import '../data/datasources/comment_sample_data.dart';
+import '../data/datasources/community_remote_datasource.dart';
 import '../data/models/comment_model.dart';
 import '../data/models/comment_thread_model.dart';
+import '../../../core/network/api_error_handler.dart';
 
+/// ViewModel for post comments.
+///
+/// ⚠️ Currently uses sample data as fallback because Community Service backend
+/// is not yet implemented. When backend is ready, uncomment API calls below.
 class CommentViewModel extends ChangeNotifier {
   final String postId;
 
-  CommentViewModel({required this.postId}) {
+  CommentViewModel({
+    required this.postId,
+    CommunityRemoteDataSource? dataSource,
+  }) {
     loadComments();
   }
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
+
+  String? _error;
+  String? get error => _error;
 
   List<CommentModel> _comments = [];
   List<CommentModel> get comments => _comments;
@@ -27,15 +40,36 @@ class CommentViewModel extends ChangeNotifier {
 
   Future<void> loadComments() async {
     _isLoading = true;
+    _error = null;
     notifyListeners();
 
-    // Lấy dữ liệu mẫu từ CommentSampleData theo postId
-    final data = CommentSampleData.getCommentsByPostId(postId);
-    _comments = data.isNotEmpty ? List.from(data) : List.from(CommentSampleData.getSampleComments());
-    _buildThreads();
+    try {
+      // TODO: Uncomment when Community Service backend is ready
+      // if (_dataSource != null) {
+      //   _comments = await _dataSource.getComments(postId);
+      // } else {
+      //   final data = CommentSampleData.getCommentsByPostId(postId);
+      //   _comments = data.isNotEmpty ? List.from(data) : List.from(CommentSampleData.getSampleComments());
+      // }
 
-    _isLoading = false;
-    notifyListeners();
+      // TEMPORARY: Use sample data until backend is ready
+      final data = CommentSampleData.getCommentsByPostId(postId);
+      _comments = data.isNotEmpty
+          ? List.from(data)
+          : List.from(CommentSampleData.getSampleComments());
+      _error = null;
+    } catch (e) {
+      _error = ApiErrorHandler.handle(e);
+      // Fallback to sample data on error
+      final data = CommentSampleData.getCommentsByPostId(postId);
+      _comments = data.isNotEmpty
+          ? List.from(data)
+          : List.from(CommentSampleData.getSampleComments());
+    } finally {
+      _buildThreads();
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
   void _buildThreads() {
@@ -43,7 +77,9 @@ class CommentViewModel extends ChangeNotifier {
     final replies = _comments.where((c) => !c.isRoot).toList();
 
     _threads = rootComments.map((root) {
-      final threadReplies = replies.where((r) => r.rootCommentId == root.id).toList();
+      final threadReplies = replies
+          .where((r) => r.rootCommentId == root.id)
+          .toList();
       threadReplies.sort((a, b) => a.createdAt.compareTo(b.createdAt));
       return CommentThreadModel(
         rootComment: root,
@@ -67,7 +103,9 @@ class CommentViewModel extends ChangeNotifier {
     if (index != -1) {
       final comment = _comments[index];
       final newIsLiked = !comment.isLiked;
-      final newLikeCount = newIsLiked ? comment.likeCount + 1 : comment.likeCount - 1;
+      final newLikeCount = newIsLiked
+          ? comment.likeCount + 1
+          : comment.likeCount - 1;
 
       _comments[index] = comment.copyWith(
         isLiked: newIsLiked,
@@ -85,7 +123,9 @@ class CommentViewModel extends ChangeNotifier {
         _threads[i] = _threads[i].copyWith(rootComment: updatedComment);
         return;
       }
-      final replyIndex = _threads[i].replies.indexWhere((r) => r.id == updatedComment.id);
+      final replyIndex = _threads[i].replies.indexWhere(
+        (r) => r.id == updatedComment.id,
+      );
       if (replyIndex != -1) {
         final newReplies = List<CommentModel>.from(_threads[i].replies);
         newReplies[replyIndex] = updatedComment;
@@ -126,7 +166,9 @@ class CommentViewModel extends ChangeNotifier {
       userAvatar: currentUserAvatar,
       content: text,
       parentCommentId: target?.id,
-      rootCommentId: target == null ? null : (target.rootCommentId ?? target.id),
+      rootCommentId: target == null
+          ? null
+          : (target.rootCommentId ?? target.id),
       replyToUserName: target?.userName,
       createdAt: DateTime.now(),
     );
@@ -136,12 +178,20 @@ class CommentViewModel extends ChangeNotifier {
     if (newComment.isRoot) {
       _threads.insert(
         0,
-        CommentThreadModel(rootComment: newComment, replies: [], isSeeMore: false),
+        CommentThreadModel(
+          rootComment: newComment,
+          replies: [],
+          isSeeMore: false,
+        ),
       );
     } else {
-      final threadIndex = _threads.indexWhere((t) => t.rootComment.id == newComment.rootCommentId);
+      final threadIndex = _threads.indexWhere(
+        (t) => t.rootComment.id == newComment.rootCommentId,
+      );
       if (threadIndex != -1) {
-        final updatedReplies = List<CommentModel>.from(_threads[threadIndex].replies)..add(newComment);
+        final updatedReplies = List<CommentModel>.from(
+          _threads[threadIndex].replies,
+        )..add(newComment);
         _threads[threadIndex] = _threads[threadIndex].copyWith(
           replies: updatedReplies,
           isSeeMore: true,

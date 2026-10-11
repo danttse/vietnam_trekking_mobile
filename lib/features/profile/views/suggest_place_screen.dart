@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vietnam_trekking_mobile/core/widgets/cards/image_load_card.dart';
+
 import '../../../core/widgets/app_bar/app_top_bar_with_back.dart';
 import '../../../core/widgets/buttons/btn_login_style.dart';
 import '../../../core/widgets/inputs/login_input_field.dart';
@@ -32,18 +33,25 @@ class _SuggestPlaceScreenState extends State<SuggestPlaceScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            AppTopBarWithBack(
-              title: l10n.proposePlace,
-            ),
+            AppTopBarWithBack(title: l10n.proposePlace),
             Expanded(
               child: ListenableBuilder(
                 listenable: _viewModel,
                 builder: (context, _) {
                   return SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        if (_viewModel.error != null) Text(_viewModel.error!),
+                        if (_viewModel.provinces.isEmpty)
+                          TextButton(
+                            onPressed: _viewModel.loadProvinces,
+                            child: const Text('Tải danh sách tỉnh'),
+                          ),
                         EditTextAuthCustom(
                           label: l10n.placeName,
                           hintText: l10n.enterPlaceName,
@@ -65,7 +73,10 @@ class _SuggestPlaceScreenState extends State<SuggestPlaceScreen> {
                             onTap: () => _viewModel.getCurrentLocation(),
                             borderRadius: BorderRadius.circular(12),
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 4,
+                                vertical: 2,
+                              ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -143,7 +154,8 @@ class _SuggestPlaceScreenState extends State<SuggestPlaceScreen> {
                                     color: colorScheme.surfaceContainerHighest,
                                     borderRadius: BorderRadius.circular(12),
                                     border: Border.all(
-                                      color: colorScheme.onSurfaceVariant.withValues(alpha: 0.25),
+                                      color: colorScheme.onSurfaceVariant
+                                          .withValues(alpha: 0.25),
                                     ),
                                   ),
                                   child: Column(
@@ -172,25 +184,29 @@ class _SuggestPlaceScreenState extends State<SuggestPlaceScreen> {
                                 child: ListView.builder(
                                   scrollDirection: Axis.horizontal,
                                   itemCount: _viewModel.selectedImages.length,
-                                  itemBuilder: (context,index) {
+                                  itemBuilder: (context, index) {
                                     return Padding(
-                                      padding: const EdgeInsets.only(right:10),
+                                      padding: const EdgeInsets.only(right: 10),
                                       child: ImageLoadCard(
-                                        imageUrl: _viewModel.selectedImages[index],
-                                        onTapRemove: () => _viewModel.removeImage(index),
+                                        imageUrl:
+                                            _viewModel.selectedImages[index],
+                                        onTapRemove: () =>
+                                            _viewModel.removeImage(index),
                                       ),
                                     );
                                   },
-                                )
-                              )
+                                ),
+                              ),
                             ],
-                          )
+                          ),
                         ),
                         const SizedBox(height: 16),
                         Text(
                           l10n.suggestionNotice,
                           style: TextStyle(
-                            color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                            color: colorScheme.onSurfaceVariant.withValues(
+                              alpha: 0.7,
+                            ),
                             fontSize: 12,
                             height: 1.4,
                           ),
@@ -217,7 +233,9 @@ class _SuggestPlaceScreenState extends State<SuggestPlaceScreen> {
                         if (success && context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Đề xuất của bạn đã được gửi thành công!'),
+                              content: Text(
+                                'Đề xuất của bạn đã được gửi thành công!',
+                              ),
                               backgroundColor: Colors.green,
                             ),
                           );
@@ -235,7 +253,7 @@ class _SuggestPlaceScreenState extends State<SuggestPlaceScreen> {
     );
   }
 
-Widget _buildDropdownField({
+  Widget _buildDropdownField({
     required String label,
     required String value,
     required List<String> items,
@@ -275,15 +293,9 @@ Widget _buildDropdownField({
                 Icons.keyboard_arrow_down,
                 color: colorScheme.onSurfaceVariant,
               ),
-              style: TextStyle(
-                color: colorScheme.onSurface,
-                fontSize: 14,
-              ),
+              style: TextStyle(color: colorScheme.onSurface, fontSize: 14),
               items: items.map((item) {
-                return DropdownMenuItem<String>(
-                  value: item,
-                  child: Text(item),
-                );
+                return DropdownMenuItem<String>(value: item, child: Text(item));
               }).toList(),
               onChanged: onChanged,
             ),

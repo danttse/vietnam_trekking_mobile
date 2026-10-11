@@ -1,4 +1,5 @@
 class VisitedProvince {
+  final String ownerId;
   final String provinceId;
   final String name;
   final DateTime? firstVisitedAt;
@@ -9,6 +10,7 @@ class VisitedProvince {
   final DateTime? updatedAt;
 
   const VisitedProvince({
+    this.ownerId = '',
     required this.provinceId,
     required this.name,
     this.firstVisitedAt,
@@ -21,6 +23,7 @@ class VisitedProvince {
 
   factory VisitedProvince.fromMap(Map<String, dynamic> map) {
     return VisitedProvince(
+      ownerId: map['ownerId'] as String? ?? '',
       provinceId: map['provinceId'] as String,
       name: map['name'] as String,
       firstVisitedAt: map['firstVisitedAt'] != null
@@ -40,6 +43,7 @@ class VisitedProvince {
 
   Map<String, dynamic> toMap() {
     return {
+      'ownerId': ownerId,
       'provinceId': provinceId,
       'name': name,
       'firstVisitedAt': firstVisitedAt?.toIso8601String(),
@@ -52,6 +56,7 @@ class VisitedProvince {
   }
 
   VisitedProvince copyWith({
+    String? ownerId,
     String? provinceId,
     String? name,
     DateTime? firstVisitedAt,
@@ -62,6 +67,7 @@ class VisitedProvince {
     DateTime? updatedAt,
   }) {
     return VisitedProvince(
+      ownerId: ownerId ?? this.ownerId,
       provinceId: provinceId ?? this.provinceId,
       name: name ?? this.name,
       firstVisitedAt: firstVisitedAt ?? this.firstVisitedAt,

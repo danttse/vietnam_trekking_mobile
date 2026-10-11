@@ -1,0 +1,13 @@
+feat(mobile): add SQLite offline sync and harden trekking UI
+
+- integrate catalog, journeys, check-ins, reviews, profile and rank APIs
+- persist account-scoped SQLite v4 data and replay durable offline operations
+- validate and install offline map packages with local tile rendering
+- preserve GPS tracks, marker media and idempotent retry identifiers
+- coordinate token refresh across clients and preserve sessions on network errors
+- fix narrow-screen auth and trekking layouts, navigation and lifecycle cleanup
+- add migration, sync, session, map and UI regression coverage
+- pin app dependencies and document readiness checks and remaining limitations
+
+Validation: 147 Flutter tests passed; analyzer has no errors or warnings
+(108 lint infos); Android debug APK built and installed successfully.

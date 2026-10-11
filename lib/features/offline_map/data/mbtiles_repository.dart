@@ -29,6 +29,7 @@ class MBTilesRepository {
     _db = await openDatabase(
       path,
       readOnly: true,
+      singleInstance: false,
       // Không gọi onCreate / onUpgrade – chỉ đọc
     );
   }

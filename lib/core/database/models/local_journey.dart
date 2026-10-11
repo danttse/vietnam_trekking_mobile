@@ -62,6 +62,9 @@ class LocalJourney {
   final String name;
   final String status;
   final DateTime? plannedStartAt;
+  final DateTime? plannedEndAt;
+  final String? note;
+  final int participantCount;
   final DateTime? startedAt;
   final DateTime? completedAt;
   final double distanceMeters;
@@ -84,6 +87,9 @@ class LocalJourney {
     required this.name,
     this.status = 'PLANNED',
     this.plannedStartAt,
+    this.plannedEndAt,
+    this.note,
+    this.participantCount = 1,
     this.startedAt,
     this.completedAt,
     this.distanceMeters = 0.0,
@@ -110,6 +116,9 @@ class LocalJourney {
       plannedStartAt: map['plannedStartAt'] != null
           ? DateTime.parse(map['plannedStartAt'] as String)
           : null,
+      plannedEndAt: DateTime.tryParse(map['plannedEndAt']?.toString() ?? ''),
+      note: map['note'] as String?,
+      participantCount: (map['participantCount'] as num?)?.toInt() ?? 1,
       startedAt: map['startedAt'] != null
           ? DateTime.parse(map['startedAt'] as String)
           : null,
@@ -143,6 +152,9 @@ class LocalJourney {
       'name': name,
       'status': status,
       'plannedStartAt': plannedStartAt?.toIso8601String(),
+      'plannedEndAt': plannedEndAt?.toIso8601String(),
+      'note': note,
+      'participantCount': participantCount,
       'startedAt': startedAt?.toIso8601String(),
       'completedAt': completedAt?.toIso8601String(),
       'distanceMeters': distanceMeters,
@@ -167,6 +179,9 @@ class LocalJourney {
     String? name,
     String? status,
     DateTime? plannedStartAt,
+    DateTime? plannedEndAt,
+    String? note,
+    int? participantCount,
     DateTime? startedAt,
     DateTime? completedAt,
     double? distanceMeters,
@@ -189,6 +204,9 @@ class LocalJourney {
       name: name ?? this.name,
       status: status ?? this.status,
       plannedStartAt: plannedStartAt ?? this.plannedStartAt,
+      plannedEndAt: plannedEndAt ?? this.plannedEndAt,
+      note: note ?? this.note,
+      participantCount: participantCount ?? this.participantCount,
       startedAt: startedAt ?? this.startedAt,
       completedAt: completedAt ?? this.completedAt,
       distanceMeters: distanceMeters ?? this.distanceMeters,

@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import '../../../core/network/api_response.dart';
 import '../../../core/services/token_storage.dart';
 import '../data/exceptions/auth_exception.dart';
+import '../data/models/requests/google_signin_request.dart';
 import '../data/models/requests/login_request.dart';
 import '../data/models/requests/register_request.dart';
 import '../data/models/requests/reset_password_request.dart';
@@ -120,6 +121,26 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final response = await _dio.post(
         '/auth/login',
+        data: request.toJson(),
+      );
+      return ApiResponse.fromJson(
+        response.data as Map<String, dynamic>,
+        AuthResponse.fromJson,
+      ).data!;
+    } on DioException catch (e) {
+      _handleError(e);
+    }
+  }
+
+  /// POST /auth/google
+  /// Returns [AuthResponse] on success; throws [AuthException] on failure.
+  /// Google Sign-In flow: Client gets ID token from Google, sends to backend
+  /// Backend verifies token with Google and returns our app's tokens
+  @override
+  Future<AuthResponse> googleSignIn(GoogleSignInRequest request) async {
+    try {
+      final response = await _dio.post(
+        '/auth/google',
         data: request.toJson(),
       );
       return ApiResponse.fromJson(
@@ -255,6 +276,7 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       await _dio.post(
         '/auth/logout',
+        options: Options(extra: {'skipAuthRefresh': true}),
         data: refreshToken != null ? {'refreshToken': refreshToken} : {},
       );
     } on DioException catch (e) {

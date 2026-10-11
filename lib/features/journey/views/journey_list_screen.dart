@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+
 import '../viewmodels/journey_list_viewmodel.dart';
 import '../data/models/journey_model.dart';
 import 'widgets/journey_card.dart';
 import 'widgets/trekking_empty_state.dart';
 import 'journey_detail_screen.dart';
 import 'create_journey_screen.dart';
-import '../../../../core/database/daos/local_user_dao.dart';
 
 class JourneyListScreen extends StatefulWidget {
   const JourneyListScreen({super.key});
@@ -16,17 +16,13 @@ class JourneyListScreen extends StatefulWidget {
 
 class _JourneyListScreenState extends State<JourneyListScreen> {
   late final JourneyListViewModel _vm;
-  final _userDao = LocalUserDao();
-  String _userId = '';
 
   @override
   void initState() {
     super.initState();
     _vm = JourneyListViewModel();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final user = await _userDao.getCurrentUser();
-      if (mounted) setState(() => _userId = user?.userId ?? '');
-      _vm.loadAll();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _vm.loadAll();
     });
   }
 
@@ -37,12 +33,8 @@ class _JourneyListScreenState extends State<JourneyListScreen> {
   }
 
   void _openJourney(JourneyModel j) {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => JourneyDetailScreen(
-        journeyId: j.journeyId,
-        userId: _userId,
-      ),
-    ));
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (_) => JourneyDetailScreen(route: j)));
   }
 
   void _openCreate() async {
@@ -105,8 +97,7 @@ class _JourneyListScreenState extends State<JourneyListScreen> {
             ),
           ),
           Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
               color: cs.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(20),
@@ -114,9 +105,10 @@ class _JourneyListScreenState extends State<JourneyListScreen> {
             child: Text(
               tabCount,
               style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: cs.onSurfaceVariant),
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: cs.onSurfaceVariant,
+              ),
             ),
           ),
         ],
@@ -133,18 +125,19 @@ class _JourneyListScreenState extends State<JourneyListScreen> {
         padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
         child: Row(
           children: [
-            _SummaryChip(
-                value: '${_vm.upcomingCount}', label: 'Kế hoạch'),
+            _SummaryChip(value: '${_vm.upcomingCount}', label: 'Kế hoạch'),
             const SizedBox(width: 10),
             _SummaryChip(
-                value:
-                    '${(_vm.upcomingJourneys.fold<double>(0, (s, j) => s + (j.routeDistanceMeters ?? 0)) / 1000).toStringAsFixed(0)} km',
-                label: 'Tổng dự kiến'),
+              value:
+                  '${(_vm.upcomingJourneys.fold<double>(0, (s, j) => s + j.routeDistanceMeters) / 1000).toStringAsFixed(0)} km',
+              label: 'Tổng dự kiến',
+            ),
             const SizedBox(width: 10),
             _SummaryChip(
-                value:
-                    '${_vm.upcomingJourneys.fold<int>(0, (s, j) => s + (j.memberCount ?? 0))} người',
-                label: 'Bạn đồng hành'),
+              value:
+                  '${_vm.upcomingJourneys.fold<int>(0, (s, j) => s + j.memberCount)} người',
+              label: 'Bạn đồng hành',
+            ),
           ],
         ),
       );
@@ -153,17 +146,14 @@ class _JourneyListScreenState extends State<JourneyListScreen> {
       padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
       child: Row(
         children: [
-          _SummaryChip(
-              value: '${_vm.totalCompleted}', label: 'Chuyến đi'),
+          _SummaryChip(value: '${_vm.totalCompleted}', label: 'Chuyến đi'),
           const SizedBox(width: 10),
           _SummaryChip(
-              value:
-                  '${_vm.totalDistanceKm.toStringAsFixed(0)} km',
-              label: 'Quãng đường'),
+            value: '${_vm.totalDistanceKm.toStringAsFixed(0)} km',
+            label: 'Quãng đường',
+          ),
           const SizedBox(width: 10),
-          _SummaryChip(
-              value: '${_vm.totalCheckins}/63',
-              label: 'Tỉnh thành'),
+          _SummaryChip(value: '${_vm.totalCheckins}/63', label: 'Tỉnh thành'),
         ],
       ),
     );
@@ -197,11 +187,11 @@ class _JourneyListScreenState extends State<JourneyListScreen> {
   Widget _buildBody(ColorScheme cs) {
     if (_vm.loading) {
       return const Center(
-          child: CircularProgressIndicator(color: Color(0xFFE8620A)));
+        child: CircularProgressIndicator(color: Color(0xFFE8620A)),
+      );
     }
     if (_vm.error != null) {
-      return TrekkingEmptyState.error(
-          message: _vm.error, onRetry: _vm.refresh);
+      return TrekkingEmptyState.error(message: _vm.error, onRetry: _vm.refresh);
     }
 
     final items = _vm.current;
@@ -232,30 +222,30 @@ class _JourneyListScreenState extends State<JourneyListScreen> {
     // Group by month/year
     final Map<String, List<JourneyModel>> groups = {};
     for (final j in items) {
-      final dt = j.completedAt ?? j.plannedStartAt ?? j.startedAt ?? j.createdAt;
+      final dt =
+          j.completedAt ?? j.plannedStartAt ?? j.startedAt ?? j.createdAt;
       final key = dt != null ? 'THÁNG ${dt.month}, ${dt.year}' : 'KHÁC';
       groups.putIfAbsent(key, () => []).add(j);
     }
 
     final widgets = <Widget>[];
     for (final entry in groups.entries) {
-      widgets.add(Padding(
-        padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
-        child: Text(
-          entry.key,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: cs.onSurfaceVariant,
-            letterSpacing: 0.5,
+      widgets.add(
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+          child: Text(
+            entry.key,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: cs.onSurfaceVariant,
+              letterSpacing: 0.5,
+            ),
           ),
         ),
-      ));
+      );
       for (final j in entry.value) {
-        widgets.add(JourneyCard(
-          journey: j,
-          onTap: () => _openJourney(j),
-        ));
+        widgets.add(JourneyCard(journey: j, onTap: () => _openJourney(j)));
       }
     }
     return widgets;
@@ -274,23 +264,26 @@ class _SummaryChip extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     return Expanded(
       child: Container(
-        padding:
-            const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         decoration: BoxDecoration(
           color: cs.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
           children: [
-            Text(value,
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: cs.onSurface)),
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: cs.onSurface,
+              ),
+            ),
             const SizedBox(height: 2),
-            Text(label,
-                style: TextStyle(
-                    fontSize: 10, color: cs.onSurfaceVariant)),
+            Text(
+              label,
+              style: TextStyle(fontSize: 10, color: cs.onSurfaceVariant),
+            ),
           ],
         ),
       ),
@@ -302,10 +295,11 @@ class _TabButton extends StatelessWidget {
   final String label;
   final bool selected;
   final VoidCallback onTap;
-  const _TabButton(
-      {required this.label,
-      required this.selected,
-      required this.onTap});
+  const _TabButton({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -319,11 +313,8 @@ class _TabButton extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: 14,
-              fontWeight:
-                  selected ? FontWeight.w700 : FontWeight.w400,
-              color: selected
-                  ? const Color(0xFFE8620A)
-                  : cs.onSurfaceVariant,
+              fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
+              color: selected ? const Color(0xFFE8620A) : cs.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: 4),

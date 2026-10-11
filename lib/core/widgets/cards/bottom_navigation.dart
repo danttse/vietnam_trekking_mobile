@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../../l10n/app_localizations.dart';
 
 class HomeBottomNavigation extends StatelessWidget {
@@ -19,33 +20,35 @@ class HomeBottomNavigation extends StatelessWidget {
     return NavigationBarTheme(
       data: NavigationBarThemeData(
         backgroundColor: colorScheme.surfaceContainerHighest,
-        indicatorColor: colorScheme.surface,
+        indicatorColor: colorScheme.primary.withValues(alpha: 0.14),
         iconTheme: WidgetStateProperty.resolveWith<IconThemeData>((states) {
           if (states.contains(WidgetState.selected)) {
-            return IconThemeData(color: colorScheme.onSurface);
+            return IconThemeData(color: colorScheme.primary, size: 22);
           }
-          return IconThemeData(color: colorScheme.onSurfaceVariant);
+          return IconThemeData(color: colorScheme.onSurfaceVariant, size: 22);
         }),
         labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>((states) {
           if (states.contains(WidgetState.selected)) {
             return TextStyle(
-              fontSize: 12,
+              fontSize: 10,
               fontWeight: FontWeight.w600,
-              color: colorScheme.onSurface,
+              color: colorScheme.primary,
             );
           }
           return TextStyle(
-            fontSize: 12,
+            fontSize: 10,
             fontWeight: FontWeight.normal,
             color: colorScheme.onSurfaceVariant,
           );
         }),
       ),
       child: NavigationBar(
+        height: 64,
+        labelPadding: const EdgeInsets.only(top: 2),
         selectedIndex: currentIndex,
         onDestinationSelected: onTap,
         backgroundColor: colorScheme.surfaceContainerHighest,
-        indicatorColor: colorScheme.surface,
+        indicatorColor: colorScheme.primary.withValues(alpha: 0.14),
         destinations: [
           NavigationDestination(
             icon: const Icon(Icons.home_outlined),

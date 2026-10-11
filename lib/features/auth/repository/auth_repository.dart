@@ -1,3 +1,4 @@
+import '../data/models/requests/google_signin_request.dart';
 import '../data/models/requests/login_request.dart';
 import '../data/models/requests/register_request.dart';
 import '../data/models/requests/reset_password_request.dart';
@@ -9,6 +10,7 @@ import '../data/models/responses/user_dto.dart';
 
 abstract class AuthRepository {
   Future<AuthResponse> login(LoginRequest request);
+  Future<AuthResponse> googleSignIn(GoogleSignInRequest request);
   Future<OtpSentResponse> register(RegisterRequest request);
   Future<AuthResponse> verifyEmail(VerifyOtpRequest request);
   Future<OtpSentResponse> resendVerificationOtp(String email);

@@ -1,137 +1,210 @@
 import 'package:flutter/material.dart';
+
 import '../../../features/route/data/models/route_model.dart';
-import '../../../l10n/app_localizations.dart';
+import '../../services/trekking_catalog_service.dart';
 import '../cards/route_card.dart';
 import 'app_draggable_sheet.dart';
 
+/// Routes are fetched only after the user opens a place, never flattened across
+/// unrelated places. Back returns to the place list without selecting a route.
 class SelectRouteSheet extends StatefulWidget {
   final List<RouteModel> routes;
+  final List<Map<String, dynamic>>? places;
   final RouteModel? selectedRoute;
   final ValueChanged<RouteModel> onRouteSelected;
-
+  final TrekkingCatalogService? catalog;
   const SelectRouteSheet({
     super.key,
     required this.routes,
+    this.places,
     this.selectedRoute,
     required this.onRouteSelected,
+    this.catalog,
   });
-
   @override
   State<SelectRouteSheet> createState() => _SelectRouteSheetState();
 }
 
 class _SelectRouteSheetState extends State<SelectRouteSheet> {
-  final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
+  late final TrekkingCatalogService _catalog;
+  List<Map<String, dynamic>> _places = [];
+  List<RouteModel> _routes = [];
+  Map<String, dynamic>? _place;
+  String _query = '';
+  bool _loading = false;
+  String? _error;
+  int _request = 0;
+  final _search = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    _catalog = widget.catalog ?? TrekkingCatalogService();
+    if (widget.places?.isNotEmpty == true) {
+      _places = widget.places!;
+    } else {
+      _loadPlaces();
+    }
+  }
+
+  Future<void> _loadPlaces() async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    try {
+      final places = await _catalog.getPlaces();
+      if (mounted) setState(() => _places = places);
+    } catch (_) {
+      if (mounted) setState(() => _error = 'Không thể tải địa điểm.');
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  Future<void> _openPlace(Map<String, dynamic> place) async {
+    final request = ++_request;
+    setState(() {
+      _place = place;
+      _routes = [];
+      _loading = true;
+      _error = null;
+      _query = '';
+      _search.clear();
+    });
+    try {
+      final id = (place['trekkingPlaceId'] ?? place['_id']).toString();
+      final routes = await _catalog.getRoutes(id, place: place);
+      if (mounted && request == _request) setState(() => _routes = routes);
+    } catch (_) {
+      if (mounted && request == _request)
+        setState(() => _error = 'Không thể tải cung đường tại địa điểm này.');
+    } finally {
+      if (mounted && request == _request) setState(() => _loading = false);
+    }
+  }
+
+  void _back() {
+    ++_request;
+    setState(() {
+      _place = null;
+      _routes = [];
+      _loading = false;
+      _error = null;
+      _query = '';
+      _search.clear();
+    });
+  }
 
   @override
   void dispose() {
-    _searchController.dispose();
+    ++_request;
+    _search.dispose();
     super.dispose();
-  }
-
-  List<RouteModel> get _filteredRoutes {
-    if (_searchQuery.isEmpty) return widget.routes;
-    return widget.routes.where((r) {
-      final name = r.name.toLowerCase();
-      final province = (r.province ?? '').toLowerCase();
-      final query = _searchQuery.toLowerCase();
-      return name.contains(query) || province.contains(query);
-    }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final colorScheme = Theme.of(context).colorScheme;
-    final routes = _filteredRoutes;
-
+    final colors = Theme.of(context).colorScheme;
+    final places = _places
+        .where(
+          (p) => (p['name'] ?? '').toString().toLowerCase().contains(
+            _query.toLowerCase(),
+          ),
+        )
+        .toList();
+    final routes = _routes
+        .where((r) => r.name.toLowerCase().contains(_query.toLowerCase()))
+        .toList();
     return AppDraggableSheet(
-      title: l10n.selectRouteSheetTitle,
-      initialChildSize: 0.7,
-      minChildSize: 0.4,
-      maxChildSize: 0.9,
-      contentBuilder: (context, scrollController) {
-        return Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: colorScheme.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.15),
-                    width: 1,
-                  ),
-                ),
-                child: TextField(
-                  controller: _searchController,
-                  onChanged: (value) => setState(() => _searchQuery = value.trim()),
-                  style: TextStyle(color: colorScheme.onSurface, fontSize: 14),
-                  decoration: InputDecoration(
-                    hintText: l10n.searchTrailsPlaces,
-                    hintStyle: TextStyle(
-                      color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
-                      fontSize: 14,
-                    ),
-                    prefixIcon: Icon(
-                      Icons.search,
-                      color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
-                      size: 20,
-                    ),
-                    suffixIcon: _searchQuery.isNotEmpty
-                        ? IconButton(
-                            icon: Icon(Icons.clear, size: 18, color: colorScheme.onSurfaceVariant),
-                            onPressed: () {
-                              _searchController.clear();
-                              setState(() => _searchQuery = '');
-                            },
-                          )
-                        : null,
-                    border: InputBorder.none,
-                    isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                  ),
-                ),
+      title: _place == null
+          ? 'Chọn địa điểm'
+          : 'Cung đường tại ${_place!['name']}',
+      initialChildSize: .7,
+      minChildSize: .4,
+      maxChildSize: .95,
+      contentBuilder: (context, scroll) => Column(
+        children: [
+          if (_place != null)
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                onPressed: _back,
+                icon: const Icon(Icons.arrow_back),
+                label: const Text('Đổi địa điểm'),
               ),
             ),
-            const SizedBox(height: 4),
-            Expanded(
-              child: routes.isEmpty
-                  ? Center(
-                      child: Text(
-                        l10n.selectRouteHint,
-                        style: TextStyle(
-                          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
-                          fontSize: 14,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: TextField(
+              controller: _search,
+              onChanged: (v) => setState(() => _query = v.trim()),
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.search),
+                hintText: _place == null ? 'Tìm địa điểm' : 'Tìm cung đường',
+                border: const OutlineInputBorder(),
+              ),
+            ),
+          ),
+          Expanded(
+            child: _loading
+                ? const Center(child: CircularProgressIndicator())
+                : _error != null
+                ? Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(_error!),
+                        TextButton(
+                          onPressed: _place == null
+                              ? _loadPlaces
+                              : () => _openPlace(_place!),
+                          child: const Text('Thử lại'),
                         ),
+                      ],
+                    ),
+                  )
+                : (_place == null ? places.isEmpty : routes.isEmpty)
+                ? Center(
+                    child: Text(
+                      _place == null
+                          ? 'Chưa có địa điểm.'
+                          : 'Địa điểm này chưa có cung đường.',
+                    ),
+                  )
+                : _place == null
+                ? ListView.separated(
+                    controller: scroll,
+                    itemCount: places.length,
+                    separatorBuilder: (_, __) => const Divider(height: 1),
+                    itemBuilder: (_, i) => ListTile(
+                      leading: Icon(
+                        Icons.landscape_outlined,
+                        color: colors.primary,
                       ),
-                    )
-                  : ListView.separated(
-                      controller: scrollController,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      itemCount: routes.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 8),
-                      itemBuilder: (context, index) {
-                        final route = routes[index];
-                        final isSelected =
-                            widget.selectedRoute?.routeId == route.routeId;
-
-                        return RouteCard(
-                          route: route,
-                          isSelected: isSelected,
-                          onTap: () {
-                            widget.onRouteSelected(route);
-                            Navigator.pop(context);
-                          },
-                        );
+                      title: Text(places[i]['name'].toString()),
+                      subtitle: Text((places[i]['address'] ?? '').toString()),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => _openPlace(places[i]),
+                    ),
+                  )
+                : ListView.separated(
+                    controller: scroll,
+                    padding: const EdgeInsets.all(16),
+                    itemCount: routes.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 8),
+                    itemBuilder: (_, i) => RouteCard(
+                      route: routes[i],
+                      isSelected:
+                          widget.selectedRoute?.routeId == routes[i].routeId,
+                      onTap: () {
+                        widget.onRouteSelected(routes[i]);
+                        Navigator.pop(context);
                       },
                     ),
-            ),
-          ],
-        );
-      },
+                  ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../data/models/journey_model.dart';
 import 'journey_status_badge.dart';
 
@@ -9,11 +10,7 @@ class JourneyCard extends StatelessWidget {
   final JourneyModel journey;
   final VoidCallback? onTap;
 
-  const JourneyCard({
-    super.key,
-    required this.journey,
-    this.onTap,
-  });
+  const JourneyCard({super.key, required this.journey, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +23,7 @@ class JourneyCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: cs.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: cs.onSurface.withValues(alpha: 0.06),
-          ),
+          border: Border.all(color: cs.onSurface.withValues(alpha: 0.06)),
         ),
         child: Row(
           children: [
@@ -47,6 +42,16 @@ class JourneyCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    if (journey.offlineSyncStatus != 'SYNCED')
+                      Text(
+                        journey.offlineSyncStatus == 'FAILED'
+                            ? 'Đồng bộ thất bại — cần kiểm tra'
+                            : 'Đã lưu trên máy · chờ đồng bộ',
+                        style: const TextStyle(
+                          fontSize: 11,
+                          color: Colors.orange,
+                        ),
+                      ),
                     // Name
                     Text(
                       journey.name,
@@ -87,7 +92,7 @@ class JourneyCard extends StatelessWidget {
                       children: [
                         _StatChip(
                           icon: Icons.people_outline,
-                          label: '${journey.memberCount ?? 0} thành viên',
+                          label: '${journey.memberCount} thành viên',
                         ),
                         const SizedBox(width: 8),
                         _StatChip(
@@ -103,7 +108,10 @@ class JourneyCard extends StatelessWidget {
             // ── Status badge (right) ────────────────────────────────────────
             Padding(
               padding: const EdgeInsets.only(right: 12),
-              child: JourneyStatusBadge(status: journey.status, small: true),
+              child: JourneyStatusBadge(
+                status: journey.status.name.toUpperCase(),
+                small: true,
+              ),
             ),
           ],
         ),
@@ -124,7 +132,7 @@ class JourneyCard extends StatelessWidget {
       '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
 
   String get _distanceLabel {
-    final km = (journey.routeDistanceMeters ?? journey.distanceMeters) / 1000;
+    final km = journey.routeDistanceMeters / 1000;
     return '${km.toStringAsFixed(0)} km';
   }
 }
@@ -141,8 +149,11 @@ class _Thumbnail extends StatelessWidget {
         width: size,
         height: size,
         color: const Color(0xFF1E2D1E),
-        child: const Icon(Icons.landscape_outlined,
-            color: Color(0xFF4A7A4A), size: 32),
+        child: const Icon(
+          Icons.landscape_outlined,
+          color: Color(0xFF4A7A4A),
+          size: 32,
+        ),
       );
     }
     return Image.network(
@@ -154,8 +165,11 @@ class _Thumbnail extends StatelessWidget {
         width: size,
         height: size,
         color: const Color(0xFF1E2D1E),
-        child: const Icon(Icons.landscape_outlined,
-            color: Color(0xFF4A7A4A), size: 32),
+        child: const Icon(
+          Icons.landscape_outlined,
+          color: Color(0xFF4A7A4A),
+          size: 32,
+        ),
       ),
     );
   }
@@ -174,10 +188,7 @@ class _StatChip extends StatelessWidget {
       children: [
         Icon(icon, size: 12, color: cs.onSurfaceVariant),
         const SizedBox(width: 3),
-        Text(
-          label,
-          style: TextStyle(fontSize: 11, color: cs.onSurfaceVariant),
-        ),
+        Text(label, style: TextStyle(fontSize: 11, color: cs.onSurfaceVariant)),
       ],
     );
   }

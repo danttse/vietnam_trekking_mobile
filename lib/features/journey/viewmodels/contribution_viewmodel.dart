@@ -1,9 +1,10 @@
 import 'package:flutter/foundation.dart';
+
 import '../data/models/contribution_model.dart';
 import '../data/models/journey_model.dart';
 import '../data/repositories/journey_repository.dart';
 
-enum ContributionSubmitState { idle, submitting, success, error }
+enum ContributionSubmitState { idle, submitting, queued, success, error }
 
 enum ContributionLoadState { idle, loading, loaded, error }
 
@@ -15,12 +16,15 @@ enum ContributionLoadState { idle, loading, loaded, error }
 ///   3. ContributionViewModel.submitRouteContribution() → POST /contributions/routes
 ///   4. Hiển thị kết quả + navigate về
 class ContributionViewModel extends ChangeNotifier {
+  String _operationId = 'route_${DateTime.now().microsecondsSinceEpoch}';
   final JourneyRepository _repo;
   final String userId;
+  final bool markerOnly;
 
   ContributionViewModel({
     required this.userId,
     JourneyRepository? repo,
+    this.markerOnly = false,
   }) : _repo = repo ?? JourneyRepository();
 
   // ── Form state ────────────────────────────────────────────────────────────
@@ -67,8 +71,9 @@ class ContributionViewModel extends ChangeNotifier {
 
   void toggleMarkerId(String markerId) {
     if (selectedMarkerIds.contains(markerId)) {
-      selectedMarkerIds =
-          selectedMarkerIds.where((id) => id != markerId).toList();
+      selectedMarkerIds = selectedMarkerIds
+          .where((id) => id != markerId)
+          .toList();
     } else {
       selectedMarkerIds = [...selectedMarkerIds, markerId];
     }
@@ -84,6 +89,23 @@ class ContributionViewModel extends ChangeNotifier {
   /// [journey] phải có status == COMPLETED và serverJourneyId.
   Future<bool> submitRouteContribution(JourneyModel journey) async {
     if (!canSubmit) return false;
+    if (markerOnly && selectedMarkerIds.isEmpty) {
+      _error = 'Chọn ít nhất một cột mốc để gửi admin.';
+      _submitState = ContributionSubmitState.error;
+      notifyListeners();
+      return false;
+    }
+    if ((!markerOnly && journey.status != JourneyStatus.completed) ||
+        (markerOnly &&
+            ![
+              JourneyStatus.active,
+              JourneyStatus.paused,
+              JourneyStatus.completed,
+            ].contains(journey.status))) {
+      _error = 'Chỉ có thể đóng góp từ hành trình đã hoàn thành.';
+      notifyListeners();
+      return false;
+    }
 
     final serverJourneyId = journey.journeyId;
     // journeyId là serverJourneyId vì journey đã COMPLETED + synced
@@ -98,33 +120,35 @@ class ContributionViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final clientOperationId =
-          'OP_ROUTE_${DateTime.now().microsecondsSinceEpoch.toRadixString(16)}';
-
       final request = SubmitRouteContributionRequest(
+        contributionKind: markerOnly ? 'MARKERS' : 'ROUTE',
         sourceJourneyId: serverJourneyId,
         trekkingPlaceId: journey.trekkingPlaceId,
         proposedName: proposedName.trim(),
         description: description.trim().isEmpty ? null : description.trim(),
         notes: notes.trim().isEmpty ? null : notes.trim(),
-        encodedPolyline: null, // nếu có từ GPS track — TODO kết nối
+        encodedPolyline: journey.encodedPolyline,
         statistics: {
           if (journey.distanceMeters > 0)
             'distanceMeters': journey.distanceMeters,
           if (journey.durationSeconds > 0)
             'durationSeconds': journey.durationSeconds,
-          if (journey.elevationGain > 0)
-            'elevationGain': journey.elevationGain,
-          if (journey.maxAltitude != null) 'maxAltitude': journey.maxAltitude,
+          if (journey.elevationGain > 0) 'elevationGain': journey.elevationGain,
+          'maxAltitude': journey.maxAltitude,
         },
         markerIds: selectedMarkerIds,
-        clientOperationId: clientOperationId,
+        clientOperationId: _operationId,
       );
 
       submittedContribution = await _repo.submitRouteContribution(
         request,
         userId: userId,
       );
+      if (submittedContribution!.status == 'DRAFT') {
+        _submitState = ContributionSubmitState.queued;
+        notifyListeners();
+        return true;
+      }
       _submitState = ContributionSubmitState.success;
       notifyListeners();
       return true;
@@ -154,6 +178,7 @@ class ContributionViewModel extends ChangeNotifier {
   }
 
   void reset() {
+    _operationId = 'route_${DateTime.now().microsecondsSinceEpoch}';
     proposedName = '';
     description = '';
     notes = '';

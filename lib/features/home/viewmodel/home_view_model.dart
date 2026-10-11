@@ -1,3 +1,9 @@
+import 'dart:async';
+
+import '../../../core/services/offline_store.dart';
+import '../../../core/services/user_api_service.dart';
+import '../../../core/services/trekking_catalog_service.dart';
+
 import 'package:flutter/foundation.dart';
 
 import '../../../core/services/auth_event_bus.dart';
@@ -11,6 +17,8 @@ import '../repository/province_visit_repository_impl.dart';
 
 class HomeViewModel extends ChangeNotifier {
   final ProvinceVisitRepository _repository;
+  final UserApiService _userApi;
+  final TrekkingCatalogService _catalog;
 
   // ── State ─────────────────────────────────────────────────────────────────
 
@@ -22,17 +30,128 @@ class HomeViewModel extends ChangeNotifier {
   bool get isLoadingProvinces => _isLoadingProvinces;
   String? get provincesError => _provincesError;
 
-  List<RecentPlace> recentPlaces = [
-    const RecentPlace(name: 'Núi Bà Đen', lastVisited: '19/9'),
-    const RecentPlace(name: 'Tháp Nghinh Phong', lastVisited: '17/11'),
-  ];
+  List<RecentPlace> recentPlaces = [];
+  List<RecentPlace> explorePlaces = [];
+  bool isLoadingPlaces = false;
+  String? placesError;
+  List<RecentPlace> get displayedPlaces =>
+      recentPlaces.isNotEmpty ? recentPlaces : explorePlaces;
+  double totalDistanceKm = 0;
+  int completedTrips = 0;
+  String? activityError;
+  bool _disposed = false;
+  bool _refreshingOffline = false;
+  StreamSubscription<String>? _offlineSubscription;
+
+  Future<void> _refreshAfterSync(String owner) async {
+    if (_disposed || _refreshingOffline || _isLoadingProvinces) return;
+    if (await OfflineStore.currentOwner() != owner || _disposed) return;
+    _refreshingOffline = true;
+    try {
+      await Future.wait([loadProvinces(), loadActivity()]);
+    } finally {
+      _refreshingOffline = false;
+    }
+  }
+
+  Future<void> loadActivity() async {
+    await Future.wait([_loadStatistics(), loadPlaces()]);
+  }
+
+  Future<void> _loadStatistics() async {
+    try {
+      final stats = await _userApi.getStatistics();
+      if (_disposed) return;
+      totalDistanceKm = (stats['totalDistanceMeters'] as num? ?? 0) / 1000;
+      completedTrips = (stats['totalJourneys'] as num? ?? 0).toInt();
+      activityError = null;
+    } catch (_) {
+      if (!_disposed) activityError = 'Không thể tải thống kê.';
+    }
+    if (!_disposed) notifyListeners();
+  }
+
+  Future<void> loadPlaces() async {
+    if (_disposed || isLoadingPlaces) return;
+    isLoadingPlaces = true;
+    placesError = null;
+    notifyListeners();
+    try {
+      final visits = await _userApi.getRecentPlaces();
+      final recent = await Future.wait(
+        visits.map((visit) async {
+          final place = await _catalog.getPlace(
+            visit['trekkingPlaceId'].toString(),
+          );
+          final date = DateTime.tryParse(
+            visit['lastVisitedAt']?.toString() ?? '',
+          )?.toLocal();
+          return RecentPlace(
+            name: place['name'] as String? ?? '',
+            lastVisited: date == null ? '' : '${date.day}/${date.month}',
+            placeId: visit['trekkingPlaceId'].toString(),
+            imageUrl: _imageUrl(place),
+          );
+        }),
+      );
+      if (_disposed) return;
+      recentPlaces = recent;
+      if (recent.isEmpty) {
+        final places = await _catalog.getPlaces();
+        if (_disposed) return;
+        explorePlaces = places
+            .take(10)
+            .map(
+              (place) => RecentPlace(
+                name: place['name'] as String? ?? '',
+                lastVisited: '',
+                placeId: place['trekkingPlaceId'].toString(),
+                imageUrl: _imageUrl(place),
+              ),
+            )
+            .toList();
+      } else {
+        explorePlaces = [];
+      }
+    } catch (_) {
+      if (!_disposed) placesError = 'Không thể tải địa điểm. Thử lại';
+    } finally {
+      isLoadingPlaces = false;
+      if (!_disposed) notifyListeners();
+    }
+  }
+
+  static String _imageUrl(Map<String, dynamic> place) {
+    final images = place['images'] as List? ?? [];
+    return images.isEmpty ? '' : images.first?.toString() ?? '';
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    _offlineSubscription?.cancel();
+    super.dispose();
+  }
 
   int? _hoveredPathIndex;
 
   // ── Constructor ───────────────────────────────────────────────────────────
 
-  HomeViewModel({required this._repository}) {
-    loadProvinces();
+  HomeViewModel({
+    required ProvinceVisitRepository repository,
+    UserApiService? userApi,
+    TrekkingCatalogService? catalog,
+    bool autoLoad = true,
+  }) : _repository = repository,
+       _userApi = userApi ?? UserApiService(),
+       _catalog = catalog ?? TrekkingCatalogService() {
+    _offlineSubscription = OfflineStore.instance.changes.listen(
+      _refreshAfterSync,
+    );
+    if (autoLoad) {
+      loadProvinces();
+      loadActivity();
+    }
   }
 
   // ── Factory (tự khởi tạo dependencies) ───────────────────────────────────
@@ -89,6 +208,7 @@ class HomeViewModel extends ChangeNotifier {
 
     try {
       final apiProvinces = await _repository.getMyProvinceVisits();
+      if (_disposed) return;
 
       // Merge dữ liệu API (isVisited, isCheckedIn) với static data (area, population)
       // dùng static map để lookup nhanh theo id (= code từ backend)
@@ -118,7 +238,7 @@ class HomeViewModel extends ChangeNotifier {
       }
     } finally {
       _isLoadingProvinces = false;
-      notifyListeners();
+      if (!_disposed) notifyListeners();
     }
   }
 
@@ -202,7 +322,7 @@ class HomeViewModel extends ChangeNotifier {
     final index = provinces.indexWhere((p) => p.id == provinceCode);
     if (index != -1) {
       provinces[index] = provinces[index].copyWith(isVisited: visited);
-      notifyListeners();
+      if (!_disposed) notifyListeners();
     }
   }
 }

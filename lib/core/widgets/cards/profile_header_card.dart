@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../user_avatar.dart';
+
 class ProfileHeaderCard extends StatelessWidget {
   final String name;
   final bool isPro;
@@ -7,6 +9,7 @@ class ProfileHeaderCard extends StatelessWidget {
   final String bio;
   final String? subTitle;
   final String? avatarUrl;
+  final String? rankLabel;
   final bool isEdit;
   final VoidCallback? actionEdit;
 
@@ -18,8 +21,9 @@ class ProfileHeaderCard extends StatelessWidget {
     required this.bio,
     this.subTitle,
     this.avatarUrl,
-    this.isEdit=false,
-    this.actionEdit
+    this.rankLabel,
+    this.isEdit = false,
+    this.actionEdit,
   });
 
   @override
@@ -29,32 +33,7 @@ class ProfileHeaderCard extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Container(
-          width: 62,
-          height: 62,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: colorScheme.surfaceContainerHighest,
-              width: 2,
-            ),
-          ),
-          child: ClipOval(
-            child: avatarUrl != null && avatarUrl!.isNotEmpty
-                ? Image.network(
-                    avatarUrl!,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) =>
-                        _buildFallbackAvatar(colorScheme),
-                  )
-                : Image.asset(
-                    'assets/images/img_app_logo_ver2.png',
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) =>
-                        _buildFallbackAvatar(colorScheme),
-                  ),
-          ),
-        ),
+        UserAvatar(imageUrl: avatarUrl),
         const SizedBox(width: 14),
         Expanded(
           child: Column(
@@ -63,7 +42,7 @@ class ProfileHeaderCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Flexible(
+                  Expanded(
                     child: Text(
                       name,
                       style: TextStyle(
@@ -78,7 +57,10 @@ class ProfileHeaderCard extends StatelessWidget {
                   if (isPro) ...[
                     const SizedBox(width: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 7,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
                         color: colorScheme.primary,
                         borderRadius: BorderRadius.circular(6),
@@ -95,7 +77,7 @@ class ProfileHeaderCard extends StatelessWidget {
                     ),
                   ],
                   if (isEdit) ...[
-                    const Spacer(),
+                    const SizedBox(width: 8),
                     GestureDetector(
                       onTap: actionEdit,
                       child: Icon(
@@ -104,9 +86,22 @@ class ProfileHeaderCard extends StatelessWidget {
                         color: colorScheme.onSurfaceVariant,
                       ),
                     ),
-                  ]
+                  ],
                 ],
               ),
+              if (rankLabel != null) ...[
+                const SizedBox(height: 6),
+                Text(
+                  rankLabel!,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
               const SizedBox(height: 4),
               Text(
                 memberSince,
@@ -115,31 +110,22 @@ class ProfileHeaderCard extends StatelessWidget {
                   color: colorScheme.onSurfaceVariant,
                 ),
               ),
-              const SizedBox(height: 4),
-              Text(
-                subTitle ?? bio,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+              if ((subTitle ?? bio).isNotEmpty) ...[
+                const SizedBox(height: 4),
+                Text(
+                  subTitle ?? bio,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+                  ),
                 ),
-              ),
+              ],
             ],
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildFallbackAvatar(ColorScheme colorScheme) {
-    return Container(
-      color: colorScheme.surfaceContainerHighest,
-      child: Icon(
-        Icons.person,
-        size: 34,
-        color: colorScheme.onSurfaceVariant,
-      ),
     );
   }
 }

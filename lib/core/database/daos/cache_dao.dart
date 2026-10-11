@@ -1,5 +1,7 @@
 import 'package:sqflite/sqflite.dart';
+
 import '../database_helper.dart';
+import '../upsert.dart';
 import '../models/cached_place.dart';
 import '../models/cached_route.dart';
 import '../models/cached_milestone.dart';
@@ -10,7 +12,7 @@ class CacheDao {
   final DatabaseHelper _dbHelper;
 
   CacheDao({DatabaseHelper? dbHelper})
-      : _dbHelper = dbHelper ?? DatabaseHelper.instance;
+    : _dbHelper = dbHelper ?? DatabaseHelper.instance;
 
   Future<Database> get _db => _dbHelper.database;
 
@@ -20,22 +22,14 @@ class CacheDao {
 
   Future<void> upsertProvince(CachedProvince province) async {
     final db = await _db;
-    await db.insert(
-      'cached_provinces',
-      province.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    await upsertRow(db, 'cached_provinces', province.toMap(), 'provinceId');
   }
 
   Future<void> upsertProvinces(List<CachedProvince> provinces) async {
     final db = await _db;
     final batch = db.batch();
     for (final p in provinces) {
-      batch.insert(
-        'cached_provinces',
-        p.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
+      batchUpsert(batch, 'cached_provinces', p.toMap(), 'provinceId');
     }
     await batch.commit(noResult: true);
   }
@@ -73,22 +67,14 @@ class CacheDao {
 
   Future<void> upsertPlace(CachedPlace place) async {
     final db = await _db;
-    await db.insert(
-      'cached_places',
-      place.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    await upsertRow(db, 'cached_places', place.toMap(), 'trekkingPlaceId');
   }
 
   Future<void> upsertPlaces(List<CachedPlace> places) async {
     final db = await _db;
     final batch = db.batch();
     for (final p in places) {
-      batch.insert(
-        'cached_places',
-        p.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
+      batchUpsert(batch, 'cached_places', p.toMap(), 'trekkingPlaceId');
     }
     await batch.commit(noResult: true);
   }
@@ -137,22 +123,14 @@ class CacheDao {
 
   Future<void> upsertRoute(CachedRoute route) async {
     final db = await _db;
-    await db.insert(
-      'cached_routes',
-      route.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    await upsertRow(db, 'cached_routes', route.toMap(), 'trekkingRouteId');
   }
 
   Future<void> upsertRoutes(List<CachedRoute> routes) async {
     final db = await _db;
     final batch = db.batch();
     for (final r in routes) {
-      batch.insert(
-        'cached_routes',
-        r.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
+      batchUpsert(batch, 'cached_routes', r.toMap(), 'trekkingRouteId');
     }
     await batch.commit(noResult: true);
   }
@@ -195,22 +173,14 @@ class CacheDao {
 
   Future<void> upsertMilestone(CachedMilestone milestone) async {
     final db = await _db;
-    await db.insert(
-      'cached_milestones',
-      milestone.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    await upsertRow(db, 'cached_milestones', milestone.toMap(), 'milestoneId');
   }
 
   Future<void> upsertMilestones(List<CachedMilestone> milestones) async {
     final db = await _db;
     final batch = db.batch();
     for (final m in milestones) {
-      batch.insert(
-        'cached_milestones',
-        m.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
+      batchUpsert(batch, 'cached_milestones', m.toMap(), 'milestoneId');
     }
     await batch.commit(noResult: true);
   }

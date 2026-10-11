@@ -1,3 +1,5 @@
+import '../../../route/data/models/route_model.dart' as catalog;
+
 /// Model Route (cung đường) trả về từ API.
 class RouteModel {
   final String routeId;
@@ -16,6 +18,7 @@ class RouteModel {
   final String? encodedPolyline;
   final int? mapVersion;
   final String? imageUrl;
+  final List<List<double>> pathCoordinates;
 
   // Denormalized place info
   final String? placeName;
@@ -38,13 +41,23 @@ class RouteModel {
     this.encodedPolyline,
     this.mapVersion,
     this.imageUrl,
+    this.pathCoordinates = const [],
     this.placeName,
     this.placeAddress,
   });
 
   factory RouteModel.fromJson(Map<String, dynamic> json) {
+    final path = (json['path'] as Map?)?['coordinates'] as List? ?? [];
+    final coordinates = path
+        .whereType<List>()
+        .where((c) => c.length >= 2 && c[0] is num && c[1] is num)
+        .map((c) => [(c[0] as num).toDouble(), (c[1] as num).toDouble()])
+        .toList();
+    final start = (json['startLocation'] as Map?)?['coordinates'] as List?;
+    final end = (json['endLocation'] as Map?)?['coordinates'] as List?;
     return RouteModel(
-      routeId: json['routeId'] as String? ??
+      routeId:
+          json['routeId'] as String? ??
           json['trekkingRouteId'] as String? ??
           json['id'] as String,
       trekkingPlaceId: json['trekkingPlaceId'] as String? ?? '',
@@ -52,14 +65,27 @@ class RouteModel {
       description: json['description'] as String?,
       difficulty: json['difficulty'] as String?,
       distanceMeters: (json['distanceMeters'] as num?)?.toDouble(),
-      estimatedDurationMinutes:
-          json['estimatedDurationMinutes'] as int?,
-      elevationGain: json['elevationGain'] as int?,
-      maxElevation: json['maxElevation'] as int?,
-      startLatitude: (json['startLatitude'] as num?)?.toDouble(),
-      startLongitude: (json['startLongitude'] as num?)?.toDouble(),
-      endLatitude: (json['endLatitude'] as num?)?.toDouble(),
-      endLongitude: (json['endLongitude'] as num?)?.toDouble(),
+      estimatedDurationMinutes: (json['estimatedDurationMinutes'] as num?)
+          ?.toInt(),
+      elevationGain: (json['elevationGain'] as num?)?.toInt(),
+      maxElevation: (json['maxElevation'] as num?)?.toInt(),
+      startLatitude: start != null && start.length >= 2
+          ? (start[1] as num).toDouble()
+          : coordinates.firstOrNull?[1] ??
+                (json['startLatitude'] as num?)?.toDouble(),
+      startLongitude: start != null && start.length >= 2
+          ? (start[0] as num).toDouble()
+          : coordinates.firstOrNull?[0] ??
+                (json['startLongitude'] as num?)?.toDouble(),
+      endLatitude: end != null && end.length >= 2
+          ? (end[1] as num).toDouble()
+          : coordinates.lastOrNull?[1] ??
+                (json['endLatitude'] as num?)?.toDouble(),
+      endLongitude: end != null && end.length >= 2
+          ? (end[0] as num).toDouble()
+          : coordinates.lastOrNull?[0] ??
+                (json['endLongitude'] as num?)?.toDouble(),
+      pathCoordinates: coordinates,
       encodedPolyline: json['encodedPolyline'] as String?,
       mapVersion: json['mapVersion'] as int?,
       imageUrl: json['imageUrl'] as String?,
@@ -68,11 +94,35 @@ class RouteModel {
     );
   }
 
+  catalog.RouteModel get catalogRoute => catalog.RouteModel.fromJson(
+    {
+      'trekkingRouteId': routeId,
+      'trekkingPlaceId': trekkingPlaceId,
+      'name': name,
+      'description': description,
+      'difficulty': difficulty,
+      'distanceMeters': distanceMeters,
+      'estimatedDurationMinutes': estimatedDurationMinutes,
+      'elevationGain': elevationGain,
+      'maxElevation': maxElevation,
+      'imageUrl': imageUrl,
+      'startLocation': {
+        'coordinates': [startLongitude ?? 0, startLatitude ?? 0],
+      },
+      'endLocation': {
+        'coordinates': [endLongitude ?? 0, endLatitude ?? 0],
+      },
+      'path': {'type': 'LineString', 'coordinates': pathCoordinates},
+    },
+    place: {'name': placeName, 'address': placeAddress},
+  );
+
   /// Difficulty label tiếng Việt
   String get difficultyLabel {
     switch ((difficulty ?? '').toUpperCase()) {
       case 'EASY':
         return 'Dễ';
+      case 'MODERATE':
       case 'MEDIUM':
         return 'Trung bình';
       case 'HARD':
@@ -89,6 +139,7 @@ class RouteModel {
     switch ((difficulty ?? '').toUpperCase()) {
       case 'EASY':
         return 1;
+      case 'MODERATE':
       case 'MEDIUM':
         return 2;
       case 'HARD':
@@ -167,22 +218,25 @@ class OfflinePackageInfo {
     final rawChecksum = manifest['checksum'] as String? ?? '';
 
     return OfflinePackageInfo(
-      routeId: route?['trekkingRouteId'] as String? ??
-          json['routeId'] as String? ?? '',
-      mapName: route?['name'] as String? ??
-          json['mapName'] as String? ?? '',
-      downloadUrl: manifest['downloadUrl'] as String? ??
-          json['downloadUrl'] as String? ?? '',
-      sizeBytes: manifest['sizeBytes'] as int? ??
-          json['sizeBytes'] as int? ?? 0,
-      mapVersion: manifest['version'] as int? ??
+      routeId:
+          route?['trekkingRouteId'] as String? ??
+          json['routeId'] as String? ??
+          '',
+      mapName: route?['name'] as String? ?? json['mapName'] as String? ?? '',
+      downloadUrl:
+          manifest['downloadUrl'] as String? ??
+          json['downloadUrl'] as String? ??
+          '',
+      sizeBytes:
+          manifest['sizeBytes'] as int? ?? json['sizeBytes'] as int? ?? 0,
+      mapVersion:
+          manifest['version'] as int? ??
           manifest['mapVersion'] as int? ??
-          json['mapVersion'] as int? ?? 1,
+          json['mapVersion'] as int? ??
+          1,
       checksum: rawChecksum,
-      minZoom: manifest['minZoom'] as int? ??
-          json['minZoom'] as int? ?? 12,
-      maxZoom: manifest['maxZoom'] as int? ??
-          json['maxZoom'] as int? ?? 17,
+      minZoom: manifest['minZoom'] as int? ?? json['minZoom'] as int? ?? 12,
+      maxZoom: manifest['maxZoom'] as int? ?? json['maxZoom'] as int? ?? 17,
       waypointCount: json['waypointCount'] as int? ?? 0,
       supportsTrail: json['supportsTrail'] as bool? ?? false,
       available: manifest['available'] as bool? ?? true,

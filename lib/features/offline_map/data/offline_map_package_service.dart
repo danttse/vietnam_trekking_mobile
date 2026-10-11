@@ -3,12 +3,15 @@ import 'dart:io';
 
 import 'package:archive/archive.dart';
 import 'package:crypto/crypto.dart';
-import 'package:flutter/foundation.dart';
+
+import 'dart:typed_data';
+
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
 import '../models/offline_map_manifest.dart';
+import 'offline_package_installer.dart';
 
 /// Kết quả sau khi load package
 class PackageLoadResult {
@@ -43,7 +46,21 @@ class OfflineMapPackageService {
   // -------------------------------------------------------------------------
 
   /// Load toàn bộ package. Có thể gọi lại để reset.
-  Future<PackageLoadResult> loadPackage({bool forceReextract = false}) async {
+  Future<PackageLoadResult> loadPackage({
+    bool forceReextract = false,
+    String? packageDirectory,
+  }) async {
+    if (packageDirectory != null) {
+      final manifest = await OfflinePackageInstaller.validateDirectory(
+        Directory(packageDirectory),
+      );
+      _extractDir = packageDirectory;
+      return PackageLoadResult(
+        manifest: manifest,
+        extractDir: packageDirectory,
+        shaResults: {for (final name in manifest.sha256.keys) name: true},
+      );
+    }
     final dir = await _getExtractDir();
     _extractDir = dir.path;
 
@@ -101,7 +118,10 @@ class OfflineMapPackageService {
     // Giải nén
     final archive = ZipDecoder().decodeBytes(zipBytes);
     for (final file in archive) {
-      final filePath = p.join(targetDir.path, file.name);
+      final filePath = OfflinePackageInstaller.safePath(
+        targetDir.path,
+        file.name,
+      );
       if (file.isFile) {
         final outFile = File(filePath);
         await outFile.create(recursive: true);
@@ -119,7 +139,6 @@ class OfflineMapPackageService {
     }
     final raw = await file.readAsString();
     // DEBUG: in ra manifest thật để biết schema — xóa sau khi fix xong
-    debugPrint('[Manifest RAW] $raw');
     return OfflineMapManifest.fromJsonString(raw);
   }
 
@@ -146,7 +165,7 @@ class OfflineMapPackageService {
   /// Đọc nội dung file GeoJSON từ package đã giải nén
   Future<String> readGeoJson(String fileName) async {
     if (_extractDir == null) throw StateError('Package not loaded yet');
-    final file = File(p.join(_extractDir!, fileName));
+    final file = File(OfflinePackageInstaller.safePath(_extractDir!, fileName));
     if (!file.existsSync()) {
       throw FileSystemException('GeoJSON file not found', fileName);
     }

@@ -4,6 +4,7 @@ import '../config/app_config.dart';
 import '../services/auth_event_bus.dart';
 import '../services/token_storage.dart';
 import 'interceptors/token_interceptor.dart';
+import 'interceptors/gamification_interceptor.dart';
 
 /// Factory tạo các Dio client cho từng service.
 ///
@@ -76,6 +77,7 @@ class DioClient {
       ),
     );
 
+    dio.interceptors.add(GamificationInterceptor());
     return dio;
   }
 }

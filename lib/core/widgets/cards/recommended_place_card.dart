@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
+
 import '../../../features/explore/data/models/explore_place_model.dart';
 
 class RecommendedPlaceCard extends StatelessWidget {
   final ExplorePlaceModel place;
   final VoidCallback? onTap;
 
-  const RecommendedPlaceCard({
-    super.key,
-    required this.place,
-    this.onTap,
-  });
+  const RecommendedPlaceCard({super.key, required this.place, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -84,51 +81,32 @@ class RecommendedPlaceCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Text(
-                        place.province,
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                        child: Text(
-                          '•',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ),
-                      Text(
-                        place.distance,
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: colorScheme.onSurface,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                        child: Text(
-                          '•',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ),
-                      Text(
-                        place.difficulty.toUpperCase(),
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
+                  Text(
+                    place.province,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                   ),
+                  if (place.distance.isNotEmpty ||
+                      place.difficulty.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      [
+                        place.distance,
+                        place.difficulty.toUpperCase(),
+                      ].where((value) => value.isNotEmpty).join(' • '),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w500,
+                        color: colorScheme.primary,
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),

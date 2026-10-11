@@ -1,4 +1,8 @@
+import '../../../core/services/trekking_upload_service.dart';
+import '../../../core/network/api_error_handler.dart';
+
 import 'package:flutter/foundation.dart';
+
 import '../data/models/review_model.dart';
 import '../data/repositories/journey_repository.dart';
 
@@ -9,18 +13,28 @@ class ReviewViewModel extends ChangeNotifier {
   final String placeId;
   final String? placeName;
   final String? journeyId;
+  final ReviewModel? existingReview;
 
   ReviewViewModel({
     required this.placeId,
     this.placeName,
     this.journeyId,
+    this.existingReview,
     JourneyRepository? repo,
-  }) : _repo = repo ?? JourneyRepository();
+  }) : _repo = repo ?? JourneyRepository() {
+    if (existingReview != null) {
+      rating = existingReview!.rating;
+      content = existingReview!.content ?? '';
+      imageRemoteUrls = [...existingReview!.imageUrls];
+      isAnonymous = existingReview!.isAnonymous;
+    }
+  }
 
   // ── Form state ────────────────────────────────────────────────────────────
   int rating = 0; // 0 = unset
   String content = '';
   List<String> imageLocalPaths = [];
+  List<String> imageRemoteUrls = [];
   bool isAnonymous = false;
 
   ReviewSubmitState _state = ReviewSubmitState.idle;
@@ -49,6 +63,7 @@ class ReviewViewModel extends ChangeNotifier {
   }
 
   void addImage(String localPath) {
+    if (imageLocalPaths.length + imageRemoteUrls.length >= 10) return;
     imageLocalPaths = [...imageLocalPaths, localPath];
     notifyListeners();
   }
@@ -58,8 +73,17 @@ class ReviewViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void removeRemoteImage(String url) {
+    imageRemoteUrls = imageRemoteUrls.where((value) => value != url).toList();
+    notifyListeners();
+  }
+
   bool get canSubmit =>
-      rating > 0 && _state != ReviewSubmitState.submitting;
+      rating > 0 &&
+      _state != ReviewSubmitState.submitting &&
+      _state != ReviewSubmitState.success &&
+      (existingReview == null ||
+          (!existingReview!.deleted && existingReview!.editCount < 1));
 
   Future<void> submit() async {
     if (!canSubmit) return;
@@ -69,17 +93,29 @@ class ReviewViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
+      final uploaded = <String>[...imageRemoteUrls];
+      for (final path in imageLocalPaths) {
+        uploaded.add(
+          await TrekkingUploadService().uploadImage(path, 'PLACE_REVIEW'),
+        );
+      }
       final request = CreateReviewRequest(
         rating: rating,
+        imageUrls: uploaded,
         content: content.trim().isEmpty ? null : content.trim(),
         isAnonymous: isAnonymous,
         journeyId: journeyId,
-        // imageUrls: uploaded remote URLs — simplified: pass local for now
       );
-      submittedReview = await _repo.createReview(placeId, request);
+      submittedReview = existingReview == null
+          ? await _repo.createReview(placeId, request)
+          : await _repo.updateReview(
+              placeId,
+              existingReview!.reviewId,
+              request,
+            );
       _state = ReviewSubmitState.success;
     } catch (e) {
-      _error = e.toString();
+      _error = ApiErrorHandler.handle(e);
       _state = ReviewSubmitState.error;
     }
     notifyListeners();
@@ -89,6 +125,7 @@ class ReviewViewModel extends ChangeNotifier {
     rating = 0;
     content = '';
     imageLocalPaths = [];
+    imageRemoteUrls = [];
     isAnonymous = false;
     _state = ReviewSubmitState.idle;
     _error = null;

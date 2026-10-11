@@ -2,8 +2,10 @@ import 'package:flutter/foundation.dart';
 
 import '../../../core/services/token_storage.dart';
 import '../data/exceptions/auth_exception.dart';
+import '../data/models/requests/google_signin_request.dart';
 import '../data/models/requests/login_request.dart';
 import '../repository/auth_repository.dart';
+import '../services/google_signin_service.dart';
 
 /// ViewModel cho màn hình đăng nhập.
 ///
@@ -12,15 +14,19 @@ import '../repository/auth_repository.dart';
 class LoginViewModel extends ChangeNotifier {
   final AuthRepository _repository;
   final TokenStorage _tokenStorage;
+  final GoogleSignInService _googleSignInService;
 
   bool _isLoading = false;
   bool _isPasswordObscured = true;
   String? _errorMessage;
 
   LoginViewModel({
-    required this._repository,
+    required AuthRepository repository,
     required TokenStorage tokenStorage,
-  })  : _tokenStorage = tokenStorage;
+    GoogleSignInService? googleSignInService,
+  }) : _repository = repository,
+       _tokenStorage = tokenStorage,
+       _googleSignInService = googleSignInService ?? GoogleSignInService();
 
   // ─── Getters ───────────────────────────────────────────────────────────────
 
@@ -95,6 +101,67 @@ class LoginViewModel extends ChangeNotifier {
     if (_errorMessage != null) {
       _errorMessage = null;
       notifyListeners();
+    }
+  }
+
+  /// Đăng nhập bằng Google
+  ///
+  /// Returns: `true` nếu đăng nhập thành công, `false` nếu thất bại hoặc user hủy
+  Future<bool> signInWithGoogle() async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      // Bước 1: Lấy Google ID Token
+      final String? idToken = await _googleSignInService.signIn();
+
+      if (idToken == null) {
+        // User đã hủy sign-in
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      }
+
+      // Bước 2: Gửi ID Token đến backend để verify
+      final response = await _repository.googleSignIn(
+        GoogleSignInRequest(idToken: idToken),
+      );
+
+      // Bước 3: Lưu tokens từ backend
+      await _tokenStorage.saveTokens(
+        accessToken: response.accessToken,
+        refreshToken: response.refreshToken,
+      );
+
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } on AuthException catch (e) {
+      // Map lỗi từ backend
+      _errorMessage = _mapAuthExceptionToMessage(e);
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    } catch (e) {
+      // Lỗi từ Google Sign-In hoặc lỗi không mong đợi
+      if (kDebugMode) {
+        debugPrint('[LoginViewModel] Google Sign-In error: $e');
+      }
+
+      final errorMsg = e.toString().toLowerCase();
+      if (errorMsg.contains('network') || errorMsg.contains('connection')) {
+        _errorMessage = 'Không có kết nối mạng. Vui lòng kiểm tra lại';
+      } else if (errorMsg.contains('cancel')) {
+        // User đã hủy, không hiển thị lỗi
+        _errorMessage = null;
+      } else {
+        _errorMessage = 'Đăng nhập Google thất bại. Vui lòng thử lại';
+      }
+
+      _isLoading = false;
+      notifyListeners();
+      return false;
     }
   }
 

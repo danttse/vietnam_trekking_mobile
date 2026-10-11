@@ -1,14 +1,13 @@
-import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:dio/dio.dart';
-import 'package:crypto/crypto.dart';
+
 import '../data/models/route_model.dart';
 import '../data/models/milestone_model.dart';
 import '../data/repositories/journey_repository.dart';
-import '../../../../core/database/daos/offline_data_dao.dart';
-import '../../../../core/database/database_helper.dart';
-import '../../../../core/database/models/downloaded_map.dart';
+import '../../../core/database/daos/offline_data_dao.dart';
+import '../../../core/database/database_helper.dart';
+import '../../route/viewmodel/download_offline_map_viewmodel.dart';
+import '../../offline_map/services/offline_map_storage_service.dart';
+import '../../../core/services/trekking_catalog_service.dart';
 
 enum OfflineMapStatus { none, downloading, ready, failed, outdated }
 
@@ -21,9 +20,10 @@ class RouteDetailViewModel extends ChangeNotifier {
     required this.routeId,
     JourneyRepository? repo,
     DatabaseHelper? dbHelper,
-  })  : _repo = repo ?? JourneyRepository(),
-        _offlineDao =
-            OfflineDataDao(dbHelper: dbHelper ?? DatabaseHelper.instance);
+  }) : _repo = repo ?? JourneyRepository(),
+       _offlineDao = OfflineDataDao(
+         dbHelper: dbHelper ?? DatabaseHelper.instance,
+       );
 
   // ── State ─────────────────────────────────────────────────────────────────
   bool _loading = false;
@@ -47,7 +47,7 @@ class RouteDetailViewModel extends ChangeNotifier {
   double _downloadProgress = 0;
   double get downloadProgress => _downloadProgress;
 
-  CancelToken? _cancelToken;
+  DownloadOfflineMapViewModel? _download;
 
   // ── Load ──────────────────────────────────────────────────────────────────
 
@@ -77,7 +77,8 @@ class RouteDetailViewModel extends ChangeNotifier {
   }
 
   Future<void> _checkExistingDownload() async {
-    final existing = await _offlineDao.getMapByRoute(routeId);
+    final existing = await OfflineMapStorageService(dao: _offlineDao)
+        .findReadyMap(routeId, _route?.trekkingPlaceId ?? '');
     if (existing == null) {
       _offlineStatus = OfflineMapStatus.none;
       return;
@@ -98,90 +99,40 @@ class RouteDetailViewModel extends ChangeNotifier {
   // ── Download ──────────────────────────────────────────────────────────────
 
   Future<void> downloadOfflineMap() async {
-    if (_packageInfo == null) return;
     if (_offlineStatus == OfflineMapStatus.downloading) return;
-
     _offlineStatus = OfflineMapStatus.downloading;
-    _downloadProgress = 0;
     _error = null;
     notifyListeners();
-
     try {
-      final dir = await getApplicationDocumentsDirectory();
-      final filePath =
-          '${dir.path}/maps/${routeId}_v${_packageInfo!.mapVersion}.mbtiles';
-      await Directory('${dir.path}/maps').create(recursive: true);
-
-      _cancelToken = CancelToken();
-      final dio = Dio();
-
-      await dio.download(
-        _packageInfo!.downloadUrl,
-        filePath,
-        cancelToken: _cancelToken,
-        onReceiveProgress: (received, total) {
-          if (total > 0) {
-            _downloadProgress = received / total;
-            notifyListeners();
-          }
-        },
+      final route = await TrekkingCatalogService().getRoute(routeId);
+      _download = DownloadOfflineMapViewModel(
+        route: route,
+        autoStart: false,
+        storage: OfflineMapStorageService(dao: _offlineDao),
       );
-
-      // Verify checksum (strip "sha256:" prefix nếu có)
-      if (_packageInfo!.checksum.isNotEmpty) {
-        final bytes = await File(filePath).readAsBytes();
-        final actualHash = sha256.convert(bytes).toString();
-        final expectedHash = _packageInfo!.checksumHash;
-        if (actualHash != expectedHash) {
-          throw Exception('Checksum không khớp — file có thể bị lỗi');
-        }
-      }
-
-      // Save to DB
-      final mapId = routeId;
-      final existing = await _offlineDao.getMap(routeId);
-      final mapRecord = DownloadedMap(
-        mapId: mapId,
-        trekkingRouteId: routeId,
-        trekkingPlaceId: _route?.trekkingPlaceId,
-        mapName: _packageInfo!.mapName,
-        localPath: filePath,
-        mapVersion: _packageInfo!.mapVersion,
-        sizeBytes: _packageInfo!.sizeBytes,
-        minZoom: _packageInfo!.minZoom,
-        maxZoom: _packageInfo!.maxZoom,
-        checksum: _packageInfo!.checksum,
-        downloadedAt: DateTime.now(),
-        status: 'READY',
-      );
-      if (existing != null) {
-        await _offlineDao.updateMap(mapRecord);
-      } else {
-        await _offlineDao.insertMap(mapRecord);
-      }
-
-      _offlineStatus = OfflineMapStatus.ready;
-      _downloadProgress = 1.0;
-    } on DioException catch (e) {
-      if (CancelToken.isCancel(e)) {
-        _offlineStatus = OfflineMapStatus.none;
-      } else {
-        _error = 'Tải xuống thất bại: ${e.message}';
-        _offlineStatus = OfflineMapStatus.failed;
-      }
+      _download!.addListener(_onDownload);
+      await _download!.startDownload();
+      _error = _download!.error;
+      _offlineStatus = _download!.isCompleted
+          ? OfflineMapStatus.ready
+          : OfflineMapStatus.failed;
     } catch (e) {
       _error = e.toString();
       _offlineStatus = OfflineMapStatus.failed;
+    } finally {
+      _download?.removeListener(_onDownload);
+      _download?.dispose();
+      _download = null;
     }
     notifyListeners();
   }
 
-  void cancelDownload() {
-    _cancelToken?.cancel('Người dùng hủy tải xuống');
-    _offlineStatus = OfflineMapStatus.none;
-    _downloadProgress = 0;
+  void _onDownload() {
+    _downloadProgress = _download!.progress;
     notifyListeners();
   }
+
+  void cancelDownload() => _download?.cancelDownload();
 
   Future<void> retryDownload() async {
     _offlineStatus = OfflineMapStatus.none;

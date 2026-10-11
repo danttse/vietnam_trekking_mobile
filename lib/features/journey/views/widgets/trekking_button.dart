@@ -24,16 +24,20 @@ class TrekkingPrimaryButton extends StatelessWidget {
         onPressed: (loading || onPressed == null) ? null : onPressed,
         style: FilledButton.styleFrom(
           backgroundColor: const Color(0xFFE8620A),
-          disabledBackgroundColor: const Color(0xFFE8620A).withValues(alpha: 0.4),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          disabledBackgroundColor: const Color(0xFFE8620A)
+              .withValues(alpha: 0.4),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
         child: loading
             ? const SizedBox(
                 width: 22,
                 height: 22,
                 child: CircularProgressIndicator(
-                    strokeWidth: 2.5, color: Colors.white),
+                  strokeWidth: 2.5,
+                  color: Colors.white,
+                ),
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -42,12 +46,17 @@ class TrekkingPrimaryButton extends StatelessWidget {
                     Icon(icon, size: 18, color: Colors.white),
                     const SizedBox(width: 8),
                   ],
-                  Text(
-                    label,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                  Flexible(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        label,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -89,15 +98,15 @@ class TrekkingSecondaryButton extends StatelessWidget {
         onPressed: (loading || onPressed == null) ? null : onPressed,
         style: OutlinedButton.styleFrom(
           side: BorderSide(color: bc, width: 1.5),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
         child: loading
             ? SizedBox(
                 width: 22,
                 height: 22,
-                child:
-                    CircularProgressIndicator(strokeWidth: 2.5, color: tc),
+                child: CircularProgressIndicator(strokeWidth: 2.5, color: tc),
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -106,12 +115,17 @@ class TrekkingSecondaryButton extends StatelessWidget {
                     Icon(icon, size: 18, color: tc),
                     const SizedBox(width: 8),
                   ],
-                  Text(
-                    label,
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: tc,
+                  Flexible(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        label,
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: tc,
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -126,11 +140,7 @@ class TrekkingDangerButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
 
-  const TrekkingDangerButton({
-    super.key,
-    required this.label,
-    this.onPressed,
-  });
+  const TrekkingDangerButton({super.key, required this.label, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -142,15 +152,17 @@ class TrekkingDangerButton extends StatelessWidget {
         style: OutlinedButton.styleFrom(
           foregroundColor: Colors.redAccent,
           side: const BorderSide(color: Colors.redAccent, width: 1.5),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
         child: Text(
           label,
           style: const TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-              color: Colors.redAccent),
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+            color: Colors.redAccent,
+          ),
         ),
       ),
     );

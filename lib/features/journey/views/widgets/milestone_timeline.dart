@@ -131,14 +131,13 @@ class _MilestoneItem extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 2),
-                    if (milestone.altitude != null)
-                      Text(
-                        milestone.altitudeLabel,
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: cs.onSurfaceVariant,
-                        ),
+                    Text(
+                      milestone.altitudeLabel,
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: cs.onSurfaceVariant,
                       ),
+                    ),
                     if (isCheckedIn)
                       Padding(
                         padding: const EdgeInsets.only(top: 2),

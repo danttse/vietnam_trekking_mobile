@@ -1,5 +1,7 @@
 import 'package:sqflite/sqflite.dart';
+
 import '../database_helper.dart';
+import '../upsert.dart';
 import '../models/local_journey_marker.dart';
 import '../models/local_marker_media.dart';
 
@@ -8,7 +10,7 @@ class MarkerDao {
   final DatabaseHelper _dbHelper;
 
   MarkerDao({DatabaseHelper? dbHelper})
-      : _dbHelper = dbHelper ?? DatabaseHelper.instance;
+    : _dbHelper = dbHelper ?? DatabaseHelper.instance;
 
   Future<Database> get _db => _dbHelper.database;
 
@@ -18,10 +20,11 @@ class MarkerDao {
 
   Future<void> insertMarker(LocalJourneyMarker marker) async {
     final db = await _db;
-    await db.insert(
+    await upsertRow(
+      db,
       'local_journey_markers',
       marker.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
+      'localMarkerId',
     );
   }
 
@@ -120,9 +123,7 @@ class MarkerDao {
     );
   }
 
-  Future<List<LocalMarkerMedia>> getMediaByMarker(
-    String localMarkerId,
-  ) async {
+  Future<List<LocalMarkerMedia>> getMediaByMarker(String localMarkerId) async {
     final db = await _db;
     final rows = await db.query(
       'local_marker_media',
@@ -152,10 +153,7 @@ class MarkerDao {
     final db = await _db;
     await db.update(
       'local_marker_media',
-      {
-        'remoteUrl': remoteUrl,
-        'uploadStatus': 'UPLOADED',
-      },
+      {'remoteUrl': remoteUrl, 'uploadStatus': 'UPLOADED'},
       where: 'localMarkerMediaId = ?',
       whereArgs: [localMarkerMediaId],
     );

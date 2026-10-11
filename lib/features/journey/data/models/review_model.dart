@@ -9,6 +9,8 @@ class ReviewModel {
   final String? content;
   final List<String> imageUrls;
   final bool isAnonymous;
+  final int editCount;
+  final bool deleted;
   final DateTime? createdAt;
 
   const ReviewModel({
@@ -21,34 +23,38 @@ class ReviewModel {
     this.content,
     this.imageUrls = const [],
     this.isAnonymous = false,
+    this.editCount = 0,
+    this.deleted = false,
     this.createdAt,
   });
 
   factory ReviewModel.fromJson(Map<String, dynamic> json) {
     return ReviewModel(
       // Backend trả "detailEvaluateId", fallback về "reviewId"/"id"
-      reviewId: json['detailEvaluateId'] as String? ??
+      reviewId:
+          json['detailEvaluateId'] as String? ??
           json['reviewId'] as String? ??
           json['id'] as String? ??
           '',
       // Backend trả "trekkingPlaceId", frontend dùng "placeId"
-      placeId: json['trekkingPlaceId'] as String? ??
+      placeId:
+          json['trekkingPlaceId'] as String? ??
           json['placeId'] as String? ??
           '',
       userId: json['userId'] as String?,
       displayName: json['displayName'] as String?,
       avatarUrl: json['avatarUrl'] as String?,
       // Backend dùng "point" (1-5), frontend dùng "rating"
-      rating: json['point'] as int? ??
-          json['rating'] as int? ?? 0,
+      rating: json['point'] as int? ?? json['rating'] as int? ?? 0,
       content: json['content'] as String?,
       // Backend dùng "imagesUrl", frontend dùng "imageUrls"
-      imageUrls: (json['imagesUrl'] as List<dynamic>?)
-              ?.cast<String>() ??
-          (json['imageUrls'] as List<dynamic>?)
-              ?.cast<String>() ??
+      imageUrls:
+          (json['imagesUrl'] as List<dynamic>?)?.cast<String>() ??
+          (json['imageUrls'] as List<dynamic>?)?.cast<String>() ??
           [],
       isAnonymous: json['isAnonymous'] as bool? ?? false,
+      editCount: json['editCount'] as int? ?? 0,
+      deleted: json['deleted'] as bool? ?? false,
       createdAt: json['createdAt'] != null
           ? DateTime.tryParse(json['createdAt'] as String)
           : null,
@@ -73,11 +79,11 @@ class CreateReviewRequest {
   });
 
   Map<String, dynamic> toJson() => {
-        // Backend nhận "point" (1-5), không phải "rating"
-        'point': rating,
-        if (content != null && content!.isNotEmpty) 'content': content,
-        // Backend nhận "imagesUrl", không phải "imageUrls"
-        if (imageUrls.isNotEmpty) 'imagesUrl': imageUrls,
-        if (journeyId != null) 'journeyId': journeyId,
-      };
+    // Backend nhận "point" (1-5), không phải "rating"
+    'point': rating,
+    'isAnonymous': isAnonymous,
+    'content': content ?? '',
+    // Backend nhận "imagesUrl", không phải "imageUrls"
+    'imagesUrl': imageUrls,
+  };
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+
 import '../data/models/marker_model.dart';
 import '../data/repositories/journey_repository.dart';
 
@@ -21,6 +22,8 @@ class MarkerFormViewModel extends ChangeNotifier {
       name = editingMarker!.name;
       selectedType = editingMarker!.type;
       note = editingMarker!.note ?? '';
+      mediaLocalPaths = List.of(editingMarker!.mediaLocalPaths);
+      mediaRemoteUrls = List.of(editingMarker!.mediaRemoteUrls);
     }
   }
 
@@ -29,6 +32,7 @@ class MarkerFormViewModel extends ChangeNotifier {
   String selectedType = 'OTHER';
   String note = '';
   List<String> mediaLocalPaths = [];
+  List<String> mediaRemoteUrls = [];
 
   // GPS injected from screen
   double? latitude;
@@ -44,10 +48,19 @@ class MarkerFormViewModel extends ChangeNotifier {
   String? get error => _error;
 
   MarkerModel? savedMarker;
+  bool _disposed = false;
 
   bool get isEditing => editingMarker != null;
   bool get canSave =>
-      name.trim().isNotEmpty && _state != MarkerFormState.saving;
+      name.trim().isNotEmpty &&
+      name.trim().length <= 200 &&
+      latitude != null &&
+      longitude != null &&
+      latitude!.isFinite &&
+      longitude!.isFinite &&
+      latitude!.abs() <= 90 &&
+      longitude!.abs() <= 180 &&
+      _state != MarkerFormState.saving;
 
   // ── Marker types list ─────────────────────────────────────────────────────
   static const List<Map<String, String>> markerTypes = [
@@ -78,8 +91,12 @@ class MarkerFormViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setLocation(double lat, double lng,
-      {double? alt, double? acc}) {
+  void removeRemoteImage(String url) {
+    mediaRemoteUrls = mediaRemoteUrls.where((item) => item != url).toList();
+    notifyListeners();
+  }
+
+  void setLocation(double lat, double lng, {double? alt, double? acc}) {
     latitude = lat;
     longitude = lng;
     altitude = alt;
@@ -89,8 +106,14 @@ class MarkerFormViewModel extends ChangeNotifier {
 
   // ── Save ──────────────────────────────────────────────────────────────────
 
-  Future<void> save() async {
-    if (!canSave || latitude == null) return;
+  Future<void> save({bool syncImmediately = true}) async {
+    if (_state == MarkerFormState.saving) return;
+    if (!canSave) {
+      _error = 'Vui lòng nhập tên cột mốc và xác định vị trí GPS hợp lệ.';
+      _state = MarkerFormState.error;
+      notifyListeners();
+      return;
+    }
 
     _state = MarkerFormState.saving;
     _error = null;
@@ -102,22 +125,12 @@ class MarkerFormViewModel extends ChangeNotifier {
           editingMarker!.markerId,
           name: name.trim(),
           type: selectedType,
-          note: note.trim().isEmpty ? null : note.trim(),
-        );
-        savedMarker = MarkerModel(
-          markerId: editingMarker!.markerId,
-          serverMarkerId: editingMarker!.serverMarkerId,
-          localJourneyId: editingMarker!.localJourneyId,
-          name: name.trim(),
-          type: selectedType,
-          note: note.trim().isEmpty ? null : note.trim(),
-          latitude: editingMarker!.latitude,
-          longitude: editingMarker!.longitude,
-          altitude: editingMarker!.altitude,
-          markedAt: editingMarker!.markedAt,
-          syncStatus: editingMarker!.syncStatus,
+          note: note.trim(),
           mediaLocalPaths: mediaLocalPaths,
+          mediaRemoteUrls: mediaRemoteUrls,
+          syncImmediately: syncImmediately,
         );
+        savedMarker = await _repo.getLocalMarker(editingMarker!.markerId);
       } else {
         savedMarker = await _repo.createMarker(
           localJourneyId: localJourneyId,
@@ -130,13 +143,20 @@ class MarkerFormViewModel extends ChangeNotifier {
           accuracy: accuracy,
           note: note.trim().isEmpty ? null : note.trim(),
           mediaLocalPaths: mediaLocalPaths,
+          syncImmediately: syncImmediately,
         );
       }
       _state = MarkerFormState.success;
     } catch (e) {
-      _error = e.toString();
+      _error = e is StateError ? e.message : e.toString();
       _state = MarkerFormState.error;
     }
-    notifyListeners();
+    if (!_disposed) notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
   }
 }

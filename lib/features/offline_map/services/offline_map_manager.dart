@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -11,12 +12,7 @@ import '../models/offline_map_manifest.dart';
 import '../utils/map_style_builder.dart';
 
 /// Trạng thái tổng hợp của offline map
-enum OfflineMapStatus {
-  idle,
-  loading,
-  ready,
-  error,
-}
+enum OfflineMapStatus { idle, loading, ready, error }
 
 /// OfflineMapManager: ChangeNotifier điều phối toàn bộ flow offline map.
 ///
@@ -35,16 +31,17 @@ enum OfflineMapStatus {
 class OfflineMapManager extends ChangeNotifier {
   // ── Dependencies ───────────────────────────────────────────────────────────
   final OfflineMapPackageService _packageService;
-  final MBTilesRegistry _registry;
-  final LocalTileServer _tileServer;
+  late final MBTilesRegistry _registry;
+  late final LocalTileServer _tileServer;
 
   OfflineMapManager({
     OfflineMapPackageService? packageService,
     MBTilesRegistry? registry,
     LocalTileServer? tileServer,
-  })  : _packageService = packageService ?? OfflineMapPackageService(),
-        _registry = registry ?? MBTilesRegistry(),
-        _tileServer = tileServer ?? LocalTileServer(registry: MBTilesRegistry());
+  }) : _packageService = packageService ?? OfflineMapPackageService() {
+    _registry = registry ?? MBTilesRegistry();
+    _tileServer = tileServer ?? LocalTileServer(registry: _registry, port: 0);
+  }
 
   // Factory giải quyết circular dependency trong constructor default
   factory OfflineMapManager.create() {
@@ -52,8 +49,14 @@ class OfflineMapManager extends ChangeNotifier {
     return OfflineMapManager(
       packageService: OfflineMapPackageService(),
       registry: registry,
-      tileServer: LocalTileServer(registry: registry),
+      tileServer: LocalTileServer(registry: registry, port: 0),
     );
+  }
+
+  bool _disposed = false;
+  @override
+  void notifyListeners() {
+    if (!_disposed) super.notifyListeners();
   }
 
   // ── State ─────────────────────────────────────────────────────────────────
@@ -98,13 +101,33 @@ class OfflineMapManager extends ChangeNotifier {
   MapStyleBuilder? _styleBuilder;
 
   /// Style JSON để truyền vào MaplibreMap(styleString: ...)
-  String? get styleString => _styleBuilder?.build();
+  String? _downloadedStyle;
+  String? get styleString {
+    if (_downloadedStyle == null) return _styleBuilder?.build();
+    final style = jsonDecode(_downloadedStyle!) as Map;
+    for (final layer in style['layers'] as List) {
+      final source = layer['source']?.toString() ?? '';
+      final visible = source.contains('hillshade')
+          ? _showHillshade
+          : source.contains('contour')
+          ? _showContours
+          : source.contains('routes')
+          ? _showRoute
+          : source.contains('milestones')
+          ? _showMilestones
+          : true;
+      if (!visible) {
+        layer['layout'] = {...?layer['layout'] as Map?, 'visibility': 'none'};
+      }
+    }
+    return jsonEncode(style);
+  }
 
   bool get isReady => _status == OfflineMapStatus.ready;
 
   // ── INIT & RESET ──────────────────────────────────────────────────────────
 
-  Future<void> initialize() async {
+  Future<void> initialize({String? packageDirectory}) async {
     if (_status == OfflineMapStatus.loading) return;
 
     _setStatus(OfflineMapStatus.loading);
@@ -112,10 +135,14 @@ class OfflineMapManager extends ChangeNotifier {
 
     try {
       // Bước 1-4: Load package (copy, extract, verify)
-      final result = await _packageService.loadPackage();
+      final result = await _packageService.loadPackage(
+        packageDirectory: packageDirectory,
+      );
       _manifest = result.manifest;
       _packageLoaded = true;
       _shaVerified = result.allShaVerified;
+      if (!_shaVerified)
+        throw StateError('Checksum của gói bản đồ không hợp lệ.');
       notifyListeners();
 
       // Bước 5: Mở MBTiles
@@ -123,8 +150,8 @@ class OfflineMapManager extends ChangeNotifier {
       final extractDir = result.extractDir;
       final layersToOpen = result.manifest.layers.isNotEmpty
           ? result.manifest.layers
-              .map((l) => _LayerEntry(l.id, l.file))
-              .toList()
+                .map((l) => _LayerEntry(l.id, l.file))
+                .toList()
           : _detectLayersFromSha256(result.manifest.sha256);
 
       for (final entry in layersToOpen) {
@@ -139,16 +166,22 @@ class OfflineMapManager extends ChangeNotifier {
         packageService: _packageService,
         packageFileName: result.manifest.geojson.routes,
         assetPath: 'assets/offline_maps/ba-den-routes.geojson',
+        allowAssetFallback: packageDirectory == null,
       );
       _milestoneGeoJson = await _loadGeoJson(
         packageService: _packageService,
         packageFileName: result.manifest.geojson.milestones,
         assetPath: 'assets/offline_maps/ba-den-milestones.geojson',
+        allowAssetFallback: packageDirectory == null,
       );
-      debugPrint('[OfflineMapManager] route GeoJSON: '
-          '${_routeGeoJson != null ? "loaded" : "null"}');
-      debugPrint('[OfflineMapManager] milestone GeoJSON: '
-          '${_milestoneGeoJson != null ? "loaded" : "null"}');
+      debugPrint(
+        '[OfflineMapManager] route GeoJSON: '
+        '${_routeGeoJson != null ? "loaded" : "null"}',
+      );
+      debugPrint(
+        '[OfflineMapManager] milestone GeoJSON: '
+        '${_milestoneGeoJson != null ? "loaded" : "null"}',
+      );
       notifyListeners();
 
       // Bước 7: Khởi động tile server
@@ -158,13 +191,55 @@ class OfflineMapManager extends ChangeNotifier {
 
       // Bước 8: Build style
       _rebuildStyle();
+      if (packageDirectory != null) {
+        _downloadedStyle = await _bindDownloadedStyle(packageDirectory);
+      }
 
       _setStatus(OfflineMapStatus.ready);
     } catch (e, st) {
       debugPrint('[OfflineMapManager] initialize error: $e\n$st');
       _errorMessage = e.toString();
+      await _tileServer.stop();
+      await _registry.closeAll();
       _setStatus(OfflineMapStatus.error);
+    } finally {
+      if (_disposed) {
+        await _tileServer.stop();
+        await _registry.closeAll();
+      }
     }
+  }
+
+  Future<String> _bindDownloadedStyle(String directory) async {
+    final raw = jsonDecode(
+      await File(p.join(directory, 'manifest.json')).readAsString(),
+    ) as Map;
+    final style = jsonDecode(
+      await File(p.join(directory, raw['style'] ?? 'style.json'))
+          .readAsString(),
+    ) as Map<String, dynamic>;
+    final sources = style['sources'] as Map;
+    for (final value in sources.values) {
+      final source = value as Map;
+      final url = source['url'];
+      if (url is String && url.startsWith('mbtiles://')) {
+        final fileName = url.substring('mbtiles://'.length);
+        final layer = _manifest!.layers.firstWhere((l) => l.file == fileName);
+        source.remove('url');
+        source['tiles'] = [_tileServer.tileUrl(layer.id)];
+        source['minzoom'] = _tileServer.configOf(layer.id)!.minZoom;
+        source['maxzoom'] = _tileServer.configOf(layer.id)!.maxZoom;
+      } else if (url != null || source.containsKey('tiles')) {
+        throw StateError('Style có nguồn bản đồ ngoài gói offline.');
+      }
+      if (source['type'] == 'geojson' && source['data'] is String) {
+        source['data'] = await _packageService.readGeoJsonAsMap(source['data']);
+      }
+    }
+    if (style.containsKey('sprite'))
+      throw StateError('Style có sprite ngoài gói offline.');
+    style['glyphs'] = _tileServer.glyphsUrl;
+    return jsonEncode(style);
   }
 
   Future<void> reset() async {
@@ -181,6 +256,7 @@ class OfflineMapManager extends ChangeNotifier {
       _routeGeoJson = null;
       _milestoneGeoJson = null;
       _styleBuilder = null;
+      _downloadedStyle = null;
       _errorMessage = null;
       _setStatus(OfflineMapStatus.idle);
     }
@@ -235,7 +311,9 @@ class OfflineMapManager extends ChangeNotifier {
   /// Mapping tên file → layer id dựa trên convention đặt tên.
   List<_LayerEntry> _detectLayersFromSha256(Map<String, String> sha256) {
     final entries = <_LayerEntry>[];
-    for (final fileName in sha256.keys) {
+    for (final fileName in sha256.keys.where(
+      (name) => name.endsWith('.mbtiles'),
+    )) {
       final lower = fileName.toLowerCase();
       final String layerId;
       if (lower.contains('hillshade')) {
@@ -246,13 +324,21 @@ class OfflineMapManager extends ChangeNotifier {
         layerId = 'base';
       }
       entries.add(_LayerEntry(layerId, fileName));
-      debugPrint('[OfflineMapManager] auto-detected layer: $layerId → $fileName');
+      debugPrint(
+        '[OfflineMapManager] auto-detected layer: $layerId → $fileName',
+      );
     }
     return entries;
   }
 
+  Future<void> close() async {
+    await _tileServer.stop();
+    await _registry.closeAll();
+  }
+
   @override
   void dispose() {
+    _disposed = true;
     _tileServer.stop();
     _registry.closeAll();
     super.dispose();
@@ -271,6 +357,7 @@ Future<Map<String, dynamic>?> _loadGeoJson({
   required OfflineMapPackageService packageService,
   required String packageFileName,
   required String assetPath,
+  bool allowAssetFallback = true,
 }) async {
   // 1. Thử đọc từ package đã giải nén
   if (packageFileName.isNotEmpty) {
@@ -280,6 +367,7 @@ Future<Map<String, dynamic>?> _loadGeoJson({
       debugPrint('[GeoJSON] "$packageFileName" not in package, trying asset');
     }
   }
+  if (!allowAssetFallback) return null;
   // 2. Fallback: đọc từ Flutter asset bundle
   try {
     final raw = await rootBundle.loadString(assetPath);

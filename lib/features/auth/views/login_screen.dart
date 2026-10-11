@@ -1,8 +1,8 @@
-import 'dart:async';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+
 import '../../../l10n/app_localizations.dart';
+
 import 'package:vietnam_trekking_mobile/features/auth/views/forgot_password_screen.dart';
 
 import '../../../core/network/dio_client.dart';
@@ -33,35 +33,31 @@ class _LoginScreenState extends State<LoginScreen> {
   late final AuthRepositoryImpl _repository;
   late final LoginViewModel _viewModel;
 
-  StreamSubscription<AuthEvent>? _authExpiredSub;
-
   @override
   void initState() {
     super.initState();
     _tokenStorage = const SecureTokenStorage();
     _eventBus = AuthEventBus(); // singleton
-    _dio = DioClient.createDio(tokenStorage: _tokenStorage, eventBus: _eventBus);
+    _dio = DioClient.createDio(
+      tokenStorage: _tokenStorage,
+      eventBus: _eventBus,
+    );
     _repository = AuthRepositoryImpl(dio: _dio, tokenStorage: _tokenStorage);
-    _viewModel = LoginViewModel(repository: _repository, tokenStorage: _tokenStorage);
+    _viewModel = LoginViewModel(
+      repository: _repository,
+      tokenStorage: _tokenStorage,
+    );
 
     _viewModel.addListener(() {
       if (mounted) setState(() {});
     });
 
-    // Req 2.7, 7.4: Lắng nghe sự kiện authExpired → điều hướng về LoginScreen
-    _authExpiredSub = _eventBus.stream.listen((event) {
-      if (event == AuthEvent.authExpired && mounted) {
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => const LoginScreen()),
-          (_) => false,
-        );
-      }
-    });
+    // Không cần listen authExpired ở LoginScreen vì đã ở màn hình login rồi
+    // UserNavigationScreen sẽ handle việc navigate về login khi authExpired
   }
 
   @override
   void dispose() {
-    _authExpiredSub?.cancel();
     _emailController.dispose();
     _passwordController.dispose();
     _viewModel.dispose();
@@ -153,11 +149,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: TextButton(
                   onPressed: () {
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ForgotPasswordScreen(),
-                        ),
-                      );
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ForgotPasswordScreen(),
+                      ),
+                    );
                   },
                   child: Text(
                     l10n.forgotPassword,
@@ -183,7 +179,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const UserNavigationScreen()),
+                        builder: (context) => const UserNavigationScreen(),
+                      ),
                     );
                   }
                 },
@@ -216,14 +213,31 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 16),
               BtnOutlineStyle(
                 text: l10n.loginWithGoogle,
-                icon: const Icon(Icons.g_mobiledata, color: Colors.redAccent, size: 28),
-                onPressed: () {
-                  // TODO: Google Sign-In
-                },
+                icon: Image.asset(
+                  'assets/images/google_icon.webp',
+                  width: 24,
+                  height: 24,
+                ),
+                onPressed: _viewModel.isLoading
+                    ? null
+                    : () async {
+                        final success = await _viewModel.signInWithGoogle();
+
+                        if (success && context.mounted) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const UserNavigationScreen(),
+                            ),
+                          );
+                        }
+                      },
               ),
               const SizedBox(height: 32),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              Wrap(
+                alignment: WrapAlignment.center,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   Text(
                     l10n.noAccount,

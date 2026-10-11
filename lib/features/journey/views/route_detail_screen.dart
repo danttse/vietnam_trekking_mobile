@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+
 import '../viewmodels/route_detail_viewmodel.dart';
 import 'widgets/offline_map_card.dart';
 import 'widgets/trekking_button.dart';
 import 'widgets/trekking_empty_state.dart';
 import 'download_success_screen.dart';
+import '../../../core/widgets/cards/trekking_map_preview.dart';
 
 class RouteDetailScreen extends StatefulWidget {
   final String routeId;
@@ -29,9 +31,11 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
     if (_vm.offlineStatus == OfflineMapStatus.ready &&
         _vm.downloadProgress == 1.0) {
       // Navigate to download success screen
-      Navigator.of(context).push(MaterialPageRoute(
-        builder: (_) => DownloadSuccessScreen(routeId: widget.routeId),
-      ));
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => DownloadSuccessScreen(routeId: widget.routeId),
+        ),
+      );
     }
     setState(() {});
   }
@@ -54,15 +58,17 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
           return Scaffold(
             backgroundColor: cs.surface,
             body: const Center(
-                child: CircularProgressIndicator(
-                    color: Color(0xFFE8620A))),
+              child: CircularProgressIndicator(color: Color(0xFFE8620A)),
+            ),
           );
         }
         if (_vm.error != null && _vm.route == null) {
           return Scaffold(
             appBar: AppBar(backgroundColor: cs.surface, elevation: 0),
             body: TrekkingEmptyState.error(
-                message: _vm.error, onRetry: _vm.load),
+              message: _vm.error,
+              onRetry: _vm.load,
+            ),
           );
         }
         return _buildContent(cs);
@@ -89,8 +95,11 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                   color: Colors.black45,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Icon(Icons.arrow_back_ios_new,
-                    size: 16, color: Colors.white),
+                child: const Icon(
+                  Icons.arrow_back_ios_new,
+                  size: 16,
+                  color: Colors.white,
+                ),
               ),
               onPressed: () => Navigator.of(context).pop(),
             ),
@@ -100,7 +109,9 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                   padding: const EdgeInsets.only(right: 12, top: 8),
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 4),
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: _difficultyColor(route!.difficulty!),
                       borderRadius: BorderRadius.circular(20),
@@ -108,9 +119,10 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                     child: Text(
                       '${route.difficultyLabel} (Level ${route.difficultyLevel})',
                       style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600),
+                        color: Colors.white,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
@@ -120,8 +132,12 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                   ? Image.network(route!.imageUrl!, fit: BoxFit.cover)
                   : Container(
                       color: const Color(0xFF0D1A0F),
-                      child: const Icon(Icons.landscape,
-                          size: 64, color: Color(0xFF1E3A1E))),
+                      child: const Icon(
+                        Icons.landscape,
+                        size: 64,
+                        color: Color(0xFF1E3A1E),
+                      ),
+                    ),
             ),
           ),
 
@@ -146,7 +162,9 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                     Text(
                       route?.placeAddress ?? route?.placeName ?? '',
                       style: TextStyle(
-                          fontSize: 13, color: cs.onSurfaceVariant),
+                        fontSize: 13,
+                        color: cs.onSurfaceVariant,
+                      ),
                     ),
                   ],
 
@@ -160,9 +178,10 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                     Text(
                       route!.description!,
                       style: TextStyle(
-                          fontSize: 13,
-                          color: cs.onSurfaceVariant,
-                          height: 1.5),
+                        fontSize: 13,
+                        color: cs.onSurfaceVariant,
+                        height: 1.5,
+                      ),
                     ),
                     const SizedBox(height: 20),
                   ],
@@ -171,10 +190,11 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                   Text(
                     'BẢN ĐỒ LỘ TRÌNH',
                     style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        color: cs.onSurfaceVariant,
-                        letterSpacing: 0.5),
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: cs.onSurfaceVariant,
+                      letterSpacing: 0.5,
+                    ),
                   ),
                   const SizedBox(height: 10),
                   _buildMapPreview(cs),
@@ -185,20 +205,23 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                     Text(
                       'ĐIỂM KIỂM SOÁT (${_vm.milestones.length} điểm)',
                       style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          color: cs.onSurfaceVariant,
-                          letterSpacing: 0.5),
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: cs.onSurfaceVariant,
+                        letterSpacing: 0.5,
+                      ),
                     ),
                     const SizedBox(height: 10),
-                    ..._vm.milestones.map((m) => Padding(
-                          padding: const EdgeInsets.only(bottom: 6),
-                          child: _MilestoneRow(
-                            name: m.name,
-                            altitude: m.altitude,
-                            isFirst: m.sequenceNumber == 0,
-                          ),
-                        )),
+                    ..._vm.milestones.map(
+                      (m) => Padding(
+                        padding: const EdgeInsets.only(bottom: 6),
+                        child: _MilestoneRow(
+                          name: m.name,
+                          altitude: m.altitude,
+                          isFirst: m.sequenceNumber == 0,
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 20),
                   ],
 
@@ -248,8 +271,7 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
       decoration: BoxDecoration(
         color: cs.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-            color: cs.onSurface.withValues(alpha: 0.06)),
+        border: Border.all(color: cs.onSurface.withValues(alpha: 0.06)),
       ),
       child: Column(
         children: [
@@ -292,39 +314,10 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
   }
 
   Widget _buildMapPreview(ColorScheme cs) {
-    return Container(
-      height: 150,
-      decoration: BoxDecoration(
-        color: const Color(0xFF0D1A0F),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-            color: cs.primary.withValues(alpha: 0.2)),
-      ),
-      child: const ClipRRect(
-        borderRadius: BorderRadius.all(Radius.circular(12)),
-        child: Stack(
-          children: [
-            Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.map_outlined,
-                      color: Color(0xFF4A7A4A), size: 36),
-                  SizedBox(height: 6),
-                  Text('Bản đồ lộ trình',
-                      style: TextStyle(
-                          color: Color(0xFF4A7A4A), fontSize: 12)),
-                ],
-              ),
-            ),
-            Positioned(
-              top: 8,
-              left: 8,
-              child: _MapBadge(label: 'APEX TRAIL'),
-            ),
-          ],
-        ),
-      ),
+    return TrekkingMapPreview(
+      placeId: _vm.route?.trekkingPlaceId ?? '',
+      route: _vm.route?.catalogRoute,
+      placeName: _vm.route?.placeName,
     );
   }
 
@@ -348,8 +341,11 @@ class _StatItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final String value;
-  const _StatItem(
-      {required this.icon, required this.label, required this.value});
+  const _StatItem({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -363,14 +359,18 @@ class _StatItem extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(value,
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: cs.onSurface)),
-                Text(label,
-                    style: TextStyle(
-                        fontSize: 10, color: cs.onSurfaceVariant)),
+                Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: cs.onSurface,
+                  ),
+                ),
+                Text(
+                  label,
+                  style: TextStyle(fontSize: 10, color: cs.onSurfaceVariant),
+                ),
               ],
             ),
           ),
@@ -384,8 +384,11 @@ class _MilestoneRow extends StatelessWidget {
   final String name;
   final double? altitude;
   final bool isFirst;
-  const _MilestoneRow(
-      {required this.name, this.altitude, this.isFirst = false});
+  const _MilestoneRow({
+    required this.name,
+    this.altitude,
+    this.isFirst = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -399,46 +402,17 @@ class _MilestoneRow extends StatelessWidget {
         ),
         const SizedBox(width: 8),
         Expanded(
-          child: Text(name,
-              style: TextStyle(
-                  fontSize: 13, color: cs.onSurface)),
+          child: Text(
+            name,
+            style: TextStyle(fontSize: 13, color: cs.onSurface),
+          ),
         ),
         if (altitude != null)
           Text(
             '${altitude!.toInt()}m',
-            style: TextStyle(
-                fontSize: 11, color: cs.onSurfaceVariant),
+            style: TextStyle(fontSize: 11, color: cs.onSurfaceVariant),
           ),
       ],
-    );
-  }
-}
-
-class _MapBadge extends StatelessWidget {
-  final String label;
-  const _MapBadge({required this.label});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding:
-          const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: Colors.black54,
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.map_outlined,
-              size: 10, color: Colors.white),
-          const SizedBox(width: 4),
-          Text(label,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 9,
-                  fontWeight: FontWeight.w700)),
-        ],
-      ),
     );
   }
 }

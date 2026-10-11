@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+
 import '../viewmodels/contribution_viewmodel.dart';
 import '../data/models/journey_model.dart';
 import '../data/models/marker_model.dart';
 import 'widgets/trekking_button.dart';
+import '../../../core/services/journey_track.dart';
 
 /// Màn hình submit Route Contribution sau khi hoàn thành hành trình.
 ///
@@ -11,12 +13,14 @@ class ContributionScreen extends StatefulWidget {
   final JourneyModel journey;
   final List<MarkerModel> markers;
   final String userId;
+  final bool markerOnly;
 
   const ContributionScreen({
     super.key,
     required this.journey,
     required this.markers,
     required this.userId,
+    this.markerOnly = false,
   });
 
   @override
@@ -35,12 +39,16 @@ class _ContributionScreenState extends State<ContributionScreen> {
     super.initState();
     _vm = ContributionViewModel(
       userId: widget.userId,
+      markerOnly: widget.markerOnly,
     );
     _vm.addListener(_onVmChange);
 
     // Pre-fill tên từ journey
     _nameCtrl.text = widget.journey.name;
     _vm.setProposedName(widget.journey.name);
+    _vm.selectedMarkerIds = widget.markers
+        .map((m) => m.serverMarkerId ?? m.markerId)
+        .toList();
   }
 
   @override
@@ -55,7 +63,8 @@ class _ContributionScreenState extends State<ContributionScreen> {
 
   void _onVmChange() {
     if (!mounted) return;
-    if (_vm.submitState == ContributionSubmitState.success) {
+    if (_vm.submitState == ContributionSubmitState.success ||
+        _vm.submitState == ContributionSubmitState.queued) {
       _showSuccessAndPop();
     } else if (_vm.submitState == ContributionSubmitState.error) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -70,24 +79,33 @@ class _ContributionScreenState extends State<ContributionScreen> {
 
   Future<void> _showSuccessAndPop() async {
     if (!mounted) return;
+    final queued = _vm.submitState == ContributionSubmitState.queued;
     await showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (_) => AlertDialog(
-        title: const Text('Đóng góp thành công! 🎉'),
+        title: Text(queued ? 'Đã lưu đóng góp' : 'Đã gửi đóng góp'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Cảm ơn bạn đã đóng góp dữ liệu trekking!'),
+            Text(
+              queued
+                  ? 'App sẽ tự gửi khi có mạng. Admin sẽ nhận được sau khi đồng bộ thành công.'
+                  : widget.markerOnly
+                  ? 'Admin đã nhận các cột mốc bạn chọn.'
+                  : 'Admin đã nhận cung đường và các cột mốc bạn chọn.',
+            ),
             const SizedBox(height: 8),
             Text(
-              'Trạng thái: ${_vm.submittedContribution?.statusLabel ?? "Chờ xét duyệt"}',
+              queued
+                  ? 'Trạng thái: Chờ đồng bộ'
+                  : 'Trạng thái: ${_vm.submittedContribution?.statusLabel ?? "Chờ xét duyệt"}',
               style: const TextStyle(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 4),
             const Text(
-              'Đội ngũ sẽ xem xét và phản hồi trong vòng 3-5 ngày.',
+              'Bạn có thể xem trạng thái trong lịch sử đóng góp.',
               style: TextStyle(fontSize: 12, color: Colors.grey),
             ),
           ],
@@ -99,8 +117,9 @@ class _ContributionScreenState extends State<ContributionScreen> {
               Navigator.of(context).pop(); // back from contribution screen
             },
             style: FilledButton.styleFrom(
-                backgroundColor: const Color(0xFFE8620A)),
-            child: const Text('Tuyệt vời!'),
+              backgroundColor: const Color(0xFFE8620A),
+            ),
+            child: const Text('Xác nhận'),
           ),
         ],
       ),
@@ -130,7 +149,7 @@ class _ContributionScreenState extends State<ContributionScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          'Đóng góp cung đường',
+          widget.markerOnly ? 'Gửi cột mốc cho admin' : 'Đóng góp cung đường',
           style: TextStyle(
             fontSize: 17,
             fontWeight: FontWeight.w600,
@@ -156,13 +175,18 @@ class _ContributionScreenState extends State<ContributionScreen> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.info_outline,
-                      size: 18, color: Color(0xFF81C784)),
+                  const Icon(
+                    Icons.info_outline,
+                    size: 18,
+                    color: Color(0xFF81C784),
+                  ),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      'Dữ liệu GPS từ hành trình của bạn sẽ giúp cộng đồng trekker tìm đường '
-                      'tốt hơn. Đội ngũ sẽ xem xét và phê duyệt trước khi đăng tải.',
+                      widget.markerOnly
+                          ? 'Chọn cột mốc để gửi admin xét duyệt. Bạn có thể gửi ngay trong hành trình; tọa độ, ảnh và ghi chú của các điểm đã chọn sẽ được đính kèm.'
+                          : 'Dữ liệu GPS từ hành trình của bạn sẽ giúp cộng đồng trekker tìm đường '
+                                'tốt hơn. Đội ngũ sẽ xem xét và phê duyệt trước khi đăng tải.',
                       style: TextStyle(
                         fontSize: 12,
                         color: const Color(0xFF81C784).withValues(alpha: 0.9),
@@ -184,17 +208,37 @@ class _ContributionScreenState extends State<ContributionScreen> {
               label: widget.journey.name,
               sub: _journeySub(),
             ),
+            if (!widget.markerOnly)
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Text(
+                  JourneyTrack.decode(
+                            widget.journey.encodedPolyline ?? '',
+                            widget.journey.journeyId,
+                          ).length >=
+                          2
+                      ? 'Đính kèm đường GPS đã lưu và ${widget.journey.pendingSync ? "chờ đồng bộ hành trình trước khi gửi admin" : "gửi admin xét duyệt"}.'
+                      : 'Hành trình chưa có đường GPS đã ghi. Hãy bật ghi lại đường đi trên màn map cho hành trình tiếp theo.',
+                  style: TextStyle(fontSize: 12, color: cs.onSurfaceVariant),
+                ),
+              ),
 
             const SizedBox(height: 24),
 
             // ── Tên cung đường đề xuất ──────────────────────────────────
-            _sectionLabel('TÊN CUNG ĐƯỜNG ĐỀ XUẤT *', cs),
+            _sectionLabel(
+              widget.markerOnly ? 'TÊN ĐÓNG GÓP *' : 'TÊN CUNG ĐƯỜNG ĐỀ XUẤT *',
+              cs,
+            ),
             const SizedBox(height: 8),
             TextFormField(
               controller: _nameCtrl,
               maxLength: 200,
               style: TextStyle(color: cs.onSurface),
-              decoration: _inputDecoration(cs, 'Ví dụ: Cung Langbiang qua rừng thông'),
+              decoration: _inputDecoration(
+                cs,
+                'Ví dụ: Cung Langbiang qua rừng thông',
+              ),
               validator: (v) =>
                   v == null || v.trim().isEmpty ? 'Vui lòng nhập tên' : null,
               onChanged: _vm.setProposedName,
@@ -225,19 +269,19 @@ class _ContributionScreenState extends State<ContributionScreen> {
               maxLength: 1000,
               style: TextStyle(color: cs.onSurface),
               decoration: _inputDecoration(
-                  cs, 'Ví dụ: Dốc đứng đoạn km 8, cẩn thận mưa trơn...'),
+                cs,
+                'Ví dụ: Dốc đứng đoạn km 8, cẩn thận mưa trơn...',
+              ),
               onChanged: _vm.setNotes,
             ),
 
             // ── Chọn markers để share ──────────────────────────────────
             if (widget.markers.isNotEmpty) ...[
               const SizedBox(height: 24),
-              _sectionLabel(
-                  'ĐIỂM ĐÃ ĐÁNH DẤU (chọn để chia sẻ)', cs),
+              _sectionLabel('ĐIỂM ĐÃ ĐÁNH DẤU (chọn để chia sẻ)', cs),
               const SizedBox(height: 8),
               Text(
-                'Các điểm bạn chọn sẽ được snapshot vào contribution — '
-                'chỉnh sửa sau không ảnh hưởng dữ liệu đang review.',
+                'Tên, tọa độ, ảnh và ghi chú của các điểm đã chọn sẽ được gửi cho admin xét duyệt.',
                 style: TextStyle(fontSize: 11, color: cs.onSurfaceVariant),
               ),
               const SizedBox(height: 10),
@@ -272,17 +316,22 @@ class _ContributionScreenState extends State<ContributionScreen> {
   // ── Helpers ───────────────────────────────────────────────────────────────
 
   List<Widget> _buildMarkerCheckboxes(ColorScheme cs) {
-    return widget.markers
-        .where((m) => m.serverMarkerId != null && m.serverMarkerId!.isNotEmpty)
-        .map((m) {
-      final selected = _vm.selectedMarkerIds.contains(m.serverMarkerId);
+    return widget.markers.map((m) {
+      final id = m.serverMarkerId ?? m.markerId;
+      final selected = _vm.selectedMarkerIds.contains(id);
       return CheckboxListTile(
         value: selected,
-        onChanged: (_) => _vm.toggleMarkerId(m.serverMarkerId!),
-        title: Text(m.name,
-            style: TextStyle(fontSize: 13, color: cs.onSurface)),
-        subtitle: Text(m.typeLabel,
-            style: TextStyle(fontSize: 11, color: cs.onSurfaceVariant)),
+        onChanged: _vm.submitState == ContributionSubmitState.submitting
+            ? null
+            : (_) => _vm.toggleMarkerId(id),
+        title: Text(
+          m.name,
+          style: TextStyle(fontSize: 13, color: cs.onSurface),
+        ),
+        subtitle: Text(
+          m.typeLabel,
+          style: TextStyle(fontSize: 11, color: cs.onSurfaceVariant),
+        ),
         secondary: Container(
           width: 32,
           height: 32,
@@ -297,9 +346,7 @@ class _ContributionScreenState extends State<ContributionScreen> {
         tileColor: selected
             ? const Color(0xFF1A3B2A)
             : cs.surfaceContainerHighest,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       );
     }).toList();
   }
@@ -317,14 +364,14 @@ class _ContributionScreenState extends State<ContributionScreen> {
   }
 
   Widget _sectionLabel(String label, ColorScheme cs) => Text(
-        label,
-        style: TextStyle(
-          fontSize: 10,
-          fontWeight: FontWeight.w600,
-          color: cs.onSurfaceVariant,
-          letterSpacing: 0.5,
-        ),
-      );
+    label,
+    style: TextStyle(
+      fontSize: 10,
+      fontWeight: FontWeight.w600,
+      color: cs.onSurfaceVariant,
+      letterSpacing: 0.5,
+    ),
+  );
 
   Widget _infoRow(
     ColorScheme cs, {
@@ -346,15 +393,19 @@ class _ContributionScreenState extends State<ContributionScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label,
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: cs.onSurface)),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: cs.onSurface,
+                  ),
+                ),
                 if (sub != null && sub.isNotEmpty)
-                  Text(sub,
-                      style: TextStyle(
-                          fontSize: 12, color: cs.onSurfaceVariant)),
+                  Text(
+                    sub,
+                    style: TextStyle(fontSize: 12, color: cs.onSurfaceVariant),
+                  ),
               ],
             ),
           ),
@@ -375,8 +426,7 @@ class _ContributionScreenState extends State<ContributionScreen> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide:
-              BorderSide(color: const Color(0xFFE8620A), width: 1.5),
+          borderSide: BorderSide(color: const Color(0xFFE8620A), width: 1.5),
         ),
       );
 }

@@ -1,5 +1,7 @@
 import 'dart:math' as math;
+
 import 'package:flutter/foundation.dart';
+
 import '../data/models/milestone_model.dart';
 
 enum CheckinGpsState { acquiring, inRange, outOfRange }
@@ -40,8 +42,10 @@ class CheckinViewModel extends ChangeNotifier {
     _currentLng = lng;
     _currentAccuracy = accuracy;
     _distance = _haversineDistance(
-      lat, lng,
-      milestone.latitude, milestone.longitude,
+      lat,
+      lng,
+      milestone.latitude,
+      milestone.longitude,
     );
     final radius = milestone.checkinRadiusMeters;
     _gpsState = _distance! <= radius
@@ -52,6 +56,10 @@ class CheckinViewModel extends ChangeNotifier {
 
   bool get canCheckin =>
       _gpsState == CheckinGpsState.inRange &&
+      _currentAccuracy != null &&
+      _currentAccuracy!.isFinite &&
+      _currentAccuracy! >= 0 &&
+      _currentAccuracy! <= 50 &&
       _submitState == CheckinSubmitState.idle;
 
   String get distanceLabel {
@@ -72,7 +80,7 @@ class CheckinViewModel extends ChangeNotifier {
       required double accuracy,
       required double distanceToTarget,
     })
-        checkinFn,
+    checkinFn,
   ) async {
     if (!canCheckin || _currentLat == null) return;
 
@@ -105,15 +113,18 @@ class CheckinViewModel extends ChangeNotifier {
   // ── Haversine ─────────────────────────────────────────────────────────────
 
   static double _haversineDistance(
-    double lat1, double lng1,
-    double lat2, double lng2,
+    double lat1,
+    double lng1,
+    double lat2,
+    double lng2,
   ) {
     const r = 6371000.0; // metres
     final phi1 = lat1 * math.pi / 180;
     final phi2 = lat2 * math.pi / 180;
     final dPhi = (lat2 - lat1) * math.pi / 180;
     final dLambda = (lng2 - lng1) * math.pi / 180;
-    final a = math.sin(dPhi / 2) * math.sin(dPhi / 2) +
+    final a =
+        math.sin(dPhi / 2) * math.sin(dPhi / 2) +
         math.cos(phi1) *
             math.cos(phi2) *
             math.sin(dLambda / 2) *

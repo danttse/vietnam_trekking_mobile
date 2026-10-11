@@ -1,5 +1,7 @@
 import 'package:sqflite/sqflite.dart';
+
 import '../database_helper.dart';
+import '../upsert.dart';
 import '../models/local_journey.dart';
 import '../models/track_point.dart';
 
@@ -8,7 +10,7 @@ class JourneyDao {
   final DatabaseHelper _dbHelper;
 
   JourneyDao({DatabaseHelper? dbHelper})
-      : _dbHelper = dbHelper ?? DatabaseHelper.instance;
+    : _dbHelper = dbHelper ?? DatabaseHelper.instance;
 
   Future<Database> get _db => _dbHelper.database;
 
@@ -18,11 +20,7 @@ class JourneyDao {
 
   Future<void> insertJourney(LocalJourney journey) async {
     final db = await _db;
-    await db.insert(
-      'local_journeys',
-      journey.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    await upsertRow(db, 'local_journeys', journey.toMap(), 'localJourneyId');
   }
 
   Future<void> updateJourney(LocalJourney journey) async {
@@ -95,10 +93,7 @@ class JourneyDao {
   }
 
   /// Cập nhật serverJourneyId sau khi sync thành công
-  Future<void> markSynced(
-    String localJourneyId,
-    String serverJourneyId,
-  ) async {
+  Future<void> markSynced(String localJourneyId, String serverJourneyId) async {
     final db = await _db;
     await db.update(
       'local_journeys',

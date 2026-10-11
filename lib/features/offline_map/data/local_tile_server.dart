@@ -15,8 +15,8 @@ import 'mbtiles_repository.dart';
 
 class LayerConfig {
   final String id;
-  final String format;   // 'pbf' | 'png' | 'jpg'
-  final bool isGzipped;  // tile_data đã gzip sẵn
+  final String format; // 'pbf' | 'png' | 'jpg'
+  final bool isGzipped; // tile_data đã gzip sẵn
   final int minZoom;
   final int maxZoom;
   final int tileSize;
@@ -62,7 +62,7 @@ class LocalTileServer {
   LocalTileServer({required this.registry, this.port = _defaultPort});
 
   bool get isRunning => _server != null;
-  String get baseUrl => 'http://127.0.0.1:$port';
+  String get baseUrl => 'http://127.0.0.1:${_server?.port ?? port}';
 
   LayerConfig? configOf(String layerId) => _configs[layerId];
   bool isVector(String layerId) => _configs[layerId]?.isVector ?? false;
@@ -107,8 +107,10 @@ class LocalTileServer {
 
     debugPrint('[TileServer] started → $baseUrl');
     for (final c in _configs.values) {
-      debugPrint('[TileServer] layer=${c.id} fmt=${c.format} '
-          'gzip=${c.isGzipped} zoom=${c.minZoom}-${c.maxZoom}');
+      debugPrint(
+        '[TileServer] layer=${c.id} fmt=${c.format} '
+        'gzip=${c.isGzipped} zoom=${c.minZoom}-${c.maxZoom}',
+      );
     }
   }
 
@@ -141,8 +143,10 @@ class LocalTileServer {
         tileSize: 256,
       );
 
-      debugPrint('[TileServer] detected $layerId: '
-          'fmt=$fmt zoom=$minZ-$maxZ gzip=${fmt == "pbf"}');
+      debugPrint(
+        '[TileServer] detected $layerId: '
+        'fmt=$fmt zoom=$minZ-$maxZ gzip=${fmt == "pbf"}',
+      );
     }
   }
 
@@ -179,9 +183,18 @@ class LocalTileServer {
     final x = int.tryParse(xStr);
     final y = int.tryParse(yClean);
 
-    if (z == null || x == null || y == null) {
+    if (z == null ||
+        x == null ||
+        y == null ||
+        z < 0 ||
+        z > 24 ||
+        x < 0 ||
+        y < 0 ||
+        x >= (1 << z) ||
+        y >= (1 << z)) {
       return Response.badRequest(
-          body: 'Invalid tile coords: $zStr/$xStr/$yStr');
+        body: 'Invalid tile coords: $zStr/$xStr/$yStr',
+      );
     }
 
     final repo = registry.get(layerId);
@@ -204,9 +217,11 @@ class LocalTileServer {
         return Response(204, headers: _cors());
       }
 
-      debugPrint('[$label] xyz=$z/$x/$y → tmsY=$tmsY → '
-          'found bytes=${tileData.length} '
-          'gzip=${cfg?.isGzipped ?? false}');
+      debugPrint(
+        '[$label] xyz=$z/$x/$y → tmsY=$tmsY → '
+        'found bytes=${tileData.length} '
+        'gzip=${cfg?.isGzipped ?? false}',
+      );
 
       final headers = <String, String>{
         ..._cors(),
@@ -216,12 +231,15 @@ class LocalTileServer {
       final isVec = cfg?.isVector ?? false;
       if (isVec) {
         headers['Content-Type'] = 'application/vnd.mapbox-vector-tile';
-        if (cfg?.isGzipped ?? false) {
+        if (tileData.length >= 2 &&
+            tileData[0] == 0x1f &&
+            tileData[1] == 0x8b) {
           headers['Content-Encoding'] = 'gzip';
         }
       } else {
-        headers['Content-Type'] =
-            (cfg?.format == 'jpg') ? 'image/jpeg' : 'image/png';
+        headers['Content-Type'] = (cfg?.format == 'jpg')
+            ? 'image/jpeg'
+            : 'image/png';
       }
 
       return Response.ok(tileData, headers: headers);
@@ -251,11 +269,12 @@ class LocalTileServer {
     // Strip .pbf extension nếu có trong rangeFile
     final range = rangeFile.replaceAll('.pbf', '');
 
-    final assetPath =
-        'assets/offline_maps/glyphs/$assetFont/$range.pbf';
+    final assetPath = 'assets/offline_maps/glyphs/$assetFont/$range.pbf';
 
-    debugPrint('[GlyphServer] request fontstack="$decoded" range="$range" '
-        '→ asset="$assetPath"');
+    debugPrint(
+      '[GlyphServer] request fontstack="$decoded" range="$range" '
+      '→ asset="$assetPath"',
+    );
 
     try {
       final byteData = await rootBundle.load(assetPath);
@@ -284,11 +303,12 @@ class LocalTileServer {
   // ───────────────────────────────────────────────────────────────────────────
 
   Map<String, String> _cors() => {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      };
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+  };
 
-  Middleware _corsMiddleware() => (Handler inner) => (Request req) async {
+  Middleware _corsMiddleware() =>
+      (Handler inner) => (Request req) async {
         if (req.method == 'OPTIONS') {
           return Response.ok('', headers: _cors());
         }

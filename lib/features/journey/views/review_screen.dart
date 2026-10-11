@@ -1,5 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+
+import '../../../core/network/api_error_handler.dart';
+
 import '../viewmodels/review_viewmodel.dart';
+import '../data/models/review_model.dart';
 import 'widgets/rating_stars.dart';
 import 'widgets/trekking_button.dart';
 import 'review_success_screen.dart';
@@ -8,12 +15,14 @@ class ReviewScreen extends StatefulWidget {
   final String placeId;
   final String? placeName;
   final String? journeyId;
+  final ReviewModel? existingReview;
 
   const ReviewScreen({
     super.key,
     required this.placeId,
     this.placeName,
     this.journeyId,
+    this.existingReview,
   });
 
   @override
@@ -31,22 +40,29 @@ class _ReviewScreenState extends State<ReviewScreen> {
       placeId: widget.placeId,
       placeName: widget.placeName,
       journeyId: widget.journeyId,
+      existingReview: widget.existingReview,
     );
+    _contentCtrl.text = _vm.content;
     _vm.addListener(_onVmChange);
   }
 
   void _onVmChange() {
     if (!mounted) return;
-    if (_vm.state == ReviewSubmitState.success &&
-        _vm.submittedReview != null) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (_) => ReviewSuccessScreen(
-            rating: _vm.rating,
-            placeName: widget.placeName,
+    if (_vm.state == ReviewSubmitState.success && _vm.submittedReview != null) {
+      // Delay navigation để tránh lỗi _debugLocked
+      // Navigation phải được thực hiện sau khi notifyListeners() hoàn tất
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => ReviewSuccessScreen(
+              rating: _vm.rating,
+              placeName: widget.placeName,
+              placeId: widget.placeId,
+            ),
           ),
-        ),
-      );
+        );
+      });
     } else if (_vm.state == ReviewSubmitState.error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -77,15 +93,17 @@ class _ReviewScreenState extends State<ReviewScreen> {
         backgroundColor: cs.surface,
         elevation: 0,
         leading: IconButton(
-          icon:
-              Icon(Icons.arrow_back_ios_new, size: 20, color: cs.onSurface),
+          icon: Icon(Icons.arrow_back_ios_new, size: 20, color: cs.onSurface),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text('Đánh giá địa điểm',
-            style: TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.w600,
-                color: cs.onSurface)),
+        title: Text(
+          'Đánh giá địa điểm',
+          style: TextStyle(
+            fontSize: 17,
+            fontWeight: FontWeight.w600,
+            color: cs.onSurface,
+          ),
+        ),
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),
@@ -104,15 +122,18 @@ class _ReviewScreenState extends State<ReviewScreen> {
                   Text(
                     widget.placeName!,
                     style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        color: cs.onSurface),
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      color: cs.onSurface,
+                    ),
                   ),
                   if (widget.placeId.isNotEmpty)
                     Text(
                       'Lâm Đồng, Việt Nam',
                       style: TextStyle(
-                          fontSize: 12, color: cs.onSurfaceVariant),
+                        fontSize: 12,
+                        color: cs.onSurfaceVariant,
+                      ),
                     ),
                 ],
               ),
@@ -127,10 +148,11 @@ class _ReviewScreenState extends State<ReviewScreen> {
                 Text(
                   'MỨC ĐỘ HÀI LÒNG CỦA BẠN?',
                   style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: cs.onSurfaceVariant,
-                      letterSpacing: 0.5),
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: cs.onSurfaceVariant,
+                    letterSpacing: 0.5,
+                  ),
                 ),
                 const SizedBox(height: 14),
                 RatingStars(
@@ -148,12 +170,15 @@ class _ReviewScreenState extends State<ReviewScreen> {
           const SizedBox(height: 24),
 
           // ── Content ───────────────────────────────────────────────────
-          Text('CHIA SẺ TRẢI NGHIỆM',
-              style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: cs.onSurfaceVariant,
-                  letterSpacing: 0.5)),
+          Text(
+            'CHIA SẺ TRẢI NGHIỆM',
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: cs.onSurfaceVariant,
+              letterSpacing: 0.5,
+            ),
+          ),
           const SizedBox(height: 8),
           TextField(
             controller: _contentCtrl,
@@ -161,11 +186,11 @@ class _ReviewScreenState extends State<ReviewScreen> {
             style: TextStyle(color: cs.onSurface, fontSize: 13),
             onChanged: (v) => _vm.setContent(v),
             decoration: InputDecoration(
-              hintText:
-                  'Đường đi Tà Năng mùa này rất đẹp, cỏ xanh mướt...',
+              hintText: 'Đường đi Tà Năng mùa này rất đẹp, cỏ xanh mướt...',
               hintStyle: TextStyle(
-                  color: cs.onSurfaceVariant.withValues(alpha: 0.5),
-                  fontSize: 13),
+                color: cs.onSurfaceVariant.withValues(alpha: 0.5),
+                fontSize: 13,
+              ),
               filled: true,
               fillColor: cs.surfaceContainerHighest,
               border: OutlineInputBorder(
@@ -179,72 +204,97 @@ class _ReviewScreenState extends State<ReviewScreen> {
           const SizedBox(height: 20),
 
           // ── Images ────────────────────────────────────────────────────
-          Text('THÊM HÌNH ẢNH',
-              style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: cs.onSurfaceVariant,
-                  letterSpacing: 0.5)),
+          Text(
+            'THÊM HÌNH ẢNH',
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: cs.onSurfaceVariant,
+              letterSpacing: 0.5,
+            ),
+          ),
           const SizedBox(height: 8),
-          SizedBox(
-            height: 80,
-            child: Row(
-              children: [
-                // Add photo button
-                GestureDetector(
-                  onTap: () {/* pick image */},
-                  child: Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      color: cs.surfaceContainerHighest,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                          color: cs.onSurface.withValues(alpha: 0.1)),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              OutlinedButton.icon(
+                icon: const Icon(Icons.add_photo_alternate_outlined),
+                label: const Text('Thêm ảnh (tối đa 10)'),
+                onPressed: isLoading
+                    ? null
+                    : () async {
+                        try {
+                          final files = await ImagePicker().pickMultiImage(
+                            imageQuality: 85,
+                          );
+                          if (!mounted) return;
+                          for (final file in files) {
+                            _vm.addImage(file.path);
+                          }
+                        } catch (e) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(ApiErrorHandler.handle(e)),
+                              ),
+                            );
+                          }
+                        }
+                      },
+              ),
+              for (final url in _vm.imageRemoteUrls)
+                Stack(
+                  children: [
+                    Image.network(
+                      url,
+                      width: 80,
+                      height: 80,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, error, stack) =>
+                          const Icon(Icons.broken_image_outlined),
                     ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.add_photo_alternate_outlined,
-                            size: 22, color: cs.onSurfaceVariant),
-                        const SizedBox(height: 4),
-                        Text('+ Thêm ảnh',
-                            style: TextStyle(
-                                fontSize: 9,
-                                color: cs.onSurfaceVariant)),
-                      ],
-                    ),
-                  ),
-                ),
-                // Added photos
-                ...List.generate(
-                    _vm.imageLocalPaths.length > 2
-                        ? 2
-                        : _vm.imageLocalPaths.length, (i) {
-                  return Container(
-                    width: 80,
-                    height: 80,
-                    margin: const EdgeInsets.only(left: 8),
-                    decoration: BoxDecoration(
-                      color: cs.surfaceContainerHighest,
-                      borderRadius: BorderRadius.circular(10),
-                      image: DecorationImage(
-                        image: AssetImage(_vm.imageLocalPaths[i]),
-                        fit: BoxFit.cover,
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      child: IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: isLoading
+                            ? null
+                            : () => _vm.removeRemoteImage(url),
                       ),
                     ),
-                  );
-                }),
-              ],
-            ),
+                  ],
+                ),
+              for (final path in _vm.imageLocalPaths)
+                Stack(
+                  children: [
+                    Image.file(
+                      File(path),
+                      width: 80,
+                      height: 80,
+                      fit: BoxFit.cover,
+                    ),
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      child: IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: isLoading
+                            ? null
+                            : () => _vm.removeImage(path),
+                      ),
+                    ),
+                  ],
+                ),
+            ],
           ),
 
           const SizedBox(height: 20),
 
           // ── Anonymous toggle ──────────────────────────────────────────
           Container(
-            padding: const EdgeInsets.symmetric(
-                horizontal: 16, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
               color: cs.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(12),
@@ -258,28 +308,27 @@ class _ReviewScreenState extends State<ReviewScreen> {
                       Text(
                         'Đánh giá ẩn danh',
                         style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: cs.onSurface),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: cs.onSurface,
+                        ),
                       ),
                       Text(
-                        'Tên bạn sẽ không hiện thị công khai',
+                        'Tên của bạn sẽ không hiển thị công khai',
                         style: TextStyle(
-                            fontSize: 11,
-                            color: cs.onSurfaceVariant),
+                          fontSize: 11,
+                          color: cs.onSurfaceVariant,
+                        ),
                       ),
                     ],
                   ),
                 ),
                 Switch(
                   value: _vm.isAnonymous,
-                  onChanged: (_) {
-                    _vm.toggleAnonymous();
-                    setState(() {});
-                  },
+                  onChanged: isLoading ? null : (_) => _vm.toggleAnonymous(),
                   activeThumbColor: const Color(0xFFE8620A),
-                  activeTrackColor:
-                      const Color(0xFFE8620A).withValues(alpha: 0.4),
+                  activeTrackColor: const Color(0xFFE8620A)
+                      .withValues(alpha: 0.4),
                 ),
               ],
             ),
@@ -288,7 +337,9 @@ class _ReviewScreenState extends State<ReviewScreen> {
           const SizedBox(height: 32),
 
           TrekkingPrimaryButton(
-            label: 'Gửi đánh giá',
+            label: widget.existingReview == null
+                ? 'Gửi đánh giá'
+                : 'Lưu chỉnh sửa (1 lần)',
             loading: isLoading,
             onPressed: _vm.canSubmit
                 ? () {

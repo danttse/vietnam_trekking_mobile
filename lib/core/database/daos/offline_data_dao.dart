@@ -1,14 +1,20 @@
 import 'package:sqflite/sqflite.dart';
+
 import '../database_helper.dart';
+import '../../services/offline_store.dart';
 import '../models/visited_province.dart';
 import '../models/downloaded_map.dart';
 
 /// DAO cho visited_provinces và downloaded_maps.
 class OfflineDataDao {
   final DatabaseHelper _dbHelper;
+  final Future<String?> Function() _ownerProvider;
 
-  OfflineDataDao({DatabaseHelper? dbHelper})
-      : _dbHelper = dbHelper ?? DatabaseHelper.instance;
+  OfflineDataDao({
+    DatabaseHelper? dbHelper,
+    Future<String?> Function()? ownerProvider,
+  }) : _ownerProvider = ownerProvider ?? OfflineStore.currentOwner,
+       _dbHelper = dbHelper ?? DatabaseHelper.instance;
 
   Future<Database> get _db => _dbHelper.database;
 
@@ -16,106 +22,84 @@ class OfflineDataDao {
   // VISITED PROVINCES
   // =========================================================================
 
-  Future<void> upsertVisitedProvince(VisitedProvince province) async {
-    final db = await _db;
-    await db.insert(
-      'visited_provinces',
-      province.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+  Future<String> _owner() async {
+    final owner = await _ownerProvider();
+    if (owner == null || owner.isEmpty)
+      throw StateError('Vui lòng đăng nhập để xem tỉnh đã thăm.');
+    return owner;
   }
 
-  /// Ghi nhận visit mới: tăng visitCount hoặc insert nếu chưa có
+  Future<void> upsertVisitedProvince(VisitedProvince province) async {
+    final owner = await _owner();
+    if (province.ownerId.isNotEmpty && province.ownerId != owner)
+      throw StateError('Tài khoản không khớp.');
+    final db = await _db;
+    await db.insert('visited_provinces', {
+      ...province.toMap(),
+      'ownerId': owner,
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
   Future<void> recordVisit({
     required String provinceId,
     required String provinceName,
     String? source,
   }) async {
+    final owner = await _owner();
+    final now = DateTime.now().toUtc().toIso8601String();
     final db = await _db;
-    final now = DateTime.now().toIso8601String();
-
-    // Thử lấy bản ghi hiện có
-    final rows = await db.query(
-      'visited_provinces',
-      where: 'provinceId = ?',
-      whereArgs: [provinceId],
-      limit: 1,
+    await db.rawInsert(
+      'INSERT INTO visited_provinces(ownerId,provinceId,name,firstVisitedAt,lastVisitedAt,visitCount,source,syncStatus,updatedAt) '
+      "VALUES(?,?,?,?,?,1,?,'PENDING',?) ON CONFLICT(ownerId,provinceId) DO UPDATE SET lastVisitedAt=excluded.lastVisitedAt,"
+      "visitCount=visited_provinces.visitCount+1,syncStatus='PENDING',updatedAt=excluded.updatedAt",
+      [owner, provinceId, provinceName, now, now, source, now],
     );
-
-    if (rows.isEmpty) {
-      await db.insert('visited_provinces', {
-        'provinceId': provinceId,
-        'name': provinceName,
-        'firstVisitedAt': now,
-        'lastVisitedAt': now,
-        'visitCount': 1,
-        'source': source,
-        'syncStatus': 'PENDING',
-        'updatedAt': now,
-      });
-    } else {
-      final currentCount = rows.first['visitCount'] as int? ?? 1;
-      await db.update(
-        'visited_provinces',
-        {
-          'lastVisitedAt': now,
-          'visitCount': currentCount + 1,
-          'syncStatus': 'PENDING',
-          'updatedAt': now,
-        },
-        where: 'provinceId = ?',
-        whereArgs: [provinceId],
-      );
-    }
   }
 
   Future<VisitedProvince?> getVisitedProvince(String provinceId) async {
-    final db = await _db;
-    final rows = await db.query(
+    final rows = await (await _db).query(
       'visited_provinces',
-      where: 'provinceId = ?',
-      whereArgs: [provinceId],
+      where: 'ownerId = ? AND provinceId = ?',
+      whereArgs: [await _owner(), provinceId],
       limit: 1,
     );
-    if (rows.isEmpty) return null;
-    return VisitedProvince.fromMap(rows.first);
+    return rows.isEmpty ? null : VisitedProvince.fromMap(rows.first);
   }
 
   Future<List<VisitedProvince>> getAllVisitedProvinces() async {
-    final db = await _db;
-    final rows = await db.query(
+    final rows = await (await _db).query(
       'visited_provinces',
+      where: 'ownerId = ?',
+      whereArgs: [await _owner()],
       orderBy: 'lastVisitedAt DESC',
     );
     return rows.map(VisitedProvince.fromMap).toList();
   }
 
   Future<List<VisitedProvince>> getPendingSyncVisitedProvinces() async {
-    final db = await _db;
-    final rows = await db.query(
+    final rows = await (await _db).query(
       'visited_provinces',
-      where: 'syncStatus = ?',
-      whereArgs: ['PENDING'],
+      where: 'ownerId = ? AND syncStatus = ?',
+      whereArgs: [await _owner(), 'PENDING'],
     );
     return rows.map(VisitedProvince.fromMap).toList();
   }
 
   Future<void> markVisitedProvinceSynced(String provinceId) async {
-    final db = await _db;
-    await db.update(
+    await (await _db).update(
       'visited_provinces',
-      {'syncStatus': 'SYNCED', 'updatedAt': DateTime.now().toIso8601String()},
-      where: 'provinceId = ?',
-      whereArgs: [provinceId],
+      {'syncStatus': 'SYNCED'},
+      where: 'ownerId = ? AND provinceId = ?',
+      whereArgs: [await _owner(), provinceId],
     );
   }
 
   Future<int> countVisitedProvinces() async {
-    final db = await _db;
-    final result = await db.rawQuery(
-      'SELECT COUNT(*) as cnt FROM visited_provinces',
+    final rows = await (await _db).rawQuery(
+      'SELECT COUNT(*) AS cnt FROM visited_provinces WHERE ownerId = ?',
+      [await _owner()],
     );
-    return result.first['cnt'] as int;
+    return rows.first['cnt'] as int;
   }
 
   // =========================================================================
@@ -162,24 +146,54 @@ class OfflineDataDao {
     return rows.map(DownloadedMap.fromMap).toList();
   }
 
+  /// Tìm map theo route ID và scope
   Future<DownloadedMap?> getMapByRoute(String trekkingRouteId) async {
     final db = await _db;
     final rows = await db.query(
       'downloaded_maps',
-      where: 'trekkingRouteId = ? AND status = ?',
-      whereArgs: [trekkingRouteId, 'READY'],
+      where: 'scope = ? AND trekkingRouteId = ? AND status = ?',
+      whereArgs: ['ROUTE', trekkingRouteId, 'READY'],
+      orderBy: 'mapVersion DESC',
       limit: 1,
     );
     if (rows.isEmpty) return null;
     return DownloadedMap.fromMap(rows.first);
   }
 
+  /// Tìm map theo place ID và scope
+  Future<DownloadedMap?> getMapByPlace(String trekkingPlaceId) async {
+    final db = await _db;
+    final rows = await db.query(
+      'downloaded_maps',
+      where: 'scope = ? AND trekkingPlaceId = ? AND status = ?',
+      whereArgs: ['PLACE', trekkingPlaceId, 'READY'],
+      orderBy: 'mapVersion DESC',
+      limit: 1,
+    );
+    if (rows.isEmpty) return null;
+    return DownloadedMap.fromMap(rows.first);
+  }
+
+  /// Lấy tất cả maps của place (có thể có nhiều versions)
   Future<List<DownloadedMap>> getMapsByPlace(String trekkingPlaceId) async {
     final db = await _db;
     final rows = await db.query(
       'downloaded_maps',
-      where: 'trekkingPlaceId = ? AND status = ?',
-      whereArgs: [trekkingPlaceId, 'READY'],
+      where: 'scope = ? AND trekkingPlaceId = ?',
+      whereArgs: ['PLACE', trekkingPlaceId],
+      orderBy: 'mapVersion DESC',
+    );
+    return rows.map(DownloadedMap.fromMap).toList();
+  }
+
+  /// Lấy tất cả maps theo scope
+  Future<List<DownloadedMap>> getMapsByScope(String scope) async {
+    final db = await _db;
+    final rows = await db.query(
+      'downloaded_maps',
+      where: 'scope = ?',
+      whereArgs: [scope],
+      orderBy: 'downloadedAt DESC',
     );
     return rows.map(DownloadedMap.fromMap).toList();
   }
@@ -197,11 +211,7 @@ class OfflineDataDao {
 
   Future<void> deleteMap(String mapId) async {
     final db = await _db;
-    await db.delete(
-      'downloaded_maps',
-      where: 'mapId = ?',
-      whereArgs: [mapId],
-    );
+    await db.delete('downloaded_maps', where: 'mapId = ?', whereArgs: [mapId]);
   }
 
   /// Lấy tổng dung lượng các bản đồ đã tải (bytes)

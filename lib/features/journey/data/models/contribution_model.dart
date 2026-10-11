@@ -6,6 +6,7 @@
 ///
 /// Trạng thái: DRAFT → PENDING_REVIEW → (APPROVED | REJECTED | NEEDS_REVISION)
 class ContributionModel {
+  final String contributionKind;
   final String contributionId;
   final String? userId;
   final String type; // ROUTE_SUBMISSION | PLACE_SUGGESTION
@@ -23,6 +24,7 @@ class ContributionModel {
   final DateTime? updatedAt;
 
   const ContributionModel({
+    this.contributionKind = 'ROUTE',
     required this.contributionId,
     this.userId,
     required this.type,
@@ -42,13 +44,16 @@ class ContributionModel {
 
   factory ContributionModel.fromJson(Map<String, dynamic> json) {
     return ContributionModel(
-      contributionId: json['routeSubmissionId'] as String? ??
+      contributionKind: json['contributionKind'] as String? ?? 'ROUTE',
+      contributionId:
+          json['routeSubmissionId'] as String? ??
           json['placeSuggestionId'] as String? ??
           json['contributionId'] as String? ??
           json['id'] as String? ??
           '',
       userId: json['userId'] as String?,
-      type: json['type'] as String? ??
+      type:
+          json['type'] as String? ??
           (json.containsKey('routeSubmissionId')
               ? 'ROUTE_SUBMISSION'
               : 'PLACE_SUGGESTION'),
@@ -93,7 +98,7 @@ class ContributionModel {
   String get typeLabel {
     switch (type.toUpperCase()) {
       case 'ROUTE_SUBMISSION':
-        return 'Cung đường';
+        return contributionKind == 'MARKERS' ? 'Cột mốc' : 'Cung đường';
       case 'PLACE_SUGGESTION':
         return 'Địa điểm mới';
       default:
@@ -105,6 +110,8 @@ class ContributionModel {
 // ── Request: Route Contribution ────────────────────────────────────────────
 
 class SubmitRouteContributionRequest {
+  final String contributionKind;
+
   /// sourceJourneyId phải là serverJourneyId từ Journey đã COMPLETED
   final String sourceJourneyId;
   final String? trekkingPlaceId;
@@ -118,6 +125,7 @@ class SubmitRouteContributionRequest {
   final String? clientOperationId; // idempotency key
 
   const SubmitRouteContributionRequest({
+    this.contributionKind = 'ROUTE',
     required this.sourceJourneyId,
     this.trekkingPlaceId,
     this.proposedName,
@@ -131,17 +139,18 @@ class SubmitRouteContributionRequest {
   });
 
   Map<String, dynamic> toJson() => {
-        'sourceJourneyId': sourceJourneyId,
-        if (trekkingPlaceId != null) 'trekkingPlaceId': trekkingPlaceId,
-        if (proposedName != null) 'proposedName': proposedName,
-        if (description != null) 'description': description,
-        if (notes != null) 'notes': notes,
-        if (encodedPolyline != null) 'encodedPolyline': encodedPolyline,
-        if (statistics != null) 'statistics': statistics,
-        if (images.isNotEmpty) 'images': images,
-        if (markerIds.isNotEmpty) 'markerIds': markerIds,
-        if (clientOperationId != null) 'clientOperationId': clientOperationId,
-      };
+    'contributionKind': contributionKind,
+    'sourceJourneyId': sourceJourneyId,
+    if (trekkingPlaceId != null) 'trekkingPlaceId': trekkingPlaceId,
+    if (proposedName != null) 'proposedName': proposedName,
+    if (description != null) 'description': description,
+    if (notes != null) 'notes': notes,
+    if (encodedPolyline != null) 'encodedPolyline': encodedPolyline,
+    if (statistics != null) 'statistics': statistics,
+    if (images.isNotEmpty) 'images': images,
+    if (markerIds.isNotEmpty) 'markerIds': markerIds,
+    if (clientOperationId != null) 'clientOperationId': clientOperationId,
+  };
 }
 
 // ── Request: Place Contribution ────────────────────────────────────────────
@@ -172,20 +181,20 @@ class SubmitPlaceContributionRequest {
   });
 
   Map<String, dynamic> toJson() => {
-        'provinceId': provinceId,
-        'proposedName': proposedName,
-        if (address != null) 'address': address,
-        // Backend nhận GeoJSON Point: [lng, lat]
-        'location': {
-          'type': 'Point',
-          'coordinates': [longitude, latitude],
-        },
-        if (description != null) 'description': description,
-        if (difficulty != null) 'difficulty': difficulty,
-        if (tags.isNotEmpty) 'tags': tags,
-        if (images.isNotEmpty) 'images': images,
-        if (clientOperationId != null) 'clientOperationId': clientOperationId,
-      };
+    'provinceId': provinceId,
+    'proposedName': proposedName,
+    if (address != null) 'address': address,
+    // Backend nhận GeoJSON Point: [lng, lat]
+    'location': {
+      'type': 'Point',
+      'coordinates': [longitude, latitude],
+    },
+    if (description != null) 'description': description,
+    if (difficulty != null) 'difficulty': difficulty,
+    if (tags.isNotEmpty) 'tags': tags,
+    if (images.isNotEmpty) 'images': images,
+    if (clientOperationId != null) 'clientOperationId': clientOperationId,
+  };
 }
 
 // ── Response: My Contributions ─────────────────────────────────────────────
