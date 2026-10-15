@@ -8,7 +8,7 @@ import 'core/services/location_service.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:vietnam_trekking_mobile/app/language/app_language_viewmodel.dart';
-
+import 'package:vietnam_trekking_mobile/features/promote/views/promote_screen.dart';
 import '../../../l10n/app_localizations.dart';
 import 'features/auth/views/session_gate.dart';
 import 'app/theme/app_theme.dart';

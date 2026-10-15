@@ -166,14 +166,7 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                   ProfileSettingItem(
                     mainTitle: l10n.settingsSupportFeedback,
                     icon: Icons.help_outline,
-                    onTapAction: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(l10n.featureInDevelopment),
-                          duration: const Duration(seconds: 2),
-                        ),
-                      );
-                    },
+                    onTapAction: () => _settingViewModel.supportAndFeedback(context),
                   ),
                 ],
               ),

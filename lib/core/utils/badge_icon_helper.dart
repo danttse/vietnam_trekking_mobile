@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-
 class BadgeIconHelper {
   static IconData resolve(String name, [double altitude = 0]) {
     final text = name.toLowerCase();
-
     if (text.contains('thám hiểm')) return Icons.military_tech_outlined;
     if (text.contains('định hướng')) return Icons.explore_outlined;
     if (text.contains('dấu chân')) return Icons.directions_walk;

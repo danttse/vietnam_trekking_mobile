@@ -345,19 +345,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get chooseFromLibrary => 'Chọn từ thư viện';
 
   @override
-  String get otpVerificationTitle => 'Xác thực Email';
-
-  @override
-  String get otpExpiredLabel => 'OTP hết hạn. Vui lòng gửi lại.';
-
-  @override
-  String get otpExpiresIn => 'OTP hết hạn sau';
-
-  @override
-  String get otpIncompleteError => 'Vui lòng nhập đủ 6 chữ số OTP';
-
-  @override
-  String get otpResendSuccess => 'Đã gửi lại mã OTP. Vui lòng kiểm tra email.';
+  String featureComingSoon(String feature) {
+    return 'Tính năng sắp ra mắt';
+  }
 
   @override
   String get changePasswordTitle => 'Đổi Mật Khẩu';
@@ -525,25 +515,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get milestoneCheckInButton => 'Check In';
-
-  @override
-  String get journeyMilestonesLoading => 'Đang tải điểm check-in…';
-
-  @override
-  String get journeyMilestonesLoadFailed => 'Chưa tải được điểm check-in';
-
-  @override
-  String get journeyMilestonesEmpty => 'Chưa có điểm check-in';
-
-  @override
-  String get journeyMilestonesEmptyMessage =>
-      'Cung đường này chưa có cột mốc check-in chính thức. Quản trị viên cần thêm cột mốc cho cung đường trước khi bạn có thể check-in. Bạn vẫn có thể mở bản đồ để đánh dấu mốc cá nhân.';
-
-  @override
-  String get journeyReloadMilestones => 'Tải lại cột mốc';
-
-  @override
-  String get journeyCheckinClose => 'Đóng';
 
   @override
   String milestoneAltitude(String altitude) {
@@ -733,11 +704,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get shareAchievementButton => 'Chia sẻ thành tích';
 
   @override
-  String featureComingSoon(String feature) {
-    return 'Tính năng sắp ra mắt';
-  }
-
-  @override
   String milestoneConquerBadgeTitle(String name) {
     return 'Chinh phục $name';
   }
@@ -811,6 +777,170 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get allBadgesTitle => 'Tất cả huy hiệu';
+
+  @override
+  String get promoteSkip => 'Bỏ qua';
+
+  @override
+  String get promoteNext => 'Tiếp theo';
+
+  @override
+  String get promoteStart => 'Bắt đầu sử dụng';
+
+  @override
+  String get promoteExploreTitle => 'Khám phá địa điểm trekking khắp Việt Nam';
+
+  @override
+  String get promoteExploreDesc =>
+      'Tìm hiểu các cung đường, địa điểm đẹp, thông tin chi tiết, đánh giá từ cộng đồng.';
+
+  @override
+  String get promoteGpsTitle => 'Tạo hành trình và ghi lại GPS';
+
+  @override
+  String get promoteGpsDesc =>
+      'Lên kế hoạch, ghi lại hành trình thực tế, check-in cột mốc và xem lại đường đi (track logs).';
+
+  @override
+  String get promoteGpsRecording => 'ĐANG GHI';
+
+  @override
+  String get promoteGpsDistance => 'Quãng đường';
+
+  @override
+  String get promoteGpsElevation => 'Độ cao';
+
+  @override
+  String get promoteGpsSpeed => 'Vận tốc';
+
+  @override
+  String get promoteOfflineTitle => 'Hoạt động offline\nmọi lúc mọi nơi';
+
+  @override
+  String get promoteOfflineDesc =>
+      'Tải bản đồ, dữ liệu địa điểm để sử dụng ngay cả khi không có Internet.';
+
+  @override
+  String get promoteOfflineMapTitle => 'Bản đồ offline (MBTiles)';
+
+  @override
+  String get promoteOfflineMapSubtitle => 'Dung lượng tối ưu, tải nhanh chóng';
+
+  @override
+  String get promoteOfflineFavoriteTitle => 'Lưu địa điểm yêu thích';
+
+  @override
+  String get promoteOfflineFavoriteSubtitle =>
+      'Không lo mất dấu tọa độ quan trọng';
+
+  @override
+  String get promoteOfflineGpsTitle => 'Ghi GPS và check-in';
+
+  @override
+  String get promoteOfflineGpsSubtitle => 'Vẫn lưu đầy đủ lịch sử chuyến đi';
+
+  @override
+  String get promoteStatsTitle => 'Theo dõi hành trình và\nthành tựu';
+
+  @override
+  String get promoteStatsDesc =>
+      'Lưu dấu 34 tỉnh đã đi, thu thập huy hiệu và xem thống kê hành trình của bạn.';
+
+  @override
+  String get promoteStatsProvinces => 'Tỉnh thành đã đi';
+
+  @override
+  String get promoteStatsDistance => 'Quãng đường đã đi';
+
+  @override
+  String get promoteStatsBadgeMountain => 'Núi rừng';
+
+  @override
+  String get promoteStatsBadgeMountainSub => '5 đỉnh chinh phục';
+
+  @override
+  String get promoteStatsBadgeIsland => 'Biển đảo';
+
+  @override
+  String get promoteStatsBadgeIslandSub => '3 vùng vịnh';
+
+  @override
+  String get promoteStatsBadgeExplore => 'Khám phá';
+
+  @override
+  String get promoteStatsBadgeExploreSub => '10 tỉnh thành';
+
+  @override
+  String get promoteCommunityTitle => 'Kết nối cộng đồng yêu trekking';
+
+  @override
+  String get promoteCommunityDesc =>
+      'Chia sẻ hành trình, ảnh, kinh nghiệm và tương tác với những người có cùng đam mê.';
+
+  @override
+  String get supportFaqHeader => 'CÂU HỎI THƯỜNG GẶP';
+
+  @override
+  String get supportFeedbackHeader => 'GỬI PHẢN HỒI CHO CHÚNG TÔI';
+
+  @override
+  String get supportIssueTypeLabel => 'LOẠI VẤN ĐỀ';
+
+  @override
+  String get supportDescriptionLabel => 'MÔ TẢ CHI TIẾT';
+
+  @override
+  String get supportDescriptionHint =>
+      'Mô tả lỗi hoặc đề xuất của bạn tại đây...';
+
+  @override
+  String get supportSubmitButton => 'Gửi phản hồi';
+
+  @override
+  String get supportDirectEmail => 'Hoặc gửi thư trực tiếp đến chúng tôi qua';
+
+  @override
+  String get supportEmptyError => 'Vui lòng nhập mô tả chi tiết của bạn';
+
+  @override
+  String get supportSuccessMessage =>
+      'Cảm ơn bạn đã gửi phản hồi! Chúng tôi sẽ phản hồi sớm nhất.';
+
+  @override
+  String get supportIssueGpsMap => 'Lỗi định vị GPS / Bản đồ';
+
+  @override
+  String get supportIssueAccount => 'Lỗi tài khoản / Đăng nhập';
+
+  @override
+  String get supportIssueContent => 'Đóng góp nội dung / Địa điểm';
+
+  @override
+  String get supportIssueAppExperience => 'Góp ý trải nghiệm ứng dụng';
+
+  @override
+  String get supportIssueOther => 'Vấn đề khác';
+
+  @override
+  String get supportFaq1Q => 'Làm sao để check-in tại cột mốc?';
+
+  @override
+  String get supportFaq1A =>
+      'Bật định vị GPS trên điện thoại của bạn, di chuyển đến phạm vi 50m quanh cột mốc và nhấn nút ‘Check-in ngay’ trên màn hình Bản đồ hành trình.';
+
+  @override
+  String get supportFaq2Q => 'Huy hiệu hoạt động như thế nào?';
+
+  @override
+  String get supportFaq2A =>
+      'Huy hiệu sẽ tự động được mở khóa khi bạn hoàn thành các thử thách trekking, chinh phục các đỉnh núi hoặc hoàn thành các mốc khám phá tỉnh thành.';
+
+  @override
+  String get supportFaq3Q => 'Cách tạo hành trình mới?';
+
+  @override
+  String get supportFaq3A =>
+      'Vào mục Hành trình, nhấn biểu tượng dấu (+) hoặc nút ‘Bắt đầu hành trình’ để bật chế độ ghi GPS thời gian thực và lưu lại cung đường của bạn.';
 
   @override
   String get rankSectionTitle => 'HẠNG TREKKING CỦA BẠN';
@@ -963,4 +1093,38 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get xpHistoryEmpty =>
       'Bạn chưa có lịch sử XP. Bắt đầu hành trình khám phá nhé!';
+
+  @override
+  String get otpVerificationTitle => 'Xác thực Email';
+
+  @override
+  String get otpExpiredLabel => 'OTP hết hạn. Vui lòng gửi lại.';
+
+  @override
+  String get otpExpiresIn => 'OTP hết hạn sau';
+
+  @override
+  String get otpIncompleteError => 'Vui lòng nhập đủ 6 chữ số OTP';
+
+  @override
+  String get otpResendSuccess => 'Đã gửi lại mã OTP. Vui lòng kiểm tra email.';
+
+  @override
+  String get journeyMilestonesLoading => 'Đang tải điểm check-in…';
+
+  @override
+  String get journeyMilestonesLoadFailed => 'Chưa tải được điểm check-in';
+
+  @override
+  String get journeyMilestonesEmpty => 'Chưa có điểm check-in';
+
+  @override
+  String get journeyMilestonesEmptyMessage =>
+      'Cung đường này chưa có cột mốc check-in chính thức. Quản trị viên cần thêm cột mốc cho cung đường trước khi bạn có thể check-in. Bạn vẫn có thể mở bản đồ để đánh dấu mốc cá nhân.';
+
+  @override
+  String get journeyReloadMilestones => 'Tải lại cột mốc';
+
+  @override
+  String get journeyCheckinClose => 'Đóng';
 }

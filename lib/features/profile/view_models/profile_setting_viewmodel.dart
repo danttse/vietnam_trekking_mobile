@@ -12,6 +12,7 @@ import '../../../features/auth/services/google_signin_service.dart';
 import '../views/change_password_screen.dart';
 import '../views/edit_avatar_screen.dart';
 import '../views/suggest_place_screen.dart';
+import '../views/support_feedback_screen.dart';
 
 class ProfileSettingViewModel extends ChangeNotifier {
   final UserApiService _api = UserApiService();
@@ -113,6 +114,21 @@ class ProfileSettingViewModel extends ChangeNotifier {
       context,
       MaterialPageRoute(builder: (_) => const SuggestPlaceScreen()),
     );
+  }
+
+  Future<void> supportAndFeedback(BuildContext context) async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const SupportFeedbackScreen()),
+    );
+  }
+
+  Future<void> openTermsOfUse() async {
+    // TODO: Implement open terms of use logic
+  }
+
+  Future<void> openPrivacyPolicy() async {
+    // TODO: Implement open privacy policy logic
   }
 
   Future<void> logout() async {

@@ -106,6 +106,7 @@ class CreateNewPostViewModel extends ChangeNotifier {
       images: _selectedImages.map((f) => f.path).toList(),
       type: 'NORMAL',
       trekkingPlaceId: _taggedLocation,
+      trekPlaceName: _taggedLocation,
       reactionCount: 0,
       commentCount: 0,
       isLiked: false,

@@ -106,6 +106,7 @@ class _PostCardState extends State<PostCard> {
       ),
     );
   }
+
   Widget _buildImageGallery(ColorScheme colorScheme) {
     final images = widget.post.images;
     if (images.isEmpty) return const SizedBox.shrink();
@@ -167,6 +168,7 @@ class _PostCardState extends State<PostCard> {
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -228,6 +230,28 @@ class _PostCardState extends State<PostCard> {
               ),
             ],
           ),
+          if (post.trekPlaceName != null && post.trekPlaceName!.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.location_on,
+                    size: 14,
+                    color: colorScheme.primary,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    post.trekPlaceName!,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: colorScheme.primary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           if (post.content.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 12),

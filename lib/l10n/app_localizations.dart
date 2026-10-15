@@ -752,35 +752,11 @@ abstract class AppLocalizations {
   /// **'Chọn từ thư viện'**
   String get chooseFromLibrary;
 
-  /// No description provided for @otpVerificationTitle.
+  /// No description provided for @featureComingSoon.
   ///
   /// In vi, this message translates to:
-  /// **'Xác thực Email'**
-  String get otpVerificationTitle;
-
-  /// No description provided for @otpExpiredLabel.
-  ///
-  /// In vi, this message translates to:
-  /// **'OTP hết hạn. Vui lòng gửi lại.'**
-  String get otpExpiredLabel;
-
-  /// No description provided for @otpExpiresIn.
-  ///
-  /// In vi, this message translates to:
-  /// **'OTP hết hạn sau'**
-  String get otpExpiresIn;
-
-  /// No description provided for @otpIncompleteError.
-  ///
-  /// In vi, this message translates to:
-  /// **'Vui lòng nhập đủ 6 chữ số OTP'**
-  String get otpIncompleteError;
-
-  /// No description provided for @otpResendSuccess.
-  ///
-  /// In vi, this message translates to:
-  /// **'Đã gửi lại mã OTP. Vui lòng kiểm tra email.'**
-  String get otpResendSuccess;
+  /// **'Tính năng sắp ra mắt'**
+  String featureComingSoon(String feature);
 
   /// No description provided for @changePasswordTitle.
   ///
@@ -1099,42 +1075,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Check In'**
   String get milestoneCheckInButton;
-
-  /// No description provided for @journeyMilestonesLoading.
-  ///
-  /// In vi, this message translates to:
-  /// **'Đang tải điểm check-in…'**
-  String get journeyMilestonesLoading;
-
-  /// No description provided for @journeyMilestonesLoadFailed.
-  ///
-  /// In vi, this message translates to:
-  /// **'Chưa tải được điểm check-in'**
-  String get journeyMilestonesLoadFailed;
-
-  /// No description provided for @journeyMilestonesEmpty.
-  ///
-  /// In vi, this message translates to:
-  /// **'Chưa có điểm check-in'**
-  String get journeyMilestonesEmpty;
-
-  /// No description provided for @journeyMilestonesEmptyMessage.
-  ///
-  /// In vi, this message translates to:
-  /// **'Cung đường này chưa có cột mốc check-in chính thức. Quản trị viên cần thêm cột mốc cho cung đường trước khi bạn có thể check-in. Bạn vẫn có thể mở bản đồ để đánh dấu mốc cá nhân.'**
-  String get journeyMilestonesEmptyMessage;
-
-  /// No description provided for @journeyReloadMilestones.
-  ///
-  /// In vi, this message translates to:
-  /// **'Tải lại cột mốc'**
-  String get journeyReloadMilestones;
-
-  /// No description provided for @journeyCheckinClose.
-  ///
-  /// In vi, this message translates to:
-  /// **'Đóng'**
-  String get journeyCheckinClose;
 
   /// No description provided for @milestoneAltitude.
   ///
@@ -1472,12 +1412,6 @@ abstract class AppLocalizations {
   /// **'Chia sẻ thành tích'**
   String get shareAchievementButton;
 
-  /// No description provided for @featureComingSoon.
-  ///
-  /// In vi, this message translates to:
-  /// **'Tính năng sắp ra mắt'**
-  String featureComingSoon(String feature);
-
   /// No description provided for @milestoneConquerBadgeTitle.
   ///
   /// In vi, this message translates to:
@@ -1603,6 +1537,312 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Tất cả huy hiệu'**
   String get allBadgesTitle;
+
+  /// No description provided for @promoteSkip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ qua'**
+  String get promoteSkip;
+
+  /// No description provided for @promoteNext.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp theo'**
+  String get promoteNext;
+
+  /// No description provided for @promoteStart.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu sử dụng'**
+  String get promoteStart;
+
+  /// No description provided for @promoteExploreTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khám phá địa điểm trekking khắp Việt Nam'**
+  String get promoteExploreTitle;
+
+  /// No description provided for @promoteExploreDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm hiểu các cung đường, địa điểm đẹp, thông tin chi tiết, đánh giá từ cộng đồng.'**
+  String get promoteExploreDesc;
+
+  /// No description provided for @promoteGpsTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo hành trình và ghi lại GPS'**
+  String get promoteGpsTitle;
+
+  /// No description provided for @promoteGpsDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lên kế hoạch, ghi lại hành trình thực tế, check-in cột mốc và xem lại đường đi (track logs).'**
+  String get promoteGpsDesc;
+
+  /// No description provided for @promoteGpsRecording.
+  ///
+  /// In vi, this message translates to:
+  /// **'ĐANG GHI'**
+  String get promoteGpsRecording;
+
+  /// No description provided for @promoteGpsDistance.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quãng đường'**
+  String get promoteGpsDistance;
+
+  /// No description provided for @promoteGpsElevation.
+  ///
+  /// In vi, this message translates to:
+  /// **'Độ cao'**
+  String get promoteGpsElevation;
+
+  /// No description provided for @promoteGpsSpeed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vận tốc'**
+  String get promoteGpsSpeed;
+
+  /// No description provided for @promoteOfflineTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoạt động offline\nmọi lúc mọi nơi'**
+  String get promoteOfflineTitle;
+
+  /// No description provided for @promoteOfflineDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tải bản đồ, dữ liệu địa điểm để sử dụng ngay cả khi không có Internet.'**
+  String get promoteOfflineDesc;
+
+  /// No description provided for @promoteOfflineMapTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản đồ offline (MBTiles)'**
+  String get promoteOfflineMapTitle;
+
+  /// No description provided for @promoteOfflineMapSubtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dung lượng tối ưu, tải nhanh chóng'**
+  String get promoteOfflineMapSubtitle;
+
+  /// No description provided for @promoteOfflineFavoriteTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu địa điểm yêu thích'**
+  String get promoteOfflineFavoriteTitle;
+
+  /// No description provided for @promoteOfflineFavoriteSubtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không lo mất dấu tọa độ quan trọng'**
+  String get promoteOfflineFavoriteSubtitle;
+
+  /// No description provided for @promoteOfflineGpsTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi GPS và check-in'**
+  String get promoteOfflineGpsTitle;
+
+  /// No description provided for @promoteOfflineGpsSubtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vẫn lưu đầy đủ lịch sử chuyến đi'**
+  String get promoteOfflineGpsSubtitle;
+
+  /// No description provided for @promoteStatsTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo dõi hành trình và\nthành tựu'**
+  String get promoteStatsTitle;
+
+  /// No description provided for @promoteStatsDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu dấu 34 tỉnh đã đi, thu thập huy hiệu và xem thống kê hành trình của bạn.'**
+  String get promoteStatsDesc;
+
+  /// No description provided for @promoteStatsProvinces.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tỉnh thành đã đi'**
+  String get promoteStatsProvinces;
+
+  /// No description provided for @promoteStatsDistance.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quãng đường đã đi'**
+  String get promoteStatsDistance;
+
+  /// No description provided for @promoteStatsBadgeMountain.
+  ///
+  /// In vi, this message translates to:
+  /// **'Núi rừng'**
+  String get promoteStatsBadgeMountain;
+
+  /// No description provided for @promoteStatsBadgeMountainSub.
+  ///
+  /// In vi, this message translates to:
+  /// **'5 đỉnh chinh phục'**
+  String get promoteStatsBadgeMountainSub;
+
+  /// No description provided for @promoteStatsBadgeIsland.
+  ///
+  /// In vi, this message translates to:
+  /// **'Biển đảo'**
+  String get promoteStatsBadgeIsland;
+
+  /// No description provided for @promoteStatsBadgeIslandSub.
+  ///
+  /// In vi, this message translates to:
+  /// **'3 vùng vịnh'**
+  String get promoteStatsBadgeIslandSub;
+
+  /// No description provided for @promoteStatsBadgeExplore.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khám phá'**
+  String get promoteStatsBadgeExplore;
+
+  /// No description provided for @promoteStatsBadgeExploreSub.
+  ///
+  /// In vi, this message translates to:
+  /// **'10 tỉnh thành'**
+  String get promoteStatsBadgeExploreSub;
+
+  /// No description provided for @promoteCommunityTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết nối cộng đồng yêu trekking'**
+  String get promoteCommunityTitle;
+
+  /// No description provided for @promoteCommunityDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chia sẻ hành trình, ảnh, kinh nghiệm và tương tác với những người có cùng đam mê.'**
+  String get promoteCommunityDesc;
+
+  /// No description provided for @supportFaqHeader.
+  ///
+  /// In vi, this message translates to:
+  /// **'CÂU HỎI THƯỜNG GẶP'**
+  String get supportFaqHeader;
+
+  /// No description provided for @supportFeedbackHeader.
+  ///
+  /// In vi, this message translates to:
+  /// **'GỬI PHẢN HỒI CHO CHÚNG TÔI'**
+  String get supportFeedbackHeader;
+
+  /// No description provided for @supportIssueTypeLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'LOẠI VẤN ĐỀ'**
+  String get supportIssueTypeLabel;
+
+  /// No description provided for @supportDescriptionLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'MÔ TẢ CHI TIẾT'**
+  String get supportDescriptionLabel;
+
+  /// No description provided for @supportDescriptionHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mô tả lỗi hoặc đề xuất của bạn tại đây...'**
+  String get supportDescriptionHint;
+
+  /// No description provided for @supportSubmitButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi phản hồi'**
+  String get supportSubmitButton;
+
+  /// No description provided for @supportDirectEmail.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoặc gửi thư trực tiếp đến chúng tôi qua'**
+  String get supportDirectEmail;
+
+  /// No description provided for @supportEmptyError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng nhập mô tả chi tiết của bạn'**
+  String get supportEmptyError;
+
+  /// No description provided for @supportSuccessMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cảm ơn bạn đã gửi phản hồi! Chúng tôi sẽ phản hồi sớm nhất.'**
+  String get supportSuccessMessage;
+
+  /// No description provided for @supportIssueGpsMap.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi định vị GPS / Bản đồ'**
+  String get supportIssueGpsMap;
+
+  /// No description provided for @supportIssueAccount.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi tài khoản / Đăng nhập'**
+  String get supportIssueAccount;
+
+  /// No description provided for @supportIssueContent.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đóng góp nội dung / Địa điểm'**
+  String get supportIssueContent;
+
+  /// No description provided for @supportIssueAppExperience.
+  ///
+  /// In vi, this message translates to:
+  /// **'Góp ý trải nghiệm ứng dụng'**
+  String get supportIssueAppExperience;
+
+  /// No description provided for @supportIssueOther.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vấn đề khác'**
+  String get supportIssueOther;
+
+  /// No description provided for @supportFaq1Q.
+  ///
+  /// In vi, this message translates to:
+  /// **'Làm sao để check-in tại cột mốc?'**
+  String get supportFaq1Q;
+
+  /// No description provided for @supportFaq1A.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bật định vị GPS trên điện thoại của bạn, di chuyển đến phạm vi 50m quanh cột mốc và nhấn nút ‘Check-in ngay’ trên màn hình Bản đồ hành trình.'**
+  String get supportFaq1A;
+
+  /// No description provided for @supportFaq2Q.
+  ///
+  /// In vi, this message translates to:
+  /// **'Huy hiệu hoạt động như thế nào?'**
+  String get supportFaq2Q;
+
+  /// No description provided for @supportFaq2A.
+  ///
+  /// In vi, this message translates to:
+  /// **'Huy hiệu sẽ tự động được mở khóa khi bạn hoàn thành các thử thách trekking, chinh phục các đỉnh núi hoặc hoàn thành các mốc khám phá tỉnh thành.'**
+  String get supportFaq2A;
+
+  /// No description provided for @supportFaq3Q.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cách tạo hành trình mới?'**
+  String get supportFaq3Q;
+
+  /// No description provided for @supportFaq3A.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vào mục Hành trình, nhấn biểu tượng dấu (+) hoặc nút ‘Bắt đầu hành trình’ để bật chế độ ghi GPS thời gian thực và lưu lại cung đường của bạn.'**
+  String get supportFaq3A;
 
   /// No description provided for @rankSectionTitle.
   ///
@@ -1873,6 +2113,72 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Bạn chưa có lịch sử XP. Bắt đầu hành trình khám phá nhé!'**
   String get xpHistoryEmpty;
+
+  /// No description provided for @otpVerificationTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xác thực Email'**
+  String get otpVerificationTitle;
+
+  /// No description provided for @otpExpiredLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'OTP hết hạn. Vui lòng gửi lại.'**
+  String get otpExpiredLabel;
+
+  /// No description provided for @otpExpiresIn.
+  ///
+  /// In vi, this message translates to:
+  /// **'OTP hết hạn sau'**
+  String get otpExpiresIn;
+
+  /// No description provided for @otpIncompleteError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng nhập đủ 6 chữ số OTP'**
+  String get otpIncompleteError;
+
+  /// No description provided for @otpResendSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã gửi lại mã OTP. Vui lòng kiểm tra email.'**
+  String get otpResendSuccess;
+
+  /// No description provided for @journeyMilestonesLoading.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tải điểm check-in…'**
+  String get journeyMilestonesLoading;
+
+  /// No description provided for @journeyMilestonesLoadFailed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải được điểm check-in'**
+  String get journeyMilestonesLoadFailed;
+
+  /// No description provided for @journeyMilestonesEmpty.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có điểm check-in'**
+  String get journeyMilestonesEmpty;
+
+  /// No description provided for @journeyMilestonesEmptyMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cung đường này chưa có cột mốc check-in chính thức. Quản trị viên cần thêm cột mốc cho cung đường trước khi bạn có thể check-in. Bạn vẫn có thể mở bản đồ để đánh dấu mốc cá nhân.'**
+  String get journeyMilestonesEmptyMessage;
+
+  /// No description provided for @journeyReloadMilestones.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tải lại cột mốc'**
+  String get journeyReloadMilestones;
+
+  /// No description provided for @journeyCheckinClose.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đóng'**
+  String get journeyCheckinClose;
 }
 
 class _AppLocalizationsDelegate
