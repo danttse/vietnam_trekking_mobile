@@ -42,24 +42,27 @@ class AppConfig {
     defaultValue: 'local',
   );
 
-  /// API Gateway — dùng cho auth endpoints (/auth/*)
+  /// API Gateway — dùng cho tất cả API calls (auth, trekking, checkin)
+  /// Gateway sẽ route đến đúng service dựa trên path prefix.
   static const String baseUrl = String.fromEnvironment(
     'API_BASE_URL',
     defaultValue: 'https://api-gateway-trekvn.onrender.com/api/v1',
   );
 
   /// Trekking Service — dùng cho /journeys, /routes, /places, /contributions
-  /// Port 3003 trên local. Khi qua Gateway thì đổi về baseUrl + prefix.
+  /// Production: đi qua Gateway (same as baseUrl)
+  /// Local: gọi trực tiếp service (http://10.0.2.2:3003/api/v1)
   static const String trekkingBaseUrl = String.fromEnvironment(
     'TREKKING_BASE_URL',
-    defaultValue: 'https://api-gateway-trekvn.onrender.com/api/v1/trekking',
+    defaultValue: 'https://api-gateway-trekvn.onrender.com/api/v1',
   );
 
   /// Checkin Service — dùng cho /checkins, /visits
-  /// Port 3002 trên local.
+  /// Production: đi qua Gateway (same as baseUrl)
+  /// Local: gọi trực tiếp service (http://10.0.2.2:3002/api/v1)
   static const String checkinBaseUrl = String.fromEnvironment(
     'CHECKIN_BASE_URL',
-    defaultValue: 'https://api-gateway-trekvn.onrender.com/api/v1/checkin',
+    defaultValue: 'https://api-gateway-trekvn.onrender.com/api/v1',
   );
 
   static const Duration connectTimeout = Duration(seconds: 10);
