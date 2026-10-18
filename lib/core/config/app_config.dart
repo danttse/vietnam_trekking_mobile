@@ -21,15 +21,15 @@
 //      --dart-define=TREKKING_BASE_URL=https://trekking-dev.trekviet.vn/api/v1 \
 //      --dart-define=CHECKIN_BASE_URL=https://checkin-dev.trekviet.vn/api/v1
 //
-//  PRODUCTION:
+//  PRODUCTION (Render):
 //    flutter build apk \
 //      --dart-define=APP_ENV=production \
-//      --dart-define=API_BASE_URL=https://api.trekviet.vn/api/v1 \
-//      --dart-define=TREKKING_BASE_URL=https://trekking.trekviet.vn/api/v1 \
-//      --dart-define=CHECKIN_BASE_URL=https://checkin.trekviet.vn/api/v1
+//      --dart-define=API_BASE_URL=https://api-gateway-trekvn.onrender.com/api/v1 \
+//      --dart-define=TREKKING_BASE_URL=https://api-gateway-trekvn.onrender.com/api/v1/trekking \
+//      --dart-define=CHECKIN_BASE_URL=https://api-gateway-trekvn.onrender.com/api/v1/checkin
 //
-// Lưu ý: API Gateway (port 3000) hiện chỉ proxy auth-service.
-// Trekking-service (port 3003) và checkin-service (port 3002) gọi trực tiếp.
+// Lưu ý: Tất cả các request đều đi qua API Gateway trên Render.
+// Gateway sẽ proxy tới các microservices tương ứng.
 
 /// Static configuration for the application.
 class AppConfig {
@@ -45,21 +45,21 @@ class AppConfig {
   /// API Gateway — dùng cho auth endpoints (/auth/*)
   static const String baseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://10.0.2.2:3000/api/v1',
+    defaultValue: 'https://api-gateway-trekvn.onrender.com/api/v1',
   );
 
   /// Trekking Service — dùng cho /journeys, /routes, /places, /contributions
   /// Port 3003 trên local. Khi qua Gateway thì đổi về baseUrl + prefix.
   static const String trekkingBaseUrl = String.fromEnvironment(
     'TREKKING_BASE_URL',
-    defaultValue: 'http://10.0.2.2:3003/api/v1',
+    defaultValue: 'https://api-gateway-trekvn.onrender.com/api/v1/trekking',
   );
 
   /// Checkin Service — dùng cho /checkins, /visits
   /// Port 3002 trên local.
   static const String checkinBaseUrl = String.fromEnvironment(
     'CHECKIN_BASE_URL',
-    defaultValue: 'http://10.0.2.2:3002/api/v1',
+    defaultValue: 'https://api-gateway-trekvn.onrender.com/api/v1/checkin',
   );
 
   static const Duration connectTimeout = Duration(seconds: 10);
