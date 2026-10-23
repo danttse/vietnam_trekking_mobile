@@ -33,12 +33,14 @@ class EditTextAuthCustom extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              label,
-              style: TextStyle(
-                color: colorScheme.onSurface,
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
+            Expanded(
+              child: Text(
+                label,
+                style: TextStyle(
+                  color: colorScheme.onSurface,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             ?labelTrailing,
@@ -49,7 +51,10 @@ class EditTextAuthCustom extends StatelessWidget {
           decoration: BoxDecoration(
             color: colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(12),
-            border:Border.all(color: colorScheme.onSurfaceVariant.withValues(alpha: 0.15), width: 1),
+            border: Border.all(
+              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.15),
+              width: 1,
+            ),
           ),
           child: TextField(
             controller: controller,
@@ -59,11 +64,15 @@ class EditTextAuthCustom extends StatelessWidget {
             keyboardType: keyboardType,
             decoration: InputDecoration(
               hintText: hintText,
-              hintStyle: TextStyle(color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6)),
+              hintStyle: TextStyle(
+                color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+              ),
               border: InputBorder.none,
               isDense: true,
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 14,
+              ),
               suffixIcon: suffixIcon,
               suffixIconConstraints: suffixIcon != null
                   ? const BoxConstraints(minHeight: 48, minWidth: 48)

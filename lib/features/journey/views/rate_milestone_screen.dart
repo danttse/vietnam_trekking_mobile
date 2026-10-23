@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vietnam_trekking_mobile/core/widgets/cards/image_load_card.dart';
 import 'package:vietnam_trekking_mobile/l10n/app_localizations.dart';
+
 import '../../../core/widgets/app_bar/app_top_bar_with_back.dart';
 import '../../../core/widgets/buttons/btn_login_style.dart';
 import '../../../core/widgets/buttons/btn_outline_style.dart';
@@ -8,15 +9,19 @@ import '../../../core/widgets/inputs/login_input_field.dart';
 import '../data/models/journey_model.dart';
 import '../data/models/milestone_model.dart';
 import '../viewmodels/rate_milestone_viewmodel.dart';
+import 'place_reviews_screen.dart';
+import '../../user_navigation/views/user_navigation_screen.dart';
 
 class RateMilestoneScreen extends StatefulWidget {
   final MilestoneModel? milestone;
   final JourneyModel? journey;
+  final RateMilestoneViewModel? viewModel;
 
   const RateMilestoneScreen({
     super.key,
     this.milestone,
     this.journey,
+    this.viewModel,
   });
 
   @override
@@ -29,15 +34,17 @@ class _RateMilestoneScreenState extends State<RateMilestoneScreen> {
   @override
   void initState() {
     super.initState();
-    _viewModel = RateMilestoneViewModel(
-      milestone: widget.milestone,
-      journey: widget.journey,
-    );
+    _viewModel =
+        widget.viewModel ??
+        RateMilestoneViewModel(
+          milestone: widget.milestone,
+          journey: widget.journey,
+        );
   }
 
   @override
   void dispose() {
-    _viewModel.dispose();
+    if (widget.viewModel == null) _viewModel.dispose();
     super.dispose();
   }
 
@@ -51,9 +58,7 @@ class _RateMilestoneScreenState extends State<RateMilestoneScreen> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),
             child: Icon(
-              rating >= value
-                  ? Icons.star
-                  : Icons.star_border,
+              rating >= value ? Icons.star : Icons.star_border,
               color: Colors.amber,
               size: 30,
             ),
@@ -62,6 +67,7 @@ class _RateMilestoneScreenState extends State<RateMilestoneScreen> {
       }),
     );
   }
+
   Widget _buildPlaceholderImage(ColorScheme colorScheme) {
     return Container(
       color: colorScheme.surfaceContainerHighest,
@@ -73,9 +79,7 @@ class _RateMilestoneScreenState extends State<RateMilestoneScreen> {
     final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
-        AppTopBarWithBack(
-          title: l10n.ratePlaceTitle,
-        ),
+        AppTopBarWithBack(title: l10n.ratePlaceTitle),
         Expanded(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -89,7 +93,9 @@ class _RateMilestoneScreenState extends State<RateMilestoneScreen> {
                     color: colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
-                      color: colorScheme.onSurfaceVariant.withValues(alpha: 0.15),
+                      color: colorScheme.onSurfaceVariant.withValues(
+                        alpha: 0.15,
+                      ),
                       width: 1,
                     ),
                   ),
@@ -100,7 +106,8 @@ class _RateMilestoneScreenState extends State<RateMilestoneScreen> {
                         child: SizedBox(
                           width: 72,
                           height: 72,
-                          child: _viewModel.milestoneImageUrl != null &&
+                          child:
+                              _viewModel.milestoneImageUrl != null &&
                                   _viewModel.milestoneImageUrl!.isNotEmpty
                               ? Image.network(
                                   _viewModel.milestoneImageUrl!,
@@ -151,7 +158,9 @@ class _RateMilestoneScreenState extends State<RateMilestoneScreen> {
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 0.8,
-                      color: colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+                      color: colorScheme.onSurfaceVariant.withValues(
+                        alpha: 0.8,
+                      ),
                     ),
                   ),
                 ),
@@ -184,7 +193,9 @@ class _RateMilestoneScreenState extends State<RateMilestoneScreen> {
                               RateMilestoneViewModel.maxImages) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('Chỉ được chọn tối đa 5 hình ảnh'),
+                                content: Text(
+                                  'Chỉ được chọn tối đa 5 hình ảnh',
+                                ),
                               ),
                             );
                           } else {
@@ -200,7 +211,8 @@ class _RateMilestoneScreenState extends State<RateMilestoneScreen> {
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: colorScheme.onSurfaceVariant.withValues(
-                                alpha: _viewModel.selectedImages.length >=
+                                alpha:
+                                    _viewModel.selectedImages.length >=
                                         RateMilestoneViewModel.maxImages
                                     ? 0.1
                                     : 0.25,
@@ -213,20 +225,24 @@ class _RateMilestoneScreenState extends State<RateMilestoneScreen> {
                               Icon(
                                 Icons.camera_alt_outlined,
                                 size: 24,
-                                color: _viewModel.selectedImages.length >=
+                                color:
+                                    _viewModel.selectedImages.length >=
                                         RateMilestoneViewModel.maxImages
-                                    ? colorScheme.onSurfaceVariant
-                                        .withValues(alpha: 0.3)
+                                    ? colorScheme.onSurfaceVariant.withValues(
+                                        alpha: 0.3,
+                                      )
                                     : colorScheme.onSurfaceVariant,
                               ),
                               const SizedBox(height: 4),
                               Text(
                                 l10n.addPhoto,
                                 style: TextStyle(
-                                  color: _viewModel.selectedImages.length >=
+                                  color:
+                                      _viewModel.selectedImages.length >=
                                           RateMilestoneViewModel.maxImages
-                                      ? colorScheme.onSurfaceVariant
-                                          .withValues(alpha: 0.3)
+                                      ? colorScheme.onSurfaceVariant.withValues(
+                                          alpha: 0.3,
+                                        )
                                       : colorScheme.onSurfaceVariant,
                                   fontSize: 10,
                                   fontWeight: FontWeight.w500,
@@ -246,7 +262,8 @@ class _RateMilestoneScreenState extends State<RateMilestoneScreen> {
                               padding: const EdgeInsets.only(right: 10),
                               child: ImageLoadCard(
                                 imageUrl: _viewModel.selectedImages[index],
-                                onTapRemove: () => _viewModel.removeImage(index),
+                                onTapRemove: () =>
+                                    _viewModel.removeImage(index),
                               ),
                             );
                           },
@@ -297,7 +314,9 @@ class _RateMilestoneScreenState extends State<RateMilestoneScreen> {
                     ),
                     Switch.adaptive(
                       value: _viewModel.isAnonymous,
-                      onChanged: _viewModel.setAnonymous,
+                      onChanged: _viewModel.isLoading
+                          ? null
+                          : _viewModel.setAnonymous,
                     ),
                   ],
                 ),
@@ -308,7 +327,13 @@ class _RateMilestoneScreenState extends State<RateMilestoneScreen> {
                   child: BtnLoginPrimary(
                     text: l10n.rateSubmitButton,
                     isLoading: _viewModel.isLoading,
-                    onPressed: _viewModel.submit,
+                    onPressed: () async {
+                      await _viewModel.submit();
+                      if (context.mounted && _viewModel.error != null)
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(_viewModel.error!)),
+                        );
+                    },
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -335,17 +360,10 @@ class _RateMilestoneScreenState extends State<RateMilestoneScreen> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: colorScheme.surfaceContainerHighest,
-                border: Border.all(
-                  color: colorScheme.primary,
-                  width: 2,
-                ),
+                border: Border.all(color: colorScheme.primary, width: 2),
               ),
               child: const Center(
-                child: Icon(
-                  Icons.check,
-                  size: 46,
-                  color: Color(0xFF2ED573),
-                ),
+                child: Icon(Icons.check, size: 46, color: Color(0xFF2ED573)),
               ),
             ),
           ),
@@ -397,7 +415,10 @@ class _RateMilestoneScreenState extends State<RateMilestoneScreen> {
                 _buildRatingStars(_viewModel.rating, (_) {}),
                 const SizedBox(height: 8),
                 Text(
-                  l10n.rateStarsSummary(_viewModel.rating, _viewModel.milestoneName),
+                  l10n.rateStarsSummary(
+                    _viewModel.rating,
+                    _viewModel.milestoneName,
+                  ),
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
@@ -414,7 +435,17 @@ class _RateMilestoneScreenState extends State<RateMilestoneScreen> {
               text: l10n.rateViewOtherReviews,
               icon: const SizedBox.shrink(),
               onPressed: () {
-                Navigator.pop(context);
+                final journey = widget.journey;
+                if (journey == null) return;
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => PlaceReviewsScreen(
+                      placeId: journey.trekkingPlaceId,
+                      placeName: journey.route.name,
+                    ),
+                  ),
+                );
               },
             ),
           ),
@@ -424,7 +455,12 @@ class _RateMilestoneScreenState extends State<RateMilestoneScreen> {
             child: BtnLoginPrimary(
               text: l10n.rateBackToHome,
               onPressed: () {
-                Navigator.of(context).popUntil((route) => route.isFirst);
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                    builder: (_) => const UserNavigationScreen(),
+                  ),
+                  (_) => false,
+                );
               },
             ),
           ),

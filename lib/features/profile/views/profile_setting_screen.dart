@@ -1,10 +1,16 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import '../../../l10n/app_localizations.dart';
 import '../../../app/theme/app_theme_viewmodel.dart';
+import '../../../core/network/dio_client.dart';
+import '../../../core/services/auth_event_bus.dart';
+import '../../../core/services/token_storage.dart';
+import '../../../features/auth/repository/auth_repository_impl.dart';
 import '../view_models/profile_viewmodel.dart';
 import '../view_models/profile_setting_viewmodel.dart';
 import '../widgets/profile_widgets.dart';
-import '../../../core/widgets/buttons/btn_outline_style.dart';
 import 'terms_of_use_screen.dart';
 import 'privacy_policy_screen.dart';
 
@@ -16,15 +22,44 @@ class ProfileSettingScreen extends StatefulWidget {
 }
 
 class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
-  final ProfileViewModel _profileViewModel = ProfileViewModel();
   final AppThemeViewModel _themeViewModel = AppThemeViewModel();
-  final ProfileSettingViewModel _settingViewModel = ProfileSettingViewModel();
+  late final ProfileSettingViewModel _settingViewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    final tokenStorage = const SecureTokenStorage();
+    final eventBus = AuthEventBus();
+    final Dio dio = DioClient.createDio(
+      tokenStorage: tokenStorage,
+      eventBus: eventBus,
+    );
+    final authRepository = AuthRepositoryImpl(
+      dio: dio,
+      tokenStorage: tokenStorage,
+    );
+    _settingViewModel = ProfileSettingViewModel(
+      authRepository: authRepository,
+      tokenStorage: tokenStorage,
+      eventBus: eventBus,
+    );
+    _settingViewModel.addListener(() {
+      if (mounted) setState(() {});
+    });
+    _settingViewModel.loadSettings();
+  }
+
+  @override
+  void dispose() {
+    _settingViewModel.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
-    final profile = _profileViewModel.profile;
+    final profile = context.watch<ProfileViewModel>().profile;
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
@@ -34,6 +69,8 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              if (_settingViewModel.error != null)
+                Text(_settingViewModel.error!),
               Row(
                 children: [
                   IconButton(
@@ -81,12 +118,14 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                   ProfileSettingItem(
                     mainTitle: l10n.settingsChangePassword,
                     icon: Icons.lock_outline,
-                    onTapAction: () => _settingViewModel.changePassword(context),
+                    onTapAction: () =>
+                        _settingViewModel.changePassword(context),
                   ),
                   ProfileSettingItem(
                     mainTitle: l10n.settingsChangeLanguage,
                     icon: Icons.language,
-                    onTapAction: () => _settingViewModel.changeLanguage(context),
+                    onTapAction: () =>
+                        _settingViewModel.changeLanguage(context),
                   ),
                   ProfileSettingItem(
                     mainTitle: l10n.settingsChangeAvatar,
@@ -108,7 +147,7 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                       trailing: Switch.adaptive(
                         value: _themeViewModel.isDarkMode,
                         activeTrackColor: colorScheme.primary,
-                        onChanged: (value) => _themeViewModel.setDarkMode(value),
+                        onChanged: (value) => _settingViewModel.setTheme(value),
                       ),
                     ),
                   ],
@@ -164,12 +203,31 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                 ],
               ),
               const SizedBox(height: 12),
-              BtnOutlineStyle(
-                text: l10n.logoutButton,
-                icon: const Icon(Icons.exit_to_app),
-                onPressed: () => _settingViewModel.logout(),
+              OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.error,
+                  side: BorderSide(color: Theme.of(context).colorScheme.error),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                label: Text(l10n.logoutButton),
+                icon: _settingViewModel.isLoading
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.exit_to_app),
+                onPressed: _settingViewModel.isLoading
+                    ? null
+                    : () => _settingViewModel.logout(),
               ),
-              const SizedBox(height: 8)
+              const SizedBox(height: 8),
             ],
           ),
         ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../../core/widgets/app_bar/app_top_bar.dart';
 import '../../../core/widgets/cards/featured_place_card.dart';
 import '../../../core/widgets/cards/popular_trail_card.dart';
@@ -13,11 +14,7 @@ class ExploreScreen extends StatefulWidget {
   final ValueChanged<PopularTrailModel>? onTrailTap;
   final ValueChanged<ExplorePlaceModel>? onPlaceTap;
 
-  const ExploreScreen({
-    super.key,
-    this.onTrailTap,
-    this.onPlaceTap,
-  });
+  const ExploreScreen({super.key, this.onTrailTap, this.onPlaceTap});
 
   @override
   State<ExploreScreen> createState() => _ExploreScreenState();
@@ -28,13 +25,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
   final PageController _pageController = PageController();
   final TextEditingController _searchController = TextEditingController();
   int _currentPage = 0;
-
-  static const List<String> _regions = [
-    'Miền Bắc',
-    'Miền Trung',
-    'Miền Nam',
-    'Phổ biến',
-  ];
 
   @override
   void initState() {
@@ -53,10 +43,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
     super.dispose();
   }
 
-  Widget _buildSectionHeader({
-    required String title,
-    VoidCallback? onSeeAll,
-  }) {
+  Widget _buildSectionHeader({required String title, VoidCallback? onSeeAll}) {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
 
@@ -122,7 +109,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
           filled: true,
           fillColor: colorScheme.surfaceContainerHighest,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide.none,
           ),
         ),
@@ -139,6 +126,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
     if (_currentPage >= places.length) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted || !_pageController.hasClients) return;
         setState(() => _currentPage = 0);
         _pageController.jumpToPage(0);
       });
@@ -196,10 +184,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
       child: Center(
         child: Text(
           message,
-          style: TextStyle(
-            fontSize: 13,
-            color: colorScheme.onSurfaceVariant,
-          ),
+          style: TextStyle(fontSize: 13, color: colorScheme.onSurfaceVariant),
         ),
       ),
     );
@@ -210,94 +195,119 @@ class _ExploreScreenState extends State<ExploreScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     return SafeArea(
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            AppTopBar(title: l10n.navExplore),
-            const SizedBox(height: 8),
-            _buildSearchBar(),
-            const SizedBox(height: 12),
-            ListenableBuilder(
-              listenable: _viewModel,
-              builder: (context, _) => HorizontalChipBar(
-                items: _regions,
-                selectedIndex: _viewModel.selectedRegion,
-                onSelect: _viewModel.setRegion,
+      child: RefreshIndicator(
+        onRefresh: _viewModel.load,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AppTopBar(title: l10n.navExplore),
+              const SizedBox(height: 8),
+              _buildSearchBar(),
+              const SizedBox(height: 12),
+              ListenableBuilder(
+                listenable: _viewModel,
+                builder: (context, _) => HorizontalChipBar(
+                  items: ExploreFilter.values
+                      .map((filter) => filter.label)
+                      .toList(),
+                  selectedIndex: _viewModel.selectedRegion,
+                  onSelect: _viewModel.setRegion,
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            _buildSectionHeader(
-              title: l10n.featuredDestinations,
-              onSeeAll: () {},
-            ),
-            const SizedBox(height: 10),
-            ListenableBuilder(
-              listenable: _viewModel,
-              builder: (context, _) =>
-                  _buildFeaturedSlider(_viewModel.featuredPlaces),
-            ),
-            const SizedBox(height: 20),
-            _buildSectionHeader(
-              title: l10n.popularTrails,
-              onSeeAll: () {},
-            ),
-            const SizedBox(height: 10),
-            ListenableBuilder(
-              listenable: _viewModel,
-              builder: (context, _) {
-                final trails = _viewModel.popularTrails;
-                if (trails.isEmpty) {
-                  return _buildEmptyState('Không có cung đường phù hợp');
-                }
-                return SizedBox(
-                  height: 155,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
+              ListenableBuilder(
+                listenable: _viewModel,
+                builder: (context, _) {
+                  if (_viewModel.isLoading)
+                    return const LinearProgressIndicator();
+                  if (_viewModel.error == null &&
+                      _viewModel.routesError == null)
+                    return const SizedBox.shrink();
+                  return Column(
+                    children: [
+                      Text(
+                        _viewModel.error ??
+                            'Không tải được một số cung đường: ${_viewModel.routesError}',
+                      ),
+                      TextButton(
+                        onPressed: _viewModel.load,
+                        child: const Text('Thử lại'),
+                      ),
+                    ],
+                  );
+                },
+              ),
+              const SizedBox(height: 20),
+              _buildSectionHeader(title: l10n.featuredDestinations),
+              const SizedBox(height: 10),
+              ListenableBuilder(
+                listenable: _viewModel,
+                builder: (context, _) =>
+                    _buildFeaturedSlider(_viewModel.featuredPlaces),
+              ),
+              const SizedBox(height: 20),
+              _buildSectionHeader(title: l10n.popularTrails),
+              const SizedBox(height: 10),
+              ListenableBuilder(
+                listenable: _viewModel,
+                builder: (context, _) {
+                  final trails = _viewModel.popularTrails;
+                  if (trails.isEmpty) {
+                    return _buildEmptyState('Không có cung đường phù hợp');
+                  }
+                  return SizedBox(
+                    height:
+                        120 +
+                        MediaQuery.textScalerOf(context).scale(11) * 1.5 +
+                        MediaQuery.textScalerOf(context).scale(9) * 1.5,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: trails.length,
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(width: 12),
+                      itemBuilder: (context, index) {
+                        final trail = trails[index];
+                        return PopularTrailCard(
+                          trail: trail,
+                          onTap: () => widget.onTrailTap?.call(trail),
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 20),
+              _buildSectionHeader(title: l10n.recommendedForYou),
+              const SizedBox(height: 10),
+              ListenableBuilder(
+                listenable: _viewModel,
+                builder: (context, _) {
+                  final recommended = _viewModel.recommendedPlaces;
+                  if (recommended.isEmpty) {
+                    return _buildEmptyState('Không có gợi ý phù hợp');
+                  }
+                  return ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemCount: trails.length,
+                    itemCount: recommended.length,
                     separatorBuilder: (context, index) =>
-                        const SizedBox(width: 12),
+                        const SizedBox(height: 10),
                     itemBuilder: (context, index) {
-                      final trail = trails[index];
-                      return PopularTrailCard(
-                        trail: trail,
-                        onTap: () => widget.onTrailTap?.call(trail),
+                      final place = recommended[index];
+                      return RecommendedPlaceCard(
+                        place: place,
+                        onTap: () => widget.onPlaceTap?.call(place),
                       );
                     },
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 20),
-            _buildSectionHeader(title: l10n.recommendedForYou),
-            const SizedBox(height: 10),
-            ListenableBuilder(
-              listenable: _viewModel,
-              builder: (context, _) {
-                final recommended = _viewModel.recommendedPlaces;
-                if (recommended.isEmpty) {
-                  return _buildEmptyState('Không có gợi ý phù hợp');
-                }
-                return ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: recommended.length,
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(height: 10),
-                  itemBuilder: (context, index) {
-                    final place = recommended[index];
-                    return RecommendedPlaceCard(
-                      place: place,
-                      onTap: () => widget.onPlaceTap?.call(place),
-                    );
-                  },
-                );
-              },
-            ),
-            const SizedBox(height: 24),
-          ],
+                  );
+                },
+              ),
+              const SizedBox(height: 24),
+            ],
+          ),
         ),
       ),
     );

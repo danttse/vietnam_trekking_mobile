@@ -22,7 +22,8 @@ class ProfileProvinceProgressBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final effectiveProgressColor = progressColor ?? colorScheme.primary;
-    final effectiveTrackColor = trackColor ?? colorScheme.surfaceContainerHighest;
+    final effectiveTrackColor =
+        trackColor ?? colorScheme.surfaceContainerHighest;
 
     final double progress = total > 0 ? (current / total).clamp(0.0, 1.0) : 0.0;
 
@@ -33,14 +34,17 @@ class ProfileProvinceProgressBar extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
-                color: colorScheme.onSurfaceVariant,
+            Expanded(
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                  color: colorScheme.onSurfaceVariant,
+                ),
               ),
             ),
+            const SizedBox(width: 8),
             Text(
               '$current / $total $unit',
               style: TextStyle(

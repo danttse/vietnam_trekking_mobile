@@ -33,9 +33,35 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   cupertino_icons: ^1.0.8
+  dio: ^5.8.0+1
+  flutter_secure_storage: ^9.2.4
   intl: any
   image_picker: ^1.2.3
   provider: ^6.1.5+1
+  sqflite: ^2.4.2
+  path: ^1.9.1
+  geolocator: ^13.0.4
+  google_sign_in: ^6.2.2
+
+  # ── Offline Map Prototype ──────────────────────────────────────────────────
+  # MapLibre: vendor-neutral vector/raster map engine (fork of flutter-mapbox-gl)
+  # Supports custom runtime style → phù hợp nhất để drive local tile server URLs.
+  maplibre_gl: ^0.27.1
+
+  # path_provider: lấy getApplicationDocumentsDirectory() để extract ZIP vào storage
+  path_provider: ^2.1.6
+
+  # archive: giải nén ba-den-v1.zip hoàn toàn trong Dart, không cần native binary
+  archive: ^4.3.0
+
+  # crypto: SHA-256 checksum verification cho integrity check của package
+  crypto: ^3.0.7
+
+  # shelf + shelf_router: HTTP server nhỏ 127.0.0.1 phục vụ tile từ MBTiles
+  # Dart-native, không cần process ngoài, chạy được trên Android/iOS emulator
+  shelf: ^1.4.2
+  shelf_router: ^1.1.4
+  gal: ^2.3.3
 
 dev_dependencies:
   flutter_test:
@@ -43,11 +69,13 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.14.4
   flutter_native_splash: ^2.4.0
+  sqflite_common_ffi: ^2.4.3
 
 flutter_launcher_icons:
   android: true
   ios: true
   image_path: "assets/images/img_app_logo_ver1.png"
+
 flutter_native_splash:
   color: "#151515"
   image: "assets/images/img_app_logo_ver3.png"
@@ -68,6 +96,8 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/offline_maps/
+    - assets/offline_maps/glyphs/Noto Sans Regular/
   fonts:
     - family: FZ Poppins
       fonts:

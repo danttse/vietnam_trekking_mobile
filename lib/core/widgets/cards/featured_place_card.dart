@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
+
 import '../../../features/explore/data/models/explore_place_model.dart';
 
 class FeaturedPlaceCard extends StatelessWidget {
   final ExplorePlaceModel place;
   final VoidCallback? onTap;
 
-  const FeaturedPlaceCard({
-    super.key,
-    required this.place,
-    this.onTap,
-  });
+  const FeaturedPlaceCard({super.key, required this.place, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +52,10 @@ class FeaturedPlaceCard extends StatelessWidget {
                 top: 12,
                 left: 12,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: colorScheme.primary,
                     borderRadius: BorderRadius.circular(8),
@@ -122,27 +122,37 @@ class FeaturedPlaceCard extends StatelessWidget {
                             color: Colors.white70,
                           ),
                           const SizedBox(width: 4),
-                          Text(
-                            place.duration,
-                            style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 12,
+                          Flexible(
+                            child: Text(
+                              place.duration,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 12,
+                              ),
                             ),
                           ),
-                          const SizedBox(width: 10),
-                          const Icon(
-                            Icons.route_outlined,
-                            size: 13,
-                            color: Colors.white70,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            place.distance,
-                            style: const TextStyle(
+                          if (place.distance.isNotEmpty) ...[
+                            const SizedBox(width: 10),
+                            const Icon(
+                              Icons.route_outlined,
+                              size: 13,
                               color: Colors.white70,
-                              fontSize: 12,
                             ),
-                          ),
+                            const SizedBox(width: 4),
+                            Flexible(
+                              child: Text(
+                                place.distance,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                          ],
                           const SizedBox(width: 10),
                           const Icon(
                             Icons.place_outlined,
@@ -150,11 +160,15 @@ class FeaturedPlaceCard extends StatelessWidget {
                             color: Colors.white70,
                           ),
                           const SizedBox(width: 4),
-                          Text(
-                            place.province,
-                            style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 12,
+                          Expanded(
+                            child: Text(
+                              place.province,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 12,
+                              ),
                             ),
                           ),
                         ],

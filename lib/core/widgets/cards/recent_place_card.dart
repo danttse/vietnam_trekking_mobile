@@ -3,65 +3,92 @@ import 'package:vietnam_trekking_mobile/features/home/data/recent_place_visited_
 
 class RecentProvinceCard extends StatelessWidget {
   final RecentPlace recentPlace;
+  final VoidCallback? onTap;
 
   const RecentProvinceCard({
     super.key,
     required this.recentPlace,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Container(
-      width: 72,
-      height: 64,
-      padding: const EdgeInsets.all(6),
-
-      decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(8),
-      ),
-
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 24,
-            height: 24,
-
-            decoration: BoxDecoration(
-              color: colorScheme.primary,
-              shape: BoxShape.circle,
-            ),
-
-            child: const Icon(
-              Icons.terrain,
-              size: 14,
-              color: Colors.white,
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(10),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: SizedBox(
+          width: 80,
+          child: Padding(
+            padding: const EdgeInsets.all(3),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 42,
+                    child: recentPlace.imageUrl.isEmpty
+                        ? _placeholder(colorScheme)
+                        : Image.network(
+                            recentPlace.imageUrl,
+                            fit: BoxFit.cover,
+                            loadingBuilder: (context, child, progress) =>
+                                progress == null
+                                ? child
+                                : _placeholder(colorScheme),
+                            errorBuilder: (_, _, _) =>
+                                _placeholder(colorScheme),
+                          ),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                  child: Text(
+                    recentPlace.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 10,
+                      height: 1.2,
+                      fontWeight: FontWeight.w600,
+                      color: colorScheme.onSurface,
+                    ),
+                  ),
+                ),
+                if (recentPlace.lastVisited.isNotEmpty) ...[
+                  const SizedBox(height: 2),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                    child: Text(
+                      recentPlace.lastVisited,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 9,
+                        height: 1.2,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
             ),
           ),
-          const SizedBox(height: 3),
-          // Tên tỉnh
-          Text(
-            recentPlace.name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: 9,
-              fontWeight: FontWeight.w600,
-              color: colorScheme.onSurface,
-            ),
-          ),
-          Text(
-            recentPlace.lastVisited,
-            style: TextStyle(
-              fontSize: 8,
-              color: colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
+
+  Widget _placeholder(ColorScheme colors) => ColoredBox(
+    color: colors.primaryContainer,
+    child: Icon(Icons.terrain, size: 22, color: colors.onPrimaryContainer),
+  );
 }

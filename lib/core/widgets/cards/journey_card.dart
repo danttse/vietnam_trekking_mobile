@@ -87,6 +87,9 @@ class JourneyCard extends StatelessWidget {
                           ),
                         ],
                       ),
+                      if (journey.offlineSyncStatus != 'SYNCED') Text(
+                        journey.offlineSyncStatus == 'FAILED' ? 'Đồng bộ thất bại — cần kiểm tra' : 'Đã lưu trên máy · chờ đồng bộ',
+                        style: const TextStyle(fontSize: 11, color: Colors.orange)),
                       const SizedBox(height: 6),
                       Text(
                         journey.dateRangeText,

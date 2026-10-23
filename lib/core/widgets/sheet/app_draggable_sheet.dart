@@ -24,37 +24,46 @@ class AppDraggableSheet extends StatelessWidget {
       maxChildSize: maxChildSize,
       expand: false,
       builder: (context, scrollController) {
-        return Container(
-          decoration: BoxDecoration(
+        return ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+          child: Material(
             color: Theme.of(context).colorScheme.surface,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-          ),
-          child: SafeArea(
-            child: Column(
-              children: [
-                const SizedBox(height: 12),
-                Container(
-                  width: 50,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: Colors.grey,
-                    borderRadius: BorderRadius.circular(12),
+            child: SafeArea(
+              child: Column(
+                children: [
+                  const SizedBox(height: 12),
+                  Container(
+                    width: 50,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  title,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurface,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                  const SizedBox(height: 12),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      title,
+                      maxLines: 2,
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
-                ),
-                const Divider(height: 0.5, color: Colors.grey),
-                Expanded(
-                  child: contentBuilder(context, scrollController),
-                ),
-              ],
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: const Divider(height: 0.5, color: Colors.grey),
+                  ),
+                  Expanded(
+                    child: contentBuilder(context, scrollController),
+                  ),
+                ],
+              ),
             ),
           ),
         );

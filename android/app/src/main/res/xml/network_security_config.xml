@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Cho phép HTTP cleartext đến localhost (127.0.0.1 và ::1).
+  Cần thiết để MapLibre load tile từ local tile server (shelf) chạy trên port 7777.
+  Chỉ whitelist loopback – không ảnh hưởng đến traffic ra ngoài.
+-->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">127.0.0.1</domain>
+        <domain includeSubdomains="false">localhost</domain>
+    </domain-config>
+</network-security-config>

@@ -1843,6 +1843,342 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Vào mục Hành trình, nhấn biểu tượng dấu (+) hoặc nút ‘Bắt đầu hành trình’ để bật chế độ ghi GPS thời gian thực và lưu lại cung đường của bạn.'**
   String get supportFaq3A;
+
+  /// No description provided for @rankSectionTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'HẠNG TREKKING CỦA BẠN'**
+  String get rankSectionTitle;
+
+  /// No description provided for @rankXpEarned.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn nhận được +{xp} XP'**
+  String rankXpEarned(String xp);
+
+  /// No description provided for @rankPromoted.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lên hạng {name} · Level {level}!'**
+  String rankPromoted(String name, int level);
+
+  /// No description provided for @rankDetailTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hạng và XP'**
+  String get rankDetailTitle;
+
+  /// No description provided for @rankLevel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Level {level}'**
+  String rankLevel(int level);
+
+  /// No description provided for @rankViewDetails.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem chi tiết các hạng'**
+  String get rankViewDetails;
+
+  /// No description provided for @rankCurrentXp.
+  ///
+  /// In vi, this message translates to:
+  /// **'XP hiện tại'**
+  String get rankCurrentXp;
+
+  /// No description provided for @rankNextTarget.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hạng tiếp theo: {name}'**
+  String rankNextTarget(String name);
+
+  /// No description provided for @rankXpRemaining.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần thêm {xp} XP để đạt mốc XP tiếp theo'**
+  String rankXpRemaining(String xp);
+
+  /// No description provided for @rankXpReached.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã đủ XP. Hoàn thành các điều kiện còn lại để lên hạng.'**
+  String get rankXpReached;
+
+  /// No description provided for @rankHighest.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn đã đạt hạng cao nhất!'**
+  String get rankHighest;
+
+  /// No description provided for @rankRequirementsTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'ĐIỀU KIỆN LÊN HẠNG'**
+  String get rankRequirementsTitle;
+
+  /// No description provided for @rankRequirementsHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần đạt đủ các điều kiện. Hạng được cập nhật theo hoạt động đã xác nhận của bạn.'**
+  String get rankRequirementsHint;
+
+  /// No description provided for @rankAllTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'TẤT CẢ CÁC HẠNG'**
+  String get rankAllTitle;
+
+  /// No description provided for @rankCurrent.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hiện tại'**
+  String get rankCurrent;
+
+  /// No description provided for @rankUnavailable.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải được hạng của bạn'**
+  String get rankUnavailable;
+
+  /// No description provided for @rankLoading.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tải hạng…'**
+  String get rankLoading;
+
+  /// No description provided for @rankCatalogEmpty.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có danh sách hạng'**
+  String get rankCatalogEmpty;
+
+  /// No description provided for @rankRetry.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thử lại'**
+  String get rankRetry;
+
+  /// No description provided for @rankXpLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Điểm XP'**
+  String get rankXpLabel;
+
+  /// No description provided for @rankJourneysLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hành trình hoàn thành'**
+  String get rankJourneysLabel;
+
+  /// No description provided for @rankProvincesLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tỉnh thành đã đi'**
+  String get rankProvincesLabel;
+
+  /// No description provided for @rankBadgesLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Huy hiệu'**
+  String get rankBadgesLabel;
+
+  /// No description provided for @rankDistanceLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quãng đường (km)'**
+  String get rankDistanceLabel;
+
+  /// No description provided for @rankContributionsLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đóng góp được duyệt'**
+  String get rankContributionsLabel;
+
+  /// No description provided for @rankOverallProgress.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiến độ các điều kiện: {percent}%'**
+  String rankOverallProgress(String percent);
+
+  /// No description provided for @rankPromotionTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chúc mừng bạn thăng hạng!'**
+  String get rankPromotionTitle;
+
+  /// No description provided for @xpHistoryHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'XP được tự động cập nhật sau hoạt động đã xác nhận. Xem lại các lần nhận và điều chỉnh XP tại đây.'**
+  String get xpHistoryHint;
+
+  /// No description provided for @xpRouteApproved.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đóng góp cung đường được duyệt'**
+  String get xpRouteApproved;
+
+  /// No description provided for @xpJourneyCompleted.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoàn thành hành trình'**
+  String get xpJourneyCompleted;
+
+  /// No description provided for @xpHistoryTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch sử XP'**
+  String get xpHistoryTitle;
+
+  /// No description provided for @xpReversal.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thu hồi XP'**
+  String get xpReversal;
+
+  /// No description provided for @xpMilestoneCheckin.
+  ///
+  /// In vi, this message translates to:
+  /// **'Check-in cột mốc'**
+  String get xpMilestoneCheckin;
+
+  /// No description provided for @xpHistoryLoadMore.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem thêm'**
+  String get xpHistoryLoadMore;
+
+  /// No description provided for @xpJourneyElevation.
+  ///
+  /// In vi, this message translates to:
+  /// **'Độ cao đã chinh phục'**
+  String get xpJourneyElevation;
+
+  /// No description provided for @xpOtherActivity.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phần thưởng hoạt động'**
+  String get xpOtherActivity;
+
+  /// No description provided for @xpAdminAdjustment.
+  ///
+  /// In vi, this message translates to:
+  /// **'Điều chỉnh XP'**
+  String get xpAdminAdjustment;
+
+  /// No description provided for @xpJourneyDistance.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quãng đường đã đi'**
+  String get xpJourneyDistance;
+
+  /// No description provided for @xpProvinceVisited.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khám phá tỉnh mới'**
+  String get xpProvinceVisited;
+
+  /// No description provided for @rankPromotionMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Những hành trình của bạn đã tạo nên một cột mốc mới. Tiếp tục khám phá nhé!'**
+  String get rankPromotionMessage;
+
+  /// No description provided for @xpPlaceApproved.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đóng góp địa điểm được duyệt'**
+  String get xpPlaceApproved;
+
+  /// No description provided for @xpPlaceVisited.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghé thăm địa điểm'**
+  String get xpPlaceVisited;
+
+  /// No description provided for @rankPromotionContinue.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp tục khám phá'**
+  String get rankPromotionContinue;
+
+  /// No description provided for @xpBadgeEarned.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhận huy hiệu'**
+  String get xpBadgeEarned;
+
+  /// No description provided for @xpHistoryEmpty.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn chưa có lịch sử XP. Bắt đầu hành trình khám phá nhé!'**
+  String get xpHistoryEmpty;
+
+  /// No description provided for @otpVerificationTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xác thực Email'**
+  String get otpVerificationTitle;
+
+  /// No description provided for @otpExpiredLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'OTP hết hạn. Vui lòng gửi lại.'**
+  String get otpExpiredLabel;
+
+  /// No description provided for @otpExpiresIn.
+  ///
+  /// In vi, this message translates to:
+  /// **'OTP hết hạn sau'**
+  String get otpExpiresIn;
+
+  /// No description provided for @otpIncompleteError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng nhập đủ 6 chữ số OTP'**
+  String get otpIncompleteError;
+
+  /// No description provided for @otpResendSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã gửi lại mã OTP. Vui lòng kiểm tra email.'**
+  String get otpResendSuccess;
+
+  /// No description provided for @journeyMilestonesLoading.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tải điểm check-in…'**
+  String get journeyMilestonesLoading;
+
+  /// No description provided for @journeyMilestonesLoadFailed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải được điểm check-in'**
+  String get journeyMilestonesLoadFailed;
+
+  /// No description provided for @journeyMilestonesEmpty.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có điểm check-in'**
+  String get journeyMilestonesEmpty;
+
+  /// No description provided for @journeyMilestonesEmptyMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cung đường này chưa có cột mốc check-in chính thức. Quản trị viên cần thêm cột mốc cho cung đường trước khi bạn có thể check-in. Bạn vẫn có thể mở bản đồ để đánh dấu mốc cá nhân.'**
+  String get journeyMilestonesEmptyMessage;
+
+  /// No description provided for @journeyReloadMilestones.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tải lại cột mốc'**
+  String get journeyReloadMilestones;
+
+  /// No description provided for @journeyCheckinClose.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đóng'**
+  String get journeyCheckinClose;
 }
 
 class _AppLocalizationsDelegate

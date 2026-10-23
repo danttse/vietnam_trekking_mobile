@@ -25,16 +25,20 @@ class AppTopBar extends StatelessWidget {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (leading != null) ...[
-                  leading!,
-                  const SizedBox(width: 8),
-                ],
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Theme.of(context).colorScheme.onSurface,
-                    fontWeight: FontWeight.bold,
+                if (leading != null) ...[leading!, const SizedBox(width: 8)],
+                Flexible(
+                  child: Padding(
+                    padding: EdgeInsets.only(right: icon != null ? 43 : 0),
+                    child: Text(
+                      title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -49,7 +53,9 @@ class AppTopBar extends StatelessWidget {
                     width: 35,
                     height: 35,
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Icon(

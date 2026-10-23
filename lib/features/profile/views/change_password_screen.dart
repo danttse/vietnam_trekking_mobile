@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../../core/services/auth_event_bus.dart';
+import '../../../core/services/token_storage.dart';
 import '../../../core/widgets/app_bar/app_top_bar_with_back.dart';
 import '../../../core/widgets/buttons/btn_login_style.dart';
 import '../../../core/widgets/inputs/login_input_field.dart';
@@ -39,13 +41,19 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     if (!mounted) return;
 
     if (success) {
+      // Backend đã revoke tất cả refresh token → phải đăng xuất
+      await const SecureTokenStorage().clearTokens();
+      if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(l10n.changePasswordSuccess),
           backgroundColor: Colors.green,
         ),
       );
-      Navigator.pop(context);
+
+      // Điều hướng về Login — dùng event bus để UserNavigationScreen xử lý
+      AuthEventBus().fire(AuthEvent.loggedOut);
     }
   }
 

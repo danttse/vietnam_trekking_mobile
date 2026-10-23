@@ -1,9 +1,7 @@
-{
+﻿{
     "@@locale": "vi",
-
     "appName": "TrekViệt",
     "appTagline": "Hành trình mây ngàn Việt Nam",
-
     "loginTitle": "ĐĂNG NHẬP",
     "emailLabel": "Email",
     "emailHint": "Nhập email",
@@ -15,7 +13,6 @@
     "orDivider": "Hoặc",
     "noAccount": "Bạn chưa có tài khoản?",
     "registerNow": "Đăng ký ngay",
-
     "registerTitle": "ĐĂNG KÝ",
     "fullNameLabel": "Họ và tên",
     "fullNameHint": "Nhập họ và tên",
@@ -28,7 +25,6 @@
     "registerButton": "Đăng ký",
     "registerWithGoogle": "Đăng ký với Google",
     "alreadyHaveAccount": "Bạn đã có tài khoản?",
-
     "forgotPasswordTitle": "Khôi phục mật khẩu",
     "resetPasswordTitle": "Đặt lại mật khẩu",
     "forgotPasswordDescription": "Nhập email đã đăng ký của bạn bên dưới. Chúng tôi\nsẽ gửi một liên kết an toàn để bạn đặt lại\nmật khẩu mới.",
@@ -40,32 +36,27 @@
     "backToLogin": "Quay lại ",
     "otpVerifiedSuccess": "Xác thực OTP thành công! Vui lòng nhập mật khẩu mới.",
     "updatePasswordSuccess": "Cập nhật mật khẩu thành công! Vui lòng đăng nhập lại.",
-
     "otpDialogTitle": "Nhập mã xác thực",
     "otpSentTo": "Mã OTP đã được gửi đến:",
     "resendOtp": "Gửi lại mã",
     "cancelButton": "Hủy",
     "confirmButton": "Xác nhận",
-
     "navHome": "Trang chủ",
     "navExplore": "Khám phá",
     "navCommunity": "Cộng đồng",
     "navJourney": "Hành trình",
     "navProfile": "Hồ sơ",
     "featureInDevelopment": "Tính năng đang được phát triển",
-
     "homeRankLabel": "PHÂN HẠNG",
     "homeStatProvinces": "Tỉnh thành",
     "homeStatDistance": "Quãng đường",
     "homeStatTrips": "Chuyến đi",
     "homeRecentCheckin": "Check-In gần đây",
-
     "provinceSheetTitle": "Tỉnh thành đã đi",
     "regionNorth": "Miền Bắc",
     "regionCentral": "Miền Trung",
     "regionSouth": "Miền Nam",
     "saveButton": "Lưu",
-
     "profileTitle": "Hồ Sơ",
     "memberSince": "Thành viên từ {date}",
     "@memberSince": {
@@ -80,7 +71,6 @@
     "profileStatCompletedTrips": "Chuyến đi hoàn thành",
     "profileStatTotalDays": "Tổng số ngày đi",
     "profileAchievementsTitle": "DANH HIỆU CỦA BẠN",
-
     "settingsTitle": "Cài Đặt",
     "settingsGroupAccount": "TÀI KHOẢN",
     "settingsChangePassword": "Đổi mật khẩu",
@@ -95,7 +85,6 @@
     "settingsTermsOfUse": "Điều khoản sử dụng",
     "settingsPrivacyPolicy": "Chính sách quyền riêng tư",
     "logoutButton": "Đăng xuất",
-
     "proposePlace":"Đề xuất địa điểm mới",
     "submitPropose":"Gửi đề xuất",
     "placeName": "Tên địa điểm",
@@ -125,7 +114,6 @@
     "avatarPickerTitle": "TÙY CHỌN TẢI ẢNH",
     "takeNewPhoto": "Chụp ảnh mới",
     "chooseFromLibrary": "Chọn từ thư viện",
-
     "featureComingSoon": "Tính năng {feature} đang phát triển",
     "@featureComingSoon": {
         "placeholders": {
@@ -143,7 +131,6 @@
     "passwordTooShort": "Mật khẩu phải có ít nhất 6 ký tự",
     "changePasswordSuccess": "Đổi mật khẩu thành công!",
     "createNewPostHintText": "Chia sẻ trải nghiệm trekking của bạn",
-
     "communityTabPosts": "Bài viết",
     "communityTabGroups": "Nhóm",
     "communityTabPersonal": "Cá nhân",
@@ -161,7 +148,6 @@
     "postReport": "Báo cáo bài viết",
     "postReportSuccess": "Cảm ơn bạn đã gửi báo cáo. Chúng tôi sẽ xem xét nội dung này.",
     "communityNoPosts": "Chưa có bài viết nào",
-
     "commentsTitle": "Bình luận",
     "noCommentsYet": "Chưa có bình luận nào",
     "beFirstToComment": "Hãy là người đầu tiên bình luận!",
@@ -178,14 +164,12 @@
         }
     },
     "writeCommentHint": "Viết bình luận...",
-
     "journeyCompleted": "Đã hoàn thành",
     "journeyUpcoming": "Sắp tới",
     "journeyStatTrips": "Chuyến đi",
     "journeyStatDistance": "Quãng đường",
     "journeyStatCompanions": "Người đồng hành",
     "journeyEmptyList": "Chưa có hành trình nào",
-
     "createNewJourneyTitle": "Tạo hành trình mới",
     "journeyNameLabel": "Tên chuyến đi",
     "journeyNameHint": "Nhập tên chuyến đi",
@@ -200,7 +184,6 @@
     "selectRouteSheetTitle": "Chọn tuyến đường",
     "createJourneyButton": "Tạo hành trình",
     "createJourneySuccess": "Đã tạo hành trình thành công!",
-
     "milestonesSectionTitle": "CÁC MỐC HÀNH TRÌNH",
     "milestoneCheckedIn": "Đã check-in",
     "milestoneNotCheckedIn": "Chưa đến",
@@ -234,7 +217,6 @@
     "journeyStatusPaused": "TẠM DỪNG",
     "journeyStatusCompleted": "HOÀN THÀNH",
     "journeyStatusCancelled": "ĐÃ HỦY",
-
     "downloadOfflineMapTitle": "Tải bản đồ Offline",
     "downloadOfflineMapSubtitle": "Lưu trữ dữ liệu địa hình ngoại tuyến để đề phòng mất sóng.",
     "downloading": "ĐANG TẢI...",
@@ -265,7 +247,6 @@
     "hikingTrailFeature": "Hiking Trail (Đường mòn chi tiết)",
     "waypointsFeature": "Waypoints (Các điểm dừng chân)",
     "backtrackFeature": "Backtrack (Chế độ quay lại tự động)",
-
     "checkinControlPointTitle": "Điểm kiểm soát Check-in",
     "checkinTargetPointLabel": "ĐIỂM CẦN ĐẾN",
     "checkinTargetAltitude": "Độ cao mục tiêu: {altitude} m",
@@ -324,7 +305,6 @@
             "name": { "type": "String" }
         }
     },
-
     "ratePlaceTitle": "Đánh giá địa điểm",
     "rateSatisfactionLevel": "MỨC ĐỘ HÀI LÒNG CỦA BẠN?",
     "rateShareExperience": "CHIA SẺ TRẢI NGHIỆM",
@@ -354,21 +334,17 @@
         }
     },
     "allBadgesTitle": "Tất cả huy hiệu",
-
     "promoteSkip": "Bỏ qua",
     "promoteNext": "Tiếp theo",
     "promoteStart": "Bắt đầu sử dụng",
-
     "promoteExploreTitle": "Khám phá địa điểm trekking khắp Việt Nam",
     "promoteExploreDesc": "Tìm hiểu các cung đường, địa điểm đẹp, thông tin chi tiết, đánh giá từ cộng đồng.",
-
     "promoteGpsTitle": "Tạo hành trình và ghi lại GPS",
     "promoteGpsDesc": "Lên kế hoạch, ghi lại hành trình thực tế, check-in cột mốc và xem lại đường đi (track logs).",
     "promoteGpsRecording": "ĐANG GHI",
     "promoteGpsDistance": "Quãng đường",
     "promoteGpsElevation": "Độ cao",
     "promoteGpsSpeed": "Vận tốc",
-
     "promoteOfflineTitle": "Hoạt động offline\nmọi lúc mọi nơi",
     "promoteOfflineDesc": "Tải bản đồ, dữ liệu địa điểm để sử dụng ngay cả khi không có Internet.",
     "promoteOfflineMapTitle": "Bản đồ offline (MBTiles)",
@@ -377,7 +353,6 @@
     "promoteOfflineFavoriteSubtitle": "Không lo mất dấu tọa độ quan trọng",
     "promoteOfflineGpsTitle": "Ghi GPS và check-in",
     "promoteOfflineGpsSubtitle": "Vẫn lưu đầy đủ lịch sử chuyến đi",
-
     "promoteStatsTitle": "Theo dõi hành trình và\nthành tựu",
     "promoteStatsDesc": "Lưu dấu 34 tỉnh đã đi, thu thập huy hiệu và xem thống kê hành trình của bạn.",
     "promoteStatsProvinces": "Tỉnh thành đã đi",
@@ -388,10 +363,8 @@
     "promoteStatsBadgeIslandSub": "3 vùng vịnh",
     "promoteStatsBadgeExplore": "Khám phá",
     "promoteStatsBadgeExploreSub": "10 tỉnh thành",
-
     "promoteCommunityTitle": "Kết nối cộng đồng yêu trekking",
     "promoteCommunityDesc": "Chia sẻ hành trình, ảnh, kinh nghiệm và tương tác với những người có cùng đam mê.",
-
     "supportFaqHeader": "CÂU HỎI THƯỜNG GẶP",
     "supportFeedbackHeader": "GỬI PHẢN HỒI CHO CHÚNG TÔI",
     "supportIssueTypeLabel": "LOẠI VẤN ĐỀ",
@@ -401,17 +374,102 @@
     "supportDirectEmail": "Hoặc gửi thư trực tiếp đến chúng tôi qua",
     "supportEmptyError": "Vui lòng nhập mô tả chi tiết của bạn",
     "supportSuccessMessage": "Cảm ơn bạn đã gửi phản hồi! Chúng tôi sẽ phản hồi sớm nhất.",
-
     "supportIssueGpsMap": "Lỗi định vị GPS / Bản đồ",
     "supportIssueAccount": "Lỗi tài khoản / Đăng nhập",
     "supportIssueContent": "Đóng góp nội dung / Địa điểm",
     "supportIssueAppExperience": "Góp ý trải nghiệm ứng dụng",
     "supportIssueOther": "Vấn đề khác",
-
     "supportFaq1Q": "Làm sao để check-in tại cột mốc?",
     "supportFaq1A": "Bật định vị GPS trên điện thoại của bạn, di chuyển đến phạm vi 50m quanh cột mốc và nhấn nút ‘Check-in ngay’ trên màn hình Bản đồ hành trình.",
     "supportFaq2Q": "Huy hiệu hoạt động như thế nào?",
     "supportFaq2A": "Huy hiệu sẽ tự động được mở khóa khi bạn hoàn thành các thử thách trekking, chinh phục các đỉnh núi hoặc hoàn thành các mốc khám phá tỉnh thành.",
     "supportFaq3Q": "Cách tạo hành trình mới?",
-    "supportFaq3A": "Vào mục Hành trình, nhấn biểu tượng dấu (+) hoặc nút ‘Bắt đầu hành trình’ để bật chế độ ghi GPS thời gian thực và lưu lại cung đường của bạn."
+    "supportFaq3A": "Vào mục Hành trình, nhấn biểu tượng dấu (+) hoặc nút ‘Bắt đầu hành trình’ để bật chế độ ghi GPS thời gian thực và lưu lại cung đường của bạn.",
+    "rankSectionTitle": "HẠNG TREKKING CỦA BẠN",
+    "rankXpEarned": "Bạn nhận được +{xp} XP",
+    "@rankXpEarned": {
+        "placeholders": {
+            "xp": { "type": "String" }
+        }
+    },
+    "rankPromoted": "Lên hạng {name} · Level {level}!",
+    "@rankPromoted": {
+        "placeholders": {
+            "name": { "type": "String" },
+            "level": { "type": "int" }
+        }
+    },
+    "rankDetailTitle": "Hạng và XP",
+    "rankLevel": "Level {level}",
+    "@rankLevel": {
+        "placeholders": {
+            "level": { "type": "int" }
+        }
+    },
+    "rankViewDetails": "Xem chi tiết các hạng",
+    "rankCurrentXp": "XP hiện tại",
+    "rankNextTarget": "Hạng tiếp theo: {name}",
+    "@rankNextTarget": {
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+    "rankXpRemaining": "Cần thêm {xp} XP để đạt mốc XP tiếp theo",
+    "@rankXpRemaining": {
+        "placeholders": {
+            "xp": { "type": "String" }
+        }
+    },
+    "rankXpReached": "Đã đủ XP. Hoàn thành các điều kiện còn lại để lên hạng.",
+    "rankHighest": "Bạn đã đạt hạng cao nhất!",
+    "rankRequirementsTitle": "ĐIỀU KIỆN LÊN HẠNG",
+    "rankRequirementsHint": "Cần đạt đủ các điều kiện. Hạng được cập nhật theo hoạt động đã xác nhận của bạn.",
+    "rankAllTitle": "TẤT CẢ CÁC HẠNG",
+    "rankCurrent": "Hiện tại",
+    "rankUnavailable": "Chưa tải được hạng của bạn",
+    "rankLoading": "Đang tải hạng…",
+    "rankCatalogEmpty": "Chưa có danh sách hạng",
+    "rankRetry": "Thử lại",
+    "rankXpLabel": "Điểm XP",
+    "rankJourneysLabel": "Hành trình hoàn thành",
+    "rankProvincesLabel": "Tỉnh thành đã đi",
+    "rankBadgesLabel": "Huy hiệu",
+    "rankDistanceLabel": "Quãng đường (km)",
+    "rankContributionsLabel": "Đóng góp được duyệt",
+    "rankOverallProgress": "Tiến độ các điều kiện: {percent}%",
+    "@rankOverallProgress": {
+        "placeholders": {
+            "percent": { "type": "String" }
+        }
+    },
+    "rankPromotionTitle": "Chúc mừng bạn thăng hạng!",
+    "xpHistoryHint": "XP được tự động cập nhật sau hoạt động đã xác nhận. Xem lại các lần nhận và điều chỉnh XP tại đây.",
+    "xpRouteApproved": "Đóng góp cung đường được duyệt",
+    "xpJourneyCompleted": "Hoàn thành hành trình",
+    "xpHistoryTitle": "Lịch sử XP",
+    "xpReversal": "Thu hồi XP",
+    "xpMilestoneCheckin": "Check-in cột mốc",
+    "xpHistoryLoadMore": "Xem thêm",
+    "xpJourneyElevation": "Độ cao đã chinh phục",
+    "xpOtherActivity": "Phần thưởng hoạt động",
+    "xpAdminAdjustment": "Điều chỉnh XP",
+    "xpJourneyDistance": "Quãng đường đã đi",
+    "xpProvinceVisited": "Khám phá tỉnh mới",
+    "rankPromotionMessage": "Những hành trình của bạn đã tạo nên một cột mốc mới. Tiếp tục khám phá nhé!",
+    "xpPlaceApproved": "Đóng góp địa điểm được duyệt",
+    "xpPlaceVisited": "Ghé thăm địa điểm",
+    "rankPromotionContinue": "Tiếp tục khám phá",
+    "xpBadgeEarned": "Nhận huy hiệu",
+    "xpHistoryEmpty": "Bạn chưa có lịch sử XP. Bắt đầu hành trình khám phá nhé!",
+    "otpVerificationTitle": "Xác thực Email",
+    "otpExpiredLabel": "OTP hết hạn. Vui lòng gửi lại.",
+    "otpExpiresIn": "OTP hết hạn sau",
+    "otpIncompleteError": "Vui lòng nhập đủ 6 chữ số OTP",
+    "otpResendSuccess": "Đã gửi lại mã OTP. Vui lòng kiểm tra email.",
+    "journeyMilestonesLoading": "Đang tải điểm check-in…",
+    "journeyMilestonesLoadFailed": "Chưa tải được điểm check-in",
+    "journeyMilestonesEmpty": "Chưa có điểm check-in",
+    "journeyMilestonesEmptyMessage": "Cung đường này chưa có cột mốc check-in chính thức. Quản trị viên cần thêm cột mốc cho cung đường trước khi bạn có thể check-in. Bạn vẫn có thể mở bản đồ để đánh dấu mốc cá nhân.",
+    "journeyReloadMilestones": "Tải lại cột mốc",
+    "journeyCheckinClose": "Đóng"
 }

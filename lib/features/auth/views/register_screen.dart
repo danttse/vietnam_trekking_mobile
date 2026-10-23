@@ -1,9 +1,19 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+
+import '../../../core/network/dio_client.dart';
+import '../../../core/services/auth_event_bus.dart';
+import '../../../core/services/token_storage.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../core/widgets/buttons/btn_login_style.dart';
 import '../../../core/widgets/buttons/btn_outline_style.dart';
 import '../../../core/widgets/inputs/login_input_field.dart';
+import '../repository/auth_repository_impl.dart';
 import '../view_models/register_viewmodel.dart';
+import 'otp_verification_screen.dart';
+import '../../profile/views/terms_of_use_screen.dart';
+import '../../profile/views/privacy_policy_screen.dart';
+import '../view_models/login_viewmodel.dart';
 import '../../user_navigation/views/user_navigation_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -17,8 +27,42 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
-  final RegisterViewModel _viewModel = RegisterViewModel();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+
+  late final SecureTokenStorage _tokenStorage;
+  late final AuthEventBus _eventBus;
+  late final Dio _dio;
+  late final AuthRepositoryImpl _repository;
+  late final RegisterViewModel _viewModel;
+  late final LoginViewModel _googleViewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    _tokenStorage = const SecureTokenStorage();
+    _eventBus = AuthEventBus(); // singleton
+    _dio = DioClient.createDio(
+      tokenStorage: _tokenStorage,
+      eventBus: _eventBus,
+    );
+    _repository = AuthRepositoryImpl(dio: _dio, tokenStorage: _tokenStorage);
+    _viewModel = RegisterViewModel(
+      repository: _repository,
+      tokenStorage: _tokenStorage,
+    );
+    _googleViewModel = LoginViewModel(
+      repository: _repository,
+      tokenStorage: _tokenStorage,
+    );
+    _googleViewModel.addListener(() {
+      if (mounted) setState(() {});
+    });
+
+    _viewModel.addListener(() {
+      if (mounted) setState(() {});
+    });
+  }
 
   @override
   void dispose() {
@@ -27,6 +71,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     _viewModel.dispose();
+    _googleViewModel.dispose();
     super.dispose();
   }
 
@@ -34,7 +79,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
-    const accentLinkColor = Color(0xFFD97757);
 
     return Scaffold(
       body: SafeArea(
@@ -132,9 +176,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   Checkbox(
                     value: _viewModel.isAgreeToTerms,
                     checkColor: Theme.of(context).colorScheme.surfaceContainer,
-                    side: BorderSide(
-                      color: colorScheme.onSurfaceVariant,
-                    ),
+                    side: BorderSide(color: colorScheme.onSurfaceVariant),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(4),
                     ),
@@ -157,7 +199,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         TextButton(
                           onPressed: () {
-                            print('Điều khoản dịch vụ');
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => const TermsOfUseScreen(),
+                              ),
+                            );
                           },
                           style: TextButton.styleFrom(
                             padding: EdgeInsets.zero,
@@ -182,7 +228,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         TextButton(
                           onPressed: () {
-                            print('Chính sách bảo mật');
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => const PrivacyPolicyScreen(),
+                              ),
+                            );
                           },
                           style: TextButton.styleFrom(
                             padding: EdgeInsets.zero,
@@ -203,23 +253,56 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ],
               ),
+              // Req 5.9, 5.10, 5.11: Hiển thị thông báo lỗi từ ViewModel
+              if (_viewModel.errorMessage != null) ...[
+                const SizedBox(height: 8),
+                Text(
+                  _viewModel.errorMessage!,
+                  style: TextStyle(color: colorScheme.error, fontSize: 13),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+              if (_googleViewModel.errorMessage != null) ...[
+                const SizedBox(height: 8),
+                Text(
+                  _googleViewModel.errorMessage!,
+                  style: TextStyle(color: colorScheme.error),
+                  textAlign: TextAlign.center,
+                ),
+              ],
               const SizedBox(height: 20),
               BtnLoginPrimary(
                 text: l10n.registerButton,
                 isLoading: _viewModel.isLoading,
                 onPressed: () async {
+                  if (_googleViewModel.isLoading) return;
                   final name = _nameController.text;
                   final email = _emailController.text;
                   final password = _passwordController.text;
                   final confirmPassword = _confirmPasswordController.text;
 
                   setState(() {});
-                  await _viewModel.register(name, email, password, confirmPassword);
 
-                  if (context.mounted) {
-                    Navigator.pushReplacement(
+                  // Req 5.1: Gọi register với named params
+                  // Req 5.2: Chỉ xử lý khi register() trả về true (OTP step starts)
+                  final success = await _viewModel.register(
+                    displayName: name,
+                    email: email,
+                    password: password,
+                    confirmPassword: confirmPassword,
+                    agreedToTerms: _viewModel.isAgreeToTerms,
+                  );
+
+                  if (success && context.mounted) {
+                    // Bước 2: navigate sang màn OTP xác thực email
+                    Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const UserNavigationScreen()),
+                      MaterialPageRoute(
+                        builder: (_) => OtpVerificationScreen(
+                          email: email.trim(),
+                          viewModel: _viewModel,
+                        ),
+                      ),
                     );
                   }
                 },
@@ -227,20 +310,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(height: 16),
               BtnOutlineStyle(
                 text: l10n.registerWithGoogle,
-                icon: const Icon(Icons.g_mobiledata, color: Colors.redAccent, size: 28),
-                onPressed: () {
-                  print('Đăng ký bằng Google');
-                },
+                icon: const Icon(
+                  Icons.g_mobiledata,
+                  color: Colors.redAccent,
+                  size: 28,
+                ),
+                onPressed: _viewModel.isLoading || _googleViewModel.isLoading
+                    ? null
+                    : () async {
+                        final success = await _googleViewModel
+                            .signInWithGoogle();
+                        if (success && context.mounted) {
+                          Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                              builder: (_) => const UserNavigationScreen(),
+                            ),
+                            (_) => false,
+                          );
+                        }
+                      },
               ),
               const SizedBox(height: 24),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              Wrap(
+                alignment: WrapAlignment.center,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   Text(
                     l10n.alreadyHaveAccount,
-                    style: TextStyle(
-                      color: colorScheme.onSurfaceVariant,
-                    ),
+                    style: TextStyle(color: colorScheme.onSurfaceVariant),
                   ),
                   TextButton(
                     onPressed: () {

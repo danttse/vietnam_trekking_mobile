@@ -1,4 +1,4 @@
-{
+﻿{
     "@@locale": "en",
 
     "appName": "TrekViet",
@@ -413,5 +413,96 @@
     "supportFaq2Q": "How do badges work?",
     "supportFaq2A": "Badges are automatically unlocked when you complete trekking challenges, conquer peaks, or achieve province exploration milestones.",
     "supportFaq3Q": "How to create a new journey?",
-    "supportFaq3A": "Go to the Journey tab, tap the (+) icon or 'Start journey' button to enable real-time GPS tracking and save your trail."
+    "supportFaq3A": "Go to the Journey tab, tap the (+) icon or 'Start journey' button to enable real-time GPS tracking and save your trail.",
+
+    "rankSectionTitle": "YOUR TREKKING RANK",
+    "rankXpEarned": "You earned +{xp} XP",
+    "@rankXpEarned": {
+        "placeholders": {
+            "xp": { "type": "String" }
+        }
+    },
+    "rankPromoted": "Promoted to {name} · Level {level}!",
+    "@rankPromoted": {
+        "placeholders": {
+            "name": { "type": "String" },
+            "level": { "type": "int" }
+        }
+    },
+    "rankDetailTitle": "Rank and XP",
+    "rankLevel": "Level {level}",
+    "@rankLevel": {
+        "placeholders": {
+            "level": { "type": "int" }
+        }
+    },
+    "rankViewDetails": "View all rank details",
+    "rankCurrentXp": "Current XP",
+    "rankNextTarget": "Next rank: {name}",
+    "@rankNextTarget": {
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+    "rankXpRemaining": "{xp} more XP to reach the next XP milestone",
+    "@rankXpRemaining": {
+        "placeholders": {
+            "xp": { "type": "String" }
+        }
+    },
+    "rankXpReached": "XP requirement met. Complete the remaining requirements to rank up.",
+    "rankHighest": "You have reached the highest rank!",
+    "rankRequirementsTitle": "RANK UP REQUIREMENTS",
+    "rankRequirementsHint": "Meet all requirements to rank up. Your rank updates from your verified activities.",
+    "rankAllTitle": "ALL RANKS",
+    "rankCurrent": "Current",
+    "rankUnavailable": "Your rank could not be loaded",
+    "rankLoading": "Loading rank…",
+    "rankCatalogEmpty": "No ranks available yet",
+    "rankRetry": "Retry",
+    "rankXpLabel": "XP points",
+    "rankJourneysLabel": "Completed journeys",
+    "rankProvincesLabel": "Visited provinces",
+    "rankBadgesLabel": "Badges",
+    "rankDistanceLabel": "Distance (km)",
+    "rankContributionsLabel": "Approved contributions",
+    "rankOverallProgress": "Requirements progress: {percent}%",
+    "@rankOverallProgress": {
+        "placeholders": {
+            "percent": { "type": "String" }
+        }
+    },
+    "rankPromotionTitle": "You ranked up!",
+    "xpHistoryHint": "XP updates automatically after verified activities. Review your rewards and adjustments here.",
+    "xpRouteApproved": "Route contribution approved",
+    "xpJourneyCompleted": "Journey completed",
+    "xpHistoryTitle": "XP history",
+    "xpReversal": "XP reversal",
+    "xpMilestoneCheckin": "Milestone check-in",
+    "xpHistoryLoadMore": "Load more",
+    "xpJourneyElevation": "Elevation gained",
+    "xpOtherActivity": "Activity reward",
+    "xpAdminAdjustment": "XP adjustment",
+    "xpJourneyDistance": "Distance travelled",
+    "xpProvinceVisited": "New province visited",
+    "rankPromotionMessage": "Your adventures have brought you to a new milestone. Keep exploring!",
+    "xpPlaceApproved": "Place contribution approved",
+    "xpPlaceVisited": "Place visited",
+    "rankPromotionContinue": "Keep exploring",
+    "xpBadgeEarned": "Badge earned",
+    "xpHistoryEmpty": "No XP activity yet. Start your next adventure!",
+
+    "otpVerificationTitle": "Email Verification",
+    "otpExpiredLabel": "OTP expired. Please resend.",
+    "otpExpiresIn": "OTP expires in",
+    "otpIncompleteError": "Please enter all 6 OTP digits",
+    "otpResendSuccess": "OTP resent. Please check your email.",
+
+    "journeyMilestonesLoading": "Loading check-in points…",
+    "journeyMilestonesLoadFailed": "Could not load check-in points",
+    "journeyMilestonesEmpty": "No check-in points yet",
+    "journeyMilestonesEmptyMessage": "This route has no official check-in milestones yet. An administrator needs to add milestones to the route before you can check in. You can still open the map to add personal markers.",
+    "journeyReloadMilestones": "Reload milestones",
+    "journeyCheckinClose": "Close"
+
 }

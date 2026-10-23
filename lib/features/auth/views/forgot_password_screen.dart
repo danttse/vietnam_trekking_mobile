@@ -1,10 +1,16 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+
+import '../../../core/network/dio_client.dart';
+import '../../../core/services/auth_event_bus.dart';
+import '../../../core/services/token_storage.dart';
 import '../../../core/widgets/app_bar/app_top_bar_with_back.dart';
 import '../../../l10n/app_localizations.dart';
-import '../view_models/forgot_password_viewmodel.dart';
-import '../../../core/widgets/inputs/login_input_field.dart';
 import '../../../core/widgets/buttons/btn_login_style.dart';
+import '../../../core/widgets/inputs/login_input_field.dart';
 import '../../../core/widgets/otp_custom_dialog.dart';
+import '../repository/auth_repository_impl.dart';
+import '../view_models/forgot_password_viewmodel.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -16,12 +22,27 @@ class ForgotPasswordScreen extends StatefulWidget {
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
-  final ForgotPasswordViewModel viewModel = ForgotPasswordViewModel();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+
+  late final SecureTokenStorage _tokenStorage;
+  late final AuthEventBus _eventBus;
+  late final Dio _dio;
+  late final AuthRepositoryImpl _repository;
+  late final ForgotPasswordViewModel viewModel;
 
   @override
   void initState() {
     super.initState();
+    _tokenStorage = const SecureTokenStorage();
+    _eventBus = AuthEventBus(); // singleton
+    _dio = DioClient.createDio(
+      tokenStorage: _tokenStorage,
+      eventBus: _eventBus,
+    );
+    _repository = AuthRepositoryImpl(dio: _dio, tokenStorage: _tokenStorage);
+    viewModel = ForgotPasswordViewModel(repository: _repository);
+
     viewModel.addListener(() {
       if (mounted) {
         setState(() {});
@@ -52,12 +73,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           onResend: () => viewModel.sendResetPasswordEmail(email),
           onSubmitted: (otp) async {
             final isVerified = await viewModel.verifyOtp(otp);
-            if (!dialogContext.mounted||!mounted) return;
+            if (!dialogContext.mounted || !mounted) return;
             if (isVerified) {
               Navigator.of(dialogContext).pop();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(AppLocalizations.of(context)!.otpVerifiedSuccess),
+                  content: Text(
+                    AppLocalizations.of(context)!.otpVerifiedSuccess,
+                  ),
                   backgroundColor: Colors.green,
                 ),
               );
@@ -149,13 +172,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         : _buildEnterEmailAddress(),
 
                     const SizedBox(height: 32),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         Text(
                           l10n.backToLogin,
-                          style: TextStyle(
-                              color: colorScheme.onSurfaceVariant),
+                          style: TextStyle(color: colorScheme.onSurfaceVariant),
                         ),
                         TextButton(
                           onPressed: () => Navigator.pop(context),
@@ -178,6 +201,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       ),
     );
   }
+
   Widget _buildEnterEmailAddress() {
     final l10n = AppLocalizations.of(context)!;
     return Column(
@@ -205,6 +229,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       ],
     );
   }
+
   Widget _buildChangePassword() {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
@@ -213,10 +238,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         Text(
           l10n.resetPasswordDescription,
           textAlign: TextAlign.center,
-          style: TextStyle(
-            color: colorScheme.onSurfaceVariant,
-            fontSize: 12,
-          ),
+          style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: 12),
         ),
         const SizedBox(height: 16),
         EditTextAuthCustom(
@@ -226,7 +248,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           controller: _passwordController,
           suffixIcon: IconButton(
             icon: Icon(
-              viewModel.isPasswordObscured ? Icons.visibility_off : Icons.visibility,
+              viewModel.isPasswordObscured
+                  ? Icons.visibility_off
+                  : Icons.visibility,
               color: colorScheme.onSurfaceVariant,
             ),
             onPressed: () => viewModel.togglePasswordVisibility(),
@@ -240,7 +264,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           controller: _confirmPasswordController,
           suffixIcon: IconButton(
             icon: Icon(
-              viewModel.isConfirmPasswordObscured ? Icons.visibility_off : Icons.visibility,
+              viewModel.isConfirmPasswordObscured
+                  ? Icons.visibility_off
+                  : Icons.visibility,
               color: colorScheme.onSurfaceVariant,
             ),
             onPressed: () => viewModel.toggleConfirmPasswordVisibility(),

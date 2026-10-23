@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import '../../../features/home/data/datasources/vietnam_map_datasource.dart';
 import '../../../features/home/data/vietnam_map_paths.dart';
 import '../../../features/home/data/province_model.dart';
+
 import 'dart:ui' as ui;
 
 class HomeJourneyMap extends StatefulWidget {
@@ -25,10 +26,12 @@ class HomeJourneyMap extends StatefulWidget {
 class _HomeJourneyMapState extends State<HomeJourneyMap> {
   int? _selectedPathIndex;
   ui.Image? _patternImage;
+  ui.Image? _flagImage;
 
   // Cache raw paths được build với tỉ lệ chuẩn Size(1, 1)
-  static final List<Path> _rawPaths =
-      VietNamMapDatasource.buildPaths(const Size(1, 1));
+  static final List<Path> _rawPaths = VietNamMapDatasource.buildPaths(
+    const Size(1, 1),
+  );
 
   static final Rect _mapBounds = () {
     Rect? bounds;
@@ -43,6 +46,7 @@ class _HomeJourneyMapState extends State<HomeJourneyMap> {
   void initState() {
     super.initState();
     _loadPatternImage();
+    _loadFlagImage();
   }
 
   Future<ui.Image> loadUiImage(String assetPath) async {
@@ -58,6 +62,21 @@ class _HomeJourneyMapState extends State<HomeJourneyMap> {
     }
   }
 
+  Future<void> _loadFlagImage() async {
+    final image = await loadUiImage('assets/images/vietnam_flag.jpg');
+    if (!mounted) {
+      image.dispose();
+      return;
+    }
+    setState(() => _flagImage = image);
+  }
+
+  @override
+  void dispose() {
+    _flagImage?.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final provinceMap = <int, Province>{
@@ -71,16 +90,19 @@ class _HomeJourneyMapState extends State<HomeJourneyMap> {
     return LayoutBuilder(
       builder: (context, constraints) {
         // 1. Kích thước khả dụng
-        final targetWidth = constraints.maxWidth.isFinite && constraints.maxWidth > 0
+        final targetWidth =
+            constraints.maxWidth.isFinite && constraints.maxWidth > 0
             ? constraints.maxWidth
             : MediaQuery.of(context).size.width;
-        final targetHeightTemp = constraints.maxHeight.isFinite && constraints.maxHeight>0
+        final targetHeightTemp =
+            constraints.maxHeight.isFinite && constraints.maxHeight > 0
             ? constraints.maxHeight
             : MediaQuery.of(context).size.width;
 
         const padding = 8.0;
         final availableWidth = targetWidth - padding * 2;
-        final availableHeight = Math.min(widget.maxHeight,targetHeightTemp) - padding * 2;
+        final availableHeight =
+            Math.min(widget.maxHeight, targetHeightTemp) - padding * 2;
 
         // 2. Tỉ lệ dài : rộng = 1.37 : 1 (height / width = 1.37)
         const double aspectHtoW = 1.37;
@@ -101,27 +123,38 @@ class _HomeJourneyMapState extends State<HomeJourneyMap> {
         final scaleY = contentHeight / _mapBounds.height;
 
         // Căn giữa theo chiều ngang và cách đều padding
-        final offsetX = (targetWidth - contentWidth) / 2 - _mapBounds.left * scaleX;
+        final offsetX =
+            (targetWidth - contentWidth) / 2 - _mapBounds.left * scaleX;
         final offsetY = padding - _mapBounds.top * scaleY;
 
         final matrix = Matrix4.identity()
           ..translate(offsetX, offsetY)
           ..scale(scaleX, scaleY);
 
-        final scaledPaths =
-            _rawPaths.map((p) => p.transform(matrix.storage)).toList();
+        final scaledPaths = _rawPaths
+            .map((p) => p.transform(matrix.storage))
+            .toList();
 
         final visitedIndices = widget.provinces
             .where((p) => p.isVisited && p.pathIndex != null)
             .map((p) => p.pathIndex!)
             .toSet();
-        final checkinIndices =  widget.provinces
+        final checkinIndices = widget.provinces
             .where((p) => p.isCheckedIn && p.pathIndex != null)
             .map((p) => p.pathIndex!)
             .toSet();
-        final hoangSaPos = Offset(1.665 * scaleX + offsetX, 1.66 * scaleY + offsetY);
-        final truongSaPos = Offset(1.95 * scaleX + offsetX, 3.30 * scaleY + offsetY);
-        final phuQuocPos = Offset(0.45 * scaleX + offsetX, 3.25 * scaleY + offsetY);
+        final hoangSaPos = Offset(
+          1.665 * scaleX + offsetX,
+          1.66 * scaleY + offsetY,
+        );
+        final truongSaPos = Offset(
+          1.95 * scaleX + offsetX,
+          3.30 * scaleY + offsetY,
+        );
+        final phuQuocPos = Offset(
+          0.45 * scaleX + offsetX,
+          3.25 * scaleY + offsetY,
+        );
         return SizedBox(
           width: targetWidth,
           height: targetHeight,
@@ -155,6 +188,7 @@ class _HomeJourneyMapState extends State<HomeJourneyMap> {
                       visitedPathIndices: visitedIndices,
                       checkinPathIndices: checkinIndices,
                       paternImage: _patternImage,
+                      logoImage: _flagImage,
                       posHoangSa: hoangSaPos,
                       posTruongSa: truongSaPos,
                       posPhuQuoc: phuQuocPos,
@@ -171,7 +205,7 @@ class _HomeJourneyMapState extends State<HomeJourneyMap> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     MapLegend(),
-                    const SizedBox(height:8),
+                    const SizedBox(height: 8),
                     if (selectedProvince != null)
                       _ProvinceDetail(
                         boxLabel: selectedProvince.name,
@@ -183,9 +217,9 @@ class _HomeJourneyMapState extends State<HomeJourneyMap> {
                         boxLabel: 'Việt Nam',
                         population: 102300000,
                         acreage: 331211.6,
-                      )
-                  ]
-                )
+                      ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -204,10 +238,7 @@ class MapLegend extends StatelessWidget {
     final colorScheme = theme.colorScheme;
 
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 10,
-        vertical: 8,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
         color: colorScheme.surface.withValues(alpha: 0.75),
         borderRadius: BorderRadius.circular(10),
@@ -233,15 +264,9 @@ class MapLegend extends StatelessWidget {
             label: 'Đã check-in',
           ),
           SizedBox(height: 6),
-          _LegendItem(
-            color: Color(0xFF43A047),
-            label: 'Đã đi',
-          ),
+          _LegendItem(color: Color(0xFF43A047), label: 'Đã đi'),
           SizedBox(height: 6),
-          _LegendItem(
-            color: Color(0xFFa2c79c),
-            label: 'Chưa đi',
-          ),
+          _LegendItem(color: Color(0xFFa2c79c), label: 'Chưa đi'),
         ],
       ),
     );
@@ -304,18 +329,14 @@ class _ProvinceDetail extends StatelessWidget {
   final num? population;
   final double? acreage;
 
-  const _ProvinceDetail({
-    required this.boxLabel,
-    this.population,
-    this.acreage,
-    this.description,
-  });
+  const _ProvinceDetail({required this.boxLabel, this.population, this.acreage})
+    : description = null;
 
   static String _formatNumber(int number) {
     return number.toString().replaceAllMapped(
-          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-          (Match m) => '${m[1]}.',
-        );
+      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+      (Match m) => '${m[1]}.',
+    );
   }
 
   @override
@@ -324,10 +345,7 @@ class _ProvinceDetail extends StatelessWidget {
     final colorScheme = theme.colorScheme;
 
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 10,
-        vertical: 8,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.75),
         borderRadius: BorderRadius.circular(10),
@@ -347,22 +365,24 @@ class _ProvinceDetail extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(children: [
-            Image(
-              image: const AssetImage('assets/images/vietnam_flag.jpg'),
-              width: 12,
-              height: 8,
-            ),
-            const SizedBox(width: 5),
-            Text(
-              boxLabel,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onSurface,
+          Row(
+            children: [
+              Image(
+                image: const AssetImage('assets/images/vietnam_flag.jpg'),
+                width: 12,
+                height: 8,
               ),
-            ),
-          ],),
+              const SizedBox(width: 5),
+              Text(
+                boxLabel,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+              ),
+            ],
+          ),
           if (acreage != null && acreage! > 0) ...[
             const SizedBox(height: 2),
             Text(

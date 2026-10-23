@@ -1,31 +1,55 @@
 import 'package:flutter/material.dart';
-import '../data/datasources/route_sample_data.dart';
+
+import 'download_offline_map_viewmodel.dart';
 import '../data/models/route_model.dart';
+import '../../offline_map/services/offline_map_storage_service.dart';
 
 class RouteDetailViewModel extends ChangeNotifier {
-  RouteModel? _route;
+  final RouteModel? _route;
   bool _isDownloading = false;
   bool _isDownloaded = false;
+  final OfflineMapStorageService _storage;
 
-  RouteDetailViewModel({RouteModel? route}) {
-    if (route != null) {
-      _route = route;
-    } else {
-      final routes = RouteSampleData.getSampleRoutes();
-      _route = routes.isNotEmpty ? routes.first : null;
+  RouteDetailViewModel({
+    RouteModel? route,
+    OfflineMapStorageService? storage,
+    bool? initialDownloaded,
+  }) : _route = route,
+       _isDownloaded = initialDownloaded ?? false,
+       _storage = storage ?? OfflineMapStorageService() {
+    if (initialDownloaded == null) {
+      _loadSavedMap();
     }
   }
+  Future<void> _loadSavedMap() async {
+    if (_route == null) return;
+    try {
+      final map = await _storage.findReadyMap(
+        _route.routeId,
+        _route.trekkingPlaceId,
+      );
+      if (!_disposed) {
+        _isDownloaded = map != null;
+        notifyListeners();
+      }
+    } catch (_) {
+      if (!_disposed) error = 'Không thể kiểm tra bản đồ đã tải.';
+    }
+  }
+
+  bool _disposed = false;
+  String? error;
 
   RouteModel? get route => _route;
   bool get isDownloading => _isDownloading;
   bool get isDownloaded => _isDownloaded;
 
-  String get routeName => _route?.name ?? 'Cung Langbiang Huyền Thoại';
-  String get routeLocation => _route?.province ?? 'Lạc Dương, Lâm Đồng, Việt Nam';
+  String get routeName => _route?.name ?? 'Chưa chọn cung đường';
+  String get routeLocation => _route?.province ?? '';
 
   String get difficultyText {
-    if (_route == null) return 'Khó (Level 3)';
-    switch (_route!.difficulty) {
+    if (_route == null) return '--';
+    switch (_route.difficulty) {
       case RouteDifficulty.easy:
         return 'Dễ';
       case RouteDifficulty.moderate:
@@ -38,36 +62,54 @@ class RouteDetailViewModel extends ChangeNotifier {
   }
 
   String get totalDistanceText =>
-      '${_route?.distanceKm.toStringAsFixed(1) ?? "16.8"} km';
+      '${_route?.distanceKm.toStringAsFixed(1) ?? "--"} km';
 
-  String get elevationGainText =>
-      '+${_route?.elevationGain.toInt() ?? "1,100"} m';
+  String get elevationGainText => '+${_route?.elevationGain.toInt() ?? "--"} m';
 
-  String get maxElevationText =>
-      '${_route?.maxElevation.toInt() ?? "2,167"} m';
+  String get maxElevationText => '${_route?.maxElevation.toInt() ?? "--"} m';
 
   String get estimatedDurationText {
-    if (_route == null) return '2 - 3 ngày';
-    final days = _route!.estimatedDuration.inDays;
-    return days > 1 ? '$days - ${days + 1} ngày' : '$days ngày';
+    if (_route == null) return '--';
+    final minutes = _route.estimatedDuration.inMinutes;
+    if (minutes <= 0) return '--';
+    if (minutes >= 1440) {
+      final days = minutes / 1440;
+      return '${days == days.roundToDouble() ? days.toInt() : days.toStringAsFixed(1)} ngày';
+    }
+    final hours = minutes ~/ 60;
+    final remaining = minutes % 60;
+    return hours == 0
+        ? '$remaining phút'
+        : '$hours giờ${remaining == 0 ? '' : ' $remaining phút'}';
   }
 
-  String get heroImageUrl =>
-      _route?.imageUrl ??
-      'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800';
+  String get heroImageUrl => _route?.imageUrl ?? '';
 
-  String get mapImageUrl =>
-      'https://images.unsplash.com/photo-1524661135-423995f22d0b?w=800';
+  String? get mapImageUrl => _route?.mapImageUrl;
 
   Future<void> downloadOfflineMap() async {
     _isDownloading = true;
     notifyListeners();
 
-    await Future.delayed(const Duration(seconds: 1));
+    final download = DownloadOfflineMapViewModel(
+      route: _route,
+      autoStart: false,
+      storage: _storage,
+    );
+    await download.startDownload();
+    if (!_disposed) {
+      _isDownloading = false;
+      _isDownloaded = download.isCompleted;
+      error = download.error;
+      notifyListeners();
+    }
+    download.dispose();
+  }
 
-    _isDownloading = false;
-    _isDownloaded = true;
-    notifyListeners();
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
   }
 
   void setDownloaded(bool value) {

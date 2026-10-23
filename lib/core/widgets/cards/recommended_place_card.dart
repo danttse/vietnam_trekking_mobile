@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+
 import '../../../features/explore/data/models/explore_place_model.dart';
 
 class RecommendedPlaceCard extends StatelessWidget {
   final ExplorePlaceModel place;
   final VoidCallback? onTap;
+  final bool isSelected;
 
   const RecommendedPlaceCard({
     super.key,
     required this.place,
     this.onTap,
+    this.isSelected = false,
   });
 
   @override
@@ -21,8 +24,13 @@ class RecommendedPlaceCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: colorScheme.surfaceContainerHighest,
+          color: isSelected
+              ? colorScheme.primary.withValues(alpha: 0.12)
+              : colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(12),
+          border: isSelected
+              ? Border.all(color: colorScheme.primary, width: 1)
+              : null,
         ),
         child: Row(
           children: [
@@ -84,51 +92,32 @@ class RecommendedPlaceCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Text(
-                        place.province,
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                        child: Text(
-                          '•',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ),
-                      Text(
-                        place.distance,
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: colorScheme.onSurface,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                        child: Text(
-                          '•',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ),
-                      Text(
-                        place.difficulty.toUpperCase(),
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
+                  Text(
+                    place.province,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                   ),
+                  if (place.distance.isNotEmpty ||
+                      place.difficulty.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      [
+                        place.distance,
+                        place.difficulty.toUpperCase(),
+                      ].where((value) => value.isNotEmpty).join(' • '),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w500,
+                        color: colorScheme.primary,
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),

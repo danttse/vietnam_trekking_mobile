@@ -1,50 +1,117 @@
 import 'package:flutter/material.dart';
+
 import '../../../core/widgets/app_bar/app_top_bar_with_back.dart';
 import '../../../core/widgets/buttons/btn_login_style.dart';
 import '../../../core/widgets/buttons/btn_outline_style.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../journey/data/datasources/journey_sample_data.dart';
+import '../../../core/services/trekking_catalog_service.dart';
 import '../../journey/data/models/journey_model.dart';
-import '../../journey/views/journey_detail_screen.dart';
+import '../../journey/data/repositories/journey_repository.dart';
+import '../../journey/views/journey_map_screen.dart';
 import '../data/models/route_model.dart';
 import '../viewmodel/download_offline_map_viewmodel.dart';
 
 class DownloadOfflineMapScreen extends StatefulWidget {
   final RouteModel? route;
   final JourneyModel? pendingJourney;
+  final DownloadOfflineMapViewModel? viewModel;
+  final TrekkingCatalogService? catalog;
 
   const DownloadOfflineMapScreen({
     super.key,
     this.route,
     this.pendingJourney,
+    this.viewModel,
+    this.catalog,
   });
 
   @override
-  State<DownloadOfflineMapScreen> createState() => _DownloadOfflineMapScreenState();
+  State<DownloadOfflineMapScreen> createState() =>
+      _DownloadOfflineMapScreenState();
 }
 
 class _DownloadOfflineMapScreenState extends State<DownloadOfflineMapScreen> {
   late final DownloadOfflineMapViewModel _viewModel;
-  bool _hasAddedJourney = false;
+  bool _startingJourney = false;
+  final String _clientJourneyId =
+      'journey_${DateTime.now().microsecondsSinceEpoch}';
+
+  Future<void> _startJourney() async {
+    if (_startingJourney || widget.route == null) return;
+    setState(() => _startingJourney = true);
+    try {
+      final api = widget.catalog ?? TrekkingCatalogService();
+      final journey =
+          widget.pendingJourney ??
+          await api.createJourney({
+            'clientJourneyId': _clientJourneyId,
+            'name': widget.route!.name,
+            'trekkingPlaceId': widget.route!.trekkingPlaceId,
+            'trekkingRouteId': widget.route!.routeId,
+          }, widget.route!);
+      if (journey.status == JourneyStatus.planned) {
+        await api.transitionJourney(journey.journeyId, 'start');
+      }
+      final updated = await api.getJourney(journey.journeyId);
+      if (widget.pendingJourney != null) {
+        if (mounted) Navigator.pop(context, updated);
+        return;
+      }
+      final repository = JourneyRepository();
+      final milestones = await repository.getMilestones(
+        updated.trekkingRouteId,
+      );
+      final markers = await repository.getMarkers(updated.journeyId);
+      if (!mounted) {
+        return;
+      }
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => JourneyMapScreen(
+            journey: updated,
+            milestones: milestones,
+            markers: markers,
+            routeId: updated.trekkingRouteId,
+          ),
+        ),
+        result: true,
+      );
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Không thể bắt đầu hành trình. Vui lòng thử lại.'),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _startingJourney = false);
+      }
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    _viewModel = DownloadOfflineMapViewModel(route: widget.route);
+    _viewModel =
+        widget.viewModel ??
+        DownloadOfflineMapViewModel(route: widget.route, autoStart: false);
     _viewModel.addListener(_onDownloadChanged);
   }
 
   void _onDownloadChanged() {
-    if (_viewModel.isCompleted && widget.pendingJourney != null && !_hasAddedJourney) {
-      _hasAddedJourney = true;
-      JourneySampleData.addJourney(widget.pendingJourney!);
+    if (_viewModel.error != null && mounted) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(_viewModel.error!)));
     }
   }
 
   @override
   void dispose() {
     _viewModel.removeListener(_onDownloadChanged);
-    _viewModel.dispose();
+    if (widget.viewModel == null) _viewModel.dispose();
     super.dispose();
   }
 
@@ -56,10 +123,7 @@ class _DownloadOfflineMapScreenState extends State<DownloadOfflineMapScreen> {
         children: [
           Text(
             label,
-            style: TextStyle(
-              fontSize: 13,
-              color: colorScheme.onSurfaceVariant,
-            ),
+            style: TextStyle(fontSize: 13, color: colorScheme.onSurfaceVariant),
           ),
           Text(
             value,
@@ -79,11 +143,7 @@ class _DownloadOfflineMapScreenState extends State<DownloadOfflineMapScreen> {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
-          const Icon(
-            Icons.check_circle,
-            color: Color(0xFF2ED573),
-            size: 20,
-          ),
+          const Icon(Icons.check_circle, color: Color(0xFF2ED573), size: 20),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
@@ -100,7 +160,111 @@ class _DownloadOfflineMapScreenState extends State<DownloadOfflineMapScreen> {
     );
   }
 
-  Widget _buildDownloadingState(AppLocalizations l10n, ColorScheme colorScheme) {
+  Widget _buildIdleState(AppLocalizations l10n, ColorScheme colorScheme) {
+    final mapInfo = _viewModel.mapInfo;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            l10n.downloadOfflineMapSubtitle,
+            style: TextStyle(fontSize: 13, color: colorScheme.onSurfaceVariant),
+          ),
+        ),
+        const SizedBox(height: 36),
+        Center(
+          child: Container(
+            width: 100,
+            height: 100,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: colorScheme.primary.withValues(alpha: 0.1),
+            ),
+            child: Icon(
+              Icons.download_for_offline_outlined,
+              size: 52,
+              color: colorScheme.primary,
+            ),
+          ),
+        ),
+        const SizedBox(height: 36),
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: colorScheme.surfaceContainerHighest,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      l10n.mapDataHeader(mapInfo.mapName),
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme.onSurface,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Icon(
+                    Icons.map_outlined,
+                    color: colorScheme.primary,
+                    size: 22,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              _buildInfoRow(l10n.mapLabel, mapInfo.mapName, colorScheme),
+              _buildInfoRow(
+                l10n.zoomLevelLabel,
+                mapInfo.zoomRangeText,
+                colorScheme,
+              ),
+              _buildInfoRow(
+                l10n.fileSizeLabel,
+                mapInfo.sizeMBText,
+                colorScheme,
+              ),
+              _buildInfoRow(
+                l10n.waypointsLabel,
+                l10n.waypointsCount(mapInfo.waypointCount),
+                colorScheme,
+              ),
+              _buildInfoRow(
+                l10n.trailSupportLabel,
+                mapInfo.hasTrailSupport ? l10n.supported : '',
+                colorScheme,
+              ),
+            ],
+          ),
+        ),
+        const Spacer(),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          child: SizedBox(
+            width: double.infinity,
+            child: BtnLoginPrimary(
+              text: 'Tải xuống',
+              onPressed: _viewModel.startDownload,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDownloadingState(
+    AppLocalizations l10n,
+    ColorScheme colorScheme,
+  ) {
     final mapInfo = _viewModel.mapInfo;
 
     return Column(
@@ -110,10 +274,7 @@ class _DownloadOfflineMapScreenState extends State<DownloadOfflineMapScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Text(
             l10n.downloadOfflineMapSubtitle,
-            style: TextStyle(
-              fontSize: 13,
-              color: colorScheme.onSurfaceVariant,
-            ),
+            style: TextStyle(fontSize: 13, color: colorScheme.onSurfaceVariant),
           ),
         ),
         const SizedBox(height: 36),
@@ -132,7 +293,9 @@ class _DownloadOfflineMapScreenState extends State<DownloadOfflineMapScreen> {
                     strokeWidth: 12,
                     strokeCap: StrokeCap.round,
                     backgroundColor: colorScheme.surfaceContainerHighest,
-                    valueColor: AlwaysStoppedAnimation<Color>(colorScheme.surfaceContainerLow),
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      colorScheme.surfaceContainerLow,
+                    ),
                   ),
                 ),
                 Column(
@@ -197,10 +360,26 @@ class _DownloadOfflineMapScreenState extends State<DownloadOfflineMapScreen> {
               ),
               const SizedBox(height: 12),
               _buildInfoRow(l10n.mapLabel, mapInfo.mapName, colorScheme),
-              _buildInfoRow(l10n.zoomLevelLabel, mapInfo.zoomRangeText, colorScheme),
-              _buildInfoRow(l10n.fileSizeLabel, mapInfo.sizeMBText, colorScheme),
-              _buildInfoRow(l10n.waypointsLabel, l10n.waypointsCount(mapInfo.waypointCount), colorScheme),
-              _buildInfoRow(l10n.trailSupportLabel, mapInfo.hasTrailSupport ? l10n.supported : '', colorScheme),
+              _buildInfoRow(
+                l10n.zoomLevelLabel,
+                mapInfo.zoomRangeText,
+                colorScheme,
+              ),
+              _buildInfoRow(
+                l10n.fileSizeLabel,
+                mapInfo.sizeMBText,
+                colorScheme,
+              ),
+              _buildInfoRow(
+                l10n.waypointsLabel,
+                l10n.waypointsCount(mapInfo.waypointCount),
+                colorScheme,
+              ),
+              _buildInfoRow(
+                l10n.trailSupportLabel,
+                mapInfo.hasTrailSupport ? l10n.supported : '',
+                colorScheme,
+              ),
             ],
           ),
         ),
@@ -214,7 +393,9 @@ class _DownloadOfflineMapScreenState extends State<DownloadOfflineMapScreen> {
               icon: const SizedBox.shrink(),
               onPressed: () {
                 _viewModel.cancelDownload();
-                Navigator.pop(context, false);
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context, false);
+                }
               },
             ),
           ),
@@ -233,17 +414,10 @@ class _DownloadOfflineMapScreenState extends State<DownloadOfflineMapScreen> {
             height: 76,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(
-                color: const Color(0xFF2ED573),
-                width: 2,
-              ),
+              border: Border.all(color: const Color(0xFF2ED573), width: 2),
               color: const Color(0xFF2ED573).withValues(alpha: 0.1),
             ),
-            child: const Icon(
-              Icons.check,
-              color: Color(0xFF2ED573),
-              size: 38,
-            ),
+            child: const Icon(Icons.check, color: Color(0xFF2ED573), size: 38),
           ),
         ),
         const SizedBox(height: 16),
@@ -261,12 +435,17 @@ class _DownloadOfflineMapScreenState extends State<DownloadOfflineMapScreen> {
           child: Text(
             l10n.mapReadySubtitle,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 13,
-              color: colorScheme.onSurfaceVariant,
-            ),
+            style: TextStyle(fontSize: 13, color: colorScheme.onSurfaceVariant),
           ),
         ),
+        if (_viewModel.coverageWarning != null)
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(
+              _viewModel.coverageWarning!,
+              style: TextStyle(color: colorScheme.error),
+            ),
+          ),
         const SizedBox(height: 28),
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -304,23 +483,19 @@ class _DownloadOfflineMapScreenState extends State<DownloadOfflineMapScreen> {
                 width: double.infinity,
                 child: BtnLoginPrimary(
                   text: l10n.journeyActionStart,
-                  onPressed: () {
-                    if (widget.pendingJourney != null && !_hasAddedJourney) {
-                      _hasAddedJourney = true;
-                      JourneySampleData.addJourney(widget.pendingJourney!);
-                    }
-                    final journey = widget.pendingJourney ??
-                        JourneySampleData.getOrCreateJourneyForRoute(widget.route);
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => JourneyDetailScreen(
-                          route: journey,
-                        ),
-                      ),
-                      result: true,
-                    );
-                  },
+                  isLoading: _startingJourney,
+                  onPressed: _startJourney,
+                ),
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: BtnOutlineStyle(
+                  text: l10n.confirmButton,
+                  icon: const Icon(Icons.check),
+                  onPressed: _startingJourney
+                      ? null
+                      : () => Navigator.pop(context, true),
                 ),
               ),
               const SizedBox(height: 12),
@@ -330,11 +505,16 @@ class _DownloadOfflineMapScreenState extends State<DownloadOfflineMapScreen> {
                   text: l10n.journeyActionViewMap,
                   icon: const Icon(Icons.map_outlined),
                   onPressed: () {
-                    if (widget.pendingJourney != null && !_hasAddedJourney) {
-                      _hasAddedJourney = true;
-                      JourneySampleData.addJourney(widget.pendingJourney!);
+                    if (_startingJourney) return;
+                    if (widget.route != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              JourneyMapScreen.preview(widget.route!),
+                        ),
+                      );
                     }
-                    Navigator.pop(context, true);
                   },
                 ),
               ),
@@ -352,15 +532,7 @@ class _DownloadOfflineMapScreenState extends State<DownloadOfflineMapScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, result) {
-        if (didPop) return;
-        if (_viewModel.isCompleted && widget.pendingJourney != null && !_hasAddedJourney) {
-          _hasAddedJourney = true;
-          JourneySampleData.addJourney(widget.pendingJourney!);
-        }
-        Navigator.pop(context, _viewModel.isCompleted);
-      },
+      canPop: !_startingJourney,
       child: SafeArea(
         child: Scaffold(
           backgroundColor: colorScheme.surface,
@@ -372,18 +544,56 @@ class _DownloadOfflineMapScreenState extends State<DownloadOfflineMapScreen> {
                   AppTopBarWithBack(
                     title: l10n.downloadOfflineMapTitle,
                     onBack: () {
-                      if (_viewModel.isCompleted && widget.pendingJourney != null && !_hasAddedJourney) {
-                        _hasAddedJourney = true;
-                        JourneySampleData.addJourney(widget.pendingJourney!);
+                      if (_startingJourney) return;
+                      if (Navigator.canPop(context)) {
+                        Navigator.pop(context, _viewModel.isCompleted);
                       }
-                      Navigator.pop(context, _viewModel.isCompleted);
                     },
                   ),
                   const SizedBox(height: 8),
                   Expanded(
-                    child: _viewModel.isCompleted
-                        ? _buildCompletedState(l10n, colorScheme)
-                        : _buildDownloadingState(l10n, colorScheme),
+                    child: _viewModel.error != null && !_viewModel.isRunning
+                        ? Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(24),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.error_outline, size: 40),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    _viewModel.error!,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  FilledButton(
+                                    onPressed: _viewModel.startDownload,
+                                    child: const Text('Thử tải lại'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        : _viewModel.isCompleted
+                        ? LayoutBuilder(
+                            builder: (context, constraints) =>
+                                SingleChildScrollView(
+                                  child: ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                      minHeight: constraints.maxHeight,
+                                    ),
+                                    child: IntrinsicHeight(
+                                      child: _buildCompletedState(
+                                        l10n,
+                                        colorScheme,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                          )
+                        : _viewModel.isRunning
+                        ? _buildDownloadingState(l10n, colorScheme)
+                        : _buildIdleState(l10n, colorScheme),
                   ),
                 ],
               );

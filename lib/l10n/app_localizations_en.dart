@@ -940,4 +940,189 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get supportFaq3A =>
       'Go to the Journey tab, tap the (+) icon or \'Start journey\' button to enable real-time GPS tracking and save your trail.';
+
+  @override
+  String get rankSectionTitle => 'YOUR TREKKING RANK';
+
+  @override
+  String rankXpEarned(String xp) {
+    return 'You earned +$xp XP';
+  }
+
+  @override
+  String rankPromoted(String name, int level) {
+    return 'Promoted to $name · Level $level!';
+  }
+
+  @override
+  String get rankDetailTitle => 'Rank and XP';
+
+  @override
+  String rankLevel(int level) {
+    return 'Level $level';
+  }
+
+  @override
+  String get rankViewDetails => 'View all rank details';
+
+  @override
+  String get rankCurrentXp => 'Current XP';
+
+  @override
+  String rankNextTarget(String name) {
+    return 'Next rank: $name';
+  }
+
+  @override
+  String rankXpRemaining(String xp) {
+    return '$xp more XP to reach the next XP milestone';
+  }
+
+  @override
+  String get rankXpReached =>
+      'XP requirement met. Complete the remaining requirements to rank up.';
+
+  @override
+  String get rankHighest => 'You have reached the highest rank!';
+
+  @override
+  String get rankRequirementsTitle => 'RANK UP REQUIREMENTS';
+
+  @override
+  String get rankRequirementsHint =>
+      'Meet all requirements to rank up. Your rank updates from your verified activities.';
+
+  @override
+  String get rankAllTitle => 'ALL RANKS';
+
+  @override
+  String get rankCurrent => 'Current';
+
+  @override
+  String get rankUnavailable => 'Your rank could not be loaded';
+
+  @override
+  String get rankLoading => 'Loading rank…';
+
+  @override
+  String get rankCatalogEmpty => 'No ranks available yet';
+
+  @override
+  String get rankRetry => 'Retry';
+
+  @override
+  String get rankXpLabel => 'XP points';
+
+  @override
+  String get rankJourneysLabel => 'Completed journeys';
+
+  @override
+  String get rankProvincesLabel => 'Visited provinces';
+
+  @override
+  String get rankBadgesLabel => 'Badges';
+
+  @override
+  String get rankDistanceLabel => 'Distance (km)';
+
+  @override
+  String get rankContributionsLabel => 'Approved contributions';
+
+  @override
+  String rankOverallProgress(String percent) {
+    return 'Requirements progress: $percent%';
+  }
+
+  @override
+  String get rankPromotionTitle => 'You ranked up!';
+
+  @override
+  String get xpHistoryHint =>
+      'XP updates automatically after verified activities. Review your rewards and adjustments here.';
+
+  @override
+  String get xpRouteApproved => 'Route contribution approved';
+
+  @override
+  String get xpJourneyCompleted => 'Journey completed';
+
+  @override
+  String get xpHistoryTitle => 'XP history';
+
+  @override
+  String get xpReversal => 'XP reversal';
+
+  @override
+  String get xpMilestoneCheckin => 'Milestone check-in';
+
+  @override
+  String get xpHistoryLoadMore => 'Load more';
+
+  @override
+  String get xpJourneyElevation => 'Elevation gained';
+
+  @override
+  String get xpOtherActivity => 'Activity reward';
+
+  @override
+  String get xpAdminAdjustment => 'XP adjustment';
+
+  @override
+  String get xpJourneyDistance => 'Distance travelled';
+
+  @override
+  String get xpProvinceVisited => 'New province visited';
+
+  @override
+  String get rankPromotionMessage =>
+      'Your adventures have brought you to a new milestone. Keep exploring!';
+
+  @override
+  String get xpPlaceApproved => 'Place contribution approved';
+
+  @override
+  String get xpPlaceVisited => 'Place visited';
+
+  @override
+  String get rankPromotionContinue => 'Keep exploring';
+
+  @override
+  String get xpBadgeEarned => 'Badge earned';
+
+  @override
+  String get xpHistoryEmpty => 'No XP activity yet. Start your next adventure!';
+
+  @override
+  String get otpVerificationTitle => 'Email Verification';
+
+  @override
+  String get otpExpiredLabel => 'OTP expired. Please resend.';
+
+  @override
+  String get otpExpiresIn => 'OTP expires in';
+
+  @override
+  String get otpIncompleteError => 'Please enter all 6 OTP digits';
+
+  @override
+  String get otpResendSuccess => 'OTP resent. Please check your email.';
+
+  @override
+  String get journeyMilestonesLoading => 'Loading check-in points…';
+
+  @override
+  String get journeyMilestonesLoadFailed => 'Could not load check-in points';
+
+  @override
+  String get journeyMilestonesEmpty => 'No check-in points yet';
+
+  @override
+  String get journeyMilestonesEmptyMessage =>
+      'This route has no official check-in milestones yet. An administrator needs to add milestones to the route before you can check in. You can still open the map to add personal markers.';
+
+  @override
+  String get journeyReloadMilestones => 'Reload milestones';
+
+  @override
+  String get journeyCheckinClose => 'Close';
 }

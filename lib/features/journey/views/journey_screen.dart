@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../../core/widgets/app_bar/app_top_bar.dart';
 import '../../../core/widgets/cards/journey_group_card.dart';
 import '../../../core/widgets/sheet/journey_options_sheet.dart';
@@ -9,6 +10,8 @@ import '../data/models/journey_model.dart';
 import '../viewmodels/journey_viewmodel.dart';
 import 'create_new_journey_screen.dart';
 import 'journey_detail_screen.dart';
+import 'journey_map_screen.dart';
+import '../data/repositories/journey_repository.dart';
 
 class JourneyScreen extends StatefulWidget {
   const JourneyScreen({super.key});
@@ -95,11 +98,20 @@ class _JourneyScreenState extends State<JourneyScreen> {
       ),
       child: Row(
         children: [
-          _buildStatColumn('${_viewModel.currentTripsCount}', l10n.journeyStatTrips),
+          _buildStatColumn(
+            '${_viewModel.currentTripsCount}',
+            l10n.journeyStatTrips,
+          ),
           _buildStatDivider(),
-          _buildStatColumn(_viewModel.currentTotalDistanceText, l10n.journeyStatDistance),
+          _buildStatColumn(
+            _viewModel.currentTotalDistanceText,
+            l10n.journeyStatDistance,
+          ),
           _buildStatDivider(),
-          _buildStatColumn('${_viewModel.currentTotalParticipants}', l10n.journeyStatCompanions),
+          _buildStatColumn(
+            '${_viewModel.currentTotalParticipants}',
+            l10n.journeyStatCompanions,
+          ),
         ],
       ),
     );
@@ -136,7 +148,8 @@ class _JourneyScreenState extends State<JourneyScreen> {
     return Container(
       height: 28,
       width: 1,
-      color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.1),
+      color: Theme.of(context).colorScheme.onSurfaceVariant
+          .withValues(alpha: 0.1),
     );
   }
 
@@ -154,13 +167,14 @@ class _JourneyScreenState extends State<JourneyScreen> {
             ),
           );
         },
-        onJourneyDetail: () {
-          Navigator.push(
+        onJourneyDetail: () async {
+          await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => JourneyDetailScreen(route: journey),
             ),
           );
+          if (mounted) await _viewModel.loadJourneys();
         },
       ),
     );
@@ -169,6 +183,20 @@ class _JourneyScreenState extends State<JourneyScreen> {
   Widget _buildJourneyList(List<JourneyGroupModel> groups) {
     if (_viewModel.isLoading) {
       return const Center(child: CircularProgressIndicator());
+    }
+    if (_viewModel.error != null) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(_viewModel.error!),
+            TextButton(
+              onPressed: _viewModel.loadJourneys,
+              child: const Text('Thử lại'),
+            ),
+          ],
+        ),
+      );
     }
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
@@ -187,16 +215,20 @@ class _JourneyScreenState extends State<JourneyScreen> {
       );
     }
 
-    return ListView.separated(
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 80),
-      itemCount: groups.length,
-      separatorBuilder: (_, _) => const SizedBox(height: 8),
-      itemBuilder: (context, index) {
-        return JourneyGroupCard(
-          group: groups[index],
-          onJourneyTap: (journey) => _showJourneyOptionsSheet(journey),
-        );
-      },
+    return RefreshIndicator(
+      onRefresh: _viewModel.loadJourneys,
+      child: ListView.separated(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(16, 4, 16, 80),
+        itemCount: groups.length,
+        separatorBuilder: (_, _) => const SizedBox(height: 8),
+        itemBuilder: (context, index) {
+          return JourneyGroupCard(
+            group: groups[index],
+            onJourneyTap: (journey) => _showJourneyOptionsSheet(journey),
+          );
+        },
+      ),
     );
   }
 
@@ -214,14 +246,15 @@ class _JourneyScreenState extends State<JourneyScreen> {
             final currentGroups = _viewModel.currentGroups;
             return Column(
               children: [
-                Align(alignment: Alignment.centerLeft, child: AppTopBar(title: l10n.navJourney)),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: AppTopBar(title: l10n.navJourney),
+                ),
                 const SizedBox(height: 8),
                 _buildTabBar(colorScheme),
                 const SizedBox(height: 16),
                 _buildStatsSection(colorScheme),
-                Expanded(
-                  child: _buildJourneyList(currentGroups),
-                ),
+                Expanded(child: _buildJourneyList(currentGroups)),
               ],
             );
           },
@@ -241,9 +274,45 @@ class _JourneyScreenState extends State<JourneyScreen> {
                 ),
               );
               await _viewModel.loadJourneys();
+              if (!mounted) return;
               if (newJourney is JourneyModel) {
                 _viewModel.setTab(
-                    newJourney.status == JourneyStatus.completed ? 0 : 1);
+                  newJourney.status == JourneyStatus.completed ? 0 : 1,
+                );
+                if (newJourney.status == JourneyStatus.active) {
+                  try {
+                    final repository = JourneyRepository();
+                    final milestones = await repository.getMilestones(
+                      newJourney.trekkingRouteId,
+                    );
+                    final markers = await repository.getMarkers(
+                      newJourney.journeyId,
+                    );
+                    if (!context.mounted) return;
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => JourneyMapScreen(
+                          journey: newJourney,
+                          milestones: milestones,
+                          markers: markers,
+                          routeId: newJourney.trekkingRouteId,
+                        ),
+                      ),
+                    );
+                    if (mounted) await _viewModel.loadJourneys();
+                  } catch (_) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Không thể mở bản đồ hành trình. Vui lòng thử lại.',
+                          ),
+                        ),
+                      );
+                    }
+                  }
+                }
               } else if (newJourney != null) {
                 _viewModel.setTab(1);
               }

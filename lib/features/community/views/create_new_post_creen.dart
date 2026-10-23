@@ -1,11 +1,8 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import '../../../l10n/app_localizations.dart';
 import 'package:vietnam_trekking_mobile/features/profile/widgets/profile_widgets.dart';
 import '../../../core/widgets/app_bar/app_top_bar_with_back.dart';
-import '../../../core/widgets/cards/post_card.dart';
-import '../data/models/post_model.dart';
 import '../viewmodels/create_new_post_viewmodel.dart';
 import '../../../core/widgets/buttons/btn_login_style.dart';
 import '../../../core/widgets/cards/image_load_card.dart';

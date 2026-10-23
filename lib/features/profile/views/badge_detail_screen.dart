@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../../core/widgets/app_bar/app_top_bar_with_back.dart';
 import '../../../core/widgets/buttons/btn_outline_style.dart';
 import '../../../core/widgets/cards/profile_progress_bar.dart';
@@ -10,11 +11,7 @@ class BadgeDetailScreen extends StatefulWidget {
   final dynamic badge;
   final List<dynamic>? allBadges;
 
-  const BadgeDetailScreen({
-    super.key,
-    this.badge,
-    this.allBadges,
-  });
+  const BadgeDetailScreen({super.key, this.badge, this.allBadges});
 
   @override
   State<BadgeDetailScreen> createState() => _BadgeDetailScreenState();
@@ -27,7 +24,10 @@ class _BadgeDetailScreenState extends State<BadgeDetailScreen> {
   void initState() {
     super.initState();
     final parsedBadge = _parseBadge(widget.badge);
-    final parsedList = widget.allBadges?.map(_parseBadge).whereType<BadgeModel>().toList();
+    final parsedList = widget.allBadges
+        ?.map(_parseBadge)
+        .whereType<BadgeModel>()
+        .toList();
 
     _viewModel = BadgeDetailViewModel(
       badge: parsedBadge,
@@ -39,16 +39,16 @@ class _BadgeDetailScreenState extends State<BadgeDetailScreen> {
     if (b == null) return null;
     if (b is BadgeModel) return b;
     if (b is AchievementModel) {
-      final total = b.totalProgress > 0 ? b.totalProgress : 5;
-      final current = b.totalProgress > 0 ? b.currentProgress : (b.isUnlocked ? total : 0);
-      final unit = b.progressUnit.isNotEmpty ? b.progressUnit : 'Tỉnh thành';
+      final total = b.totalProgress;
+      final current = b.currentProgress;
+      final unit = b.progressUnit;
 
       return BadgeModel(
         id: b.id,
         name: b.title,
         description: b.description,
         isUnlocked: b.isUnlocked,
-        achievedDate: b.achievedDate ?? (b.isUnlocked ? '15/12/2025' : null),
+        achievedDate: b.achievedDate,
         currentProgress: current,
         totalProgress: total,
         progressUnit: unit,
@@ -101,13 +101,16 @@ class _BadgeDetailScreenState extends State<BadgeDetailScreen> {
                               border: isUnlocked
                                   ? null
                                   : Border.all(
-                                      color: colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+                                      color: colorScheme.onSurfaceVariant
+                                          .withValues(alpha: 0.4),
                                       width: 4,
                                     ),
                               boxShadow: isUnlocked
                                   ? [
                                       BoxShadow(
-                                        color: colorScheme.primary.withValues(alpha: 0.5),
+                                        color: colorScheme.primary.withValues(
+                                          alpha: 0.5,
+                                        ),
                                         blurRadius: 30,
                                         spreadRadius: 2,
                                       ),
@@ -119,7 +122,9 @@ class _BadgeDetailScreenState extends State<BadgeDetailScreen> {
                               size: 58,
                               color: isUnlocked
                                   ? Colors.white
-                                  : colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+                                  : colorScheme.onSurfaceVariant.withValues(
+                                      alpha: 0.4,
+                                    ),
                             ),
                           ),
                         ),
@@ -176,7 +181,9 @@ class _BadgeDetailScreenState extends State<BadgeDetailScreen> {
                                 style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.bold,
-                                  color: colorScheme.onSurface.withValues(alpha: 0.6),
+                                  color: colorScheme.onSurface.withValues(
+                                    alpha: 0.6,
+                                  ),
                                   letterSpacing: 0.5,
                                 ),
                               ),
@@ -184,7 +191,10 @@ class _BadgeDetailScreenState extends State<BadgeDetailScreen> {
                                 onTap: () {},
                                 borderRadius: BorderRadius.circular(6),
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 4,
+                                    vertical: 2,
+                                  ),
                                   child: Text(
                                     'Xem tất cả',
                                     style: TextStyle(
@@ -217,12 +227,16 @@ class _BadgeDetailScreenState extends State<BadgeDetailScreen> {
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
                                         color: itemUnlocked
-                                            ? colorScheme.primary.withValues(alpha: 0.15)
-                                            : colorScheme.surfaceContainerHighest,
+                                            ? colorScheme.primary.withValues(
+                                                alpha: 0.15,
+                                              )
+                                            : colorScheme
+                                                  .surfaceContainerHighest,
                                         border: Border.all(
                                           color: itemUnlocked
                                               ? colorScheme.primary
-                                              : colorScheme.onSurfaceVariant.withValues(alpha: 0.25),
+                                              : colorScheme.onSurfaceVariant
+                                                    .withValues(alpha: 0.25),
                                           width: 1.5,
                                         ),
                                       ),
@@ -231,7 +245,8 @@ class _BadgeDetailScreenState extends State<BadgeDetailScreen> {
                                         size: 28,
                                         color: itemUnlocked
                                             ? colorScheme.primary
-                                            : colorScheme.onSurfaceVariant.withValues(alpha: 0.35),
+                                            : colorScheme.onSurfaceVariant
+                                                  .withValues(alpha: 0.35),
                                       ),
                                     ),
                                     const SizedBox(height: 8),
@@ -242,7 +257,8 @@ class _BadgeDetailScreenState extends State<BadgeDetailScreen> {
                                         fontWeight: FontWeight.bold,
                                         color: itemUnlocked
                                             ? colorScheme.onSurface
-                                            : colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+                                            : colorScheme.onSurfaceVariant
+                                                  .withValues(alpha: 0.5),
                                       ),
                                     ),
                                   ],

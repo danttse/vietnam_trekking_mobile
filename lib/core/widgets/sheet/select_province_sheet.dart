@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../features/home/viewmodel/home_view_model.dart';
 import '../../../features/home/data/province_model.dart';
+import '../../../features/home/data/datasources/province_sample_data.dart';
+import '../../../features/home/data/exceptions/province_exception.dart';
 import 'app_draggable_sheet.dart';
 
 class SelectProvinceSheet extends StatefulWidget {
@@ -23,7 +25,20 @@ class _SelectProvinceSheetState extends State<SelectProvinceSheet>
   Set<String> _tempVisitedIds = {};
   late final Set<String> _initialVisitedIds;
 
+  bool _isSaving = false;
+
+  static final List<Province> _northProvinces = ProvinceData.provinces
+      .where((p) => p.region == Province.mienBac)
+      .toList();
+  static final List<Province> _centralProvinces = ProvinceData.provinces
+      .where((p) => p.region == Province.mienTrung)
+      .toList();
+  static final List<Province> _southProvinces = ProvinceData.provinces
+      .where((p) => p.region == Province.mienNam)
+      .toList();
+
   bool get _hasChanged => !setEquals(_initialVisitedIds, _tempVisitedIds);
+  bool get _canSave => _hasChanged && !_isSaving;
 
   @override
   void initState() {
@@ -34,16 +49,75 @@ class _SelectProvinceSheetState extends State<SelectProvinceSheet>
         setState(() {});
       }
     });
-    _tempVisitedIds = widget.homeViewModel.visitedProvinces
+
+    final visitedIds = widget.homeViewModel.visitedProvinces
         .map((p) => p.id)
         .toSet();
-    _initialVisitedIds = Set.from(_tempVisitedIds);
+    _tempVisitedIds = Set.from(visitedIds);
+    _initialVisitedIds = Set.from(visitedIds);
   }
 
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  Future<void> _onSave() async {
+    if (!_canSave) return;
+
+    final added = _tempVisitedIds.difference(_initialVisitedIds);
+    final removed = _initialVisitedIds.difference(_tempVisitedIds);
+
+    setState(() => _isSaving = true);
+
+    try {
+      final futures = <Future<void>>[
+        for (final code in added)
+          widget.homeViewModel.setProvinceManualMark(
+            provinceCode: code,
+            visited: true,
+          ),
+        for (final code in removed)
+          widget.homeViewModel.setProvinceManualMark(
+            provinceCode: code,
+            visited: false,
+          ),
+      ];
+      await Future.wait(futures);
+
+      widget.homeViewModel.updateVisitedProvinces(_tempVisitedIds);
+
+      if (mounted) Navigator.pop(context);
+    } on ProvinceException catch (e) {
+      if (kDebugMode) {
+        debugPrint('[SelectProvinceSheet] save error: $e');
+      }
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.message),
+            backgroundColor: Theme.of(context).colorScheme.error,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('[SelectProvinceSheet] unexpected save error: $e');
+      }
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Đã có lỗi xảy ra. Vui lòng thử lại'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
+    }
   }
 
   @override
@@ -70,15 +144,15 @@ class _SelectProvinceSheetState extends State<SelectProvinceSheet>
                 children: [
                   _buildProvinceList(
                     _tabController.index == 0 ? scrollController : null,
-                    widget.homeViewModel.getListNorthernProvinces,
+                    _northProvinces,
                   ),
                   _buildProvinceList(
                     _tabController.index == 1 ? scrollController : null,
-                    widget.homeViewModel.getListCentralnProvinces,
+                    _centralProvinces,
                   ),
                   _buildProvinceList(
                     _tabController.index == 2 ? scrollController : null,
-                    widget.homeViewModel.getListSouththernProvinces,
+                    _southProvinces,
                   ),
                 ],
               ),
@@ -93,7 +167,7 @@ class _SelectProvinceSheetState extends State<SelectProvinceSheet>
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Theme.of(context).colorScheme.surface,
-                      backgroundColor: _hasChanged
+                      backgroundColor: _canSave
                           ? Theme.of(context).colorScheme.primary
                           : Theme.of(context).colorScheme.surfaceContainerHighest,
                       disabledBackgroundColor:
@@ -102,22 +176,29 @@ class _SelectProvinceSheetState extends State<SelectProvinceSheet>
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    onPressed: _hasChanged
-                        ? () {
-                            widget.homeViewModel.updateVisitedProvinces(_tempVisitedIds);
-                            Navigator.pop(context);
-                          }
-                        : null,
-                    child: Text(
-                      l10n.saveButton,
-                      style: TextStyle(
-                        color: _hasChanged
-                            ? Theme.of(context).colorScheme.onPrimary
-                            : Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    onPressed: _canSave ? _onSave : null,
+                    child: _isSaving
+                        ? SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
+                          )
+                        : Text(
+                            l10n.saveButton,
+                            style: TextStyle(
+                              color: _canSave
+                                  ? Theme.of(context).colorScheme.onPrimary
+                                  : Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant
+                                      .withValues(alpha: 0.4),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
                 ),
               ),
@@ -132,30 +213,84 @@ class _SelectProvinceSheetState extends State<SelectProvinceSheet>
     ScrollController? scrollController,
     List<Province> showProvinces,
   ) {
-    return ListView.builder(
+    final colorScheme = Theme.of(context).colorScheme;
+    return ListView.separated(
       controller: scrollController,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 8,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       itemCount: showProvinces.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 8),
       itemBuilder: (context, index) {
         final province = showProvinces[index];
         final isVisited = _tempVisitedIds.contains(province.id);
-        return CheckboxListTile(
-          value: isVisited,
-          title: Text(province.name),
-          activeColor: Colors.green,
-          onChanged: (value) {
-            setState(() {
-              if (isVisited) {
-                _tempVisitedIds.remove(province.id);
-              } else {
-                _tempVisitedIds.add(province.id);
-              }
-            });
-          },
-          controlAffinity: ListTileControlAffinity.trailing,
+        return GestureDetector(
+          onTap: _isSaving
+              ? null
+              : () {
+                  setState(() {
+                    if (isVisited) {
+                      _tempVisitedIds.remove(province.id);
+                    } else {
+                      _tempVisitedIds.add(province.id);
+                    }
+                  });
+                },
+          child: Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: isVisited
+                  ? colorScheme.primary.withValues(alpha: 0.12)
+                  : colorScheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(12),
+              border: isVisited
+                  ? Border.all(color: colorScheme.primary, width: 1)
+                  : null,
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 72,
+                  height: 72,
+                  decoration: BoxDecoration(
+                    color: colorScheme.surfaceContainerHigh,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    Icons.terrain,
+                    size: 24,
+                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        province.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: colorScheme.onSurface,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        province.region,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
         );
       },
     );
