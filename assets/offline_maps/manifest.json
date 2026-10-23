@@ -1,0 +1,25 @@
+﻿{
+  "packageId": "ba-den-v1",
+  "version": 1,
+  "name": "Núi Bà Đen",
+  "description": "Bản đồ offline khu vực Núi Bà Đen, Tây Ninh",
+  "bounds": [106.1, 11.35, 106.2, 11.45],
+  "minZoom": 10,
+  "maxZoom": 16,
+  "centerLat": 11.3975,
+  "centerLng": 106.1467,
+  "layers": [
+    { "id": "base",      "file": "ba-den.mbtiles",           "type": "raster" },
+    { "id": "contours",  "file": "ba-den-contours.mbtiles",  "type": "vector" },
+    { "id": "hillshade", "file": "ba-den-hillshade.mbtiles", "type": "raster" }
+  ],
+  "geojson": {
+    "routes":     "ba-den-routes.geojson",
+    "milestones": "ba-den-milestones.geojson"
+  },
+  "sha256": {
+    "ba-den.mbtiles":           "fc20df2ebdcec472582c53623ad229bdcaea9c108d725bd751763e7919474a9d",
+    "ba-den-contours.mbtiles":  "fc20df2ebdcec472582c53623ad229bdcaea9c108d725bd751763e7919474a9d",
+    "ba-den-hillshade.mbtiles": "fc20df2ebdcec472582c53623ad229bdcaea9c108d725bd751763e7919474a9d"
+  }
+}

@@ -1,0 +1,1130 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for Vietnamese (`vi`).
+class AppLocalizationsVi extends AppLocalizations {
+  AppLocalizationsVi([String locale = 'vi']) : super(locale);
+
+  @override
+  String get appName => 'TrekViệt';
+
+  @override
+  String get appTagline => 'Hành trình mây ngàn Việt Nam';
+
+  @override
+  String get loginTitle => 'ĐĂNG NHẬP';
+
+  @override
+  String get emailLabel => 'Email';
+
+  @override
+  String get emailHint => 'Nhập email';
+
+  @override
+  String get passwordLabel => 'Mật khẩu';
+
+  @override
+  String get passwordHint => 'Nhập mật khẩu';
+
+  @override
+  String get forgotPassword => 'Quên mật khẩu?';
+
+  @override
+  String get loginButton => 'Đăng nhập';
+
+  @override
+  String get loginWithGoogle => 'Đăng nhập với Google';
+
+  @override
+  String get orDivider => 'Hoặc';
+
+  @override
+  String get noAccount => 'Bạn chưa có tài khoản?';
+
+  @override
+  String get registerNow => 'Đăng ký ngay';
+
+  @override
+  String get registerTitle => 'ĐĂNG KÝ';
+
+  @override
+  String get fullNameLabel => 'Họ và tên';
+
+  @override
+  String get fullNameHint => 'Nhập họ và tên';
+
+  @override
+  String get confirmPasswordLabel => 'Xác nhận mật khẩu';
+
+  @override
+  String get confirmPasswordHint => 'Nhập lại mật khẩu';
+
+  @override
+  String get agreeToTermsPrefix => 'Tôi đồng ý với ';
+
+  @override
+  String get termsOfService => 'Điều khoản dịch vụ';
+
+  @override
+  String get and => ' & ';
+
+  @override
+  String get privacyPolicy => 'Chính sách bảo mật';
+
+  @override
+  String get registerButton => 'Đăng ký';
+
+  @override
+  String get registerWithGoogle => 'Đăng ký với Google';
+
+  @override
+  String get alreadyHaveAccount => 'Bạn đã có tài khoản?';
+
+  @override
+  String get forgotPasswordTitle => 'Khôi phục mật khẩu';
+
+  @override
+  String get resetPasswordTitle => 'Đặt lại mật khẩu';
+
+  @override
+  String get forgotPasswordDescription =>
+      'Nhập email đã đăng ký của bạn bên dưới. Chúng tôi\nsẽ gửi một liên kết an toàn để bạn đặt lại\nmật khẩu mới.';
+
+  @override
+  String get sendResetLink => 'Gửi liên kết đặt lại';
+
+  @override
+  String get resetPasswordDescription =>
+      'Vui lòng nhập mật khẩu mới cho tài khoản của bạn.';
+
+  @override
+  String get newPasswordLabel => 'Mật khẩu mới';
+
+  @override
+  String get newPasswordHint => 'Nhập mật khẩu mới';
+
+  @override
+  String get updatePasswordButton => 'Cập nhật mật khẩu';
+
+  @override
+  String get backToLogin => 'Quay lại ';
+
+  @override
+  String get otpVerifiedSuccess =>
+      'Xác thực OTP thành công! Vui lòng nhập mật khẩu mới.';
+
+  @override
+  String get updatePasswordSuccess =>
+      'Cập nhật mật khẩu thành công! Vui lòng đăng nhập lại.';
+
+  @override
+  String get otpDialogTitle => 'Nhập mã xác thực';
+
+  @override
+  String get otpSentTo => 'Mã OTP đã được gửi đến:';
+
+  @override
+  String get resendOtp => 'Gửi lại mã';
+
+  @override
+  String get cancelButton => 'Hủy';
+
+  @override
+  String get confirmButton => 'Xác nhận';
+
+  @override
+  String get navHome => 'Trang chủ';
+
+  @override
+  String get navExplore => 'Khám phá';
+
+  @override
+  String get navCommunity => 'Cộng đồng';
+
+  @override
+  String get navJourney => 'Hành trình';
+
+  @override
+  String get navProfile => 'Hồ sơ';
+
+  @override
+  String get featureInDevelopment => 'Tính năng đang được phát triển';
+
+  @override
+  String get homeRankLabel => 'PHÂN HẠNG';
+
+  @override
+  String get homeStatProvinces => 'Tỉnh thành';
+
+  @override
+  String get homeStatDistance => 'Quãng đường';
+
+  @override
+  String get homeStatTrips => 'Chuyến đi';
+
+  @override
+  String get homeRecentCheckin => 'Check-In gần đây';
+
+  @override
+  String get provinceSheetTitle => 'Tỉnh thành đã đi';
+
+  @override
+  String get regionNorth => 'Miền Bắc';
+
+  @override
+  String get regionCentral => 'Miền Trung';
+
+  @override
+  String get regionSouth => 'Miền Nam';
+
+  @override
+  String get saveButton => 'Lưu';
+
+  @override
+  String get profileTitle => 'Hồ Sơ';
+
+  @override
+  String memberSince(String date) {
+    return 'Thành viên từ $date';
+  }
+
+  @override
+  String get profileProvinceMapTitle => 'Bản đồ tỉnh thành';
+
+  @override
+  String get profileProvinceUnit => 'tỉnh';
+
+  @override
+  String get profileStatTotalDistance => 'Tổng quãng đường';
+
+  @override
+  String get profileStatVisitedProvinces => 'Tỉnh thành đi qua';
+
+  @override
+  String get profileStatCompletedTrips => 'Chuyến đi hoàn thành';
+
+  @override
+  String get profileStatTotalDays => 'Tổng số ngày đi';
+
+  @override
+  String get profileAchievementsTitle => 'DANH HIỆU CỦA BẠN';
+
+  @override
+  String get settingsTitle => 'Cài Đặt';
+
+  @override
+  String get settingsGroupAccount => 'TÀI KHOẢN';
+
+  @override
+  String get settingsChangePassword => 'Đổi mật khẩu';
+
+  @override
+  String get settingsChangeLanguage => 'Đổi ngôn ngữ';
+
+  @override
+  String get settingsChangeAvatar => 'Đổi ảnh đại diện';
+
+  @override
+  String get settingsGroupAppearance => 'GIAO DIỆN';
+
+  @override
+  String get settingsDarkMode => 'Chế độ tối';
+
+  @override
+  String get settingsGroupContribute => 'ĐÓNG GÓP';
+
+  @override
+  String get settingsSuggestPlace => 'Đề xuất địa điểm mới';
+
+  @override
+  String get settingsSupportFeedback => 'Hỗ trợ & Phản hồi';
+
+  @override
+  String get settingsGroupOther => 'KHÁC';
+
+  @override
+  String get settingsTermsOfUse => 'Điều khoản sử dụng';
+
+  @override
+  String get settingsPrivacyPolicy => 'Chính sách quyền riêng tư';
+
+  @override
+  String get logoutButton => 'Đăng xuất';
+
+  @override
+  String get proposePlace => 'Đề xuất địa điểm mới';
+
+  @override
+  String get submitPropose => 'Gửi đề xuất';
+
+  @override
+  String get placeName => 'Tên địa điểm';
+
+  @override
+  String get enterPlaceName => 'Nhập tên địa điểm';
+
+  @override
+  String get provinceCity => 'Tỉnh/Thành phố';
+
+  @override
+  String get gpsCoordinates => 'Tọa độ GPS';
+
+  @override
+  String get getCurrentLocation => 'Lấy vị trí hiện tại';
+
+  @override
+  String get elevation => 'Độ cao (m)';
+
+  @override
+  String get difficulty => 'Độ khó';
+
+  @override
+  String get placeDescription => 'Mô tả địa điểm';
+
+  @override
+  String get enterPlaceDescription =>
+      'Nhập thông tin mô tả chi tiết cung đường hoặc lưu ý khi trekking tại địa điểm này...';
+
+  @override
+  String get addImages => 'Thêm hình ảnh';
+
+  @override
+  String get addPhoto => '+ Thêm ảnh';
+
+  @override
+  String get suggestionNotice =>
+      'Đề xuất của bạn sẽ được gửi về email quản trị viên để xem xét phê duyệt và cập nhật chính thức trên bản đồ TrekViệt.';
+
+  @override
+  String get featuredDestinations => 'Điểm đến nổi bật';
+
+  @override
+  String get popularTrails => 'Cung đường phổ biến';
+
+  @override
+  String get recommendedForYou => 'Gợi ý dành cho bạn';
+
+  @override
+  String get searchTrailsPlaces => 'Tìm cung đường, địa danh trekking...';
+
+  @override
+  String get seeAll => 'Xem tất cả';
+
+  @override
+  String get north => 'Miền Bắc';
+
+  @override
+  String get central => 'Miền Trung';
+
+  @override
+  String get south => 'Miền Nam';
+
+  @override
+  String get popular => 'Phổ biến';
+
+  @override
+  String get editBio => 'Chỉnh sửa Bio';
+
+  @override
+  String get titleBioBox => 'Giới thiệu bản thân (BIO)';
+
+  @override
+  String get editAvatar => 'Đổi Ảnh Đại Diện';
+
+  @override
+  String get avatarPickerTitle => 'TÙY CHỌN TẢI ẢNH';
+
+  @override
+  String get takeNewPhoto => 'Chụp ảnh mới';
+
+  @override
+  String get chooseFromLibrary => 'Chọn từ thư viện';
+
+  @override
+  String featureComingSoon(String feature) {
+    return 'Tính năng sắp ra mắt';
+  }
+
+  @override
+  String get changePasswordTitle => 'Đổi Mật Khẩu';
+
+  @override
+  String get currentPasswordLabel => 'MẬT KHẨU HIỆN TẠI';
+
+  @override
+  String get currentPasswordHint => 'Nhập mật khẩu hiện tại';
+
+  @override
+  String get newPasswordLabelUpper => 'MẬT KHẨU MỚI';
+
+  @override
+  String get confirmNewPasswordLabelUpper => 'XÁC NHẬN MẬT KHẨU MỚI';
+
+  @override
+  String get confirmNewPasswordHint => 'Xác nhận lại mật khẩu mới';
+
+  @override
+  String get pleaseFillAllFields => 'Vui lòng nhập đầy đủ thông tin';
+
+  @override
+  String get passwordsDoNotMatch => 'Mật khẩu xác nhận không khớp';
+
+  @override
+  String get passwordTooShort => 'Mật khẩu phải có ít nhất 6 ký tự';
+
+  @override
+  String get changePasswordSuccess => 'Đổi mật khẩu thành công!';
+
+  @override
+  String get createNewPostHintText => 'Chia sẻ trải nghiệm trekking của bạn';
+
+  @override
+  String get communityTabPosts => 'Bài viết';
+
+  @override
+  String get communityTabGroups => 'Nhóm';
+
+  @override
+  String get communityTabPersonal => 'Cá nhân';
+
+  @override
+  String get postHideThis => 'Ẩn bài viết này';
+
+  @override
+  String get postHideSubtitle =>
+      'Bớt nhìn thấy các bài viết tương tự trên bảng tin';
+
+  @override
+  String get postHiddenMessage => 'Đã ẩn bài viết';
+
+  @override
+  String get undo => 'Hoàn tác';
+
+  @override
+  String postHideAllFrom(String authorName) {
+    return 'Ẩn tất cả từ $authorName';
+  }
+
+  @override
+  String get thisPerson => 'người này';
+
+  @override
+  String get postReport => 'Báo cáo bài viết';
+
+  @override
+  String get postReportSuccess =>
+      'Cảm ơn bạn đã gửi báo cáo. Chúng tôi sẽ xem xét nội dung này.';
+
+  @override
+  String get communityNoPosts => 'Chưa có bài viết nào';
+
+  @override
+  String get commentsTitle => 'Bình luận';
+
+  @override
+  String get noCommentsYet => 'Chưa có bình luận nào';
+
+  @override
+  String get beFirstToComment => 'Hãy là người đầu tiên bình luận!';
+
+  @override
+  String replyingTo(String userName) {
+    return 'Đang trả lời $userName';
+  }
+
+  @override
+  String replyToHint(String userName) {
+    return 'Trả lời @$userName...';
+  }
+
+  @override
+  String get writeCommentHint => 'Viết bình luận...';
+
+  @override
+  String get journeyCompleted => 'Đã hoàn thành';
+
+  @override
+  String get journeyUpcoming => 'Sắp tới';
+
+  @override
+  String get journeyStatTrips => 'Chuyến đi';
+
+  @override
+  String get journeyStatDistance => 'Quãng đường';
+
+  @override
+  String get journeyStatCompanions => 'Người đồng hành';
+
+  @override
+  String get journeyEmptyList => 'Chưa có hành trình nào';
+
+  @override
+  String get createNewJourneyTitle => 'Tạo hành trình mới';
+
+  @override
+  String get journeyNameLabel => 'Tên chuyến đi';
+
+  @override
+  String get journeyNameHint => 'Nhập tên chuyến đi';
+
+  @override
+  String get journeyStartDateLabel => 'Ngày bắt đầu';
+
+  @override
+  String get journeyEndDateLabel => 'Ngày kết thúc';
+
+  @override
+  String get participantCountLabel => 'Số người tham gia';
+
+  @override
+  String get participantCountHint => 'Nhập số người tham gia';
+
+  @override
+  String get journeyNoteLabel => 'Ghi chú/Mô tả';
+
+  @override
+  String get journeyNoteHint => 'Nhập ghi chú hoặc mô tả cho chuyến đi';
+
+  @override
+  String get selectRouteLabel => 'Tuyến đường';
+
+  @override
+  String get selectRouteHint => 'Chọn tuyến đường trekking';
+
+  @override
+  String get selectRouteSheetTitle => 'Chọn tuyến đường';
+
+  @override
+  String get createJourneyButton => 'Tạo hành trình';
+
+  @override
+  String get createJourneySuccess => 'Đã tạo hành trình thành công!';
+
+  @override
+  String get milestonesSectionTitle => 'CÁC MỐC HÀNH TRÌNH';
+
+  @override
+  String get milestoneCheckedIn => 'Đã check-in';
+
+  @override
+  String get milestoneNotCheckedIn => 'Chưa đến';
+
+  @override
+  String get milestoneCheckInButton => 'Check In';
+
+  @override
+  String milestoneAltitude(String altitude) {
+    return '$altitude m so mực nước biển';
+  }
+
+  @override
+  String milestoneProgress(int checked, int total) {
+    return '$checked/$total mốc';
+  }
+
+  @override
+  String get journeyDetailMapTitle => 'BẢN ĐỒ LỘ TRÌNH';
+
+  @override
+  String get journeyDetailDownloadMap => 'Tải bản đồ Offline';
+
+  @override
+  String get journeyDetailViewMap => 'Xem bản đồ Offline';
+
+  @override
+  String get journeyActionStart => 'Bắt đầu hành trình';
+
+  @override
+  String get journeyActionPause => 'Tạm dừng hành trình';
+
+  @override
+  String get journeyActionResume => 'Tiếp tục hành trình';
+
+  @override
+  String get journeyActionViewMap => 'Xem bản đồ';
+
+  @override
+  String get journeyRemainingTime => 'Thời gian còn lại';
+
+  @override
+  String get journeyCurrentElevation => 'Độ cao hiện tại';
+
+  @override
+  String get journeyProgressTitle => 'Tiến trình hành trình';
+
+  @override
+  String get journeyCheckinPoints => 'Điểm check-in';
+
+  @override
+  String get journeyStatusPlanned => 'DỰ KIẾN';
+
+  @override
+  String get journeyStatusActive => 'ĐANG ĐI';
+
+  @override
+  String get journeyStatusPaused => 'TẠM DỪNG';
+
+  @override
+  String get journeyStatusCompleted => 'HOÀN THÀNH';
+
+  @override
+  String get journeyStatusCancelled => 'ĐÃ HỦY';
+
+  @override
+  String get downloadOfflineMapTitle => 'Tải bản đồ Offline';
+
+  @override
+  String get downloadOfflineMapSubtitle =>
+      'Lưu trữ dữ liệu địa hình ngoại tuyến để đề phòng mất sóng.';
+
+  @override
+  String get downloading => 'ĐANG TẢI...';
+
+  @override
+  String get cancelDownload => 'Hủy tải xuống';
+
+  @override
+  String mapDataHeader(String name) {
+    return 'Dữ liệu $name Map';
+  }
+
+  @override
+  String get mapLabel => 'Bản đồ';
+
+  @override
+  String get zoomLevelLabel => 'Mức Zoom';
+
+  @override
+  String get zoomLevelDetail => '12 – 17 (Chi tiết)';
+
+  @override
+  String get fileSizeLabel => 'Dung lượng';
+
+  @override
+  String get waypointsLabel => 'Điểm kiểm soát';
+
+  @override
+  String waypointsCount(int count) {
+    return '$count Waypoints';
+  }
+
+  @override
+  String get trailSupportLabel => 'Đường mòn';
+
+  @override
+  String get supported => 'Có hỗ trợ';
+
+  @override
+  String get mapReadyTitle => 'Bản đồ đã sẵn sàng!';
+
+  @override
+  String get mapReadySubtitle =>
+      'Mọi dữ liệu đã được lưu trữ an toàn ngoại tuyến.';
+
+  @override
+  String get mapPackageInfoTitle => 'THÔNG TIN GÓI BẢN ĐỒ';
+
+  @override
+  String get offlineMapFeature => 'Offline Map (Bản đồ ngoại tuyến)';
+
+  @override
+  String get hikingTrailFeature => 'Hiking Trail (Đường mòn chi tiết)';
+
+  @override
+  String get waypointsFeature => 'Waypoints (Các điểm dừng chân)';
+
+  @override
+  String get backtrackFeature => 'Backtrack (Chế độ quay lại tự động)';
+
+  @override
+  String get checkinControlPointTitle => 'Điểm kiểm soát Check-in';
+
+  @override
+  String get checkinTargetPointLabel => 'ĐIỂM CẦN ĐẾN';
+
+  @override
+  String checkinTargetAltitude(String altitude) {
+    return 'Độ cao mục tiêu: $altitude m';
+  }
+
+  @override
+  String checkinWithinRange(int distance) {
+    return 'Bạn đang ở trong phạm vi check-in! (Cách ${distance}m)';
+  }
+
+  @override
+  String get checkinNowButton => 'Check-in ngay';
+
+  @override
+  String get checkinAlreadySuccess => 'Đã check-in thành công';
+
+  @override
+  String get checkinRadiusNotice =>
+      'Bạn cần ở trong phạm vi bán kính 500m để có thể check-in thành công.';
+
+  @override
+  String checkinSuccessToast(String name) {
+    return 'Đã check-in thành công tại $name!';
+  }
+
+  @override
+  String get checkinCongratulation => 'CHÚC MỪNG!';
+
+  @override
+  String get checkinSuccessTitle => 'Check-in thành công!';
+
+  @override
+  String checkinSuccessMessage(String name) {
+    return 'Bạn đã hoàn thành điểm mốc $name.';
+  }
+
+  @override
+  String get achievementsEarnedTitle => 'HUY HIỆU ĐÃ ĐẠT ĐƯỢC';
+
+  @override
+  String get statNewBadge => 'Huy hiệu mới';
+
+  @override
+  String get statMaxElevation => 'Độ cao tối đa';
+
+  @override
+  String get statConqueredProvinces => 'Tỉnh đã chinh phục';
+
+  @override
+  String get continueJourneyButton => 'Tiếp tục hành trình';
+
+  @override
+  String get ratePlaceButton => 'Đánh giá địa điểm';
+
+  @override
+  String get shareAchievementButton => 'Chia sẻ thành tích';
+
+  @override
+  String milestoneConquerBadgeTitle(String name) {
+    return 'Chinh phục $name';
+  }
+
+  @override
+  String milestoneConquerBadgeDesc(String name, String altitude) {
+    return 'Ghi dấu chân thành công tại $name ở độ cao ${altitude}m';
+  }
+
+  @override
+  String milestoneConquerBadgeDescSimple(String name) {
+    return 'Ghi dấu chân thành công tại điểm mốc $name';
+  }
+
+  @override
+  String get ratePlaceTitle => 'Đánh giá địa điểm';
+
+  @override
+  String get rateSatisfactionLevel => 'MỨC ĐỘ HÀI LÒNG CỦA BẠN?';
+
+  @override
+  String get rateShareExperience => 'CHIA SẺ TRẢI NGHIỆM';
+
+  @override
+  String get rateExperienceHint =>
+      'Chia sẻ cảm nhận, lời khuyên và trải nghiệm về điểm mốc này...';
+
+  @override
+  String get rateAnonymousLabel => 'Đánh giá ẩn danh';
+
+  @override
+  String get rateAnonymousDesc => 'Tên của bạn sẽ không hiển thị công khai';
+
+  @override
+  String get rateSubmitButton => 'Gửi đánh giá';
+
+  @override
+  String get rateThankYouTitle => 'Cảm ơn bạn!';
+
+  @override
+  String get rateThankYouMessage =>
+      'Đánh giá của bạn đã được gửi thành công và sẽ giúp ích rất nhiều cho cộng đồng Trekker Việt Nam.';
+
+  @override
+  String get rateYourReviewTitle => 'ĐÁNH GIÁ CỦA BẠN';
+
+  @override
+  String rateStarsSummary(int rating, String name) {
+    return '$rating/5 sao - $name';
+  }
+
+  @override
+  String get rateViewOtherReviews => 'Xem đánh giá khác';
+
+  @override
+  String get rateBackToHome => 'Quay về trang chủ';
+
+  @override
+  String get badgeDetailTitle => 'Chi tiết huy hiệu';
+
+  @override
+  String get missionProgressTitle => 'TIẾN TRÌNH NHIỆM VỤ';
+
+  @override
+  String get otherBadgesTitle => 'HUY HIỆU KHÁC CỦA BẠN';
+
+  @override
+  String achievedDatePrefix(String date) {
+    return 'Ngày đạt được: $date';
+  }
+
+  @override
+  String get allBadgesTitle => 'Tất cả huy hiệu';
+
+  @override
+  String get promoteSkip => 'Bỏ qua';
+
+  @override
+  String get promoteNext => 'Tiếp theo';
+
+  @override
+  String get promoteStart => 'Bắt đầu sử dụng';
+
+  @override
+  String get promoteExploreTitle => 'Khám phá địa điểm trekking khắp Việt Nam';
+
+  @override
+  String get promoteExploreDesc =>
+      'Tìm hiểu các cung đường, địa điểm đẹp, thông tin chi tiết, đánh giá từ cộng đồng.';
+
+  @override
+  String get promoteGpsTitle => 'Tạo hành trình và ghi lại GPS';
+
+  @override
+  String get promoteGpsDesc =>
+      'Lên kế hoạch, ghi lại hành trình thực tế, check-in cột mốc và xem lại đường đi (track logs).';
+
+  @override
+  String get promoteGpsRecording => 'ĐANG GHI';
+
+  @override
+  String get promoteGpsDistance => 'Quãng đường';
+
+  @override
+  String get promoteGpsElevation => 'Độ cao';
+
+  @override
+  String get promoteGpsSpeed => 'Vận tốc';
+
+  @override
+  String get promoteOfflineTitle => 'Hoạt động offline\nmọi lúc mọi nơi';
+
+  @override
+  String get promoteOfflineDesc =>
+      'Tải bản đồ, dữ liệu địa điểm để sử dụng ngay cả khi không có Internet.';
+
+  @override
+  String get promoteOfflineMapTitle => 'Bản đồ offline (MBTiles)';
+
+  @override
+  String get promoteOfflineMapSubtitle => 'Dung lượng tối ưu, tải nhanh chóng';
+
+  @override
+  String get promoteOfflineFavoriteTitle => 'Lưu địa điểm yêu thích';
+
+  @override
+  String get promoteOfflineFavoriteSubtitle =>
+      'Không lo mất dấu tọa độ quan trọng';
+
+  @override
+  String get promoteOfflineGpsTitle => 'Ghi GPS và check-in';
+
+  @override
+  String get promoteOfflineGpsSubtitle => 'Vẫn lưu đầy đủ lịch sử chuyến đi';
+
+  @override
+  String get promoteStatsTitle => 'Theo dõi hành trình và\nthành tựu';
+
+  @override
+  String get promoteStatsDesc =>
+      'Lưu dấu 34 tỉnh đã đi, thu thập huy hiệu và xem thống kê hành trình của bạn.';
+
+  @override
+  String get promoteStatsProvinces => 'Tỉnh thành đã đi';
+
+  @override
+  String get promoteStatsDistance => 'Quãng đường đã đi';
+
+  @override
+  String get promoteStatsBadgeMountain => 'Núi rừng';
+
+  @override
+  String get promoteStatsBadgeMountainSub => '5 đỉnh chinh phục';
+
+  @override
+  String get promoteStatsBadgeIsland => 'Biển đảo';
+
+  @override
+  String get promoteStatsBadgeIslandSub => '3 vùng vịnh';
+
+  @override
+  String get promoteStatsBadgeExplore => 'Khám phá';
+
+  @override
+  String get promoteStatsBadgeExploreSub => '10 tỉnh thành';
+
+  @override
+  String get promoteCommunityTitle => 'Kết nối cộng đồng yêu trekking';
+
+  @override
+  String get promoteCommunityDesc =>
+      'Chia sẻ hành trình, ảnh, kinh nghiệm và tương tác với những người có cùng đam mê.';
+
+  @override
+  String get supportFaqHeader => 'CÂU HỎI THƯỜNG GẶP';
+
+  @override
+  String get supportFeedbackHeader => 'GỬI PHẢN HỒI CHO CHÚNG TÔI';
+
+  @override
+  String get supportIssueTypeLabel => 'LOẠI VẤN ĐỀ';
+
+  @override
+  String get supportDescriptionLabel => 'MÔ TẢ CHI TIẾT';
+
+  @override
+  String get supportDescriptionHint =>
+      'Mô tả lỗi hoặc đề xuất của bạn tại đây...';
+
+  @override
+  String get supportSubmitButton => 'Gửi phản hồi';
+
+  @override
+  String get supportDirectEmail => 'Hoặc gửi thư trực tiếp đến chúng tôi qua';
+
+  @override
+  String get supportEmptyError => 'Vui lòng nhập mô tả chi tiết của bạn';
+
+  @override
+  String get supportSuccessMessage =>
+      'Cảm ơn bạn đã gửi phản hồi! Chúng tôi sẽ phản hồi sớm nhất.';
+
+  @override
+  String get supportIssueGpsMap => 'Lỗi định vị GPS / Bản đồ';
+
+  @override
+  String get supportIssueAccount => 'Lỗi tài khoản / Đăng nhập';
+
+  @override
+  String get supportIssueContent => 'Đóng góp nội dung / Địa điểm';
+
+  @override
+  String get supportIssueAppExperience => 'Góp ý trải nghiệm ứng dụng';
+
+  @override
+  String get supportIssueOther => 'Vấn đề khác';
+
+  @override
+  String get supportFaq1Q => 'Làm sao để check-in tại cột mốc?';
+
+  @override
+  String get supportFaq1A =>
+      'Bật định vị GPS trên điện thoại của bạn, di chuyển đến phạm vi 50m quanh cột mốc và nhấn nút ‘Check-in ngay’ trên màn hình Bản đồ hành trình.';
+
+  @override
+  String get supportFaq2Q => 'Huy hiệu hoạt động như thế nào?';
+
+  @override
+  String get supportFaq2A =>
+      'Huy hiệu sẽ tự động được mở khóa khi bạn hoàn thành các thử thách trekking, chinh phục các đỉnh núi hoặc hoàn thành các mốc khám phá tỉnh thành.';
+
+  @override
+  String get supportFaq3Q => 'Cách tạo hành trình mới?';
+
+  @override
+  String get supportFaq3A =>
+      'Vào mục Hành trình, nhấn biểu tượng dấu (+) hoặc nút ‘Bắt đầu hành trình’ để bật chế độ ghi GPS thời gian thực và lưu lại cung đường của bạn.';
+
+  @override
+  String get rankSectionTitle => 'HẠNG TREKKING CỦA BẠN';
+
+  @override
+  String rankXpEarned(String xp) {
+    return 'Bạn nhận được +$xp XP';
+  }
+
+  @override
+  String rankPromoted(String name, int level) {
+    return 'Lên hạng $name · Level $level!';
+  }
+
+  @override
+  String get rankDetailTitle => 'Hạng và XP';
+
+  @override
+  String rankLevel(int level) {
+    return 'Level $level';
+  }
+
+  @override
+  String get rankViewDetails => 'Xem chi tiết các hạng';
+
+  @override
+  String get rankCurrentXp => 'XP hiện tại';
+
+  @override
+  String rankNextTarget(String name) {
+    return 'Hạng tiếp theo: $name';
+  }
+
+  @override
+  String rankXpRemaining(String xp) {
+    return 'Cần thêm $xp XP để đạt mốc XP tiếp theo';
+  }
+
+  @override
+  String get rankXpReached =>
+      'Đã đủ XP. Hoàn thành các điều kiện còn lại để lên hạng.';
+
+  @override
+  String get rankHighest => 'Bạn đã đạt hạng cao nhất!';
+
+  @override
+  String get rankRequirementsTitle => 'ĐIỀU KIỆN LÊN HẠNG';
+
+  @override
+  String get rankRequirementsHint =>
+      'Cần đạt đủ các điều kiện. Hạng được cập nhật theo hoạt động đã xác nhận của bạn.';
+
+  @override
+  String get rankAllTitle => 'TẤT CẢ CÁC HẠNG';
+
+  @override
+  String get rankCurrent => 'Hiện tại';
+
+  @override
+  String get rankUnavailable => 'Chưa tải được hạng của bạn';
+
+  @override
+  String get rankLoading => 'Đang tải hạng…';
+
+  @override
+  String get rankCatalogEmpty => 'Chưa có danh sách hạng';
+
+  @override
+  String get rankRetry => 'Thử lại';
+
+  @override
+  String get rankXpLabel => 'Điểm XP';
+
+  @override
+  String get rankJourneysLabel => 'Hành trình hoàn thành';
+
+  @override
+  String get rankProvincesLabel => 'Tỉnh thành đã đi';
+
+  @override
+  String get rankBadgesLabel => 'Huy hiệu';
+
+  @override
+  String get rankDistanceLabel => 'Quãng đường (km)';
+
+  @override
+  String get rankContributionsLabel => 'Đóng góp được duyệt';
+
+  @override
+  String rankOverallProgress(String percent) {
+    return 'Tiến độ các điều kiện: $percent%';
+  }
+
+  @override
+  String get rankPromotionTitle => 'Chúc mừng bạn thăng hạng!';
+
+  @override
+  String get xpHistoryHint =>
+      'XP được tự động cập nhật sau hoạt động đã xác nhận. Xem lại các lần nhận và điều chỉnh XP tại đây.';
+
+  @override
+  String get xpRouteApproved => 'Đóng góp cung đường được duyệt';
+
+  @override
+  String get xpJourneyCompleted => 'Hoàn thành hành trình';
+
+  @override
+  String get xpHistoryTitle => 'Lịch sử XP';
+
+  @override
+  String get xpReversal => 'Thu hồi XP';
+
+  @override
+  String get xpMilestoneCheckin => 'Check-in cột mốc';
+
+  @override
+  String get xpHistoryLoadMore => 'Xem thêm';
+
+  @override
+  String get xpJourneyElevation => 'Độ cao đã chinh phục';
+
+  @override
+  String get xpOtherActivity => 'Phần thưởng hoạt động';
+
+  @override
+  String get xpAdminAdjustment => 'Điều chỉnh XP';
+
+  @override
+  String get xpJourneyDistance => 'Quãng đường đã đi';
+
+  @override
+  String get xpProvinceVisited => 'Khám phá tỉnh mới';
+
+  @override
+  String get rankPromotionMessage =>
+      'Những hành trình của bạn đã tạo nên một cột mốc mới. Tiếp tục khám phá nhé!';
+
+  @override
+  String get xpPlaceApproved => 'Đóng góp địa điểm được duyệt';
+
+  @override
+  String get xpPlaceVisited => 'Ghé thăm địa điểm';
+
+  @override
+  String get rankPromotionContinue => 'Tiếp tục khám phá';
+
+  @override
+  String get xpBadgeEarned => 'Nhận huy hiệu';
+
+  @override
+  String get xpHistoryEmpty =>
+      'Bạn chưa có lịch sử XP. Bắt đầu hành trình khám phá nhé!';
+
+  @override
+  String get otpVerificationTitle => 'Xác thực Email';
+
+  @override
+  String get otpExpiredLabel => 'OTP hết hạn. Vui lòng gửi lại.';
+
+  @override
+  String get otpExpiresIn => 'OTP hết hạn sau';
+
+  @override
+  String get otpIncompleteError => 'Vui lòng nhập đủ 6 chữ số OTP';
+
+  @override
+  String get otpResendSuccess => 'Đã gửi lại mã OTP. Vui lòng kiểm tra email.';
+
+  @override
+  String get journeyMilestonesLoading => 'Đang tải điểm check-in…';
+
+  @override
+  String get journeyMilestonesLoadFailed => 'Chưa tải được điểm check-in';
+
+  @override
+  String get journeyMilestonesEmpty => 'Chưa có điểm check-in';
+
+  @override
+  String get journeyMilestonesEmptyMessage =>
+      'Cung đường này chưa có cột mốc check-in chính thức. Quản trị viên cần thêm cột mốc cho cung đường trước khi bạn có thể check-in. Bạn vẫn có thể mở bản đồ để đánh dấu mốc cá nhân.';
+
+  @override
+  String get journeyReloadMilestones => 'Tải lại cột mốc';
+
+  @override
+  String get journeyCheckinClose => 'Đóng';
+}

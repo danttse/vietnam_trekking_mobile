@@ -1,0 +1,237 @@
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../../l10n/app_localizations.dart';
+import '../../../app/theme/app_theme_viewmodel.dart';
+import '../../../core/network/dio_client.dart';
+import '../../../core/services/auth_event_bus.dart';
+import '../../../core/services/token_storage.dart';
+import '../../../features/auth/repository/auth_repository_impl.dart';
+import '../view_models/profile_viewmodel.dart';
+import '../view_models/profile_setting_viewmodel.dart';
+import '../widgets/profile_widgets.dart';
+import 'terms_of_use_screen.dart';
+import 'privacy_policy_screen.dart';
+
+class ProfileSettingScreen extends StatefulWidget {
+  const ProfileSettingScreen({super.key});
+
+  @override
+  State<ProfileSettingScreen> createState() => _ProfileSettingScreenState();
+}
+
+class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
+  final AppThemeViewModel _themeViewModel = AppThemeViewModel();
+  late final ProfileSettingViewModel _settingViewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    final tokenStorage = const SecureTokenStorage();
+    final eventBus = AuthEventBus();
+    final Dio dio = DioClient.createDio(
+      tokenStorage: tokenStorage,
+      eventBus: eventBus,
+    );
+    final authRepository = AuthRepositoryImpl(
+      dio: dio,
+      tokenStorage: tokenStorage,
+    );
+    _settingViewModel = ProfileSettingViewModel(
+      authRepository: authRepository,
+      tokenStorage: tokenStorage,
+      eventBus: eventBus,
+    );
+    _settingViewModel.addListener(() {
+      if (mounted) setState(() {});
+    });
+    _settingViewModel.loadSettings();
+  }
+
+  @override
+  void dispose() {
+    _settingViewModel.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+    final profile = context.watch<ProfileViewModel>().profile;
+
+    return Scaffold(
+      backgroundColor: colorScheme.surface,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (_settingViewModel.error != null)
+                Text(_settingViewModel.error!),
+              Row(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.arrow_back, color: colorScheme.onSurface),
+                    onPressed: () => Navigator.pop(context),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    l10n.settingsTitle,
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.onSurface,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 18),
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: colorScheme.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.15),
+                    width: 1,
+                  ),
+                ),
+                child: ProfileHeaderCard(
+                  name: profile.name,
+                  isPro: profile.isPro,
+                  memberSince: l10n.memberSince(profile.memberSince),
+                  bio: profile.bio,
+                  subTitle: profile.email,
+                  avatarUrl: profile.avatarUrl,
+                ),
+              ),
+              const SizedBox(height: 20),
+              //Nhom 1 tai khoan
+              ProfileSettingGroupItem(
+                title: l10n.settingsGroupAccount,
+                items: [
+                  ProfileSettingItem(
+                    mainTitle: l10n.settingsChangePassword,
+                    icon: Icons.lock_outline,
+                    onTapAction: () =>
+                        _settingViewModel.changePassword(context),
+                  ),
+                  ProfileSettingItem(
+                    mainTitle: l10n.settingsChangeLanguage,
+                    icon: Icons.language,
+                    onTapAction: () =>
+                        _settingViewModel.changeLanguage(context),
+                  ),
+                  ProfileSettingItem(
+                    mainTitle: l10n.settingsChangeAvatar,
+                    icon: Icons.photo_camera_outlined,
+                    onTapAction: () => _settingViewModel.changeAvatar(context),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              //Nhom 2 Giao dien
+              ListenableBuilder(
+                listenable: _themeViewModel,
+                builder: (context, _) => ProfileSettingGroupItem(
+                  title: l10n.settingsGroupAppearance,
+                  items: [
+                    ProfileSettingItem(
+                      mainTitle: l10n.settingsDarkMode,
+                      icon: Icons.dark_mode_outlined,
+                      trailing: Switch.adaptive(
+                        value: _themeViewModel.isDarkMode,
+                        activeTrackColor: colorScheme.primary,
+                        onChanged: (value) => _settingViewModel.setTheme(value),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              // Nhom 3 Dong gop
+              ProfileSettingGroupItem(
+                title: l10n.settingsGroupContribute,
+                items: [
+                  ProfileSettingItem(
+                    mainTitle: l10n.settingsSuggestPlace,
+                    icon: Icons.place_outlined,
+                    onTapAction: () => _settingViewModel.suggestPlace(context),
+                  ),
+                  ProfileSettingItem(
+                    mainTitle: l10n.settingsSupportFeedback,
+                    icon: Icons.help_outline,
+                    onTapAction: () => _settingViewModel.supportAndFeedback(context),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+
+              // Group 4: KHÁC
+              ProfileSettingGroupItem(
+                title: l10n.settingsGroupOther,
+                items: [
+                  ProfileSettingItem(
+                    mainTitle: l10n.settingsTermsOfUse,
+                    icon: Icons.description_outlined,
+                    onTapAction: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const TermsOfUseScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  ProfileSettingItem(
+                    mainTitle: l10n.settingsPrivacyPolicy,
+                    icon: Icons.privacy_tip_outlined,
+                    onTapAction: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const PrivacyPolicyScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.error,
+                  side: BorderSide(color: Theme.of(context).colorScheme.error),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                label: Text(l10n.logoutButton),
+                icon: _settingViewModel.isLoading
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.exit_to_app),
+                onPressed: _settingViewModel.isLoading
+                    ? null
+                    : () => _settingViewModel.logout(),
+              ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

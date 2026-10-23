@@ -32,7 +32,6 @@ migrate_working_dir/
 .pub/
 /build/
 /coverage/
-pubspec.lock
 
 # Symbolication related
 app.*.symbols
@@ -81,3 +80,7 @@ app.*.map.json
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+# Local device QA captures (can contain account data)
+.journey-checkin-qa/
+.final-qa/
