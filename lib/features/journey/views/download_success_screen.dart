@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/buttons/btn_login_style.dart';
 import 'widgets/trekking_button.dart';
 
 /// Màn hình "Bản đồ đã sẵn sàng!" sau khi download thành công.
@@ -80,9 +81,8 @@ class DownloadSuccessScreen extends StatelessWidget {
 
               const Spacer(),
               // ── CTAs ─────────────────────────────────────────────────────
-              TrekkingPrimaryButton(
-                label: 'Bắt đầu hành trình',
-                icon: Icons.play_arrow,
+              BtnLoginPrimary(
+                text: 'Bắt đầu hành trình',
                 onPressed: () {
                   // Pop back to journey detail
                   Navigator.of(context)

@@ -16,6 +16,20 @@ class EmptyMaps extends OfflineMapStorageService {
       null;
 }
 
+class ReadyMaps extends OfflineMapStorageService {
+  @override
+  Future<DownloadedMap?> findReadyMap(String routeId, String placeId) async =>
+      DownloadedMap(
+        mapId: 'map-1',
+        trekkingRouteId: route.routeId,
+        trekkingPlaceId: route.trekkingPlaceId,
+        mapName: route.name,
+        localPath: 'local/path',
+        scope: 'ROUTE',
+        status: 'READY',
+      );
+}
+
 final route = RouteModel.fromJson({
   'trekkingRouteId': 'route',
   'trekkingPlaceId': 'place',
@@ -85,6 +99,7 @@ void main() {
                                   ),
                                   mapStorage: EmptyMaps(),
                                   catalog: catalog,
+                                  initialDownloaded: start,
                                 )
                               : DownloadOfflineMapScreen(
                                   route: route,

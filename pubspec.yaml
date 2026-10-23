@@ -61,6 +61,7 @@ dependencies:
   # Dart-native, không cần process ngoài, chạy được trên Android/iOS emulator
   shelf: ^1.4.2
   shelf_router: ^1.1.4
+  gal: ^2.3.3
 
 dev_dependencies:
   flutter_test:

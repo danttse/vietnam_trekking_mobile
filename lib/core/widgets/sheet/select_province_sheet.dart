@@ -27,8 +27,6 @@ class _SelectProvinceSheetState extends State<SelectProvinceSheet>
 
   bool _isSaving = false;
 
-  // ── Danh sách 34 tỉnh cố định từ static local ─────────────────────────────
-  // Không phụ thuộc vào homeViewModel.provinces (vốn thay đổi khi API load).
   static final List<Province> _northProvinces = ProvinceData.provinces
       .where((p) => p.region == Province.mienBac)
       .toList();
@@ -52,8 +50,6 @@ class _SelectProvinceSheetState extends State<SelectProvinceSheet>
       }
     });
 
-    // Lấy trạng thái đã đi từ homeViewModel (đã được load từ API)
-    // dùng để pre-check các checkbox
     final visitedIds = widget.homeViewModel.visitedProvinces
         .map((p) => p.id)
         .toSet();
@@ -67,19 +63,15 @@ class _SelectProvinceSheetState extends State<SelectProvinceSheet>
     super.dispose();
   }
 
-  // ── Save handler ──────────────────────────────────────────────────────────
-
   Future<void> _onSave() async {
     if (!_canSave) return;
 
-    // Tính diff: tỉnh nào được thêm mới (tick) và tỉnh nào bị bỏ (untick)
     final added = _tempVisitedIds.difference(_initialVisitedIds);
     final removed = _initialVisitedIds.difference(_tempVisitedIds);
 
     setState(() => _isSaving = true);
 
     try {
-      // Gọi PATCH song song cho tất cả tỉnh thay đổi
       final futures = <Future<void>>[
         for (final code in added)
           widget.homeViewModel.setProvinceManualMark(
@@ -94,9 +86,6 @@ class _SelectProvinceSheetState extends State<SelectProvinceSheet>
       ];
       await Future.wait(futures);
 
-      // Cập nhật đồng bộ local state của HomeViewModel cho toàn bộ danh sách
-      // (setProvinceManualMark đã update từng tỉnh riêng lẻ, dòng này
-      //  đảm bảo các tỉnh không được PATCH vẫn nhất quán)
       widget.homeViewModel.updateVisitedProvinces(_tempVisitedIds);
 
       if (mounted) Navigator.pop(context);
@@ -130,8 +119,6 @@ class _SelectProvinceSheetState extends State<SelectProvinceSheet>
       if (mounted) setState(() => _isSaving = false);
     }
   }
-
-  // ── Build ─────────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
@@ -226,21 +213,19 @@ class _SelectProvinceSheetState extends State<SelectProvinceSheet>
     ScrollController? scrollController,
     List<Province> showProvinces,
   ) {
-    return ListView.builder(
+    final colorScheme = Theme.of(context).colorScheme;
+    return ListView.separated(
       controller: scrollController,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       itemCount: showProvinces.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 8),
       itemBuilder: (context, index) {
         final province = showProvinces[index];
         final isVisited = _tempVisitedIds.contains(province.id);
-        return CheckboxListTile(
-          value: isVisited,
-          title: Text(province.name),
-          activeColor: Colors.green,
-          // Không cho phép thay đổi khi đang save
-          onChanged: _isSaving
+        return GestureDetector(
+          onTap: _isSaving
               ? null
-              : (value) {
+              : () {
                   setState(() {
                     if (isVisited) {
                       _tempVisitedIds.remove(province.id);
@@ -249,7 +234,63 @@ class _SelectProvinceSheetState extends State<SelectProvinceSheet>
                     }
                   });
                 },
-          controlAffinity: ListTileControlAffinity.trailing,
+          child: Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: isVisited
+                  ? colorScheme.primary.withValues(alpha: 0.12)
+                  : colorScheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(12),
+              border: isVisited
+                  ? Border.all(color: colorScheme.primary, width: 1)
+                  : null,
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 72,
+                  height: 72,
+                  decoration: BoxDecoration(
+                    color: colorScheme.surfaceContainerHigh,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    Icons.terrain,
+                    size: 24,
+                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        province.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: colorScheme.onSurface,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        province.region,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
         );
       },
     );

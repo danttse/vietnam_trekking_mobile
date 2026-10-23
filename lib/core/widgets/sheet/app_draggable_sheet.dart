@@ -41,15 +41,24 @@ class AppDraggableSheet extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  Text(
-                    title,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSurface,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      title,
+                      maxLines: 2,
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                  const Divider(height: 0.5, color: Colors.grey),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: const Divider(height: 0.5, color: Colors.grey),
+                  ),
                   Expanded(
                     child: contentBuilder(context, scrollController),
                   ),

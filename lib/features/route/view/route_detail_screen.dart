@@ -17,12 +17,14 @@ class RouteDetailScreen extends StatefulWidget {
   final JourneyModel? pendingJourney;
   final OfflineMapStorageService? mapStorage;
   final TrekkingCatalogService? catalog;
+  final bool? initialDownloaded;
   const RouteDetailScreen({
     super.key,
     this.route,
     this.pendingJourney,
     this.mapStorage,
     this.catalog,
+    this.initialDownloaded,
   });
 
   @override
@@ -36,6 +38,16 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
   Future<void> _startJourney() async {
     final journey = widget.pendingJourney;
     if (journey == null || _startingJourney) return;
+    if (!_viewModel.isDownloaded) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Vui lòng tải bản đồ offline trước khi bắt đầu hành trình.',
+          ),
+        ),
+      );
+      return;
+    }
     setState(() => _startingJourney = true);
     try {
       final api = widget.catalog ?? TrekkingCatalogService();
@@ -63,6 +75,7 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
     _viewModel = RouteDetailViewModel(
       route: widget.route,
       storage: widget.mapStorage,
+      initialDownloaded: widget.initialDownloaded,
     );
     _viewModel.addListener(_onChanged);
   }
@@ -343,14 +356,86 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                           ),
                         const SizedBox(height: 24),
                         if (widget.pendingJourney != null) ...[
-                          SizedBox(
-                            width: double.infinity,
-                            child: BtnLoginPrimary(
-                              text: 'Bắt đầu hành trình',
-                              isLoading: _startingJourney,
-                              onPressed: _startJourney,
+                          if (!_viewModel.isDownloaded) ...[
+                            SizedBox(
+                              width: double.infinity,
+                              child: ListenableBuilder(
+                                listenable: _viewModel,
+                                builder: (context, _) {
+                                  return BtnLoginPrimary(
+                                    text: 'Tải bản đồ Offline',
+                                    isLoading: _viewModel.isDownloading,
+                                    onPressed: () async {
+                                      final result =
+                                          await Navigator.push<dynamic>(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  DownloadOfflineMapScreen(
+                                                    route: _viewModel.route,
+                                                    pendingJourney:
+                                                        widget.pendingJourney,
+                                                  ),
+                                            ),
+                                          );
+                                      if (!context.mounted) return;
+                                      if (result is JourneyModel) {
+                                        Navigator.pop(context, result);
+                                      } else if (result == true) {
+                                        _viewModel.setDownloaded(true);
+                                      }
+                                    },
+                                  );
+                                },
+                              ),
                             ),
-                          ),
+                            const SizedBox(height: 8),
+                            SizedBox(
+                              width: double.infinity,
+                              child: BtnOutlineStyle(
+                                text: 'Bắt đầu hành trình',
+                                icon: const Icon(Icons.play_arrow_outlined),
+                                onPressed: _startJourney,
+                              ),
+                            ),
+                          ] else ...[
+                            SizedBox(
+                              width: double.infinity,
+                              child: BtnLoginPrimary(
+                                text: 'Bắt đầu hành trình',
+                                isLoading: _startingJourney,
+                                onPressed: _startJourney,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            SizedBox(
+                              width: double.infinity,
+                              child: ListenableBuilder(
+                                listenable: _viewModel,
+                                builder: (context, _) {
+                                  return BtnOutlineStyle(
+                                    text: 'Xem bản đồ Offline',
+                                    icon: const Icon(
+                                      Icons.open_in_new_outlined,
+                                    ),
+                                    onPressed: () async {
+                                      if (_viewModel.route != null) {
+                                        await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) =>
+                                                JourneyMapScreen.preview(
+                                                  _viewModel.route!,
+                                                ),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
                           const SizedBox(height: 8),
                           SizedBox(
                             width: double.infinity,
@@ -365,70 +450,69 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                             ),
                           ),
                           const SizedBox(height: 16),
-                        ],
-                        if (!_viewModel.isDownloaded)
-                          SizedBox(
-                            width: double.infinity,
-                            child: ListenableBuilder(
-                              listenable: _viewModel,
-                              builder: (context, _) {
-                                return BtnLoginPrimary(
-                                  text: 'Tải bản đồ Offline',
-                                  isLoading: _viewModel.isDownloading,
-                                  onPressed: () async {
-                                    final result =
-                                        await Navigator.push<dynamic>(
+                        ] else ...[
+                          if (!_viewModel.isDownloaded)
+                            SizedBox(
+                              width: double.infinity,
+                              child: ListenableBuilder(
+                                listenable: _viewModel,
+                                builder: (context, _) {
+                                  return BtnLoginPrimary(
+                                    text: 'Tải bản đồ Offline',
+                                    isLoading: _viewModel.isDownloading,
+                                    onPressed: () async {
+                                      final result =
+                                          await Navigator.push<dynamic>(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  DownloadOfflineMapScreen(
+                                                    route: _viewModel.route,
+                                                    pendingJourney:
+                                                        widget.pendingJourney,
+                                                  ),
+                                            ),
+                                          );
+                                      if (!context.mounted) return;
+                                      if (result is JourneyModel) {
+                                        Navigator.pop(context, result);
+                                      } else if (result == true) {
+                                        _viewModel.setDownloaded(true);
+                                      }
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                          if (_viewModel.isDownloaded)
+                            SizedBox(
+                              width: double.infinity,
+                              child: ListenableBuilder(
+                                listenable: _viewModel,
+                                builder: (context, _) {
+                                  return BtnOutlineStyle(
+                                    text: 'Xem bản đồ Offline',
+                                    icon: const Icon(
+                                      Icons.open_in_new_outlined,
+                                    ),
+                                    onPressed: () async {
+                                      if (_viewModel.route != null) {
+                                        await Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) =>
-                                                DownloadOfflineMapScreen(
-                                                  route: _viewModel.route,
-                                                  pendingJourney:
-                                                      widget.pendingJourney,
+                                            builder: (_) =>
+                                                JourneyMapScreen.preview(
+                                                  _viewModel.route!,
                                                 ),
                                           ),
                                         );
-                                    if (!context.mounted) return;
-                                    if (result is JourneyModel) {
-                                      Navigator.pop(context, result);
-                                    } else if (result == true) {
-                                      _viewModel.setDownloaded(true);
-                                      if (widget.pendingJourney != null &&
-                                          context.mounted) {
-                                        Navigator.pop(context, true);
                                       }
-                                    }
-                                  },
-                                );
-                              },
+                                    },
+                                  );
+                                },
+                              ),
                             ),
-                          )
-                        else
-                          SizedBox(
-                            width: double.infinity,
-                            child: ListenableBuilder(
-                              listenable: _viewModel,
-                              builder: (context, _) {
-                                return BtnOutlineStyle(
-                                  text: 'Xem bản đồ Offline',
-                                  icon: Icon(Icons.open_in_new_outlined),
-                                  onPressed: () async {
-                                    if (_viewModel.route != null) {
-                                      await Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) =>
-                                              JourneyMapScreen.preview(
-                                                _viewModel.route!,
-                                              ),
-                                        ),
-                                      );
-                                    }
-                                  },
-                                );
-                              },
-                            ),
-                          ),
+                        ],
                       ],
                     ),
                   ),

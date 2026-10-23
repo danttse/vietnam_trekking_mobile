@@ -1,10 +1,16 @@
 import 'dart:async';
+import 'dart:ui';
+
+import 'package:flutter/rendering.dart';
+import 'package:gal/gal.dart';
 
 import '../../../core/services/offline_store.dart';
 import '../../../core/services/user_api_service.dart';
 import '../../../core/services/trekking_catalog_service.dart';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import '../../../core/widgets/feedback/app_snack_bar.dart';
 
 import '../../../core/services/auth_event_bus.dart';
 import '../../../core/services/token_storage.dart';
@@ -19,6 +25,7 @@ class HomeViewModel extends ChangeNotifier {
   final ProvinceVisitRepository _repository;
   final UserApiService _userApi;
   final TrekkingCatalogService _catalog;
+  final GlobalKey _captureKey=GlobalKey();
 
   // ── State ─────────────────────────────────────────────────────────────────
 
@@ -29,6 +36,7 @@ class HomeViewModel extends ChangeNotifier {
 
   bool get isLoadingProvinces => _isLoadingProvinces;
   String? get provincesError => _provincesError;
+  GlobalKey get captureKey => _captureKey;
 
   List<RecentPlace> recentPlaces = [];
   List<RecentPlace> explorePlaces = [];
@@ -43,7 +51,7 @@ class HomeViewModel extends ChangeNotifier {
   bool _refreshingOffline = false;
   StreamSubscription<String>? _offlineSubscription;
 
-  Future<void> _refreshAfterSync(String owner) async {
+  Future<void> refreshAfterSync(String owner) async {
     if (_disposed || _refreshingOffline || _isLoadingProvinces) return;
     if (await OfflineStore.currentOwner() != owner || _disposed) return;
     _refreshingOffline = true;
@@ -146,7 +154,7 @@ class HomeViewModel extends ChangeNotifier {
        _userApi = userApi ?? UserApiService(),
        _catalog = catalog ?? TrekkingCatalogService() {
     _offlineSubscription = OfflineStore.instance.changes.listen(
-      _refreshAfterSync,
+      refreshAfterSync,
     );
     if (autoLoad) {
       loadProvinces();
@@ -245,8 +253,6 @@ class HomeViewModel extends ChangeNotifier {
   /// Reload lại danh sách tỉnh từ server (dùng cho pull-to-refresh).
   Future<void> refreshProvinces() => loadProvinces();
 
-  // ── Local state updates ───────────────────────────────────────────────────
-
   void addRecentPlace(RecentPlace place) {
     recentPlaces.insert(0, place);
     notifyListeners();
@@ -323,6 +329,33 @@ class HomeViewModel extends ChangeNotifier {
     if (index != -1) {
       provinces[index] = provinces[index].copyWith(isVisited: visited);
       if (!_disposed) notifyListeners();
+    }
+  }
+  Future<void> captureAndSave([BuildContext? context]) async {
+    final ctx = context ?? _captureKey.currentContext;
+    if (ctx == null) return;
+    try {
+      final boundary = _captureKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+      if (boundary == null) return;
+      final image = await boundary.toImage(pixelRatio: 3.0);
+      final byteData = await image.toByteData(format: ImageByteFormat.png);
+      if (byteData == null) return;
+      final byte = byteData.buffer.asUint8List();
+
+      final hasAccess = await Gal.hasAccess();
+      if (!hasAccess) {
+      await Gal.requestAccess();
+    }
+      await Gal.putImageBytes(byte, name: 'vietnam_trekking_map');
+
+      if (ctx.mounted) {
+        AppSnackBar.showSuccess(ctx, 'Đã lưu ảnh vào Thư viện thành công!');
+        Navigator.of(ctx).maybePop();
+      }
+    } catch (_) {
+      if (ctx.mounted) {
+        AppSnackBar.showError(ctx, 'Không thể lưu ảnh, vui lòng thử lại.');
+      }
     }
   }
 }

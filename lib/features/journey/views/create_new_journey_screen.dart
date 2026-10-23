@@ -234,7 +234,7 @@ class _CreateNewJourneyScreenState extends State<CreateNewJourneyScreen> {
                   listenable: _viewModel,
                   builder: (context, _) {
                     return BtnLoginPrimary(
-                      text: l10n.createJourneyButton,
+                      text: 'Tiếp tục',
                       isLoading: _viewModel.isLoading,
                       onPressed: () async {
                         final createdJourney = await _viewModel.submit();

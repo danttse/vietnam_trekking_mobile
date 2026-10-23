@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/services/offline_store.dart';
 import '../../../core/services/token_storage.dart';
 import '../../user_navigation/views/user_navigation_screen.dart';
-import 'login_screen.dart';
+import '../../promote/views/promote_screen.dart';
 
 /// Restores an existing device session without requiring a network request.
 /// Backend requests still authenticate/refresh through TokenInterceptor.
@@ -39,7 +39,7 @@ class _SessionGateState extends State<SessionGate> {
         return const Scaffold(body: Center(child: CircularProgressIndicator()));
       return snapshot.data == true
           ? const UserNavigationScreen()
-          : const LoginScreen();
+          : const PromoteScreen();
     },
   );
 }

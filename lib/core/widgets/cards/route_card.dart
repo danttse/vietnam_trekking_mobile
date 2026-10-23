@@ -41,9 +41,9 @@ class RouteCard extends StatelessWidget {
               : colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(12),
           border: isSelected
-              ? Border.all(color: colorScheme.primary, width: 1.5)
+              ? Border.all(color: colorScheme.primary, width: 1)
               : Border.all(
-                  color: colorScheme.onSurfaceVariant.withValues(alpha: 0.1),
+                  color: colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
                   width: 1,
                 ),
         ),
@@ -110,27 +110,19 @@ class RouteCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 6),
+                  if (route.province != null && route.province!.isNotEmpty) ...[
+                    Text(
+                      route.province!,
+                      style: TextStyle(
+                        fontSize: 11.5,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                   Row(
                     children: [
-                      if (route.province != null && route.province!.isNotEmpty) ...[
-                        Text(
-                          route.province!,
-                          style: TextStyle(
-                            fontSize: 11.5,
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 5),
-                          child: Text(
-                            '•',
-                            style: TextStyle(
-                              fontSize: 11.5,
-                              color: colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                        ),
-                      ],
                       Text(
                         '${route.distanceKm.toStringAsFixed(0)} km',
                         style: TextStyle(

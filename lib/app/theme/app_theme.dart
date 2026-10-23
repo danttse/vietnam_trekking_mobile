@@ -16,7 +16,7 @@ class AppTheme {
         onSurfaceVariant: Color(0xFF90a396),
         primary: Color(0xFF81C995),
         onPrimary: Color(0xFF10391C),
-        primaryContainer: Color(0xFF163C23),
+        primaryContainer: Color(0xFF207335),
         onPrimaryContainer: Color(0xFFB9E9C4),
       ),
     );
