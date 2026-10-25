@@ -305,9 +305,25 @@ class _CreateNewJourneyScreenState extends State<CreateNewJourneyScreen> {
         const SizedBox(height: 8),
         InkWell(
           onTap: () async {
+            DateTime currentInitial = initialDate ?? DateTime.now();
+            final parts = controller.text.split('/');
+            if (parts.length == 3) {
+              final d = int.tryParse(parts[0]);
+              final m = int.tryParse(parts[1]);
+              final y = int.tryParse(parts[2]);
+              if (d != null && m != null && y != null) {
+                final parsed = DateTime(y, m, d);
+                final minDate = firstDate ?? DateTime(2020);
+                final maxDate = lastDate ?? DateTime(2030);
+                if (!parsed.isBefore(minDate) && !parsed.isAfter(maxDate)) {
+                  currentInitial = parsed;
+                }
+              }
+            }
+
             final DateTime? pickedDate = await showDatePicker(
               context: context,
-              initialDate: initialDate ?? DateTime.now(),
+              initialDate: currentInitial,
               firstDate: firstDate ?? DateTime(2020),
               lastDate: lastDate ?? DateTime(2030),
             );
@@ -327,9 +343,31 @@ class _CreateNewJourneyScreenState extends State<CreateNewJourneyScreen> {
               ),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-            child: Text(
-              controller.text,
-              style: TextStyle(color: colorScheme.onSurface, fontSize: 14),
+            child: ValueListenableBuilder<TextEditingValue>(
+              valueListenable: controller,
+              builder: (context, value, _) {
+                final hasText = value.text.isNotEmpty;
+                return Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        hasText ? value.text : 'DD/MM/YYYY',
+                        style: TextStyle(
+                          color: hasText
+                              ? colorScheme.onSurface
+                              : colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                    Icon(
+                      Icons.calendar_today_outlined,
+                      size: 16,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ),

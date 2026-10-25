@@ -48,9 +48,15 @@ class JourneyDetailViewModel extends ChangeNotifier {
     final current = _journey;
     if (current == null) return;
     try {
+      final routeId = current.trekkingRouteId.isNotEmpty
+          ? current.trekkingRouteId
+          : current.route.routeId;
+      final placeId = current.trekkingPlaceId.isNotEmpty
+          ? current.trekkingPlaceId
+          : current.route.trekkingPlaceId;
       final map = await OfflineMapStorageService().findReadyMap(
-        current.route.routeId,
-        current.route.trekkingPlaceId,
+        routeId,
+        placeId,
       );
       if (!_disposed) {
         _isDownloaded = map != null;
@@ -86,30 +92,59 @@ class JourneyDetailViewModel extends ChangeNotifier {
   Future<void> _loadMilestones() async {
     final current = _journey;
     if (current == null) return;
+
+    // 1. Cố gắng làm mới thông tin journey, nhưng không để lỗi này chặn việc tải cột mốc
+    JourneyModel activeJourney = current;
     try {
       final refreshed = await _api.getJourney(current.journeyId);
-      if (_disposed) return;
-      _journey = refreshed;
-      notifyListeners();
-      final data = await _api.getMilestones(refreshed.route.routeId);
+      if (!_disposed) {
+        _journey = refreshed;
+        activeJourney = refreshed;
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('[JourneyDetailViewModel] refresh journey skipped: $e');
+    }
+
+    final routeId = activeJourney.trekkingRouteId.isNotEmpty
+        ? activeJourney.trekkingRouteId
+        : activeJourney.route.routeId;
+
+    if (routeId.isEmpty) {
+      if (!_disposed) {
+        milestoneError = 'Không tìm thấy thông tin cung đường của hành trình.';
+        notifyListeners();
+      }
+      return;
+    }
+
+    try {
+      // 2. Tải danh sách cột mốc của cung đường
+      final data = await _api.getMilestones(routeId);
       if (_disposed) return;
       final milestones = data
           .map(
             (m) => MilestoneModel.fromJson(Map<String, dynamic>.from(m as Map)),
           )
           .toList();
-      final checkins = await _api.getJourneyCheckins(refreshed.journeyId);
-      if (_disposed) return;
+
+      // 3. Tải danh sách check-in (nếu có lỗi hoặc chưa có check-in nào thì vẫn giữ nguyên danh sách cột mốc)
       final verified = <String, DateTime?>{};
-      for (final checkin in checkins) {
-        if (checkin['offlineSyncStatus'] != 'FAILED' &&
-            ((checkin['verification'] as Map?)?['status'] == 'VERIFIED' ||
-                checkin['offlineSyncStatus'] == 'PENDING')) {
-          verified[checkin['milestoneId'].toString()] = DateTime.tryParse(
-            checkin['checkedAt']?.toString() ?? '',
-          );
+      try {
+        final checkins = await _api.getJourneyCheckins(activeJourney.journeyId);
+        for (final checkin in checkins) {
+          if (checkin['offlineSyncStatus'] != 'FAILED' &&
+              ((checkin['verification'] as Map?)?['status'] == 'VERIFIED' ||
+                  checkin['offlineSyncStatus'] == 'PENDING')) {
+            verified[checkin['milestoneId'].toString()] = DateTime.tryParse(
+              checkin['checkedAt']?.toString() ?? '',
+            );
+          }
         }
+      } catch (e) {
+        debugPrint('[JourneyDetailViewModel] optional checkins load: $e');
       }
+
       _milestones = milestones
           .map(
             (m) => verified.containsKey(m.id)
