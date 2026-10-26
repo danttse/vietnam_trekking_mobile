@@ -329,7 +329,7 @@ class TrekkingCatalogService {
     if (serverId != null) {
       try {
         final data =
-            (await checkinDio.get('/journeys/$serverId/checkins')).data['data']
+            (await checkinDio.get('/checkins/journeys/$serverId')).data['data']
                 as List;
         await offline.cacheCheckins(journeyId, data);
       } on DioException catch (e) {

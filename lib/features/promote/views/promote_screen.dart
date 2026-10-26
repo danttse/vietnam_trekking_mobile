@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vietnam_trekking_mobile/features/auth/views/login_screen.dart';
 import 'package:vietnam_trekking_mobile/features/promote/widgets/promote_community_slide.dart';
 import 'package:vietnam_trekking_mobile/features/promote/widgets/promote_explore_slide.dart';
@@ -24,7 +25,12 @@ class _PromoteScreenState extends State<PromoteScreen> {
     super.dispose();
   }
 
-  void _navigateToLogin() {
+  Future<void> _markAsSeenAndNavigate() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('has_seen_promote', true);
+    
+    if (!mounted) return;
+    
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -69,7 +75,7 @@ class _PromoteScreenState extends State<PromoteScreen> {
             child: Row(
               children: [
                 TextButton(
-                  onPressed: _navigateToLogin,
+                  onPressed: _markAsSeenAndNavigate,
                   child: Text(
                     l10n.promoteSkip,
                     style: TextStyle(
@@ -108,7 +114,7 @@ class _PromoteScreenState extends State<PromoteScreen> {
                         curve: Curves.easeInOut,
                       );
                     } else {
-                      _navigateToLogin();
+                      _markAsSeenAndNavigate();
                     }
                   },
                   style: ElevatedButton.styleFrom(

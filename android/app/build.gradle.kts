@@ -1,7 +1,17 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     id("com.android.application")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+}
+
+// Load keystore properties from key.properties file
+val keystorePropertiesFile = rootProject.file("key.properties")
+val keystoreProperties = Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
 android {
@@ -14,25 +24,57 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
+    // Signing configuration
+    signingConfigs {
+        create("release") {
+            if (keystorePropertiesFile.exists()) {
+                keyAlias = keystoreProperties["keyAlias"].toString()
+                keyPassword = keystoreProperties["keyPassword"].toString()
+                storeFile = file(keystoreProperties["storeFile"].toString())
+                storePassword = keystoreProperties["storePassword"].toString()
+            }
+        }
+    }
+
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        // TODO: Change this to your own unique Application ID
+        // Format: com.yourcompany.appname (e.g., com.trekvn.app)
         applicationId = "com.example.vietnam_trekking_mobile"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        
+        // Minimum SDK: Android 5.0 (Lollipop) for better compatibility
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        // Uses the version code from pubspec.yaml. When using split APKs, 1000 * ABI_VERSION
-        // is added automatically by Flutter. (https://developer.android.com/studio/build/configure-apk-splits#configure-APK-versions)
-        // You can force using the value of versionCode by specifying the `-P force-version-code-ignoring-abi=true`
-        // flag during build.
+        
+        // Version from pubspec.yaml
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        
+        // Multi-dex support for large apps
+        multiDexEnabled = true
     }
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            // Enable minification and resource shrinking for smaller app size
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            
+            // Use release signing config
+            signingConfig = if (keystorePropertiesFile.exists()) {
+                signingConfigs.getByName("release")
+            } else {
+                // Fallback to debug signing if key.properties doesn't exist
+                println("⚠️  WARNING: key.properties not found. Using debug signing.")
+                println("   For production release, create key.properties file.")
+                signingConfigs.getByName("debug")
+            }
+        }
+        
+        debug {
             signingConfig = signingConfigs.getByName("debug")
         }
     }

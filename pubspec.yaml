@@ -42,6 +42,7 @@ dependencies:
   path: ^1.9.1
   geolocator: ^13.0.4
   google_sign_in: ^6.2.2
+  shared_preferences: ^2.3.4
 
   # ── Offline Map Prototype ──────────────────────────────────────────────────
   # MapLibre: vendor-neutral vector/raster map engine (fork of flutter-mapbox-gl)
@@ -65,6 +66,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  test: ^1.24.0
   flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.14.4
   flutter_native_splash: ^2.4.0
