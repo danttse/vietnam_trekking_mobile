@@ -10,10 +10,16 @@ class RouteDetailViewModel extends ChangeNotifier {
   bool _isDownloaded = false;
   final OfflineMapStorageService _storage;
 
-  RouteDetailViewModel({RouteModel? route, OfflineMapStorageService? storage})
-    : _route = route,
-      _storage = storage ?? OfflineMapStorageService() {
-    _loadSavedMap();
+  RouteDetailViewModel({
+    RouteModel? route,
+    OfflineMapStorageService? storage,
+    bool? initialDownloaded,
+  }) : _route = route,
+       _isDownloaded = initialDownloaded ?? false,
+       _storage = storage ?? OfflineMapStorageService() {
+    if (initialDownloaded == null) {
+      _loadSavedMap();
+    }
   }
   Future<void> _loadSavedMap() async {
     if (_route == null) return;

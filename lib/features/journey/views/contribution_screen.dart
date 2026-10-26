@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../viewmodels/contribution_viewmodel.dart';
 import '../data/models/journey_model.dart';
 import '../data/models/marker_model.dart';
-import 'widgets/trekking_button.dart';
+import '../../../core/widgets/buttons/btn_login_style.dart';
 import '../../../core/services/journey_track.dart';
 
 /// Màn hình submit Route Contribution sau khi hoàn thành hành trình.
@@ -291,9 +291,9 @@ class _ContributionScreenState extends State<ContributionScreen> {
             const SizedBox(height: 32),
 
             // ── Submit button ───────────────────────────────────────────
-            TrekkingPrimaryButton(
-              label: 'Gửi đóng góp',
-              loading: submitting,
+            BtnLoginPrimary(
+              text: 'Gửi đóng góp',
+              isLoading: submitting,
               onPressed: _vm.canSubmit && !submitting ? _submit : null,
             ),
 

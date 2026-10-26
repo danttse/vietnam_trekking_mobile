@@ -5,7 +5,11 @@ class RecentProvinceCard extends StatelessWidget {
   final RecentPlace recentPlace;
   final VoidCallback? onTap;
 
-  const RecentProvinceCard({super.key, required this.recentPlace, this.onTap});
+  const RecentProvinceCard({
+    super.key,
+    required this.recentPlace,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,53 +23,64 @@ class RecentProvinceCard extends StatelessWidget {
         onTap: onTap,
         child: SizedBox(
           width: 80,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 48,
-                  child: recentPlace.imageUrl.isEmpty
-                      ? _placeholder(colorScheme)
-                      : Image.network(
-                          recentPlace.imageUrl,
-                          fit: BoxFit.cover,
-                          loadingBuilder: (context, child, progress) =>
-                              progress == null
-                              ? child
-                              : _placeholder(colorScheme),
-                          errorBuilder: (_, _, _) => _placeholder(colorScheme),
-                        ),
-                ),
-              ),
-              const SizedBox(height: 5),
-              Text(
-                recentPlace.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 10,
-                  height: 1.2,
-                  fontWeight: FontWeight.w600,
-                  color: colorScheme.onSurface,
-                ),
-              ),
-              if (recentPlace.lastVisited.isNotEmpty) ...[
-                const SizedBox(height: 2),
-                Text(
-                  recentPlace.lastVisited,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 9,
-                    height: 1.2,
-                    color: colorScheme.onSurfaceVariant,
+          child: Padding(
+            padding: const EdgeInsets.all(3),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 42,
+                    child: recentPlace.imageUrl.isEmpty
+                        ? _placeholder(colorScheme)
+                        : Image.network(
+                            recentPlace.imageUrl,
+                            fit: BoxFit.cover,
+                            loadingBuilder: (context, child, progress) =>
+                                progress == null
+                                ? child
+                                : _placeholder(colorScheme),
+                            errorBuilder: (_, _, _) =>
+                                _placeholder(colorScheme),
+                          ),
                   ),
                 ),
+                const SizedBox(height: 4),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                  child: Text(
+                    recentPlace.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 10,
+                      height: 1.2,
+                      fontWeight: FontWeight.w600,
+                      color: colorScheme.onSurface,
+                    ),
+                  ),
+                ),
+                if (recentPlace.lastVisited.isNotEmpty) ...[
+                  const SizedBox(height: 2),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                    child: Text(
+                      recentPlace.lastVisited,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 9,
+                        height: 1.2,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),

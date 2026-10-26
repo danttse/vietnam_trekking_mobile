@@ -23,7 +23,8 @@ class CardHomeStats extends StatelessWidget {
         color: colors.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: colors.outlineVariant.withValues(alpha: 0.18),
+          color: colors.onSurfaceVariant.withValues(alpha: 0.15),
+          width: 1
         ),
       ),
       child: Row(

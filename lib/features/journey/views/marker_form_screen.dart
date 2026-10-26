@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 
 import '../viewmodels/marker_form_viewmodel.dart';
 import '../data/models/marker_model.dart';
+import '../../../core/widgets/buttons/btn_login_style.dart';
 import 'widgets/trekking_button.dart';
 
 /// Compact marker sheet leaves the route visible above it.
@@ -413,9 +414,9 @@ class _MarkerFormScreenState extends State<MarkerFormScreen> {
                         ),
                         const SizedBox(width: 10),
                         Expanded(
-                          child: TrekkingPrimaryButton(
-                            label: 'Lưu & đồng bộ',
-                            loading: saving,
+                          child: BtnLoginPrimary(
+                            text: 'Lưu & đồng bộ',
+                            isLoading: saving,
                             onPressed: saving || _picking
                                 ? null
                                 : () => _save(true),

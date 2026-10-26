@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/widgets/buttons/btn_login_style.dart';
 import 'widgets/rating_stars.dart';
 import 'widgets/trekking_button.dart';
 import 'place_reviews_screen.dart';
@@ -117,8 +118,8 @@ class ReviewSuccessScreen extends StatelessWidget {
                       ),
               ),
               const SizedBox(height: 10),
-              TrekkingPrimaryButton(
-                label: 'Quay về trang chủ',
+              BtnLoginPrimary(
+                text: 'Quay về trang chủ',
                 onPressed: () {
                   Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(

@@ -223,6 +223,8 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                   fontWeight: FontWeight.w700,
                   color: colors.onSurface,
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 4),
               Text(

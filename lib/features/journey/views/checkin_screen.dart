@@ -6,7 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import '../viewmodels/checkin_viewmodel.dart';
 import '../data/models/milestone_model.dart';
 import '../data/services/checkin_service.dart';
-import 'widgets/trekking_button.dart';
+import '../../../core/widgets/buttons/btn_login_style.dart';
 import 'checkin_success_screen.dart';
 
 class CheckinScreen extends StatefulWidget {
@@ -329,9 +329,9 @@ class _CheckinScreenState extends State<CheckinScreen>
                 // ── CTA button ────────────────────────────────────────────
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  child: TrekkingPrimaryButton(
-                    label: 'Check-in ngay',
-                    loading: _vm.submitState == CheckinSubmitState.submitting,
+                  child: BtnLoginPrimary(
+                    text: 'Check-in ngay',
+                    isLoading: _vm.submitState == CheckinSubmitState.submitting,
                     onPressed: _vm.canCheckin ? _performCheckin : null,
                   ),
                 ),

@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
 
+import '../../../features/explore/data/models/explore_place_model.dart';
 import '../../../features/route/data/models/route_model.dart';
 import '../../services/trekking_catalog_service.dart';
+import '../cards/recommended_place_card.dart';
 import '../cards/route_card.dart';
 import 'app_draggable_sheet.dart';
+import 'select_place_sheet.dart';
 
-/// Routes are fetched only after the user opens a place, never flattened across
-/// unrelated places. Back returns to the place list without selecting a route.
+export 'select_place_sheet.dart';
+
 class SelectRouteSheet extends StatefulWidget {
   final List<RouteModel> routes;
   final List<Map<String, dynamic>>? places;
   final RouteModel? selectedRoute;
   final ValueChanged<RouteModel> onRouteSelected;
   final TrekkingCatalogService? catalog;
+  final bool useListViewForPlaces;
+
   const SelectRouteSheet({
     super.key,
     required this.routes,
@@ -20,7 +25,9 @@ class SelectRouteSheet extends StatefulWidget {
     this.selectedRoute,
     required this.onRouteSelected,
     this.catalog,
+    this.useListViewForPlaces = false,
   });
+
   @override
   State<SelectRouteSheet> createState() => _SelectRouteSheetState();
 }
@@ -34,7 +41,8 @@ class _SelectRouteSheetState extends State<SelectRouteSheet> {
   bool _loading = false;
   String? _error;
   int _request = 0;
-  final _search = TextEditingController();
+  final TextEditingController _search = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -76,8 +84,9 @@ class _SelectRouteSheetState extends State<SelectRouteSheet> {
       final routes = await _catalog.getRoutes(id, place: place);
       if (mounted && request == _request) setState(() => _routes = routes);
     } catch (_) {
-      if (mounted && request == _request)
+      if (mounted && request == _request) {
         setState(() => _error = 'Không thể tải cung đường tại địa điểm này.');
+      }
     } finally {
       if (mounted && request == _request) setState(() => _loading = false);
     }
@@ -88,62 +97,165 @@ class _SelectRouteSheetState extends State<SelectRouteSheet> {
     setState(() {
       _place = null;
       _routes = [];
-      _loading = false;
-      _error = null;
       _query = '';
+      _error = null;
       _search.clear();
     });
   }
 
   @override
   void dispose() {
-    ++_request;
     _search.dispose();
     super.dispose();
+  }
+
+  ExplorePlaceModel _toExplorePlace(Map<String, dynamic> place) {
+    final images = place['images'] as List? ?? [];
+    return ExplorePlaceModel(
+      id: (place['trekkingPlaceId'] ?? place['_id'] ?? '').toString(),
+      name: (place['name'] ?? '').toString(),
+      province: (place['province'] ?? place['address'] ?? '').toString(),
+      elevation: place['elevationMeters'] == null
+          ? '—'
+          : '${place['elevationMeters']} m',
+      difficulty: (place['difficulty'] ?? '').toString(),
+      rating:
+          (place['ratingAverage'] as num? ?? (place['rating'] as num?) ?? 0)
+              .toDouble(),
+      reviewCount:
+          (place['ratingCount'] as num? ?? (place['reviewCount'] as num?) ?? 0)
+              .toInt(),
+      distance: (place['distance'] ?? '').toString(),
+      duration: place['averageDurationMinutes'] == null
+          ? '—'
+          : '${place['averageDurationMinutes']} phút',
+      imageUrl: images.isEmpty ? '' : images.first.toString(),
+    );
+  }
+
+  Widget _buildSearchBar(ColorScheme colorScheme, String hint) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: TextField(
+        controller: _search,
+        textInputAction: TextInputAction.search,
+        onChanged: (v) => setState(() => _query = v.trim()),
+        decoration: InputDecoration(
+          hintText: hint,
+          prefixIcon: const Icon(Icons.search, size: 20),
+          suffixIcon: ListenableBuilder(
+            listenable: _search,
+            builder: (context, _) {
+              if (_search.text.isEmpty) {
+                return const SizedBox.shrink();
+              }
+              return IconButton(
+                icon: const Icon(Icons.close, size: 18),
+                onPressed: () {
+                  _search.clear();
+                  setState(() => _query = '');
+                },
+              );
+            },
+          ),
+          filled: true,
+          fillColor: colorScheme.surfaceContainerHighest,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 12,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPlacesView(
+    ScrollController scrollController,
+    List<Map<String, dynamic>> places,
+    ColorScheme colors,
+  ) {
+    if (widget.useListViewForPlaces) {
+      return ListView.separated(
+        controller: scrollController,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        itemCount: places.length,
+        separatorBuilder: (_, __) => const SizedBox(height: 8),
+        itemBuilder: (context, index) {
+          final place = places[index];
+          final explorePlace = _toExplorePlace(place);
+          return RecommendedPlaceCard(
+            place: explorePlace,
+            onTap: () => _openPlace(place),
+          );
+        },
+      );
+    }
+
+    return SingleChildScrollView(
+      controller: scrollController,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        children: places.map((place) {
+          final explorePlace = _toExplorePlace(place);
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: RecommendedPlaceCard(
+              place: explorePlace,
+              onTap: () => _openPlace(place),
+            ),
+          );
+        }).toList(),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    final places = _places
-        .where(
-          (p) => (p['name'] ?? '').toString().toLowerCase().contains(
-            _query.toLowerCase(),
-          ),
-        )
-        .toList();
-    final routes = _routes
-        .where((r) => r.name.toLowerCase().contains(_query.toLowerCase()))
-        .toList();
+    final places = _places.where((p) {
+      final name = (p['name'] ?? '').toString().toLowerCase();
+      final province = (p['province'] ?? p['address'] ?? '')
+          .toString()
+          .toLowerCase();
+      final q = _query.toLowerCase();
+      return name.contains(q) || province.contains(q);
+    }).toList();
+
+    final routes = _routes.where((r) {
+      final name = r.name.toLowerCase();
+      final province = (r.province ?? '').toLowerCase();
+      final q = _query.toLowerCase();
+      return name.contains(q) || province.contains(q);
+    }).toList();
+
     return AppDraggableSheet(
       title: _place == null
           ? 'Chọn địa điểm'
           : 'Cung đường tại ${_place!['name']}',
-      initialChildSize: .7,
-      minChildSize: .4,
-      maxChildSize: .95,
+      initialChildSize: 0.7,
+      minChildSize: 0.4,
+      maxChildSize: 0.95,
       contentBuilder: (context, scroll) => Column(
         children: [
           if (_place != null)
             Align(
               alignment: Alignment.centerLeft,
-              child: TextButton.icon(
-                onPressed: _back,
-                icon: const Icon(Icons.arrow_back),
-                label: const Text('Đổi địa điểm'),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: TextButton.icon(
+                  onPressed: _back,
+                  icon: const Icon(Icons.arrow_back),
+                  label: const Text('Đổi địa điểm'),
+                ),
               ),
             ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: TextField(
-              controller: _search,
-              onChanged: (v) => setState(() => _query = v.trim()),
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.search),
-                hintText: _place == null ? 'Tìm địa điểm' : 'Tìm cung đường',
-                border: const OutlineInputBorder(),
-              ),
-            ),
+          _buildSearchBar(
+            colors,
+            _place == null ? 'Tìm địa điểm' : 'Tìm cung đường',
           ),
           Expanded(
             child: _loading
@@ -172,21 +284,7 @@ class _SelectRouteSheetState extends State<SelectRouteSheet> {
                     ),
                   )
                 : _place == null
-                ? ListView.separated(
-                    controller: scroll,
-                    itemCount: places.length,
-                    separatorBuilder: (_, __) => const Divider(height: 1),
-                    itemBuilder: (_, i) => ListTile(
-                      leading: Icon(
-                        Icons.landscape_outlined,
-                        color: colors.primary,
-                      ),
-                      title: Text(places[i]['name'].toString()),
-                      subtitle: Text((places[i]['address'] ?? '').toString()),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () => _openPlace(places[i]),
-                    ),
-                  )
+                ? _buildPlacesView(scroll, places, colors)
                 : ListView.separated(
                     controller: scroll,
                     padding: const EdgeInsets.all(16),

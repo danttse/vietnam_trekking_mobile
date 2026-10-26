@@ -96,7 +96,8 @@ class _DownloadOfflineMapScreenState extends State<DownloadOfflineMapScreen> {
   void initState() {
     super.initState();
     _viewModel =
-        widget.viewModel ?? DownloadOfflineMapViewModel(route: widget.route);
+        widget.viewModel ??
+        DownloadOfflineMapViewModel(route: widget.route, autoStart: false);
     _viewModel.addListener(_onDownloadChanged);
   }
 
@@ -156,6 +157,107 @@ class _DownloadOfflineMapScreenState extends State<DownloadOfflineMapScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildIdleState(AppLocalizations l10n, ColorScheme colorScheme) {
+    final mapInfo = _viewModel.mapInfo;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            l10n.downloadOfflineMapSubtitle,
+            style: TextStyle(fontSize: 13, color: colorScheme.onSurfaceVariant),
+          ),
+        ),
+        const SizedBox(height: 36),
+        Center(
+          child: Container(
+            width: 100,
+            height: 100,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: colorScheme.primary.withValues(alpha: 0.1),
+            ),
+            child: Icon(
+              Icons.download_for_offline_outlined,
+              size: 52,
+              color: colorScheme.primary,
+            ),
+          ),
+        ),
+        const SizedBox(height: 36),
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: colorScheme.surfaceContainerHighest,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      l10n.mapDataHeader(mapInfo.mapName),
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme.onSurface,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Icon(
+                    Icons.map_outlined,
+                    color: colorScheme.primary,
+                    size: 22,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              _buildInfoRow(l10n.mapLabel, mapInfo.mapName, colorScheme),
+              _buildInfoRow(
+                l10n.zoomLevelLabel,
+                mapInfo.zoomRangeText,
+                colorScheme,
+              ),
+              _buildInfoRow(
+                l10n.fileSizeLabel,
+                mapInfo.sizeMBText,
+                colorScheme,
+              ),
+              _buildInfoRow(
+                l10n.waypointsLabel,
+                l10n.waypointsCount(mapInfo.waypointCount),
+                colorScheme,
+              ),
+              _buildInfoRow(
+                l10n.trailSupportLabel,
+                mapInfo.hasTrailSupport ? l10n.supported : '',
+                colorScheme,
+              ),
+            ],
+          ),
+        ),
+        const Spacer(),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          child: SizedBox(
+            width: double.infinity,
+            child: BtnLoginPrimary(
+              text: 'Tải xuống',
+              onPressed: _viewModel.startDownload,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -489,7 +591,9 @@ class _DownloadOfflineMapScreenState extends State<DownloadOfflineMapScreen> {
                                   ),
                                 ),
                           )
-                        : _buildDownloadingState(l10n, colorScheme),
+                        : _viewModel.isRunning
+                        ? _buildDownloadingState(l10n, colorScheme)
+                        : _buildIdleState(l10n, colorScheme),
                   ),
                 ],
               );

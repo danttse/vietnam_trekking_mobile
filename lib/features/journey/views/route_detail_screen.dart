@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../viewmodels/route_detail_viewmodel.dart';
+import '../../../core/widgets/buttons/btn_login_style.dart';
 import 'widgets/offline_map_card.dart';
-import 'widgets/trekking_button.dart';
 import 'widgets/trekking_empty_state.dart';
 import 'download_success_screen.dart';
 import '../../../core/widgets/cards/trekking_map_preview.dart';
@@ -249,13 +249,10 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
           child: _vm.offlineStatus == OfflineMapStatus.downloading
               ? const SizedBox.shrink()
-              : TrekkingPrimaryButton(
-                  label: _vm.offlineStatus == OfflineMapStatus.ready
+              : BtnLoginPrimary(
+                  text: _vm.offlineStatus == OfflineMapStatus.ready
                       ? 'Bắt đầu hành trình'
                       : 'Tải bản đồ Offline',
-                  icon: _vm.offlineStatus == OfflineMapStatus.ready
-                      ? Icons.play_arrow
-                      : Icons.download,
                   onPressed: _vm.offlineStatus == OfflineMapStatus.ready
                       ? () => Navigator.of(context).pop()
                       : _vm.downloadOfflineMap,

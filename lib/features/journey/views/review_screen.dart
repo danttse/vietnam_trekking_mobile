@@ -8,7 +8,7 @@ import '../../../core/network/api_error_handler.dart';
 import '../viewmodels/review_viewmodel.dart';
 import '../data/models/review_model.dart';
 import 'widgets/rating_stars.dart';
-import 'widgets/trekking_button.dart';
+import '../../../core/widgets/buttons/btn_login_style.dart';
 import 'review_success_screen.dart';
 
 class ReviewScreen extends StatefulWidget {
@@ -336,11 +336,11 @@ class _ReviewScreenState extends State<ReviewScreen> {
 
           const SizedBox(height: 32),
 
-          TrekkingPrimaryButton(
-            label: widget.existingReview == null
+          BtnLoginPrimary(
+            text: widget.existingReview == null
                 ? 'Gửi đánh giá'
                 : 'Lưu chỉnh sửa (1 lần)',
-            loading: isLoading,
+            isLoading: isLoading,
             onPressed: _vm.canSubmit
                 ? () {
                     _vm.setContent(_contentCtrl.text);

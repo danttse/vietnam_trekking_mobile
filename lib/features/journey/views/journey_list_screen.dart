@@ -5,7 +5,7 @@ import '../data/models/journey_model.dart';
 import 'widgets/journey_card.dart';
 import 'widgets/trekking_empty_state.dart';
 import 'journey_detail_screen.dart';
-import 'create_journey_screen.dart';
+import 'create_new_journey_screen.dart';
 
 class JourneyListScreen extends StatefulWidget {
   const JourneyListScreen({super.key});
@@ -39,7 +39,7 @@ class _JourneyListScreenState extends State<JourneyListScreen> {
 
   void _openCreate() async {
     final created = await Navigator.of(context).push<bool>(
-      MaterialPageRoute(builder: (_) => const CreateJourneyScreen()),
+      MaterialPageRoute(builder: (_) => const CreateNewJourneyScreen()),
     );
     if (created == true) _vm.loadAll();
   }

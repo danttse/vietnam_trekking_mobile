@@ -5,8 +5,14 @@ import '../../../features/explore/data/models/explore_place_model.dart';
 class RecommendedPlaceCard extends StatelessWidget {
   final ExplorePlaceModel place;
   final VoidCallback? onTap;
+  final bool isSelected;
 
-  const RecommendedPlaceCard({super.key, required this.place, this.onTap});
+  const RecommendedPlaceCard({
+    super.key,
+    required this.place,
+    this.onTap,
+    this.isSelected = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +24,13 @@ class RecommendedPlaceCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: colorScheme.surfaceContainerHighest,
+          color: isSelected
+              ? colorScheme.primary.withValues(alpha: 0.12)
+              : colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(12),
+          border: isSelected
+              ? Border.all(color: colorScheme.primary, width: 1)
+              : null,
         ),
         child: Row(
           children: [

@@ -109,7 +109,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
           filled: true,
           fillColor: colorScheme.surfaceContainerHighest,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide.none,
           ),
         ),
