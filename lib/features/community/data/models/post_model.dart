@@ -56,7 +56,15 @@ class PostModel {
     type: json['type'] as String? ?? 'NORMAL',
     journeyId: json['journeyId'] as String?,
     trekkingPlaceId: json['trekkingPlaceId'] as String?,
-    trekPlaceName: json['trekPlaceName'] as String?,
+    trekPlaceName: json['trekPlaceName'] as String? ??
+        json['trekkingPlaceName'] as String? ??
+        json['placeName'] as String? ??
+        (json['place'] is Map ? json['place']['name'] as String? : null) ??
+        (json['trekkingPlace'] is Map
+            ? json['trekkingPlace']['name'] as String?
+            : null) ??
+        (json['journey'] is Map ? json['journey']['name'] as String? : null) ??
+        json['journeyName'] as String?,
     reactionCount: (json['reactionCount'] as num?)?.toInt() ?? 0,
     commentCount: (json['commentCount'] as num?)?.toInt() ?? 0,
     isLiked: json['isLiked'] == true,

@@ -9,6 +9,7 @@ import '../data/datasources/community_attachment_datasource.dart';
 import '../data/datasources/community_remote_datasource.dart';
 import '../../../core/services/trekking_upload_service.dart';
 import '../../../core/services/auth_event_bus.dart';
+import '../../../core/services/user_api_service.dart';
 import '../../../core/network/api_error_handler.dart';
 
 class CreateNewPostViewModel extends ChangeNotifier {
@@ -29,6 +30,9 @@ class CreateNewPostViewModel extends ChangeNotifier {
   String? _errorMessage;
   String _visibility = 'PUBLIC';
   CommunityAttachment? _place, _journey;
+  String _userName = '';
+  String _userMemberSince = '';
+  String? _userAvatarUrl;
 
   CreateNewPostViewModel({
     this.editingPost,
@@ -72,6 +76,7 @@ class CreateNewPostViewModel extends ChangeNotifier {
           'Phiên đăng nhập đã kết thúc. Vui lòng mở lại trình soạn bài.';
       _emit();
     });
+    _loadCurrentUser();
   }
 
   List<File> get selectedImages => List.unmodifiable(_selectedImages);
@@ -80,6 +85,9 @@ class CreateNewPostViewModel extends ChangeNotifier {
   CommunityAttachment? get place => _place;
   CommunityAttachment? get journey => _journey;
   String? get taggedLocation => _place?.id;
+  String get userName => _userName;
+  String get userMemberSince => _userMemberSince;
+  String? get userAvatarUrl => _userAvatarUrl;
   String get visibility => _visibility;
   bool get isLoading => _isLoading;
   bool get isEditing => editingPost != null;
@@ -158,7 +166,7 @@ class CreateNewPostViewModel extends ChangeNotifier {
         ? null
         : CommunityAttachment(
             id: journey!.placeId!,
-            name: 'Địa điểm của hành trình',
+            name: journey.placeName ?? 'Địa điểm của hành trình',
           );
     _linksChanged = true;
     _emit();
@@ -212,7 +220,7 @@ class CreateNewPostViewModel extends ChangeNotifier {
               journeyId: _journey?.id,
               trekkingPlaceId: _place?.id,
             );
-      return _disposed || _sessionEnded ? null : result;
+      return _disposed || _sessionEnded ? null : result?.copyWith(trekPlaceName: result.trekPlaceName ?? _place?.name);
     } catch (e) {
       _errorMessage = ApiErrorHandler.handle(e);
       return null;
@@ -222,6 +230,22 @@ class CreateNewPostViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> _loadCurrentUser() async {
+    try {
+      final user = await UserApiService().getProfile();
+      if (_disposed) return;
+      _userName = user['displayName'] as String? ?? '';
+      _userAvatarUrl = user['avatarUrl'] as String?;
+      final rawJoined = user['createdAt'] as String?;
+      if (rawJoined != null) {
+        final joined = DateTime.tryParse(rawJoined);
+        _userMemberSince = joined != null ? '${joined.month}/${joined.year}' : '';
+      }
+      _emit();
+    } catch (_) {
+      // silently ignore — placeholder stays
+    }
+  }
   @override
   void dispose() {
     _disposed = true;

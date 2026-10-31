@@ -7,10 +7,12 @@ import '../../../../core/services/token_storage.dart';
 class CommunityAttachment {
   final String id, name;
   final String? placeId;
+  final String? placeName;
   const CommunityAttachment({
     required this.id,
     required this.name,
     this.placeId,
+    this.placeName,
   });
 }
 
@@ -52,6 +54,16 @@ class CommunityAttachmentDataSource {
         id: item[journeys ? 'journeyId' : 'trekkingPlaceId'] as String,
         name: item['name'] as String,
         placeId: journeys ? item['trekkingPlaceId'] as String? : null,
+        placeName: journeys
+            ? (item['trekkingPlaceName'] as String? ??
+                item['placeName'] as String? ??
+                ((item['route'] is Map)
+                    ? (item['route'] as Map)['placeName'] as String?
+                    : null) ??
+                ((item['place'] is Map)
+                    ? (item['place'] as Map)['name'] as String?
+                    : null))
+            : item['name'] as String?,
       );
     }).toList();
     final total = (data['total'] as num).toInt();

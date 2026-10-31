@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import '../../../features/community/data/models/post_model.dart';
+import '../../services/trekking_catalog_service.dart';
 
 class PostCard extends StatefulWidget {
   final PostModel post;
@@ -29,6 +30,41 @@ class PostCard extends StatefulWidget {
 class _PostCardState extends State<PostCard> {
   final PageController _pageController = PageController();
   int _currentImageIndex = 0;
+  String? _resolvedPlaceName;
+
+  @override
+  void initState() {
+    super.initState();
+    _resolvePlaceName();
+  }
+
+  @override
+  void didUpdateWidget(covariant PostCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.post.trekkingPlaceId != widget.post.trekkingPlaceId ||
+        oldWidget.post.trekPlaceName != widget.post.trekPlaceName) {
+      _resolvePlaceName();
+    }
+  }
+
+  void _resolvePlaceName() {
+    if (widget.post.trekPlaceName != null &&
+        widget.post.trekPlaceName!.isNotEmpty) {
+      _resolvedPlaceName = widget.post.trekPlaceName;
+      return;
+    }
+    final placeId = widget.post.trekkingPlaceId;
+    if (placeId != null && placeId.isNotEmpty) {
+      TrekkingCatalogService().getPlace(placeId).then((place) {
+        final name = place['name'] as String?;
+        if (mounted && name != null && name.isNotEmpty) {
+          setState(() {
+            _resolvedPlaceName = name;
+          });
+        }
+      }).catchError((_) {});
+    }
+  }
 
   Widget _buildSingleImage(String imagePath, ColorScheme colorScheme) {
     if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
@@ -241,7 +277,8 @@ class _PostCardState extends State<PostCard> {
                   const SizedBox(width: 4),
                   Expanded(
                     child: Text(
-                      post.trekPlaceName ??
+                      _resolvedPlaceName ??
+                          post.trekPlaceName ??
                           (post.journeyId != null
                               ? 'Chia sẻ hành trình trekking'
                               : 'Đã gắn thẻ địa điểm trekking'),

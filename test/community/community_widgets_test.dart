@@ -40,9 +40,7 @@ void main() {
     );
     addTearDown(vm.dispose);
     await tester.pumpWidget(app(CreateNewPostCreen(viewModel: vm)));
-    await tester.tap(find.byType(DropdownButtonFormField<String>));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Chỉ mình tôi').last);
+    await tester.tap(find.text('Chỉ mình tôi'));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField), 'Nội dung sau sửa');
     await tester.ensureVisible(find.text('Lưu thay đổi'));

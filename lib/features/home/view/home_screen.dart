@@ -406,7 +406,7 @@ class _HomeScreenState extends State<HomeScreen>
                                     child: FloatingActionButton.small(
                                       backgroundColor: colorScheme.primary,
                                       child: const Icon(
-                                        Icons.camera_alt_outlined,
+                                        Icons.image_outlined,
                                         color: Colors.white,
                                       ),
                                       onPressed: () async {
@@ -458,6 +458,7 @@ class _HomeScreenState extends State<HomeScreen>
                                       },
                                     ),
                                   ),
+                                  const SizedBox(width: 8)
                                 ],
                               ),
                             ),

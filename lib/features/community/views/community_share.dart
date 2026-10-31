@@ -31,6 +31,7 @@ Future<void> shareJourneyToCommunity(
       placeId: RegExp(r'^[a-fA-F0-9]{24}$').hasMatch(journey.trekkingPlaceId)
           ? journey.trekkingPlaceId
           : null,
+      placeName: journey.route.placeName,
     ),
   );
 }
