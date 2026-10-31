@@ -143,10 +143,12 @@ void main() {
     await tester.pump();
     api.current = const UserRankProfile(rank: newbie, totalXp: 150);
     await tester.pump(const Duration(seconds: 15));
+    expect(vm.rankProfile!.totalXp, 0);
+    await tester.pump(const Duration(seconds: 45));
     expect(vm.rankProfile!.totalXp, 150);
     vm.stopRankUpdates();
     api.current = const UserRankProfile(rank: newbie, totalXp: 300);
-    await tester.pump(const Duration(seconds: 30));
+    await tester.pump(const Duration(minutes: 1));
     expect(vm.rankProfile!.totalXp, 150);
     vm.dispose();
   });

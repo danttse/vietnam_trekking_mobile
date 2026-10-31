@@ -22,6 +22,7 @@ class RouteModel {
   final String encodedPolyline;
   final int mapVersion;
   final String? imageUrl;
+  final List<String> galleryImages;
   final String? mapImageUrl;
   final String? province;
   final String? placeName;
@@ -43,6 +44,7 @@ class RouteModel {
     required this.encodedPolyline,
     required this.mapVersion,
     this.imageUrl,
+    this.galleryImages = const [],
     this.mapImageUrl,
     this.province,
     this.placeName,
@@ -114,6 +116,16 @@ class RouteModel {
                   0)
               .toInt(),
       imageUrl: json['imageUrl'] as String?,
+      galleryImages:
+          <String>[
+                if (json['imageUrl'] is String) json['imageUrl'] as String,
+                ...(json['images'] as List? ?? []).whereType<String>(),
+                ...(place['images'] as List? ?? []).whereType<String>(),
+              ]
+              .map((url) => url.trim())
+              .where((url) => url.isNotEmpty)
+              .toSet()
+              .toList(),
       mapImageUrl: json['imageUrl'] as String?,
       placeName: place['name'] as String?,
       status: json['status'] as String?,

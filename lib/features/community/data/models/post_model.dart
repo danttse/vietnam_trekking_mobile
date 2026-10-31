@@ -46,6 +46,25 @@ class PostModel {
     return '${createdAt.day}/${createdAt.month}/${createdAt.year}';
   }
 
+  factory PostModel.fromJson(Map<String, dynamic> json) => PostModel(
+    postId: json['postId'] as String,
+    authorId: json['authorId'] as String,
+    authorName: json['authorName'] as String?,
+    authorAvatar: json['authorAvatar'] as String?,
+    content: json['content'] as String? ?? '',
+    images: List<String>.from(json['images'] as List? ?? []),
+    type: json['type'] as String? ?? 'NORMAL',
+    journeyId: json['journeyId'] as String?,
+    trekkingPlaceId: json['trekkingPlaceId'] as String?,
+    trekPlaceName: json['trekPlaceName'] as String?,
+    reactionCount: (json['reactionCount'] as num?)?.toInt() ?? 0,
+    commentCount: (json['commentCount'] as num?)?.toInt() ?? 0,
+    isLiked: json['isLiked'] == true,
+    visibility: json['visibility'] as String? ?? 'PUBLIC',
+    createdAt: DateTime.parse(json['createdAt'] as String),
+    updatedAt: DateTime.tryParse(json['updatedAt'] as String? ?? ''),
+  );
+
   PostModel copyWith({
     String? postId,
     String? authorId,

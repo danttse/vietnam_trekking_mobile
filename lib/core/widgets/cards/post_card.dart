@@ -1,5 +1,7 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
+
 import '../../../features/community/data/models/post_model.dart';
 
 class PostCard extends StatefulWidget {
@@ -206,7 +208,7 @@ class _PostCardState extends State<PostCard> {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        post.timeAgo,
+                        '${post.timeAgo} · ${post.visibility == 'PRIVATE' ? 'Chỉ mình tôi' : 'Công khai'}',
                         style: TextStyle(
                           fontSize: 12,
                           color: colorScheme.onSurfaceVariant,
@@ -230,23 +232,24 @@ class _PostCardState extends State<PostCard> {
               ),
             ],
           ),
-          if (post.trekPlaceName != null && post.trekPlaceName!.isNotEmpty)
+          if (post.trekkingPlaceId != null)
             Padding(
               padding: const EdgeInsets.only(top: 8),
               child: Row(
                 children: [
-                  Icon(
-                    Icons.location_on,
-                    size: 14,
-                    color: colorScheme.primary,
-                  ),
+                  Icon(Icons.location_on, size: 14, color: colorScheme.primary),
                   const SizedBox(width: 4),
-                  Text(
-                    post.trekPlaceName!,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: colorScheme.primary,
+                  Expanded(
+                    child: Text(
+                      post.trekPlaceName ??
+                          (post.journeyId != null
+                              ? 'Chia sẻ hành trình trekking'
+                              : 'Đã gắn thẻ địa điểm trekking'),
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: colorScheme.primary,
+                      ),
                     ),
                   ),
                 ],
@@ -273,8 +276,10 @@ class _PostCardState extends State<PostCard> {
                 onTap: widget.onLike,
                 borderRadius: BorderRadius.circular(8),
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 4,
+                    horizontal: 6,
+                  ),
                   child: Row(
                     children: [
                       Icon(
@@ -302,8 +307,10 @@ class _PostCardState extends State<PostCard> {
                 onTap: widget.onComment,
                 borderRadius: BorderRadius.circular(8),
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 4,
+                    horizontal: 6,
+                  ),
                   child: Row(
                     children: [
                       Icon(

@@ -9,6 +9,7 @@ import '../../journey/views/journey_map_screen.dart';
 import 'download_offline_map_screen.dart';
 import '../../../core/widgets/cards/card_home_stats.dart';
 import '../../../core/widgets/cards/trekking_map_preview.dart';
+import '../../../core/widgets/carousels/place_image_gallery.dart';
 import '../../../core/services/trekking_catalog_service.dart';
 import '../../offline_map/services/offline_map_storage_service.dart';
 
@@ -101,36 +102,31 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
         bottom: true,
         child: Column(
           children: [
-            AspectRatio(
-              aspectRatio: 16 / 9,
+            SizedBox(
+              height: _viewModel.heroImages.length > 1
+                  ? (MediaQuery.sizeOf(context).width * 9 / 16).clamp(
+                      260.0,
+                      420.0,
+                    )
+                  : MediaQuery.sizeOf(context).width * 9 / 16,
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  Image.network(
-                    _viewModel.heroImageUrl,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      color: colorScheme.surfaceContainerHigh,
-                      child: Icon(
-                        Icons.terrain,
-                        size: 48,
-                        color: colorScheme.onSurfaceVariant.withValues(
-                          alpha: 0.4,
+                  PlaceImageGallery(
+                    images: _viewModel.heroImages,
+                    indicatorBottom: 26,
+                    foreground: DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.transparent,
+                            Colors.black.withValues(alpha: 0.35),
+                            Colors.black.withValues(alpha: 0.85),
+                          ],
+                          stops: const [0.45, 0.7, 1.0],
                         ),
-                      ),
-                    ),
-                  ),
-                  DecoratedBox(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.transparent,
-                          Colors.black.withValues(alpha: 0.35),
-                          Colors.black.withValues(alpha: 0.85),
-                        ],
-                        stops: const [0.45, 0.7, 1.0],
                       ),
                     ),
                   ),
@@ -189,48 +185,50 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                     ),
                   ),
                   Positioned(
-                    bottom: 25,
+                    bottom: _viewModel.heroImages.length > 1 ? 44 : 25,
                     left: 0,
                     right: 0,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            _viewModel.routeName,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              height: 1.2,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          Row(
-                            children: [
-                              const SizedBox(width: 10),
-                              const Icon(
-                                Icons.place_outlined,
-                                size: 13,
-                                color: Colors.white70,
+                    child: IgnorePointer(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              _viewModel.routeName,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                height: 1.2,
                               ),
-                              const SizedBox(width: 4),
-                              Expanded(
-                                child: Text(
-                                  _viewModel.routeLocation,
-                                  style: const TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 12,
+                            ),
+                            const SizedBox(height: 6),
+                            Row(
+                              children: [
+                                const SizedBox(width: 10),
+                                const Icon(
+                                  Icons.place_outlined,
+                                  size: 13,
+                                  color: Colors.white70,
+                                ),
+                                const SizedBox(width: 4),
+                                Expanded(
+                                  child: Text(
+                                    _viewModel.routeLocation,
+                                    style: const TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 12,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

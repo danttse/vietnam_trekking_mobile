@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../../features/community/data/models/comment_model.dart';
 import '../../../features/community/data/models/comment_thread_model.dart';
 import 'comment_item.dart';
@@ -8,6 +9,8 @@ class CommentThreadItem extends StatelessWidget {
   final Function(CommentModel) onReply;
   final Function(CommentModel) onLike;
   final VoidCallback? onTapSeeMore;
+  final bool Function(CommentModel)? canEdit, canDelete;
+  final void Function(CommentModel)? onEdit, onDelete;
 
   const CommentThreadItem({
     super.key,
@@ -15,7 +18,10 @@ class CommentThreadItem extends StatelessWidget {
     required this.onReply,
     required this.onLike,
     this.onTapSeeMore,
-
+    this.canEdit,
+    this.canDelete,
+    this.onEdit,
+    this.onDelete,
   });
 
   @override
@@ -30,8 +36,22 @@ class CommentThreadItem extends StatelessWidget {
         children: [
           CommentItem(
             comment: commentThread.rootComment,
-            onLike: () => onLike(commentThread.rootComment),
-            onReply: () => onReply(commentThread.rootComment),
+            onEdit: canEdit?.call(commentThread.rootComment) == true
+                ? () => onEdit?.call(commentThread.rootComment)
+                : null,
+            onDelete: canDelete?.call(commentThread.rootComment) == true
+                ? () => onDelete?.call(commentThread.rootComment)
+                : null,
+            onLike: () {
+              if (!commentThread.rootComment.deleted) {
+                onLike(commentThread.rootComment);
+              }
+            },
+            onReply: () {
+              if (!commentThread.rootComment.deleted) {
+                onReply(commentThread.rootComment);
+              }
+            },
           ),
           const SizedBox(height: 2),
           if (commentThread.replies.isNotEmpty) ...[
@@ -55,6 +75,12 @@ class CommentThreadItem extends StatelessWidget {
               ...commentThread.replies.map(
                 (reply) => CommentItem(
                   comment: reply,
+                  onEdit: canEdit?.call(reply) == true
+                      ? () => onEdit?.call(reply)
+                      : null,
+                  onDelete: canDelete?.call(reply) == true
+                      ? () => onDelete?.call(reply)
+                      : null,
                   isReply: true,
                   onLike: () => onLike(reply),
                   onReply: () => onReply(reply),

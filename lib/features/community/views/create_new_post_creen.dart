@@ -1,209 +1,245 @@
-
 import 'package:flutter/material.dart';
-import '../../../l10n/app_localizations.dart';
-import 'package:vietnam_trekking_mobile/features/profile/widgets/profile_widgets.dart';
-import '../../../core/widgets/app_bar/app_top_bar_with_back.dart';
-import '../viewmodels/create_new_post_viewmodel.dart';
+
 import '../../../core/widgets/buttons/btn_login_style.dart';
-import '../../../core/widgets/cards/image_load_card.dart';
+import '../data/models/post_model.dart';
+import '../data/datasources/community_attachment_datasource.dart';
+import '../viewmodels/create_new_post_viewmodel.dart';
+import 'community_attachment_picker.dart';
 
 class CreateNewPostCreen extends StatefulWidget {
-  const CreateNewPostCreen({super.key});
-
+  final PostModel? post;
+  final CreateNewPostViewModel? viewModel;
+  final String initialContent;
+  final String initialType;
+  final CommunityAttachment? initialJourney;
+  const CreateNewPostCreen({
+    super.key,
+    this.post,
+    this.viewModel,
+    this.initialContent = '',
+    this.initialType = 'NORMAL',
+    this.initialJourney,
+  });
   @override
   State<CreateNewPostCreen> createState() => _CreateNewPostState();
 }
 
 class _CreateNewPostState extends State<CreateNewPostCreen> {
-  late final CreateNewPostViewModel _createNewPostViewModel;
-  @override
-  void initState() {
-    super.initState();
-    _createNewPostViewModel = CreateNewPostViewModel();
-  }
+  late final _vm =
+      widget.viewModel ??
+      CreateNewPostViewModel(
+        editingPost: widget.post,
+        initialContent: widget.initialContent,
+        initialType: widget.initialType,
+        initialJourney: widget.initialJourney,
+      );
   @override
   void dispose() {
+    if (widget.viewModel == null) _vm.dispose();
     super.dispose();
   }
-  Widget _buildItemSelection(BuildContext context,String title,IconData icon, VoidCallback onTapAction, String resultSelection)
-  {
-    final colorScheme=Theme.of(context).colorScheme;
-    return InkWell(
-      onTap: onTapAction,
-      child: Row(
-        children: [
-          Container(
-            width: 30,
-            height: 30,
-            decoration: BoxDecoration(
-              color: colorScheme.surface,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(
-              icon,
-              color: colorScheme.onSurfaceVariant,
-              size: 15,
-            ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: colorScheme.onSurface,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Text(
-            resultSelection,
-            style: TextStyle(
-              fontSize: 14,
-              fontStyle: FontStyle.italic,
-              color: colorScheme.onSurface,
-            ),
-          ),
-        ],
+
+  Future<void> _selectAttachment(bool journeys) async {
+    final item = await Navigator.push<CommunityAttachment>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => CommunityAttachmentPicker(journeys: journeys),
       ),
     );
+    if (!mounted || item == null) return;
+    if (journeys) {
+      _vm.selectJourney(item);
+    } else {
+      _vm.selectPlace(item);
+    }
   }
+
+  Widget _thumbnail(Widget image, VoidCallback remove) => SizedBox(
+    width: 88,
+    height: 88,
+    child: Stack(
+      children: [
+        Positioned.fill(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: image,
+          ),
+        ),
+        Positioned(
+          top: 0,
+          right: 0,
+          child: IconButton.filledTonal(
+            tooltip: 'Gỡ ảnh',
+            visualDensity: VisualDensity.compact,
+            icon: const Icon(Icons.close, size: 18),
+            onPressed: _vm.isLoading ? null : remove,
+          ),
+        ),
+      ],
+    ),
+  );
+
   @override
-  Widget build(BuildContext context) {
-    final colorScheme=Theme.of(context).colorScheme;
-    final l10n = AppLocalizations.of(context);
-    return Scaffold(
-      backgroundColor: colorScheme.surface,
-      body: SafeArea(
-        child: Column(
-          children: [
-            AppTopBarWithBack(title: "Tạo bài viết mới"),
-            Expanded(
-              child: ListenableBuilder(
-                listenable: _createNewPostViewModel,
-                builder: (context, _) {
-            return SingleChildScrollView(
-              padding: EdgeInsets.all(16.0),
+  Widget build(BuildContext context) => ListenableBuilder(
+    listenable: _vm,
+    builder: (context, _) {
+      final theme = Theme.of(context);
+      return PopScope(
+        canPop: !_vm.isLoading,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              _vm.isEditing ? 'Chỉnh sửa bài viết' : 'Tạo bài viết mới',
+            ),
+          ),
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  ProfileHeaderCard(name: "Tên người dùng", memberSince: "19/2", bio: "",subTitle: "Đang chia sẻ với TrekViệt"),
-                  const SizedBox(height: 12),
-                  Container(
-                      child: TextField(
-                        style: const TextStyle(fontSize: 12),
-                        controller: _createNewPostViewModel.contentController,
-                        textInputAction: TextInputAction.done,
-                        maxLines: 4,
-                        decoration: InputDecoration(
-                          hintText: l10n?.createNewPostHintText ?? "Bạn đang nghĩ gì?",
-                          filled: true,
-                          fillColor: colorScheme.surfaceContainerHighest,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                        errorText: _createNewPostViewModel.errorMessage,
-                        suffixIcon: _createNewPostViewModel.contentController.text.isNotEmpty
-                          ? IconButton(
-                            icon: const Icon(Icons.clear),
-                            onPressed: _createNewPostViewModel.clearContent,
-                          )
-                        : null,
-                      ),
-                    ),
+                  Text(
+                    'Chia sẻ chuyến đi của bạn',
+                    style: theme.textTheme.titleLarge,
                   ),
-                  const SizedBox(height: 12),
-                  ProfileSettingGroupItem(
-                    title: "Thêm vào bài viết",
-                    items: [
-                      _buildItemSelection(
-                        context,
-                        "Thêm ảnh",
-                        Icons.camera_alt,
-                        () {
-                          if (_createNewPostViewModel.imageCount >=
-                              CreateNewPostViewModel.maxImages) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Chỉ được chọn tối đa 5 hình ảnh'),
-                              ),
-                            );
-                          } else {
-                            _createNewPostViewModel.pickMultiImages();
-                          }
-                        },
-                        _createNewPostViewModel.selectedImages.isNotEmpty
-                            ? "${_createNewPostViewModel.selectedImages.length} ảnh đã chọn"
-                            : "",
+                  const SizedBox(height: 16),
+                  DropdownButtonFormField<String>(
+                    isExpanded: true,
+                    initialValue: _vm.visibility,
+                    decoration: const InputDecoration(
+                      labelText: 'Ai có thể xem bài viết?',
+                    ),
+                    items: const [
+                      DropdownMenuItem(
+                        value: 'PUBLIC',
+                        child: Text('Công khai'),
                       ),
-                      _buildItemSelection(context, "Gắn thẻ địa điểm", Icons.location_pin, () {}, ""),
+                      DropdownMenuItem(
+                        value: 'PRIVATE',
+                        child: Text('Chỉ mình tôi'),
+                      ),
                     ],
+                    onChanged: _vm.isLoading
+                        ? null
+                        : (value) {
+                            if (value != null) _vm.setVisibility(value);
+                          },
                   ),
-                  if (_createNewPostViewModel.selectedImages.isNotEmpty) ...[
-                    const SizedBox(height: 10),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: _vm.contentController,
+                    enabled: !_vm.isLoading,
+                    minLines: 5,
+                    maxLines: 12,
+                    maxLength: 10000,
+                    decoration: const InputDecoration(
+                      hintText: 'Bạn muốn chia sẻ điều gì?',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: const Icon(Icons.photo_library_outlined),
+                    title: const Text('Thêm ảnh'),
+                    subtitle: Text(
+                      '${_vm.imageCount}/${CreateNewPostViewModel.maxImages} ảnh',
+                    ),
+                    onTap:
+                        _vm.isLoading ||
+                            _vm.imageCount >= CreateNewPostViewModel.maxImages
+                        ? null
+                        : _vm.pickMultiImages,
+                  ),
+                  if (_vm.imageCount > 0)
                     SizedBox(
-                      height: 72,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: _createNewPostViewModel.selectedImages.length,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(right: 10),
-                                  child: ImageLoadCard(
-                                    imageUrl: _createNewPostViewModel.selectedImages[index],
-                                    onTapRemove: () => _createNewPostViewModel.removeImage(index),
-                                  ),
-                                );
-                              },
+                      height: 96,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: _vm.imageCount,
+                        separatorBuilder: (_, _) => const SizedBox(width: 8),
+                        itemBuilder: (context, index) {
+                          if (index < _vm.existingImages.length) {
+                            return _thumbnail(
+                              Image.network(
+                                _vm.existingImages[index],
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, _, _) =>
+                                    const Icon(Icons.broken_image_outlined),
+                              ),
+                              () => _vm.removeExistingImage(index),
+                            );
+                          }
+                          final local = index - _vm.existingImages.length;
+                          return _thumbnail(
+                            Image.file(
+                              _vm.selectedImages[local],
+                              fit: BoxFit.cover,
                             ),
+                            () => _vm.removeImage(local),
+                          );
+                        },
+                      ),
+                    ),
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: const Icon(Icons.place_outlined),
+                    title: const Text('Gắn thẻ địa điểm'),
+                    subtitle: Text(_vm.place?.name ?? 'Chọn địa điểm trekking'),
+                    onTap: _vm.isLoading
+                        ? null
+                        : () => _selectAttachment(false),
+                    trailing: _vm.place == null || _vm.journey != null
+                        ? null
+                        : IconButton(
+                            tooltip: 'Gỡ địa điểm',
+                            onPressed: _vm.isLoading
+                                ? null
+                                : () => _vm.selectPlace(null),
+                            icon: const Icon(Icons.close),
                           ),
-                        ],
-                      ),
-                    ),
-                  ],
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        '${_createNewPostViewModel.imageCount}/${CreateNewPostViewModel.maxImages}',
-                        textAlign: TextAlign.end,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ),
                   ),
-                  const SizedBox(height: 12),
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: const Icon(Icons.hiking),
+                    title: const Text('Chia sẻ hành trình'),
+                    subtitle: Text(
+                      _vm.journey?.name ?? 'Chọn hành trình của bạn',
+                    ),
+                    onTap: _vm.isLoading ? null : () => _selectAttachment(true),
+                    trailing: _vm.journey == null
+                        ? null
+                        : IconButton(
+                            tooltip: 'Gỡ hành trình',
+                            onPressed: _vm.isLoading
+                                ? null
+                                : () => _vm.selectJourney(null),
+                            icon: const Icon(Icons.close),
+                          ),
+                  ),
+                  if (_vm.errorMessage != null)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: Text(
+                        _vm.errorMessage!,
+                        style: TextStyle(color: theme.colorScheme.error),
+                      ),
+                    ),
+                  const SizedBox(height: 16),
                   BtnLoginPrimary(
-                    text: "Đăng bài viết",
-                    isLoading: _createNewPostViewModel.isLoading,
+                    text: _vm.isEditing ? 'Lưu thay đổi' : 'Đăng bài viết',
+                    isLoading: _vm.isLoading,
                     onPressed: () async {
-                      final post = await _createNewPostViewModel.submitPost();
-                      if (post != null) {
-                        Navigator.pop(context, post);
-                      }
+                      final result = await _vm.submitPost();
+                      if (!context.mounted || result == null) return;
+                      Navigator.pop(context, result);
                     },
                   ),
                 ],
               ),
-            );
-                }
-              )
-            )
-          ],
+            ),
+          ),
         ),
-      )
-    );
-  }
+      );
+    },
+  );
 }

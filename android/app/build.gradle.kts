@@ -14,8 +14,16 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
+gradle.taskGraph.whenReady {
+    if (allTasks.any { it.project == project && it.name.contains("Release") }) {
+        check(keystorePropertiesFile.exists()) {
+            "Release signing requires android/key.properties and the upload keystore."
+        }
+    }
+}
+
 android {
-    namespace = "com.example.vietnam_trekking_mobile"
+    namespace = "com.trekviet.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -37,9 +45,7 @@ android {
     }
 
     defaultConfig {
-        // TODO: Change this to your own unique Application ID
-        // Format: com.yourcompany.appname (e.g., com.trekvn.app)
-        applicationId = "com.example.vietnam_trekking_mobile"
+        applicationId = "com.trekviet.app"
         
         // Minimum SDK: Android 5.0 (Lollipop) for better compatibility
         minSdk = flutter.minSdkVersion
@@ -64,14 +70,7 @@ android {
             )
             
             // Use release signing config
-            signingConfig = if (keystorePropertiesFile.exists()) {
-                signingConfigs.getByName("release")
-            } else {
-                // Fallback to debug signing if key.properties doesn't exist
-                println("⚠️  WARNING: key.properties not found. Using debug signing.")
-                println("   For production release, create key.properties file.")
-                signingConfigs.getByName("debug")
-            }
+            signingConfig = signingConfigs.getByName("release")
         }
         
         debug {

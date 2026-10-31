@@ -13,6 +13,15 @@ import 'interceptors/gamification_interceptor.dart';
 class DioClient {
   DioClient._();
 
+  static Dio createCommunityDio({
+    required TokenStorage tokenStorage,
+    required AuthEventBus eventBus,
+  }) => _createDio(
+    baseUrl: AppConfig.communityBaseUrl,
+    tokenStorage: tokenStorage,
+    eventBus: eventBus,
+  );
+
   /// Tạo Dio client cho **Trekking Service** (port 3003).
   /// Dùng cho: /journeys, /routes, /places, /contributions, /badges
   static Dio createTrekkingDio({

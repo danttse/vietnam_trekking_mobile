@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../features/journey/data/models/journey_model.dart';
 import '../network/dio_client.dart';
+import '../models/catalog_page.dart';
 import 'auth_event_bus.dart';
 import 'token_storage.dart';
 import 'offline_store.dart';
@@ -51,13 +52,52 @@ class TrekkingCatalogService {
     }
   }
 
+  /// One bounded page for Explore. Geometry and milestones load on detail only.
+  Future<CatalogPage> getCatalogPage(
+    String path, {
+    String? query,
+    String? region,
+    String? sort,
+    int page = 1,
+    int limit = 20,
+  }) async {
+    final response = await dio.get(
+      path,
+      queryParameters: {
+        'summary': 'true',
+        'page': page,
+        'limit': limit,
+        if (query != null && query.trim().isNotEmpty) 'q': query.trim(),
+        if (region != null) 'region': region,
+        if (sort != null) 'sort': sort,
+      },
+    );
+    return CatalogPage.fromJson(
+      Map<String, dynamic>.from(response.data['data'] as Map),
+    );
+  }
+
   Future<List<Map<String, dynamic>>> getPlaces({
     String? query,
     String? region,
+    String? sort,
+    bool includeRoutes = false,
+    int? maxItems,
   }) async {
-    final resource = query == null && region == null
-        ? '/places'
-        : '/places?${query ?? ''}&${region ?? ''}';
+    if (maxItems != null && maxItems < 1) {
+      throw ArgumentError.value(maxItems, 'maxItems', 'Must be positive');
+    }
+    final parameters = {
+      if (query != null && query.isNotEmpty) 'q': query,
+      if (region != null) 'region': region,
+      if (sort != null) 'sort': sort,
+      if (includeRoutes) 'includeRoutes': 'true',
+      if (maxItems != null) 'limit': maxItems.toString(),
+    };
+    final resource = Uri(
+      path: '/places',
+      queryParameters: parameters.isEmpty ? null : parameters,
+    ).toString();
     try {
       final items = <Map<String, dynamic>>[];
       var page = 1;
@@ -67,8 +107,10 @@ class TrekkingCatalogService {
           queryParameters: {
             if (query != null && query.isNotEmpty) 'q': query,
             if (region != null) 'region': region,
+            if (sort != null) 'sort': sort,
+            if (includeRoutes) 'includeRoutes': 'true',
             'page': page,
-            'limit': 100,
+            'limit': maxItems != null && maxItems < 100 ? maxItems : 100,
           },
         );
         final data = response.data['data'] as Map;
@@ -76,6 +118,10 @@ class TrekkingCatalogService {
             .map((e) => Map<String, dynamic>.from(e as Map))
             .toList();
         items.addAll(batch);
+        if (maxItems != null && items.length >= maxItems) {
+          items.removeRange(maxItems, items.length);
+          break;
+        }
         if (batch.isEmpty || items.length >= (data['total'] as num).toInt())
           break;
         page++;

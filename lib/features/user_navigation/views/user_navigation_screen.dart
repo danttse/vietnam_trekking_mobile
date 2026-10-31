@@ -136,35 +136,38 @@ class _UserNavigationScreenState extends State<UserNavigationScreen>
             index: currentIndex,
             children: [
               HomeScreen(onProfileTap: () => _viewModel.goToProfile()),
-              ExploreScreen(
-                onPlaceTap: (place) => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => PlaceDetailScreen(placeId: place.id),
+              TickerMode(
+                enabled: currentIndex == 1,
+                child: ExploreScreen(
+                  onPlaceTap: (place) => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => PlaceDetailScreen(placeId: place.id),
+                    ),
                   ),
-                ),
-                onTrailTap: (trail) async {
-                  try {
-                    final route = await TrekkingCatalogService().getRoute(
-                      trail.id,
-                    );
-                    if (!context.mounted) return;
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => RouteDetailScreen(route: route),
-                      ),
-                    );
-                  } catch (_) {
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            'Không thể tải cung đường. Vui lòng thử lại.',
-                          ),
+                  onTrailTap: (trail) async {
+                    try {
+                      final route = await TrekkingCatalogService().getRoute(
+                        trail.id,
+                      );
+                      if (!context.mounted) return;
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => RouteDetailScreen(route: route),
                         ),
                       );
+                    } catch (_) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Không thể tải cung đường. Vui lòng thử lại.',
+                            ),
+                          ),
+                        );
+                      }
                     }
-                  }
-                },
+                  },
+                ),
               ),
               const CommunityScreen(),
               const JourneyScreen(),

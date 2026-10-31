@@ -1,27 +1,29 @@
 import 'package:dio/dio.dart';
+
+import '../../../../core/network/dio_client.dart';
+import '../../../../core/services/auth_event_bus.dart';
+import '../../../../core/services/token_storage.dart';
 import '../models/post_model.dart';
+import '../models/comment_model.dart';
 
-/// Remote datasource for Community Service API calls.
-/// 
-/// ⚠️ NOTE: Community Service backend is NOT YET IMPLEMENTED.
-/// This datasource is prepared for future integration.
-/// Until backend is ready, use PostSampleData and CommentSampleData as fallback.
 class CommunityRemoteDataSource {
-  final Dio _dio;
+  final Dio dio;
 
-  const CommunityRemoteDataSource(this._dio);
+  CommunityRemoteDataSource([Dio? client])
+    : dio =
+          client ??
+          DioClient.createCommunityDio(
+            tokenStorage: const SecureTokenStorage(),
+            eventBus: AuthEventBus(),
+          );
 
-  // ── POSTS ─────────────────────────────────────────────────────────────────
-
-  /// GET /posts
-  /// List community posts with pagination and optional filters
   Future<PaginatedPostsResponse> getPosts({
     int page = 1,
     int limit = 20,
     String? userId,
-    String? type, // 'JOURNEY_SHARE' | 'BADGE_SHARE' | 'GENERAL'
+    String? type,
   }) async {
-    final resp = await _dio.get(
+    final response = await dio.get(
       '/posts',
       queryParameters: {
         'page': page,
@@ -30,165 +32,141 @@ class CommunityRemoteDataSource {
         if (type != null) 'type': type,
       },
     );
-    return PaginatedPostsResponse.fromJson(_unwrap(resp.data));
+    return PaginatedPostsResponse.fromJson(_unwrap(response.data));
   }
 
-  /// GET /posts/:id
-  /// Get single post details
-  /// 
-  /// TODO: Add fromJson to PostModel when backend is ready
-  Future<dynamic> getPost(String postId) async {
-    final resp = await _dio.get('/posts/$postId');
-    return _unwrap(resp.data);
-  }
+  Future<PostModel> getPost(String id) async =>
+      PostModel.fromJson(_unwrap((await dio.get('/posts/$id')).data));
 
-  /// POST /posts
-  /// Create a new post
-  /// 
-  /// TODO: Add fromJson to PostModel when backend is ready
-  Future<dynamic> createPost({
+  Future<PostModel> createPost({
     required String content,
-    String? type,
+    String type = 'NORMAL',
     String? journeyId,
+    String? trekkingPlaceId,
+    List<String> images = const [],
+    String visibility = 'PUBLIC',
+  }) async => PostModel.fromJson(
+    _unwrap(
+      (await dio.post(
+        '/posts',
+        data: {
+          'content': content,
+          'type': type,
+          'images': images,
+          'visibility': visibility,
+          if (journeyId != null) 'journeyId': journeyId,
+          if (trekkingPlaceId != null) 'trekkingPlaceId': trekkingPlaceId,
+        },
+      )).data,
+    ),
+  );
+
+  Future<PostModel> updatePost(
+    String id,
+    String content, {
     List<String>? images,
+    String? visibility,
+    String? type,
+    // Null explicitly clears an attachment when replaceLinks is true.
+    bool replaceLinks = false,
+    String? journeyId,
+    String? trekkingPlaceId,
+  }) async => PostModel.fromJson(
+    _unwrap(
+      (await dio.put(
+        '/posts/$id',
+        data: {
+          'content': content,
+          if (images != null) 'images': images,
+          if (visibility != null) 'visibility': visibility,
+          if (type != null) 'type': type,
+          if (replaceLinks) 'journeyId': journeyId,
+          if (replaceLinks) 'trekkingPlaceId': trekkingPlaceId,
+        },
+      )).data,
+    ),
+  );
+
+  Future<void> deletePost(String id) async {
+    await dio.delete('/posts/$id');
+  }
+
+  Future<void> likePost(String id) async {
+    await dio.post('/posts/$id/like');
+  }
+
+  Future<void> unlikePost(String id) async {
+    await dio.delete('/posts/$id/like');
+  }
+
+  Future<CommentPage> getComments(
+    String postId, {
+    int page = 1,
+    int limit = 100,
   }) async {
-    final resp = await _dio.post(
-      '/posts',
-      data: {
-        'content': content,
-        if (type != null) 'type': type,
-        if (journeyId != null) 'journeyId': journeyId,
-        if (images != null && images.isNotEmpty) 'images': images,
-      },
+    final data = _unwrap(
+      (await dio.get(
+        '/posts/$postId/comments',
+        queryParameters: {'page': page, 'limit': limit},
+      )).data,
     );
-    return _unwrap(resp.data);
-  }
-
-  /// PUT /posts/:id
-  /// Update post content
-  /// 
-  /// TODO: Add fromJson to PostModel when backend is ready
-  Future<dynamic> updatePost(String postId, String content) async {
-    final resp = await _dio.put(
-      '/posts/$postId',
-      data: {'content': content},
+    return CommentPage(
+      (data['items'] as List)
+          .map(
+            (e) => CommentModel.fromJson(Map<String, dynamic>.from(e as Map)),
+          )
+          .toList(),
+      (data['totalPages'] as num).toInt(),
     );
-    return _unwrap(resp.data);
   }
 
-  /// DELETE /posts/:id
-  /// Delete a post (soft delete)
-  Future<void> deletePost(String postId) async {
-    await _dio.delete('/posts/$postId');
-  }
-
-  /// POST /posts/:id/like
-  /// Like a post (toggle)
-  Future<void> likePost(String postId) async {
-    await _dio.post('/posts/$postId/like');
-  }
-
-  /// DELETE /posts/:id/like
-  /// Unlike a post
-  Future<void> unlikePost(String postId) async {
-    await _dio.delete('/posts/$postId/like');
-  }
-
-  // ── COMMENTS ──────────────────────────────────────────────────────────────
-
-  /// GET /posts/:postId/comments
-  /// Get comments for a post
-  /// 
-  /// TODO: Add fromJson to CommentModel when backend is ready
-  Future<List<dynamic>> getComments(String postId) async {
-    final resp = await _dio.get('/posts/$postId/comments');
-    return _unwrapList(resp.data);
-  }
-
-  /// POST /posts/:postId/comments
-  /// Add a comment to a post
-  /// 
-  /// TODO: Add fromJson to CommentModel when backend is ready
-  Future<dynamic> createComment({
+  Future<CommentModel> createComment({
     required String postId,
     required String content,
-    String? parentCommentId, // For nested replies
-  }) async {
-    final resp = await _dio.post(
-      '/posts/$postId/comments',
-      data: {
-        'content': content,
-        if (parentCommentId != null) 'parentCommentId': parentCommentId,
-      },
-    );
-    return _unwrap(resp.data);
+    String? parentCommentId,
+  }) async => CommentModel.fromJson(
+    _unwrap(
+      (await dio.post(
+        '/posts/$postId/comments',
+        data: {
+          'content': content,
+          if (parentCommentId != null) 'parentCommentId': parentCommentId,
+        },
+      )).data,
+    ),
+  );
+
+  Future<CommentModel> updateComment(String id, String content) async =>
+      CommentModel.fromJson(
+        _unwrap(
+          (await dio.put('/comments/$id', data: {'content': content})).data,
+        ),
+      );
+  Future<void> deleteComment(String id) async {
+    await dio.delete('/comments/$id');
   }
 
-  /// PUT /comments/:commentId
-  /// Update comment content
-  /// 
-  /// TODO: Add fromJson to CommentModel when backend is ready
-  Future<dynamic> updateComment(String commentId, String content) async {
-    final resp = await _dio.put(
-      '/comments/$commentId',
-      data: {'content': content},
-    );
-    return _unwrap(resp.data);
+  Future<void> likeComment(String id) async {
+    await dio.post('/comments/$id/like');
   }
 
-  /// DELETE /comments/:commentId
-  /// Delete a comment (soft delete)
-  Future<void> deleteComment(String commentId) async {
-    await _dio.delete('/comments/$commentId');
+  Future<void> unlikeComment(String id) async {
+    await dio.delete('/comments/$id/like');
   }
 
-  /// POST /comments/:commentId/like
-  /// Like a comment (toggle)
-  Future<void> likeComment(String commentId) async {
-    await _dio.post('/comments/$commentId/like');
-  }
-
-  /// DELETE /comments/:commentId/like
-  /// Unlike a comment
-  Future<void> unlikeComment(String commentId) async {
-    await _dio.delete('/comments/$commentId/like');
-  }
-
-  // ── HELPERS ───────────────────────────────────────────────────────────────
-
-  Map<String, dynamic> _unwrap(dynamic data) {
-    if (data is Map<String, dynamic>) {
-      return data['data'] as Map<String, dynamic>? ?? {};
-    }
-    return {};
-  }
-
-  List<Map<String, dynamic>> _unwrapList(dynamic data) {
-    if (data is Map<String, dynamic>) {
-      final items = data['data'];
-      if (items is List) {
-        return items.map((e) => e as Map<String, dynamic>).toList();
-      }
-      // Pagination response format
-      if (items is Map<String, dynamic> && items.containsKey('items')) {
-        final list = items['items'] as List?;
-        if (list != null) {
-          return list.map((e) => e as Map<String, dynamic>).toList();
-        }
-      }
-    }
-    return [];
-  }
+  Map<String, dynamic> _unwrap(dynamic value) =>
+      Map<String, dynamic>.from((value as Map)['data'] as Map);
 }
 
-/// Paginated posts response
+class CommentPage {
+  final List<CommentModel> items;
+  final int totalPages;
+  const CommentPage(this.items, this.totalPages);
+}
+
 class PaginatedPostsResponse {
   final List<PostModel> items;
-  final int total;
-  final int page;
-  final int limit;
-  final int totalPages;
-
+  final int total, page, limit, totalPages;
   const PaginatedPostsResponse({
     required this.items,
     required this.total,
@@ -196,16 +174,14 @@ class PaginatedPostsResponse {
     required this.limit,
     required this.totalPages,
   });
-
-  factory PaginatedPostsResponse.fromJson(Map<String, dynamic> json) {
-    // TODO: Add fromJson to PostModel when backend is ready
-    // For now, return empty list
-    return PaginatedPostsResponse(
-      items: [],
-      total: (json['total'] as num?)?.toInt() ?? 0,
-      page: (json['page'] as num?)?.toInt() ?? 1,
-      limit: (json['limit'] as num?)?.toInt() ?? 20,
-      totalPages: (json['totalPages'] as num?)?.toInt() ?? 1,
-    );
-  }
+  factory PaginatedPostsResponse.fromJson(Map<String, dynamic> json) =>
+      PaginatedPostsResponse(
+        items: (json['items'] as List)
+            .map((e) => PostModel.fromJson(Map<String, dynamic>.from(e as Map)))
+            .toList(),
+        total: (json['total'] as num).toInt(),
+        page: (json['page'] as num).toInt(),
+        limit: (json['limit'] as num).toInt(),
+        totalPages: (json['totalPages'] as num).toInt(),
+      );
 }

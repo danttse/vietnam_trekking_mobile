@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/widgets/app_bar/app_top_bar_with_back.dart';
 import '../../../core/widgets/buttons/btn_outline_style.dart';
 import '../../../core/widgets/cards/profile_progress_bar.dart';
+import '../../community/views/community_share.dart';
 import '../data/models/badge_model.dart';
 import '../data/models/profile_model.dart';
 import '../view_models/badge_detail_viewmodel.dart';
@@ -19,6 +20,36 @@ class BadgeDetailScreen extends StatefulWidget {
 
 class _BadgeDetailScreenState extends State<BadgeDetailScreen> {
   late final BadgeDetailViewModel _viewModel;
+
+  Future<void> _showAllBadges() async {
+    final selected = await showModalBottomSheet<BadgeModel>(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => SafeArea(
+        child: DraggableScrollableSheet(
+          expand: false,
+          builder: (context, controller) => ListView(
+            controller: controller,
+            padding: const EdgeInsets.all(16),
+            children: [
+              const ListTile(title: Text('Tất cả huy hiệu')),
+              ..._viewModel.allBadges.map(
+                (badge) => ListTile(
+                  leading: Icon(badge.icon),
+                  title: Text(badge.title),
+                  subtitle: Text(
+                    badge.isUnlocked ? 'Đã đạt được' : 'Chưa mở khóa',
+                  ),
+                  onTap: () => Navigator.pop(context, badge),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (mounted && selected != null) _viewModel.selectBadge(selected);
+  }
 
   @override
   void initState() {
@@ -129,12 +160,16 @@ class _BadgeDetailScreenState extends State<BadgeDetailScreen> {
                           ),
                         ),
                         const SizedBox(height: 18),
-                        Text(
-                          badge.title,
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: colorScheme.onSurface,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: Text(
+                            badge.title,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: colorScheme.onSurface,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 6),
@@ -176,19 +211,22 @@ class _BadgeDetailScreenState extends State<BadgeDetailScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                'HUY HIỆU KHÁC CỦA BẠN',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
-                                  color: colorScheme.onSurface.withValues(
-                                    alpha: 0.6,
+                              Expanded(
+                                child: Text(
+                                  'HUY HIỆU KHÁC CỦA BẠN',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: colorScheme.onSurface.withValues(
+                                      alpha: 0.6,
+                                    ),
+                                    letterSpacing: 0.5,
                                   ),
-                                  letterSpacing: 0.5,
                                 ),
                               ),
+                              const SizedBox(width: 8),
                               InkWell(
-                                onTap: () {},
+                                onTap: _showAllBadges,
                                 borderRadius: BorderRadius.circular(6),
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -215,53 +253,64 @@ class _BadgeDetailScreenState extends State<BadgeDetailScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: _viewModel.recentOtherBadges.map((item) {
                               final itemUnlocked = item.isUnlocked;
-                              return InkWell(
-                                onTap: () => _viewModel.selectBadge(item),
-                                borderRadius: BorderRadius.circular(30),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Container(
-                                      width: 60,
-                                      height: 60,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: itemUnlocked
-                                            ? colorScheme.primary.withValues(
-                                                alpha: 0.15,
-                                              )
-                                            : colorScheme
-                                                  .surfaceContainerHighest,
-                                        border: Border.all(
-                                          color: itemUnlocked
-                                              ? colorScheme.primary
-                                              : colorScheme.onSurfaceVariant
-                                                    .withValues(alpha: 0.25),
-                                          width: 1.5,
+                              return Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 4,
+                                  ),
+                                  child: InkWell(
+                                    onTap: () => _viewModel.selectBadge(item),
+                                    borderRadius: BorderRadius.circular(30),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Container(
+                                          width: 60,
+                                          height: 60,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: itemUnlocked
+                                                ? colorScheme.primary
+                                                      .withValues(alpha: 0.15)
+                                                : colorScheme
+                                                      .surfaceContainerHighest,
+                                            border: Border.all(
+                                              color: itemUnlocked
+                                                  ? colorScheme.primary
+                                                  : colorScheme.onSurfaceVariant
+                                                        .withValues(
+                                                          alpha: 0.25,
+                                                        ),
+                                              width: 1.5,
+                                            ),
+                                          ),
+                                          child: Icon(
+                                            item.icon,
+                                            size: 28,
+                                            color: itemUnlocked
+                                                ? colorScheme.primary
+                                                : colorScheme.onSurfaceVariant
+                                                      .withValues(alpha: 0.35),
+                                          ),
                                         ),
-                                      ),
-                                      child: Icon(
-                                        item.icon,
-                                        size: 28,
-                                        color: itemUnlocked
-                                            ? colorScheme.primary
-                                            : colorScheme.onSurfaceVariant
-                                                  .withValues(alpha: 0.35),
-                                      ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          item.title,
+                                          textAlign: TextAlign.center,
+                                          maxLines: 3,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            color: itemUnlocked
+                                                ? colorScheme.onSurface
+                                                : colorScheme.onSurfaceVariant
+                                                      .withValues(alpha: 0.5),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      item.title,
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                        color: itemUnlocked
-                                            ? colorScheme.onSurface
-                                            : colorScheme.onSurfaceVariant
-                                                  .withValues(alpha: 0.5),
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
                               );
                             }).toList(),
@@ -279,7 +328,16 @@ class _BadgeDetailScreenState extends State<BadgeDetailScreen> {
                     child: BtnOutlineStyle(
                       text: 'Chia sẻ thành tích',
                       icon: const Icon(Icons.share_outlined, size: 20),
-                      onPressed: () {},
+                      onPressed: !isUnlocked
+                          ? null
+                          : () => openCommunityShare(
+                              context,
+                              type: 'BADGE_SHARE',
+                              content:
+                                  'Mình đã đạt huy hiệu ${badge.title}!\n'
+                                  '${badge.description}'
+                                  '${badge.achievedDate == null ? '' : '\nNgày đạt được: ${badge.achievedDate}'}\n#TrekViet',
+                            ),
                     ),
                   ),
                 ),

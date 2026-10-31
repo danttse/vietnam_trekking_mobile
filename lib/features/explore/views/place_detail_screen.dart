@@ -7,6 +7,7 @@ import '../../journey/data/repositories/journey_repository.dart';
 import '../../../core/network/api_error_handler.dart';
 import '../../../core/services/trekking_catalog_service.dart';
 import '../../../core/widgets/cards/trekking_map_preview.dart';
+import '../../../core/widgets/carousels/place_image_gallery.dart';
 import '../../route/data/models/route_model.dart';
 import '../../route/view/route_detail_screen.dart';
 import '../../offline_map/services/offline_map_storage_service.dart';
@@ -88,9 +89,10 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
   }
 
   Widget _hero(ColorScheme colors) {
-    final urls = (_place?['images'] as List? ?? []).whereType<String>().where(
-      (url) => url.trim().isNotEmpty,
-    );
+    final urls = (_place?['images'] as List? ?? [])
+        .whereType<String>()
+        .where((url) => url.trim().isNotEmpty)
+        .toList();
     final width = MediaQuery.sizeOf(context).width;
     final topInset = MediaQuery.paddingOf(context).top;
     return SizedBox(
@@ -100,92 +102,76 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          if (urls.isNotEmpty)
-            Image.network(
-              urls.first,
-              fit: BoxFit.cover,
-              loadingBuilder: (_, child, progress) =>
-                  progress == null ? child : _imagePlaceholder(colors),
-              errorBuilder: (_, error, stack) => _imagePlaceholder(colors),
-            )
-          else
-            _imagePlaceholder(colors),
-          DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                stops: const [0, 0.35, 0.6, 1],
-                colors: [
-                  Colors.black.withValues(alpha: 0.4),
-                  Colors.transparent,
-                  Colors.black.withValues(alpha: 0.12),
-                  Theme.of(context).brightness == Brightness.dark
-                      ? colors.surface
-                      : Colors.black87,
-                ],
+          PlaceImageGallery(
+            images: urls,
+            foreground: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: const [0, 0.35, 0.6, 1],
+                  colors: [
+                    Colors.black.withValues(alpha: 0.4),
+                    Colors.transparent,
+                    Colors.black.withValues(alpha: 0.12),
+                    Theme.of(context).brightness == Brightness.dark
+                        ? colors.surface
+                        : Colors.black87,
+                  ],
+                ),
               ),
             ),
           ),
           Positioned(
             left: 20,
             right: 20,
-            bottom: 24,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  _place?['name']?.toString() ?? '',
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                    height: 1.2,
-                    shadows: [Shadow(blurRadius: 8, color: Colors.black54)],
+            bottom: urls.length > 1 ? 44 : 24,
+            child: IgnorePointer(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _place?['name']?.toString() ?? '',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                      height: 1.2,
+                      shadows: [Shadow(blurRadius: 8, color: Colors.black54)],
+                    ),
                   ),
-                ),
-                if ((_place?['address'] as String? ?? '').isNotEmpty) ...[
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.location_on_outlined,
-                        size: 15,
-                        color: Colors.white70,
-                      ),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Text(
-                          _place!['address'].toString(),
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.white70,
+                  if ((_place?['address'] as String? ?? '').isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.location_on_outlined,
+                          size: 15,
+                          color: Colors.white70,
+                        ),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            _place!['address'].toString(),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.white70,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
           ),
         ],
       ),
     );
   }
-
-  Widget _imagePlaceholder(ColorScheme colors) => ColoredBox(
-    color: colors.surfaceContainerHighest,
-    child: Center(
-      child: Icon(
-        Icons.terrain_outlined,
-        size: 56,
-        color: colors.onSurfaceVariant,
-      ),
-    ),
-  );
 
   Widget _sectionTitle(String title, ColorScheme colors) => Padding(
     padding: const EdgeInsets.only(bottom: 12),

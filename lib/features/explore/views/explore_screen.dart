@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/widgets/app_bar/app_top_bar.dart';
 import '../../../core/widgets/cards/featured_place_card.dart';
+import '../../../core/widgets/carousels/paged_carousel.dart';
 import '../../../core/widgets/cards/popular_trail_card.dart';
 import '../../../core/widgets/cards/recommended_place_card.dart';
 import '../../../core/widgets/chips/horizontal_chip_bar.dart';
@@ -13,8 +14,14 @@ import '../viewmodel/explore_view_model.dart';
 class ExploreScreen extends StatefulWidget {
   final ValueChanged<PopularTrailModel>? onTrailTap;
   final ValueChanged<ExplorePlaceModel>? onPlaceTap;
+  final ExploreViewModel? viewModel;
 
-  const ExploreScreen({super.key, this.onTrailTap, this.onPlaceTap});
+  const ExploreScreen({
+    super.key,
+    this.onTrailTap,
+    this.onPlaceTap,
+    this.viewModel,
+  });
 
   @override
   State<ExploreScreen> createState() => _ExploreScreenState();
@@ -22,14 +29,20 @@ class ExploreScreen extends StatefulWidget {
 
 class _ExploreScreenState extends State<ExploreScreen> {
   late final ExploreViewModel _viewModel;
-  final PageController _pageController = PageController();
+  final ScrollController _scrollController = ScrollController();
   final TextEditingController _searchController = TextEditingController();
-  int _currentPage = 0;
 
   @override
   void initState() {
     super.initState();
-    _viewModel = ExploreViewModel();
+    _viewModel = widget.viewModel ?? ExploreViewModel();
+    _scrollController.addListener(() {
+      if (_scrollController.position.extentAfter < 400 &&
+          _viewModel.error == null) {
+        _viewModel.loadMorePlaces();
+
+      }
+    });
     _searchController.addListener(() {
       _viewModel.setSearchQuery(_searchController.text);
     });
@@ -37,8 +50,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
   @override
   void dispose() {
-    _viewModel.dispose();
-    _pageController.dispose();
+    if (widget.viewModel == null) _viewModel.dispose();
+    _scrollController.dispose();
     _searchController.dispose();
     super.dispose();
   }
@@ -118,61 +131,75 @@ class _ExploreScreenState extends State<ExploreScreen> {
   }
 
   Widget _buildFeaturedSlider(List<ExplorePlaceModel> places) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     if (places.isEmpty) {
       return _buildEmptyState('Không có địa điểm nổi bật phù hợp');
     }
+    return PagedCarousel(
+      key: ValueKey('featured:${places.map((place) => place.id).join(',')}'),
+      height: 210,
+      itemCount: places.length,
+      autoAdvanceInterval: const Duration(seconds: 3),
+      itemBuilder: (context, index) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: FeaturedPlaceCard(
+          place: places[index],
+          onTap: () => widget.onPlaceTap?.call(places[index]),
+        ),
+      ),
+    );
+  }
 
-    if (_currentPage >= places.length) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted || !_pageController.hasClients) return;
-        setState(() => _currentPage = 0);
-        _pageController.jumpToPage(0);
-      });
-    }
-
-    return Column(
-      children: [
-        SizedBox(
-          height: 210,
-          child: PageView.builder(
-            controller: _pageController,
-            itemCount: places.length,
-            onPageChanged: (page) => setState(() => _currentPage = page),
-            itemBuilder: (context, index) {
-              final place = places[index];
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: FeaturedPlaceCard(
-                  place: place,
-                  onTap: () => widget.onPlaceTap?.call(place),
+  Widget _buildMoreTrailsTile() {
+    final colors = Theme.of(context).colorScheme;
+    final loading = _viewModel.isLoadingMoreTrails;
+    return SizedBox(
+      key: const ValueKey('more-trails-tile'),
+      width: 140,
+      child: Material(
+        color: colors.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(12),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: loading || _viewModel.isLoading
+              ? null
+              : _viewModel.loadMoreTrails,
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (loading)
+                  const SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                else
+                  Icon(
+                    _viewModel.routesError == null
+                        ? Icons.arrow_forward_rounded
+                        : Icons.refresh_rounded,
+                    color: colors.primary,
+                  ),
+                const SizedBox(height: 8),
+                Text(
+                  loading
+                      ? 'Đang tải…'
+                      : _viewModel.routesError == null
+                      ? 'Thêm cung đường'
+                      : 'Thử lại',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: colors.primary,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-              );
-            },
+              ],
+            ),
           ),
         ),
-        const SizedBox(height: 8),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(places.length, (index) {
-            final active = _currentPage == index;
-            //giong container nhung ma co them duration
-            return AnimatedContainer(
-              duration: const Duration(milliseconds: 250),
-              margin: const EdgeInsets.symmetric(horizontal: 3),
-              width: active ? 18 : 6,
-              height: 6,
-              decoration: BoxDecoration(
-                color: active
-                    ? colorScheme.primary
-                    : colorScheme.onSurfaceVariant.withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(3),
-              ),
-            );
-          }),
-        ),
-      ],
+      ),
     );
   }
 
@@ -196,8 +223,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
     return SafeArea(
       child: RefreshIndicator(
-        onRefresh: _viewModel.load,
+        onRefresh: _viewModel.refresh,
         child: SingleChildScrollView(
+          controller: _scrollController,
           physics: const AlwaysScrollableScrollPhysics(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -219,11 +247,13 @@ class _ExploreScreenState extends State<ExploreScreen> {
               ListenableBuilder(
                 listenable: _viewModel,
                 builder: (context, _) {
-                  if (_viewModel.isLoading)
+                  if (_viewModel.isLoading) {
                     return const LinearProgressIndicator();
+                  }
                   if (_viewModel.error == null &&
-                      _viewModel.routesError == null)
+                      _viewModel.routesError == null) {
                     return const SizedBox.shrink();
+                  }
                   return Column(
                     children: [
                       Text(
@@ -262,12 +292,17 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         MediaQuery.textScalerOf(context).scale(11) * 1.5 +
                         MediaQuery.textScalerOf(context).scale(9) * 1.5,
                     child: ListView.separated(
+                      key: const ValueKey('popular-trails-list'),
                       scrollDirection: Axis.horizontal,
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      itemCount: trails.length,
+                      itemCount:
+                          trails.length + (_viewModel.hasMoreTrails ? 1 : 0),
                       separatorBuilder: (context, index) =>
                           const SizedBox(width: 12),
                       itemBuilder: (context, index) {
+                        if (index == trails.length) {
+                          return _buildMoreTrailsTile();
+                        }
                         final trail = trails[index];
                         return PopularTrailCard(
                           trail: trail,
@@ -304,6 +339,23 @@ class _ExploreScreenState extends State<ExploreScreen> {
                     },
                   );
                 },
+              ),
+              ListenableBuilder(
+                listenable: _viewModel,
+                builder: (context, _) => _viewModel.hasMorePlaces
+                    ? Center(
+                        child: TextButton(
+                          onPressed: _viewModel.isLoadingMorePlaces
+                              ? null
+                              : _viewModel.loadMorePlaces,
+                          child: Text(
+                            _viewModel.isLoadingMorePlaces
+                                ? 'Đang tải…'
+                                : 'Thêm địa điểm',
+                          ),
+                        ),
+                      )
+                    : const SizedBox.shrink(),
               ),
               const SizedBox(height: 24),
             ],

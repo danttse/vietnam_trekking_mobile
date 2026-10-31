@@ -43,6 +43,8 @@ dependencies:
   geolocator: ^13.0.4
   google_sign_in: ^6.2.2
   shared_preferences: ^2.3.4
+  qr_flutter: ^4.1.0
+  mobile_scanner: ^7.4.2
 
   # ── Offline Map Prototype ──────────────────────────────────────────────────
   # MapLibre: vendor-neutral vector/raster map engine (fork of flutter-mapbox-gl)
