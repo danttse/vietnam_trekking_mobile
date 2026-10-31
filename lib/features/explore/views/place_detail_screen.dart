@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../journey/views/widgets/place_review_section.dart';
 import '../../journey/data/repositories/journey_repository.dart';
@@ -95,15 +94,21 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
         .toList();
     final width = MediaQuery.sizeOf(context).width;
     final topInset = MediaQuery.paddingOf(context).top;
+    final heroHeight = (urls.length > 1
+            ? (width * 0.72).clamp(260.0, 380.0)
+            : (width * 0.65).clamp(240.0, 360.0)) +
+        topInset;
+
     return SizedBox(
       key: const ValueKey('place-hero'),
       width: double.infinity,
-      height: (width * 0.72).clamp(240.0, 360.0) + topInset,
+      height: heroHeight,
       child: Stack(
         fit: StackFit.expand,
         children: [
           PlaceImageGallery(
             images: urls,
+            indicatorBottom: 26,
             foreground: DecoratedBox(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -123,48 +128,102 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
             ),
           ),
           Positioned(
-            left: 20,
-            right: 20,
-            bottom: urls.length > 1 ? 44 : 24,
-            child: IgnorePointer(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    _place?['name']?.toString() ?? '',
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                      height: 1.2,
-                      shadows: [Shadow(blurRadius: 8, color: Colors.black54)],
+            top: topInset + 10,
+            left: 12,
+            right: 12,
+            child: Row(
+              children: [
+                InkWell(
+                  borderRadius: BorderRadius.circular(12),
+                  onTap: () => Navigator.of(context).maybePop(),
+                  child: Container(
+                    width: 30,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .surfaceContainerHighest
+                          .withValues(alpha: 0.8),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      Icons.navigate_before,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      size: 15,
                     ),
                   ),
-                  if ((_place?['address'] as String? ?? '').isNotEmpty) ...[
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.location_on_outlined,
-                          size: 15,
-                          color: Colors.white70,
-                        ),
-                        const SizedBox(width: 4),
-                        Expanded(
-                          child: Text(
-                            _place!['address'].toString(),
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.white70,
+                ),
+                const Spacer(),
+                if (_difficulty != null)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: colors.primary,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      _difficulty!,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          Positioned(
+            bottom: urls.length > 1 ? 44 : 25,
+            left: 0,
+            right: 0,
+            child: IgnorePointer(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      _place?['name']?.toString() ?? '',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        height: 1.2,
+                      ),
+                    ),
+                    if ((_place?['address'] as String? ?? '').isNotEmpty) ...[
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          const SizedBox(width: 10),
+                          const Icon(
+                            Icons.place_outlined,
+                            size: 13,
+                            color: Colors.white70,
+                          ),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              _place!['address'].toString(),
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 12,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
             ),
           ),
@@ -310,7 +369,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
     final reviewCount = (_place?['ratingCount'] as num? ?? 0).toInt();
     final description = (_place?['description'] as String? ?? '').trim();
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
+      padding: const EdgeInsets.only(bottom: 32),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -401,53 +460,17 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final dark = theme.brightness == Brightness.dark;
     final colors = theme.colorScheme;
     final showPlace = !_loading && _error == null && _place != null;
     return Scaffold(
       backgroundColor: colors.surface,
-      extendBodyBehindAppBar: showPlace,
-      appBar: AppBar(
-        backgroundColor: showPlace ? Colors.transparent : colors.surface,
-        surfaceTintColor: Colors.transparent,
-        scrolledUnderElevation: 0,
-        elevation: 0,
-        systemOverlayStyle: showPlace || dark
-            ? SystemUiOverlayStyle.light
-            : SystemUiOverlayStyle.dark,
-        leadingWidth: 64,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 16),
-          child: IconButton(
-            tooltip: 'Quay lại',
-            onPressed: () => Navigator.of(context).maybePop(),
-            style: IconButton.styleFrom(
-              backgroundColor: showPlace
-                  ? Colors.black.withValues(alpha: 0.35)
-                  : colors.surfaceContainerHighest,
-              foregroundColor: showPlace ? Colors.white : colors.onSurface,
+      appBar: showPlace
+          ? null
+          : AppBar(
+              backgroundColor: colors.surface,
+              surfaceTintColor: Colors.transparent,
+              elevation: 0,
             ),
-            icon: const Icon(Icons.arrow_back_rounded, size: 22),
-          ),
-        ),
-        actions: [
-          if (showPlace && _difficulty != null)
-            Padding(
-              padding: const EdgeInsets.only(right: 20),
-              child: Chip(
-                label: Text(_difficulty!),
-                backgroundColor: colors.primary,
-                side: BorderSide.none,
-                labelStyle: TextStyle(
-                  color: colors.onPrimary,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                ),
-                visualDensity: VisualDensity.compact,
-              ),
-            ),
-        ],
-      ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _error != null
@@ -458,6 +481,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(_error!, textAlign: TextAlign.center),
+                    const SizedBox(height: 12),
                     TextButton(onPressed: _load, child: const Text('Thử lại')),
                   ],
                 ),
@@ -465,16 +489,36 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
             )
           : SafeArea(
               top: false,
-              child: RefreshIndicator(
-                onRefresh: _load,
-                edgeOffset: MediaQuery.paddingOf(context).top + kToolbarHeight,
-                child: CustomScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  slivers: [
-                    SliverToBoxAdapter(child: _hero(colors)),
-                    SliverToBoxAdapter(child: _content(colors)),
-                  ],
-                ),
+              bottom: true,
+              child: Column(
+                children: [
+                  _hero(colors),
+                  Expanded(
+                    child: Transform.translate(
+                      offset: const Offset(0, -20),
+                      child: Container(
+                        clipBehavior: Clip.antiAlias,
+                        padding: const EdgeInsets.fromLTRB(16, 25, 16, 0),
+                        decoration: BoxDecoration(
+                          color: colors.surface,
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          ),
+                        ),
+                        child: RefreshIndicator(
+                          onRefresh: _load,
+                          child: CustomScrollView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            slivers: [
+                              SliverToBoxAdapter(child: _content(colors)),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
     );

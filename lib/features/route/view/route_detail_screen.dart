@@ -95,6 +95,12 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final width = MediaQuery.sizeOf(context).width;
+    final topInset = MediaQuery.paddingOf(context).top;
+    final heroHeight = (_viewModel.heroImages.length > 1
+            ? (width * 0.72).clamp(260.0, 380.0)
+            : (width * 0.65).clamp(240.0, 360.0)) +
+        topInset;
     return Scaffold(
       backgroundColor: colorScheme.surface,
       body: SafeArea(
@@ -103,12 +109,7 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
         child: Column(
           children: [
             SizedBox(
-              height: _viewModel.heroImages.length > 1
-                  ? (MediaQuery.sizeOf(context).width * 9 / 16).clamp(
-                      260.0,
-                      420.0,
-                    )
-                  : MediaQuery.sizeOf(context).width * 9 / 16,
+              height: heroHeight,
               child: Stack(
                 fit: StackFit.expand,
                 children: [
@@ -120,23 +121,27 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
+                          stops: const [0, 0.35, 0.6, 1],
                           colors: [
+                            Colors.black.withValues(alpha: 0.4),
                             Colors.transparent,
-                            Colors.black.withValues(alpha: 0.35),
-                            Colors.black.withValues(alpha: 0.85),
+                            Colors.black.withValues(alpha: 0.12),
+                            Theme.of(context).brightness == Brightness.dark
+                                ? colorScheme.surface
+                                : Colors.black87,
                           ],
-                          stops: const [0.45, 0.7, 1.0],
                         ),
                       ),
                     ),
                   ),
                   Positioned(
-                    top: 30,
+                    top: topInset + 10,
                     left: 12,
                     right: 12,
                     child: Row(
                       children: [
                         InkWell(
+                          borderRadius: BorderRadius.circular(12),
                           onTap: _startingJourney
                               ? null
                               : () =>
@@ -239,6 +244,7 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
               child: Transform.translate(
                 offset: const Offset(0, -20),
                 child: Container(
+                  clipBehavior: Clip.antiAlias,
                   padding: const EdgeInsets.fromLTRB(16, 25, 16, 0),
                   decoration: BoxDecoration(
                     color: colorScheme.surface,

@@ -13,6 +13,7 @@ import '../views/change_password_screen.dart';
 import '../views/edit_avatar_screen.dart';
 import '../views/suggest_place_screen.dart';
 import '../views/support_feedback_screen.dart';
+import '../../offline_map/presentation/views/offline_map_management_screen.dart';
 
 class ProfileSettingViewModel extends ChangeNotifier {
   final UserApiService _api = UserApiService();
@@ -120,6 +121,13 @@ class ProfileSettingViewModel extends ChangeNotifier {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => const SupportFeedbackScreen()),
+    );
+  }
+
+  Future<void> openOfflineMapManagement(BuildContext context) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const OfflineMapManagementScreen()),
     );
   }
 
