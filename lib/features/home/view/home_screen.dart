@@ -20,8 +20,14 @@ import '../../explore/views/place_detail_screen.dart';
 class HomeScreen extends StatefulWidget {
   final VoidCallback? onProfileTap;
   final HomeViewModel? viewModel;
+  final bool isActive;
 
-  const HomeScreen({super.key, this.onProfileTap, this.viewModel});
+  const HomeScreen({
+    super.key,
+    this.onProfileTap,
+    this.viewModel,
+    this.isActive = true,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -43,7 +49,26 @@ class _HomeScreenState extends State<HomeScreen>
     _drumAnimationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 90),
-    )..repeat();
+    );
+    if (widget.isActive) {
+      _drumAnimationController.repeat();
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant HomeScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isActive != oldWidget.isActive) {
+      if (widget.isActive) {
+        if (!_drumAnimationController.isAnimating) {
+          _drumAnimationController.repeat();
+        }
+      } else {
+        if (_drumAnimationController.isAnimating) {
+          _drumAnimationController.stop();
+        }
+      }
+    }
   }
 
   void _onActivityChanged() {

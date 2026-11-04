@@ -28,6 +28,7 @@ class PostCard extends StatefulWidget {
 }
 
 class _PostCardState extends State<PostCard> {
+  static final Map<String, String> _placeNameCache = {};
   final PageController _pageController = PageController();
   int _currentImageIndex = 0;
   String? _resolvedPlaceName;
@@ -55,12 +56,19 @@ class _PostCardState extends State<PostCard> {
     }
     final placeId = widget.post.trekkingPlaceId;
     if (placeId != null && placeId.isNotEmpty) {
+      if (_placeNameCache.containsKey(placeId)) {
+        _resolvedPlaceName = _placeNameCache[placeId];
+        return;
+      }
       TrekkingCatalogService().getPlace(placeId).then((place) {
         final name = place['name'] as String?;
-        if (mounted && name != null && name.isNotEmpty) {
-          setState(() {
-            _resolvedPlaceName = name;
-          });
+        if (name != null && name.isNotEmpty) {
+          _placeNameCache[placeId] = name;
+          if (mounted) {
+            setState(() {
+              _resolvedPlaceName = name;
+            });
+          }
         }
       }).catchError((_) {});
     }
@@ -70,6 +78,7 @@ class _PostCardState extends State<PostCard> {
     if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
       return Image.network(
         imagePath,
+        cacheWidth: 800,
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) => Container(
           color: colorScheme.surface,
@@ -83,6 +92,7 @@ class _PostCardState extends State<PostCard> {
     } else {
       return Image.file(
         File(imagePath),
+        cacheWidth: 800,
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) => Container(
           color: colorScheme.surface,
@@ -119,6 +129,7 @@ class _PostCardState extends State<PostCard> {
         child: avatarUrl != null && avatarUrl.isNotEmpty
             ? Image.network(
                 avatarUrl,
+                cacheWidth: 120,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) => Center(
                   child: Text(

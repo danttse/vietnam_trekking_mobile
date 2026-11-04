@@ -135,7 +135,10 @@ class _UserNavigationScreenState extends State<UserNavigationScreen>
           body: IndexedStack(
             index: currentIndex,
             children: [
-              HomeScreen(onProfileTap: () => _viewModel.goToProfile()),
+              HomeScreen(
+                onProfileTap: () => _viewModel.goToProfile(),
+                isActive: currentIndex == 0,
+              ),
               TickerMode(
                 enabled: currentIndex == 1,
                 child: ExploreScreen(

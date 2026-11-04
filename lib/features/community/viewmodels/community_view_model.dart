@@ -19,6 +19,7 @@ class CommunityViewModel extends ChangeNotifier {
   int _generation = 0;
   int _selectedTab = 0, _page = 0, _totalPages = 1;
   List<PostModel> _posts = [];
+  List<PostModel> _cachedFilteredPosts = [];
   final Set<String> _hiddenPostIds = {}, _liking = {};
   final Set<String> _hiddenAuthorIds = {}, _deleting = {};
   bool _isLoading = false, _isLoadingMore = false;
@@ -68,16 +69,19 @@ class CommunityViewModel extends ChangeNotifier {
   String? get actionError => _actionError;
   bool ownsPost(PostModel post) => _owner != null && post.authorId == _owner;
   Set<String> get hiddenPostIds => Set.unmodifiable(_hiddenPostIds);
-  List<PostModel> get posts => _posts
-      .where(
-        (p) =>
-            !_hiddenPostIds.contains(p.postId) &&
-            !_hiddenAuthorIds.contains(p.authorId),
-      )
-      .toList();
+  List<PostModel> get posts => _cachedFilteredPosts;
 
   void _emit() {
-    if (!_disposed) notifyListeners();
+    if (!_disposed) {
+      _cachedFilteredPosts = _posts
+          .where(
+            (p) =>
+                !_hiddenPostIds.contains(p.postId) &&
+                !_hiddenAuthorIds.contains(p.authorId),
+          )
+          .toList();
+      notifyListeners();
+    }
   }
 
   void setTab(int index) {

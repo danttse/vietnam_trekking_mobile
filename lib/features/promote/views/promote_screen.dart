@@ -19,6 +19,29 @@ class PromoteScreen extends StatefulWidget {
 class _PromoteScreenState extends State<PromoteScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      precacheImage(
+        const AssetImage('assets/images/vietnam_landscape.webp'),
+        context,
+      );
+      precacheImage(
+        const AssetImage('assets/images/img_app_logo_ver1.png'),
+        context,
+      );
+      precacheImage(
+        const NetworkImage(
+          'https://vcdn1-dulich.vnecdn.net/2023/09/26/thaonguyen1-9546-1695723031.jpg?w=0&h=0&q=100&dpr=2&fit=crop&s=hPttIphPb7dr9bd_O6FZvg',
+        ),
+        context,
+      );
+    });
+  }
+
   @override
   void dispose() {
     _pageController.dispose();
@@ -111,7 +134,7 @@ class _PromoteScreenState extends State<PromoteScreen> {
                     if (_currentPage < 5) {
                       _pageController.nextPage(
                         duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeInOut,
+                        curve: Curves.fastOutSlowIn,
                       );
                     } else {
                       _markAsSeenAndNavigate();
