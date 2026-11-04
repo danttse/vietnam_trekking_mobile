@@ -244,34 +244,38 @@ class _HomeScreenState extends State<HomeScreen>
                             const SizedBox(height: 8),
                             Expanded(
                               child: Center(
-                                child: ListenableBuilder(
-                                  listenable: viewModel,
-                                  builder: (context, _) {
-                                    if (viewModel.isLoadingProvinces) {
-                                      return Stack(
-                                        alignment: Alignment.center,
-                                        children: [
-                                          HomeJourneyMap(
-                                            provinces: viewModel.provinces,
-                                            maxHeight: double.infinity,
-                                          ),
-                                          Container(
-                                            color: Colors.black.withValues(
-                                              alpha: 0.15,
+                                child: ConstrainedBox(
+                                  constraints:
+                                      const BoxConstraints(minHeight: 200),
+                                  child: ListenableBuilder(
+                                    listenable: viewModel,
+                                    builder: (context, _) {
+                                      if (viewModel.isLoadingProvinces) {
+                                        return Stack(
+                                          alignment: Alignment.center,
+                                          children: [
+                                            HomeJourneyMap(
+                                              provinces: viewModel.provinces,
+                                              maxHeight: double.infinity,
                                             ),
-                                            child: const Center(
-                                              child:
-                                                  CircularProgressIndicator(),
+                                            Container(
+                                              color: Colors.black.withValues(
+                                                alpha: 0.15,
+                                              ),
+                                              child: const Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        );
+                                      }
+                                      return HomeJourneyMap(
+                                        provinces: viewModel.provinces,
+                                        maxHeight: double.infinity,
                                       );
-                                    }
-                                    return HomeJourneyMap(
-                                      provinces: viewModel.provinces,
-                                      maxHeight: double.infinity,
-                                    );
-                                  },
+                                    },
+                                  ),
                                 ),
                               ),
                             ),

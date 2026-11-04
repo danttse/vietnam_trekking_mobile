@@ -200,25 +200,27 @@ class _HomeJourneyMapState extends State<HomeJourneyMap> {
               Positioned(
                 top: 12,
                 right: 12,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    MapLegend(),
-                    const SizedBox(height: 8),
-                    if (selectedProvince != null)
-                      _ProvinceDetail(
-                        boxLabel: selectedProvince.name,
-                        population: selectedProvince.population,
-                        acreage: selectedProvince.acreage,
-                      )
-                    else
-                      _ProvinceDetail(
-                        boxLabel: 'Việt Nam',
-                        population: 102300000,
-                        acreage: 331211.6,
-                      ),
-                  ],
+                child: MediaQuery.withNoTextScaling(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      const MapLegend(),
+                      const SizedBox(height: 8),
+                      if (selectedProvince != null)
+                        _ProvinceDetail(
+                          boxLabel: selectedProvince.name,
+                          population: selectedProvince.population,
+                          acreage: selectedProvince.acreage,
+                        )
+                      else
+                        const _ProvinceDetail(
+                          boxLabel: 'Việt Nam',
+                          population: 102300000,
+                          acreage: 331211.6,
+                        ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -366,15 +368,18 @@ class _ProvinceDetail extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Image(
-                image: const AssetImage('assets/images/vietnam_flag.jpg'),
+              const Image(
+                image: AssetImage('assets/images/vietnam_flag.jpg'),
                 width: 12,
                 height: 8,
               ),
               const SizedBox(width: 5),
               Text(
                 boxLabel,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
