@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
+
 import '../../../core/widgets/app_bar/app_top_bar_with_back.dart';
 import '../../../core/widgets/cards/comment_thread_item.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/models/post_model.dart';
 import '../viewmodels/comment_viewmodel.dart';
+import '../data/models/comment_model.dart';
+import 'community_action_dialogs.dart';
 
 class ShowCommentScreen extends StatefulWidget {
-  final String postId;
   final PostModel post;
+  final CommentViewModel? viewModel;
 
-  const ShowCommentScreen({
-    super.key,
-    this.postId = 'post_001',
-    required this.post,
-  });
+  const ShowCommentScreen({super.key, required this.post, this.viewModel});
 
   @override
   State<ShowCommentScreen> createState() => _ShowCommentScreenState();
@@ -26,13 +25,50 @@ class _ShowCommentScreenState extends State<ShowCommentScreen> {
   void initState() {
     super.initState();
     final targetPostId = widget.post.postId;
-    _viewModel = CommentViewModel(postId: targetPostId);
+    _viewModel =
+        widget.viewModel ??
+        CommentViewModel(
+          postId: targetPostId,
+          postAuthorId: widget.post.authorId,
+        );
   }
 
   @override
   void dispose() {
-    _viewModel.dispose();
+    if (widget.viewModel == null) _viewModel.dispose();
     super.dispose();
+  }
+
+  Future<void> _edit(CommentModel comment) => showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) => EditCommunityCommentDialog(
+      content: comment.content,
+      onSave: (text) async {
+        final saved = await _viewModel.editComment(comment, text);
+        return saved
+            ? null
+            : (_viewModel.actionError ?? 'Không thể lưu bình luận.');
+      },
+    ),
+  );
+
+  Future<void> _delete(CommentModel comment) async {
+    if (!await confirmCommunityDelete(
+      context,
+      title: 'Xóa bình luận?',
+      message: 'Nội dung bình luận sẽ bị xóa. Các phản hồi vẫn được giữ lại.',
+    )) {
+      return;
+    }
+    if (!mounted) return;
+    final deleted = await _viewModel.deleteComment(comment);
+    if (!mounted || deleted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(_viewModel.actionError ?? 'Không thể xóa bình luận.'),
+      ),
+    );
   }
 
   @override
@@ -56,6 +92,20 @@ class _ShowCommentScreenState extends State<ShowCommentScreen> {
                   if (_viewModel.isLoading) {
                     return const Center(child: CircularProgressIndicator());
                   }
+                  if (_viewModel.error != null) {
+                    return Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(_viewModel.error!, textAlign: TextAlign.center),
+                          TextButton(
+                            onPressed: _viewModel.loadComments,
+                            child: const Text('Thử lại'),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
 
                   final threads = _viewModel.threads;
                   if (threads.isEmpty) {
@@ -66,7 +116,9 @@ class _ShowCommentScreenState extends State<ShowCommentScreen> {
                           Icon(
                             Icons.chat_bubble_outline_rounded,
                             size: 48,
-                            color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+                            color: colorScheme.onSurfaceVariant.withValues(
+                              alpha: 0.5,
+                            ),
                           ),
                           const SizedBox(height: 12),
                           Text(
@@ -80,7 +132,9 @@ class _ShowCommentScreenState extends State<ShowCommentScreen> {
                           Text(
                             l10n.beFirstToComment,
                             style: TextStyle(
-                              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                              color: colorScheme.onSurfaceVariant.withValues(
+                                alpha: 0.7,
+                              ),
                               fontSize: 12,
                             ),
                           ),
@@ -88,18 +142,29 @@ class _ShowCommentScreenState extends State<ShowCommentScreen> {
                       ),
                     );
                   }
-                  return ListView.builder(
-                    padding: const EdgeInsets.only(top: 8.0, bottom: 16.0),
-                    itemCount: threads.length,
-                    itemBuilder: (context, index) {
-                      final thread = threads[index];
-                      return CommentThreadItem(
-                        commentThread: thread,
-                        onLike: (comment) => _viewModel.toggleLike(comment.id),
-                        onReply: (comment) => _viewModel.setReplyingTo(comment),
-                        onTapSeeMore: () => _viewModel.toggleSeeMore(thread.rootComment.id),
-                      );
-                    },
+                  return RefreshIndicator(
+                    onRefresh: _viewModel.loadComments,
+                    child: ListView.builder(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: const EdgeInsets.only(top: 8.0, bottom: 16.0),
+                      itemCount: threads.length,
+                      itemBuilder: (context, index) {
+                        final thread = threads[index];
+                        return CommentThreadItem(
+                          commentThread: thread,
+                          canEdit: _viewModel.canEdit,
+                          canDelete: _viewModel.canDelete,
+                          onEdit: _edit,
+                          onDelete: _delete,
+                          onLike: (comment) =>
+                              _viewModel.toggleLike(comment.id),
+                          onReply: (comment) =>
+                              _viewModel.setReplyingTo(comment),
+                          onTapSeeMore: () =>
+                              _viewModel.toggleSeeMore(thread.rootComment.id),
+                        );
+                      },
+                    ),
                   );
                 },
               ),
@@ -113,14 +178,13 @@ class _ShowCommentScreenState extends State<ShowCommentScreen> {
 
                 return Container(
                   color: colorScheme.surfaceContainerHighest,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                   child: Row(
                     children: [
-                      Icon(
-                        Icons.reply,
-                        size: 16,
-                        color: colorScheme.primary,
-                      ),
+                      Icon(Icons.reply, size: 16, color: colorScheme.primary),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
@@ -170,6 +234,8 @@ class _ShowCommentScreenState extends State<ShowCommentScreen> {
                         return TextField(
                           controller: _viewModel.textController,
                           focusNode: _viewModel.focusNode,
+                          enabled: !_viewModel.isSending,
+                          maxLength: 2000,
                           style: TextStyle(
                             color: colorScheme.onSurface,
                             fontSize: 14,
@@ -178,8 +244,11 @@ class _ShowCommentScreenState extends State<ShowCommentScreen> {
                             hintText: replying != null
                                 ? l10n.replyToHint(replying.userName)
                                 : l10n.writeCommentHint,
+                            errorText: _viewModel.actionError,
                             hintStyle: TextStyle(
-                              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                              color: colorScheme.onSurfaceVariant.withValues(
+                                alpha: 0.6,
+                              ),
                               fontSize: 14,
                             ),
                             isDense: true,
@@ -201,10 +270,7 @@ class _ShowCommentScreenState extends State<ShowCommentScreen> {
                   ),
                   const SizedBox(width: 8),
                   IconButton(
-                    icon: Icon(
-                      Icons.send_rounded,
-                      color: colorScheme.primary,
-                    ),
+                    icon: Icon(Icons.send_rounded, color: colorScheme.primary),
                     onPressed: () => _viewModel.sendComment(),
                   ),
                 ],

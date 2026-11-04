@@ -1,4 +1,4 @@
-package com.example.vietnam_trekking_mobile
+package com.trekviet.app
 
 import io.flutter.embedding.android.FlutterActivity
 

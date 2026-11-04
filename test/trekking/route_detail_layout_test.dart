@@ -73,6 +73,14 @@ void main() {
       expect(images.map((i) => (i.image as NetworkImage).url), [
         'https://cdn.example/route.jpg',
       ]);
+      expect(route.galleryImages, [
+        'https://cdn.example/route.jpg',
+        'https://cdn.example/place.jpg',
+      ]);
+      final pager = find.byType(PageView);
+      await tester.drag(pager, const Offset(-300, 0));
+      await tester.pumpAndSettle();
+      expect(tester.widget<PageView>(pager).controller!.page, 1);
       expect(find.text('Mô tả riêng của cung đường cột điện.'), findsOneWidget);
       expect(find.text('Độ khó: Trung bình'), findsOneWidget);
       expect(find.text('Địa điểm: Bà Đen'), findsOneWidget);

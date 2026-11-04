@@ -25,8 +25,9 @@
 //    flutter build apk \
 //      --dart-define=APP_ENV=production \
 //      --dart-define=API_BASE_URL=https://api-gateway-trekvn.onrender.com/api/v1 \
-//      --dart-define=TREKKING_BASE_URL=https://api-gateway-trekvn.onrender.com/api/v1/trekking \
-//      --dart-define=CHECKIN_BASE_URL=https://api-gateway-trekvn.onrender.com/api/v1/checkin
+//      --dart-define=TREKKING_BASE_URL=https://api-gateway-trekvn.onrender.com/api/v1 \
+//      --dart-define=CHECKIN_BASE_URL=https://api-gateway-trekvn.onrender.com/api/v1 \
+//      --dart-define=COMMUNITY_BASE_URL=https://api-gateway-trekvn.onrender.com/api/v1
 //
 // Lưu ý: Tất cả các request đều đi qua API Gateway trên Render.
 // Gateway sẽ proxy tới các microservices tương ứng.
@@ -66,6 +67,12 @@ class AppConfig {
   );
 
   static const Duration connectTimeout = Duration(seconds: 10);
+
+  /// Community REST and WebSocket share the gateway unless overridden locally.
+  static const String communityBaseUrl = String.fromEnvironment(
+    'COMMUNITY_BASE_URL',
+    defaultValue: baseUrl,
+  );
   static const Duration receiveTimeout = Duration(seconds: 30);
 
   /// Download timeout dài hơn cho việc tải map MBTiles

@@ -84,6 +84,10 @@ class RouteDetailViewModel extends ChangeNotifier {
   }
 
   String get heroImageUrl => _route?.imageUrl ?? '';
+  List<String> get heroImages => {
+    if (heroImageUrl.trim().isNotEmpty) heroImageUrl.trim(),
+    ...?_route?.galleryImages,
+  }.toList();
 
   String? get mapImageUrl => _route?.mapImageUrl;
 

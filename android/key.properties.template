@@ -1,0 +1,16 @@
+# Android Signing Configuration Template
+# Copy this file to "key.properties" and fill in your actual values
+# DO NOT commit key.properties to version control!
+
+storePassword=YOUR_KEYSTORE_PASSWORD
+keyPassword=YOUR_KEY_PASSWORD
+keyAlias=trekvn-key-alias
+storeFile=app/trekvn-upload-keystore.jks
+
+# Instructions:
+# 1. Generate keystore using keytool command (see docs)
+# 2. Replace YOUR_KEYSTORE_PASSWORD with your actual password
+# 3. Replace YOUR_KEY_PASSWORD with your actual key password
+# 4. Ensure keyAlias matches what you used in keytool
+# 5. Ensure storeFile path points to your .jks file
+# 6. Save as "key.properties" (remove .template)

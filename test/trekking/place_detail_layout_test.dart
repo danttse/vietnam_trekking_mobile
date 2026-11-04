@@ -34,12 +34,16 @@ class _EmptyMaps extends OfflineMapStorageService {
 
 class _Catalog extends TrekkingCatalogService {
   final bool hasMap;
-  _Catalog({this.hasMap = true}) : super(client: Dio());
+  final List<String> images;
+  _Catalog({
+    this.hasMap = true,
+    this.images = const ['https://example.com/ba-den.jpg'],
+  }) : super(client: Dio());
 
   @override
   Future<Map<String, dynamic>> getPlace(String placeId) async => {
     'name': 'Núi Bà Đen',
-    'images': ['https://example.com/ba-den.jpg'],
+    'images': images,
     'address': 'Tây Ninh',
     'difficulty': 'HARD',
     'elevationMeters': 986,
@@ -63,6 +67,48 @@ class _Catalog extends TrekkingCatalogService {
 }
 
 void main() {
+  testWidgets(
+    'place gallery swipes through all photos under the title and gradient',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.darkTheme,
+          home: PlaceDetailScreen(
+            placeId: 'p1',
+            reviewRepository: _Reviews(),
+            service: _Catalog(
+              images: const [
+                'https://example.com/1.jpg',
+                'https://example.com/2.jpg',
+                'https://example.com/3.jpg',
+              ],
+            ),
+            mapStorage: _EmptyMaps(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final pager = find.descendant(
+        of: find.byKey(const ValueKey('place-hero')),
+        matching: find.byType(PageView),
+      );
+      expect(
+        tester.widget<PageView>(pager).childrenDelegate.estimatedChildCount,
+        3,
+      );
+      await tester.dragFrom(
+        tester.getCenter(find.text('Núi Bà Đen')).translate(100, 0),
+        const Offset(-500, 0),
+      );
+      await tester.pumpAndSettle();
+      expect(tester.widget<PageView>(pager).controller!.page, 1);
+      await tester.drag(pager, const Offset(-500, 0));
+      await tester.pumpAndSettle();
+      expect(tester.widget<PageView>(pager).controller!.page, 2);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   for (final width in [320.0, 390.0, 600.0]) {
     testWidgets(
       'place hero spans $width pixels, map follows routes without overflow',

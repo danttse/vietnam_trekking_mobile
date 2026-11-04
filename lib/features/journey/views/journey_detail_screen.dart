@@ -1,3 +1,5 @@
+import '../../community/views/community_share.dart';
+
 import 'package:flutter/material.dart';
 import 'package:vietnam_trekking_mobile/core/widgets/buttons/btn_login_style.dart';
 import 'package:vietnam_trekking_mobile/core/widgets/buttons/btn_outline_style.dart';
@@ -99,7 +101,7 @@ class _JourneyDetailScreenState extends State<JourneyDetailScreen> {
           ),
           FilledButton(
             onPressed: () => Navigator.pop(dialog, true),
-            child: const Text('Kết thúc & chia sẻ'),
+            child: const Text('Kết thúc & gửi route tới admin'),
           ),
         ],
       ),
@@ -695,6 +697,19 @@ class _JourneyDetailScreenState extends State<JourneyDetailScreen> {
                               label: Text(l10n.milestoneCheckInButton),
                             ),
                           ),
+                          if (_viewModel.journeyStatus ==
+                              JourneyStatus.completed)
+                            OutlinedButton.icon(
+                              key: const ValueKey('journey-share-community'),
+                              onPressed: () {
+                                final journey = _viewModel.journey;
+                                if (journey != null) {
+                                  shareJourneyToCommunity(context, journey);
+                                }
+                              },
+                              icon: const Icon(Icons.groups_outlined),
+                              label: const Text('Chia sẻ lên cộng đồng'),
+                            ),
                           const SizedBox(height: 12),
                           SizedBox(
                             width: double.infinity,
@@ -793,7 +808,7 @@ class _JourneyDetailScreenState extends State<JourneyDetailScreen> {
                                         await _viewModel.loadMilestones();
                                       }
                                     } catch (_) {
-                                      if (context.mounted)
+                                      if (context.mounted) {
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
                                               const SnackBar(
@@ -802,6 +817,7 @@ class _JourneyDetailScreenState extends State<JourneyDetailScreen> {
                                                 ),
                                               ),
                                             );
+                                      }
                                     }
                                   },
                                 );

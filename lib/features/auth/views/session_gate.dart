@@ -35,8 +35,9 @@ class _SessionGateState extends State<SessionGate> {
   Widget build(BuildContext context) => FutureBuilder<bool>(
     future: _session,
     builder: (context, snapshot) {
-      if (snapshot.connectionState != ConnectionState.done)
+      if (snapshot.connectionState != ConnectionState.done) {
         return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      }
       return snapshot.data == true
           ? const UserNavigationScreen()
           : const PromoteScreen();

@@ -1,4 +1,7 @@
+import '../../community/views/community_share.dart';
+
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
@@ -93,9 +96,8 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
 
   void _showError(String message) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 
   Future<void> _drawTrack() async {
@@ -147,7 +149,7 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
           ),
           FilledButton(
             onPressed: () => Navigator.pop(dialog, true),
-            child: const Text('Kết thúc & chia sẻ'),
+            child: const Text('Kết thúc & gửi route tới admin'),
           ),
         ],
       ),
@@ -195,8 +197,9 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
 
   Future<void> _openMilestone(dynamic id) async {
     if (id == null || _openingMilestone) return;
-    final milestone =
-        _viewModel.milestones.where((m) => m.id == id).firstOrNull;
+    final milestone = _viewModel.milestones
+        .where((m) => m.id == id)
+        .firstOrNull;
     if (milestone == null) return;
     _openingMilestone = true;
     try {
@@ -260,8 +263,9 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
 
   Future<void> _editMarker(String id) async {
     if (_openingMarker) return;
-    final index =
-        _viewModel.markers.indexWhere((marker) => marker.markerId == id);
+    final index = _viewModel.markers.indexWhere(
+      (marker) => marker.markerId == id,
+    );
     if (index < 0) return;
     _openingMarker = true;
     try {
@@ -387,8 +391,9 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
                   hasPoints: _viewModel.tracking.points.isNotEmpty,
                   distanceMeters: _viewModel.tracking.distanceMeters,
                   pointsCount: _viewModel.tracking.points.length,
-                  checkedMilestonesCount:
-                      _viewModel.milestones.where((m) => m.isCheckedIn).length,
+                  checkedMilestonesCount: _viewModel.milestones
+                      .where((m) => m.isCheckedIn)
+                      .length,
                   totalMilestonesCount: _viewModel.milestones.length,
                   onTap: _openJourneyDetailsSheet,
                 ),
@@ -420,8 +425,9 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
                     MaterialPageRoute(
                       builder: (_) => DownloadOfflineMapScreen(
                         route: _viewModel.journey.route,
-                        pendingJourney:
-                            _viewModel.readOnly ? null : _viewModel.journey,
+                        pendingJourney: _viewModel.readOnly
+                            ? null
+                            : _viewModel.journey,
                       ),
                     ),
                   );
@@ -579,7 +585,11 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (sheetContext) => ListenableBuilder(
-        listenable: Listenable.merge([_viewModel, _viewModel.tracking, _viewModel.location]),
+        listenable: Listenable.merge([
+          _viewModel,
+          _viewModel.tracking,
+          _viewModel.location,
+        ]),
         builder: (ctx, _) => AppDraggableSheet(
           title: _viewModel.journey.name.isNotEmpty
               ? _viewModel.journey.name
@@ -599,8 +609,9 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
     ScrollController scrollController,
   ) {
     final cs = Theme.of(context).colorScheme;
-    final checkedMilestones =
-        _viewModel.milestones.where((m) => m.isCheckedIn).length;
+    final checkedMilestones = _viewModel.milestones
+        .where((m) => m.isCheckedIn)
+        .length;
     final tracking = _viewModel.tracking;
 
     return ListView(
@@ -666,7 +677,8 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
                             : 'Lưu trên máy, dùng được khi mất mạng')}',
                     style: const TextStyle(fontSize: 11),
                   ),
-                  trailing: _viewModel.canMark &&
+                  trailing:
+                      _viewModel.canMark &&
                           _viewModel.journey.status == JourneyStatus.active
                       ? IconButton(
                           tooltip: tracking.enabled
@@ -690,7 +702,9 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
                   Padding(
                     padding: const EdgeInsets.only(top: 4, bottom: 8),
                     child: BtnOutlineStyle(
-                      text: tracking.enabled ? 'Dừng ghi GPS' : 'Bắt đầu ghi GPS',
+                      text: tracking.enabled
+                          ? 'Dừng ghi GPS'
+                          : 'Bắt đầu ghi GPS',
                       icon: Icon(
                         tracking.enabled
                             ? Icons.stop_circle_outlined
@@ -785,19 +799,12 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
           const SizedBox(height: 8),
           Row(
             children: [
-              const Icon(
-                Icons.circle,
-                color: Color(0xFF3B82F6),
-                size: 10,
-              ),
+              const Icon(Icons.circle, color: Color(0xFF3B82F6), size: 10),
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
                   'Vị trí của bạn • sai số ±${_viewModel.location.position!.accuracy.round()} m',
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: cs.onSurfaceVariant,
-                  ),
+                  style: TextStyle(fontSize: 11, color: cs.onSurfaceVariant),
                 ),
               ),
             ],
@@ -872,6 +879,17 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
           const SizedBox(height: 10),
         ],
 
+        if (_viewModel.journey.status == JourneyStatus.completed) ...[
+          BtnOutlineStyle(
+            text: 'Chia sẻ lên cộng đồng',
+            icon: const Icon(Icons.groups_outlined, size: 20),
+            onPressed: () {
+              Navigator.pop(sheetContext);
+              shareJourneyToCommunity(context, _viewModel.journey);
+            },
+          ),
+          const SizedBox(height: 10),
+        ],
         // Completed journey CTA: Chia sẻ route tới admin
         if (_viewModel.journey.status == JourneyStatus.completed &&
             _viewModel.journey.journeyId.isNotEmpty)

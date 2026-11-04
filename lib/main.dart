@@ -95,6 +95,18 @@ class _VietnamTrekkingAppState extends State<VietnamTrekkingApp>
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
         themeMode: _themeViewModel.themeMode,
+        builder: (context, child) {
+          final mediaQuery = MediaQuery.of(context);
+          return MediaQuery(
+            data: mediaQuery.copyWith(
+              textScaler: mediaQuery.textScaler.clamp(
+                minScaleFactor: 0.9,
+                maxScaleFactor: 1.05,
+              ),
+            ),
+            child: child ?? const SizedBox.shrink(),
+          );
+        },
 
         localizationsDelegates: const [
           AppLocalizations.delegate,

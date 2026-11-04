@@ -66,6 +66,27 @@ class OfflineStore {
     return _read(db, resource, owner);
   }
 
+  /// Bound browsing snapshots without touching downloaded offline trip packages.
+  Future<void> pruneExplorePages(int keep) async {
+    final db = await databaseHelper.database;
+    await db.rawDelete(
+      'DELETE FROM offline_snapshots WHERE ownerId = ? '
+      'AND resource LIKE ? AND resource NOT IN ('
+      'SELECT resource FROM offline_snapshots WHERE ownerId = ? AND resource LIKE ? '
+      'ORDER BY updatedAt DESC, resource LIMIT ?)',
+      ['', '/explore-pages/v2/%', '', '/explore-pages/v2/%', keep],
+    );
+  }
+
+  Future<void> invalidateExplorePages(String prefix, String except) async {
+    final db = await databaseHelper.database;
+    await db.delete(
+      'offline_snapshots',
+      where: 'ownerId = ? AND substr(resource, 1, ?) = ? AND resource <> ?',
+      whereArgs: ['', prefix.length, prefix, except],
+    );
+  }
+
   Future<dynamic> _read(
     DatabaseExecutor db,
     String resource,

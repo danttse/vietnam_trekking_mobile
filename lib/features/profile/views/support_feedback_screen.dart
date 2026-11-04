@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vietnam_trekking_mobile/core/widgets/app_bar/app_top_bar.dart';
+import '../../../core/widgets/app_bar/app_top_bar_with_back.dart';
 import '../../../core/widgets/buttons/btn_login_style.dart';
 import '../../../core/widgets/inputs/login_input_field.dart';
 import '../../../l10n/app_localizations.dart';
@@ -127,7 +127,7 @@ class _SupportFeedbackScreenState extends State<SupportFeedbackScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              AppTopBar(title: l10n.settingsSupportFeedback),
+              AppTopBarWithBack(title: l10n.settingsSupportFeedback),
               const SizedBox(height: 22),
               _buildSectionHeader(
                 context: context,

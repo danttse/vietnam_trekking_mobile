@@ -68,6 +68,8 @@
 			<string>UIInterfaceOrientationLandscapeLeft</string>
 			<string>UIInterfaceOrientationLandscapeRight</string>
 		</array>
+		<key>NSCameraUsageDescription</key>
+		<string>Quét mã QR cá nhân để tìm người dùng TrekViệt.</string>
 		<key>UIStatusBarHidden</key>
 		<false/>
 	</dict>

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../../core/widgets/buttons/btn_login_style.dart';
 import '../../../core/widgets/buttons/btn_outline_style.dart';
@@ -11,6 +10,7 @@ import '../data/models/journey_model.dart';
 import '../data/models/milestone_model.dart';
 import '../viewmodels/checkin_success_viewmodel.dart';
 import '../../profile/views/badge_detail_screen.dart';
+import '../../community/views/community_share.dart';
 import 'rate_milestone_screen.dart';
 
 class CheckinSuccessScreen extends StatefulWidget {
@@ -75,8 +75,10 @@ class _CheckinSuccessScreenState extends State<CheckinSuccessScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  BadgeDetailScreen(badge: items.first),
+                              builder: (context) => BadgeDetailScreen(
+                                badge: items.first,
+                                allBadges: items,
+                              ),
                             ),
                           );
                         }
@@ -115,7 +117,9 @@ class _CheckinSuccessScreenState extends State<CheckinSuccessScreen> {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    l10n.checkinSuccessTitle,
+                    widget.journeyFinished
+                        ? 'Hoàn thành hành trình!'
+                        : l10n.checkinSuccessTitle,
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -166,8 +170,10 @@ class _CheckinSuccessScreenState extends State<CheckinSuccessScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  BadgeDetailScreen(badge: item),
+                              builder: (context) => BadgeDetailScreen(
+                                badge: item,
+                                allBadges: _viewModel.getAchievements(l10n),
+                              ),
                             ),
                           );
                         },
@@ -243,52 +249,22 @@ class _CheckinSuccessScreenState extends State<CheckinSuccessScreen> {
                       text: l10n.shareAchievementButton,
                       icon: const SizedBox.shrink(),
                       onPressed: () {
-                        final text =
-                            'Mình đã check-in ${_viewModel.destinationName}! '
-                            'Cao độ: ${_viewModel.maxElevationText}. '
-                            '${widget.journey?.name ?? ''} #TrekViet';
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (sheetContext) => SafeArea(
-                            child: Padding(
-                              padding: const EdgeInsets.all(24),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    l10n.shareAchievementButton,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  SelectableText(text),
-                                  const SizedBox(height: 16),
-                                  BtnLoginPrimary(
-                                    text: 'Sao chép để chia sẻ',
-                                    onPressed: () async {
-                                      await Clipboard.setData(
-                                        ClipboardData(text: text),
-                                      );
-                                      if (!sheetContext.mounted) return;
-                                      Navigator.pop(sheetContext);
-                                      if (context.mounted)
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                              const SnackBar(
-                                                content: Text(
-                                                  'Đã sao chép thành tích.',
-                                                ),
-                                              ),
-                                            );
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
+                        final journey = widget.journey;
+                        final content = widget.journeyFinished
+                            ? 'Mình đã hoàn thành hành trình ${journey?.name ?? _viewModel.destinationName}! '
+                                  'Cao độ: ${_viewModel.maxElevationText}. #TrekViet'
+                            : 'Mình đã check-in ${_viewModel.destinationName}! '
+                                  'Cao độ: ${_viewModel.maxElevationText}. '
+                                  '${journey?.name ?? ''} #TrekViet';
+                        if (journey == null) {
+                          openCommunityShare(context, content: content);
+                        } else {
+                          shareJourneyToCommunity(
+                            context,
+                            journey,
+                            content: content,
+                          );
+                        }
                       },
                     ),
                   ),
