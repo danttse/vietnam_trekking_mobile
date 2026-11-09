@@ -14,6 +14,7 @@ class MilestoneCheckinScreen extends StatefulWidget {
   final JourneyModel? journey;
   final String? mapImageUrl;
   final MilestoneCheckinViewModel? viewModel;
+  final void Function(List<String> images)? onCheckinImagesSelected;
 
   const MilestoneCheckinScreen({
     super.key,
@@ -21,6 +22,7 @@ class MilestoneCheckinScreen extends StatefulWidget {
     this.journey,
     this.mapImageUrl,
     this.viewModel,
+    this.onCheckinImagesSelected,
   });
 
   @override
@@ -56,7 +58,7 @@ class _MilestoneCheckinScreenState extends State<MilestoneCheckinScreen> {
           .showSnackBar(SnackBar(content: Text(_viewModel.error!)));
     }
     if (success && mounted) {
-      await Navigator.push<bool>(
+      final images = await Navigator.push<List<String>>(
         context,
         MaterialPageRoute(
           builder: (context) => CheckinSuccessScreen(
@@ -66,7 +68,12 @@ class _MilestoneCheckinScreenState extends State<MilestoneCheckinScreen> {
           ),
         ),
       );
-      if (mounted) Navigator.pop(context, true);
+      if (mounted) {
+        if (images != null && images.isNotEmpty) {
+          widget.onCheckinImagesSelected?.call(images);
+        }
+        Navigator.pop(context, true);
+      }
     }
   }
 

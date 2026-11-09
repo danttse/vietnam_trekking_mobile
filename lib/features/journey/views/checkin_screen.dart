@@ -1,3 +1,4 @@
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import '../viewmodels/checkin_viewmodel.dart';
 import '../data/models/milestone_model.dart';
 import '../data/services/checkin_service.dart';
 import '../../../core/widgets/buttons/btn_login_style.dart';
+import '../../../core/widgets/app_bar/app_top_bar_with_back.dart';
 import 'checkin_success_screen.dart';
 
 class CheckinScreen extends StatefulWidget {
@@ -96,9 +98,20 @@ class _CheckinScreenState extends State<CheckinScreen>
   void _onVmChange() {
     if (!mounted) return;
     if (_vm.submitState == CheckinSubmitState.success) {
+      if (widget.journeyId.isNotEmpty) {
+        SharedPreferences.getInstance().then((prefs) {
+          final existing = prefs.getStringList('journey_checkins_${widget.journeyId}') ?? [];
+          if (!existing.contains(widget.milestone.id)) {
+            existing.add(widget.milestone.id);
+            prefs.setStringList('journey_checkins_${widget.journeyId}', existing);
+          }
+        });
+      }
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (_) => CheckinSuccessScreen(milestone: widget.milestone),
+          builder: (_) => CheckinSuccessScreen(
+            milestone: widget.milestone,
+          ),
         ),
       );
     } else if (_vm.submitState == CheckinSubmitState.error) {
@@ -172,24 +185,10 @@ class _CheckinScreenState extends State<CheckinScreen>
 
     return Scaffold(
       backgroundColor: cs.surface,
-      appBar: AppBar(
-        backgroundColor: cs.surface,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, size: 20, color: cs.onSurface),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: Text(
-          'Check-in cột mốc',
-          style: TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.w600,
-            color: cs.onSurface,
-          ),
-        ),
-      ),
-      body: _locationPermissionDenied
-          ? _buildPermissionDenied(cs)
+      body: Column(
+        children:[
+          AppTopBarWithBack(title: 'Check-in'),
+          _locationPermissionDenied ? _buildPermissionDenied(cs)
           : Column(
               children: [
                 // ── GPS status chip ──────────────────────────────────────
@@ -339,6 +338,8 @@ class _CheckinScreenState extends State<CheckinScreen>
                 SafeArea(child: const SizedBox(height: 16)),
               ],
             ),
+        ],
+      ),
     );
   }
 

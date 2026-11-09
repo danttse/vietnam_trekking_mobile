@@ -1,3 +1,5 @@
+import 'dart:io';
+import '../../../core/widgets/cards/image_load_card.dart';
 import '../../community/views/community_share.dart';
 
 import 'package:flutter/material.dart';
@@ -42,17 +44,31 @@ class _JourneyDetailScreenState extends State<JourneyDetailScreen> {
   }
 
   Future<void> _openMilestone(MilestoneModel milestone) async {
-    await Navigator.push<bool>(
+    final result = await Navigator.push(
       context,
+      //chuyen sang man checkin milestone
       MaterialPageRoute(
         builder: (_) => MilestoneCheckinScreen(
           milestone: milestone,
           journey: _viewModel.journey,
           mapImageUrl: _viewModel.mapImageUrl,
+          onCheckinImagesSelected: (images) {
+            for (final img in images) {
+              _viewModel.addCheckinImage(img);
+            }
+          },
         ),
       ),
     );
-    if (mounted) await _viewModel.loadMilestones();
+    if (mounted) {
+      _viewModel.checkIn(milestone.id);
+      if (result is List) {
+        for (final img in result) {
+          if (img is String) _viewModel.addCheckinImage(img);
+        }
+      }
+      await _viewModel.loadMilestones();
+    }
   }
 
   Future<void> _shareRoute() async {
@@ -670,6 +686,48 @@ class _JourneyDetailScreenState extends State<JourneyDetailScreen> {
                                 ),
                               ],
                             ),
+                          ),
+                          ListenableBuilder(
+                            listenable: _viewModel,
+                            builder: (context, _) {
+                              if (_viewModel.checkinImages.isEmpty) {
+                                return const SizedBox.shrink();
+                              }
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 20),
+                                  Text(
+                                    'ẢNH CHECK-IN (${_viewModel.checkinImages.length})',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 0.8,
+                                      color: colorScheme.onSurfaceVariant.withValues(
+                                        alpha: 0.8,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  SizedBox(
+                                    height: 72,
+                                    child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: _viewModel.checkinImages.length,
+                                      itemBuilder: (context, index) {
+                                        return Padding(
+                                          padding: const EdgeInsets.only(right: 10),
+                                          child: ImageLoadCard(
+                                            imageUrl: File(_viewModel.checkinImages[index]),
+                                            onTapRemove: () => _viewModel.removeCheckinImage(index),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
                           ),
                           if (_viewModel.journeyStatus ==
                                   JourneyStatus.completed &&

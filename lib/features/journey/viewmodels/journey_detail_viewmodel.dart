@@ -1,3 +1,4 @@
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 
 import '../../route/viewmodel/download_offline_map_viewmodel.dart';
@@ -38,6 +39,7 @@ class JourneyDetailViewModel extends ChangeNotifier {
         await loadMilestones();
       }
     });
+    _loadPersistedData();
     if (autoLoad) {
       loadMilestones();
       _loadDownloadedState();
@@ -145,11 +147,24 @@ class JourneyDetailViewModel extends ChangeNotifier {
         debugPrint('[JourneyDetailViewModel] optional checkins load: $e');
       }
 
+      final currentChecked = _milestones
+          .where((m) => m.isCheckedIn)
+          .map((m) => m.id)
+          .toSet();
       _milestones = milestones
           .map(
-            (m) => verified.containsKey(m.id)
-                ? m.copyWith(isCheckedIn: true, checkedInAt: verified[m.id])
-                : m,
+            (m) {
+              final isVerified = verified.containsKey(m.id);
+              final isLocal = currentChecked.contains(m.id) ||
+                  _localCheckedInMilestones.contains(m.id);
+              if (isVerified || isLocal) {
+                return m.copyWith(
+                  isCheckedIn: true,
+                  checkedInAt: verified[m.id] ?? DateTime.now(),
+                );
+              }
+              return m;
+            },
           )
           .toList();
       _hasLoadedMilestones = true;
@@ -263,14 +278,74 @@ class JourneyDetailViewModel extends ChangeNotifier {
     download.dispose();
   }
 
+  final Set<String> _localCheckedInMilestones = {};
+  final List<String> _checkinImages = [];
+  List<String> get checkinImages => List.unmodifiable(_checkinImages);
+
+  Future<void> _loadPersistedData() async {
+    final id = _journey?.journeyId;
+    if (id == null || id.isEmpty) return;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final savedMilestones = prefs.getStringList('journey_checkins_$id') ?? [];
+      _localCheckedInMilestones.addAll(savedMilestones);
+      final savedImages = prefs.getStringList('journey_checkin_images_$id') ?? [];
+      if (!_disposed) {
+        _checkinImages.clear();
+        _checkinImages.addAll(savedImages);
+        if (_milestones.isNotEmpty) {
+          _milestones = _milestones.map((m) {
+            if (_localCheckedInMilestones.contains(m.id)) {
+              return m.copyWith(isCheckedIn: true, checkedInAt: DateTime.now());
+            }
+            return m;
+          }).toList();
+        }
+        notifyListeners();
+      }
+    } catch (_) {}
+  }
+
   void checkIn(String milestoneId) {
+    _localCheckedInMilestones.add(milestoneId);
+    final id = _journey?.journeyId;
+    if (id != null && id.isNotEmpty) {
+      SharedPreferences.getInstance().then((prefs) {
+        prefs.setStringList('journey_checkins_$id', _localCheckedInMilestones.toList());
+      });
+    }
     final index = _milestones.indexWhere((m) => m.id == milestoneId);
-    if (index == -1) return;
-    _milestones = List.from(_milestones);
-    _milestones[index] = _milestones[index].copyWith(
-      isCheckedIn: true,
-      checkedInAt: DateTime.now(),
-    );
+    if (index != -1) {
+      _milestones = List.from(_milestones);
+      _milestones[index] = _milestones[index].copyWith(
+        isCheckedIn: true,
+        checkedInAt: DateTime.now(),
+      );
+    }
     notifyListeners();
+  }
+
+  void addCheckinImage(String path) {
+    _checkinImages.add(path);
+    final id = _journey?.journeyId;
+    if (id != null && id.isNotEmpty) {
+      SharedPreferences.getInstance().then((prefs) {
+        prefs.setStringList('journey_checkin_images_$id', _checkinImages);
+      });
+    }
+    notifyListeners();
+  }
+
+  void removeCheckinImage(int index) {
+    if (index >= 0 && index < _checkinImages.length) {
+      _checkinImages.removeAt(index);
+      final id = _journey?.journeyId;
+      if (id != null && id.isNotEmpty) {
+        SharedPreferences.getInstance().then((prefs) {
+          prefs.setStringList('journey_checkin_images_$id', _checkinImages);
+        });
+      }
+      notifyListeners();
+    }
   }
 }

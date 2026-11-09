@@ -1,3 +1,4 @@
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
@@ -99,10 +100,50 @@ class JourneyMapViewModel extends ChangeNotifier {
     _errorMessage = null;
   }
 
+  Future<void> _loadLocalCheckins() async {
+    final jId = _journey.journeyId;
+    if (jId.isEmpty) return;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final savedMilestones = prefs.getStringList('journey_checkins_$jId') ?? [];
+      if (savedMilestones.isNotEmpty) {
+        _milestones = _milestones.map((m) {
+          if (savedMilestones.contains(m.id)) {
+            return m.copyWith(isCheckedIn: true, checkedInAt: DateTime.now());
+          }
+          return m;
+        }).toList();
+        notifyListeners();
+      }
+    } catch (_) {}
+  }
+
+  void checkInMilestone(String milestoneId) {
+    final index = _milestones.indexWhere((m) => m.id == milestoneId);
+    if (index == -1) return;
+    _milestones = List.from(_milestones);
+    _milestones[index] = _milestones[index].copyWith(
+      isCheckedIn: true,
+      checkedInAt: DateTime.now(),
+    );
+    final jId = _journey.journeyId;
+    if (jId.isNotEmpty) {
+      SharedPreferences.getInstance().then((prefs) {
+        final existing = prefs.getStringList('journey_checkins_$jId') ?? [];
+        if (!existing.contains(milestoneId)) {
+          existing.add(milestoneId);
+          prefs.setStringList('journey_checkins_$jId', existing);
+        }
+      });
+    }
+    notifyListeners();
+  }
+
   void init() {
     _location.addListener(_onLocationChanged);
     _location.initialize();
     _loadOfflineMap();
+    _loadLocalCheckins();
     if (_journey.journeyId.isNotEmpty) {
       _tracking.addListener(_onTrackChanged);
       unawaited(_loadTrack());

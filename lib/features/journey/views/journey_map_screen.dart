@@ -203,7 +203,7 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
     if (milestone == null) return;
     _openingMilestone = true;
     try {
-      final result = await Navigator.push<bool>(
+      final result = await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (_) => MilestoneCheckinScreen(
@@ -212,8 +212,14 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
           ),
         ),
       );
-      if (result == true && mounted) {
-        Navigator.pop(context, true);
+      if (result != null && mounted) {
+        _viewModel.checkInMilestone(milestone.id);
+        await _mapRenderer.clearAll();
+        await _mapRenderer.addMapLayers(
+          milestones: _viewModel.milestones,
+          markers: _viewModel.markers,
+          isMounted: () => mounted,
+        );
       }
     } finally {
       _openingMilestone = false;
@@ -365,21 +371,15 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
           backgroundColor: Colors.black,
           body: Stack(
             children: [
-              // ── Map 100% ────────────────────────────────────────────────
+              // Map 100%
               _buildMap(cs),
-
-              // ── Top Bar với AppTopBar ────────────────────────────────────
               _buildTopBar(cs),
-
-              // ── Right controls ──────────────────────────────────────────
               if (!_viewModel.loadingMap && _viewModel.mapError == null)
                 Positioned(
                   right: 12,
                   top: kToolbarHeight + MediaQuery.of(context).padding.top + 12,
                   child: _buildRightControls(cs),
                 ),
-
-              // ── Floating Mini GPS Status Bar ────────────────────────────
               if (!_viewModel.loadingMap && _viewModel.mapError == null)
                 JourneyMiniGpsBar(
                   trackReady: _viewModel.trackReady,

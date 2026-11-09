@@ -300,66 +300,104 @@ class _MarkerFormScreenState extends State<MarkerFormScreen> {
                     _label('ẢNH MINH HỌA • TỐI ĐA 5 ẢNH', cs),
                     const SizedBox(height: 6),
                     SizedBox(
-                      height: 64,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
+                      height: 72,
+                      child: Row(
                         children: [
                           InkWell(
                             onTap: saving || _picking ? null : _pickImages,
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(12),
                             child: Container(
-                              width: 64,
-                              margin: const EdgeInsets.only(right: 8),
+                              width: 72,
+                              height: 72,
                               decoration: BoxDecoration(
                                 color: cs.surfaceContainerHighest,
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: cs.outlineVariant),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: cs.onSurfaceVariant.withValues(
+                                    alpha: 0.25,
+                                  ),
+                                ),
                               ),
                               child: _picking
                                   ? const Center(
-                                      child: CircularProgressIndicator(),
+                                      child: SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                        ),
+                                      ),
                                     )
                                   : Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
                                         Icon(
-                                          Icons.add_a_photo_outlined,
-                                          size: 22,
-                                          color: cs.primary,
+                                          Icons.camera_alt_outlined,
+                                          size: 24,
+                                          color: cs.onSurfaceVariant,
                                         ),
-                                        const Text(
+                                        const SizedBox(height: 4),
+                                        Text(
                                           'Thêm ảnh',
-                                          style: TextStyle(fontSize: 9),
+                                          style: TextStyle(
+                                            color: cs.onSurfaceVariant,
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.w500,
+                                          ),
                                         ),
                                       ],
                                     ),
                             ),
                           ),
-                          for (final path in _vm.mediaLocalPaths)
-                            _photo(
-                              Image.file(
-                                File(path),
-                                fit: BoxFit.cover,
-                                errorBuilder: (_, _, _) =>
-                                    const Icon(Icons.broken_image_outlined),
-                              ),
-                              onRemove: saving
-                                  ? null
-                                  : () => _vm.removeImage(path),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: _vm.mediaLocalPaths.length +
+                                  _vm.mediaRemoteUrls.length,
+                              itemBuilder: (context, index) {
+                                if (index < _vm.mediaLocalPaths.length) {
+                                  final path = _vm.mediaLocalPaths[index];
+                                  return Padding(
+                                    padding: const EdgeInsets.only(right: 10),
+                                    child: _photo(
+                                      Image.file(
+                                        File(path),
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (_, _, _) =>
+                                            const Icon(
+                                              Icons.broken_image_outlined,
+                                            ),
+                                      ),
+                                      onRemove: saving
+                                          ? null
+                                          : () => _vm.removeImage(path),
+                                    ),
+                                  );
+                                }
+                                final urlIndex =
+                                    index - _vm.mediaLocalPaths.length;
+                                final url = _vm.mediaRemoteUrls[urlIndex];
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 10),
+                                  child: _photo(
+                                    Image.network(
+                                      url,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (_, _, _) =>
+                                          const Icon(
+                                            Icons.broken_image_outlined,
+                                          ),
+                                    ),
+                                    onRemove: saving
+                                        ? null
+                                        : () => _vm.removeRemoteImage(url),
+                                  ),
+                                );
+                              },
                             ),
-                          for (final url in _vm.mediaRemoteUrls)
-                            _photo(
-                              Image.network(
-                                url,
-                                fit: BoxFit.cover,
-                                errorBuilder: (_, _, _) =>
-                                    const Icon(Icons.broken_image_outlined),
-                              ),
-                              onRemove: saving
-                                  ? null
-                                  : () => _vm.removeRemoteImage(url),
-                            ),
+                          ),
                         ],
                       ),
                     ),
