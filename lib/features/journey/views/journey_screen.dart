@@ -37,14 +37,27 @@ class _JourneyScreenState extends State<JourneyScreen> {
 
   Widget _buildTabBar(ColorScheme colorScheme) {
     final l10n = AppLocalizations.of(context)!;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Row(
-        children: [
-          Expanded(child: _buildTabItem(0, l10n.journeyCompleted)),
-          Expanded(child: _buildTabItem(1, l10n.journeyUpcoming)),
-        ],
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minWidth: constraints.maxWidth > 32 ? constraints.maxWidth - 32 : 0,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildTabItem(0, l10n.journeyCompleted),
+                _buildTabItem(1, l10n.journeyUpcoming),
+                _buildTabItem(2, l10n.journeyCancelled),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -54,31 +67,36 @@ class _JourneyScreenState extends State<JourneyScreen> {
     return GestureDetector(
       onTap: () => _viewModel.setTab(index),
       behavior: HitTestBehavior.opaque,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-              color: isSelected
-                  ? colorScheme.onSurface
-                  : colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              title,
+              maxLines: 1,
+              softWrap: false,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                color: isSelected
+                    ? colorScheme.onSurface
+                    : colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+              ),
             ),
-          ),
-          const SizedBox(height: 6),
-          AnimatedContainer(
-            height: 2.5,
-            width: isSelected ? 40 : 0,
-            duration: const Duration(milliseconds: 200),
-            decoration: BoxDecoration(
-              color: isSelected ? colorScheme.onSurface : null,
-              borderRadius: BorderRadius.circular(2),
+            const SizedBox(height: 6),
+            AnimatedContainer(
+              height: 2.5,
+              width: isSelected ? 40 : 0,
+              duration: const Duration(milliseconds: 200),
+              decoration: BoxDecoration(
+                color: isSelected ? colorScheme.onSurface : null,
+                borderRadius: BorderRadius.circular(2),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -252,8 +270,11 @@ class _JourneyScreenState extends State<JourneyScreen> {
                 ),
                 const SizedBox(height: 8),
                 _buildTabBar(colorScheme),
-                const SizedBox(height: 16),
-                _buildStatsSection(colorScheme),
+                if (_viewModel.selectedTabIndex != 2) ...[
+                  const SizedBox(height: 16),
+                  _buildStatsSection(colorScheme),
+                ] else
+                  const SizedBox(height: 8),
                 Expanded(child: _buildJourneyList(currentGroups)),
               ],
             );
@@ -277,7 +298,11 @@ class _JourneyScreenState extends State<JourneyScreen> {
               if (!mounted) return;
               if (newJourney is JourneyModel) {
                 _viewModel.setTab(
-                  newJourney.status == JourneyStatus.completed ? 0 : 1,
+                  newJourney.status == JourneyStatus.completed
+                      ? 0
+                      : newJourney.status == JourneyStatus.cancelled
+                          ? 2
+                          : 1,
                 );
                 if (newJourney.status == JourneyStatus.active) {
                   try {

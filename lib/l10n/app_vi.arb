@@ -1,4 +1,4 @@
-﻿{
+{
     "@@locale": "vi",
     "appName": "TrekViệt",
     "appTagline": "Hành trình mây ngàn Việt Nam",
@@ -61,7 +61,9 @@
     "memberSince": "Thành viên từ {date}",
     "@memberSince": {
         "placeholders": {
-            "date": { "type": "String" }
+            "date": {
+                "type": "String"
+            }
         }
     },
     "profileProvinceMapTitle": "Bản đồ tỉnh thành",
@@ -85,8 +87,8 @@
     "settingsTermsOfUse": "Điều khoản sử dụng",
     "settingsPrivacyPolicy": "Chính sách quyền riêng tư",
     "logoutButton": "Đăng xuất",
-    "proposePlace":"Đề xuất địa điểm mới",
-    "submitPropose":"Gửi đề xuất",
+    "proposePlace": "Đề xuất địa điểm mới",
+    "submitPropose": "Gửi đề xuất",
     "placeName": "Tên địa điểm",
     "enterPlaceName": "Nhập tên địa điểm",
     "provinceCity": "Tỉnh/Thành phố",
@@ -108,16 +110,18 @@
     "central": "Miền Trung",
     "south": "Miền Nam",
     "popular": "Phổ biến",
-    "editBio":"Chỉnh sửa Bio",
-    "titleBioBox":"Giới thiệu bản thân (BIO)",
+    "editBio": "Chỉnh sửa Bio",
+    "titleBioBox": "Giới thiệu bản thân (BIO)",
     "editAvatar": "Đổi Ảnh Đại Diện",
     "avatarPickerTitle": "TÙY CHỌN TẢI ẢNH",
     "takeNewPhoto": "Chụp ảnh mới",
     "chooseFromLibrary": "Chọn từ thư viện",
-    "featureComingSoon": "Tính năng {feature} đang phát triển",
+    "featureComingSoon": "Tính năng sắp ra mắt",
     "@featureComingSoon": {
         "placeholders": {
-            "feature": { "type": "String" }
+            "feature": {
+                "type": "String"
+            }
         }
     },
     "changePasswordTitle": "Đổi Mật Khẩu",
@@ -141,7 +145,9 @@
     "postHideAllFrom": "Ẩn tất cả từ {authorName}",
     "@postHideAllFrom": {
         "placeholders": {
-            "authorName": { "type": "String" }
+            "authorName": {
+                "type": "String"
+            }
         }
     },
     "thisPerson": "người này",
@@ -154,18 +160,23 @@
     "replyingTo": "Đang trả lời {userName}",
     "@replyingTo": {
         "placeholders": {
-            "userName": { "type": "String" }
+            "userName": {
+                "type": "String"
+            }
         }
     },
     "replyToHint": "Trả lời @{userName}...",
     "@replyToHint": {
         "placeholders": {
-            "userName": { "type": "String" }
+            "userName": {
+                "type": "String"
+            }
         }
     },
     "writeCommentHint": "Viết bình luận...",
     "journeyCompleted": "Đã hoàn thành",
     "journeyUpcoming": "Sắp tới",
+    "journeyCancelled": "Đã hủy",
     "journeyStatTrips": "Chuyến đi",
     "journeyStatDistance": "Quãng đường",
     "journeyStatCompanions": "Người đồng hành",
@@ -191,14 +202,20 @@
     "milestoneAltitude": "{altitude} m so mực nước biển",
     "@milestoneAltitude": {
         "placeholders": {
-            "altitude": { "type": "String" }
+            "altitude": {
+                "type": "String"
+            }
         }
     },
     "milestoneProgress": "{checked}/{total} mốc",
     "@milestoneProgress": {
         "placeholders": {
-            "checked": { "type": "int" },
-            "total": { "type": "int" }
+            "checked": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
         }
     },
     "journeyDetailMapTitle": "BẢN ĐỒ LỘ TRÌNH",
@@ -224,7 +241,9 @@
     "mapDataHeader": "Dữ liệu {name} Map",
     "@mapDataHeader": {
         "placeholders": {
-            "name": { "type": "String" }
+            "name": {
+                "type": "String"
+            }
         }
     },
     "mapLabel": "Bản đồ",
@@ -235,7 +254,9 @@
     "waypointsCount": "{count} Waypoints",
     "@waypointsCount": {
         "placeholders": {
-            "count": { "type": "int" }
+            "count": {
+                "type": "int"
+            }
         }
     },
     "trailSupportLabel": "Đường mòn",
@@ -252,13 +273,17 @@
     "checkinTargetAltitude": "Độ cao mục tiêu: {altitude} m",
     "@checkinTargetAltitude": {
         "placeholders": {
-            "altitude": { "type": "String" }
+            "altitude": {
+                "type": "String"
+            }
         }
     },
     "checkinWithinRange": "Bạn đang ở trong phạm vi check-in! (Cách {distance}m)",
     "@checkinWithinRange": {
         "placeholders": {
-            "distance": { "type": "int" }
+            "distance": {
+                "type": "int"
+            }
         }
     },
     "checkinNowButton": "Check-in ngay",
@@ -267,7 +292,9 @@
     "checkinSuccessToast": "Đã check-in thành công tại {name}!",
     "@checkinSuccessToast": {
         "placeholders": {
-            "name": { "type": "String" }
+            "name": {
+                "type": "String"
+            }
         }
     },
     "checkinCongratulation": "CHÚC MỪNG!",
@@ -275,7 +302,9 @@
     "checkinSuccessMessage": "Bạn đã hoàn thành điểm mốc {name}.",
     "@checkinSuccessMessage": {
         "placeholders": {
-            "name": { "type": "String" }
+            "name": {
+                "type": "String"
+            }
         }
     },
     "achievementsEarnedTitle": "HUY HIỆU ĐÃ ĐẠT ĐƯỢC",
@@ -285,24 +314,31 @@
     "continueJourneyButton": "Tiếp tục hành trình",
     "ratePlaceButton": "Đánh giá địa điểm",
     "shareAchievementButton": "Chia sẻ thành tích",
-    "featureComingSoon": "Tính năng sắp ra mắt",
     "milestoneConquerBadgeTitle": "Chinh phục {name}",
     "@milestoneConquerBadgeTitle": {
         "placeholders": {
-            "name": { "type": "String" }
+            "name": {
+                "type": "String"
+            }
         }
     },
     "milestoneConquerBadgeDesc": "Ghi dấu chân thành công tại {name} ở độ cao {altitude}m",
     "@milestoneConquerBadgeDesc": {
         "placeholders": {
-            "name": { "type": "String" },
-            "altitude": { "type": "String" }
+            "name": {
+                "type": "String"
+            },
+            "altitude": {
+                "type": "String"
+            }
         }
     },
     "milestoneConquerBadgeDescSimple": "Ghi dấu chân thành công tại điểm mốc {name}",
     "@milestoneConquerBadgeDescSimple": {
         "placeholders": {
-            "name": { "type": "String" }
+            "name": {
+                "type": "String"
+            }
         }
     },
     "ratePlaceTitle": "Đánh giá địa điểm",
@@ -318,8 +354,12 @@
     "rateStarsSummary": "{rating}/5 sao - {name}",
     "@rateStarsSummary": {
         "placeholders": {
-            "rating": { "type": "int" },
-            "name": { "type": "String" }
+            "rating": {
+                "type": "int"
+            },
+            "name": {
+                "type": "String"
+            }
         }
     },
     "rateViewOtherReviews": "Xem đánh giá khác",
@@ -330,7 +370,9 @@
     "achievedDatePrefix": "Ngày đạt được: {date}",
     "@achievedDatePrefix": {
         "placeholders": {
-            "date": { "type": "String" }
+            "date": {
+                "type": "String"
+            }
         }
     },
     "allBadgesTitle": "Tất cả huy hiệu",
@@ -389,21 +431,29 @@
     "rankXpEarned": "Bạn nhận được +{xp} XP",
     "@rankXpEarned": {
         "placeholders": {
-            "xp": { "type": "String" }
+            "xp": {
+                "type": "String"
+            }
         }
     },
     "rankPromoted": "Lên hạng {name} · Level {level}!",
     "@rankPromoted": {
         "placeholders": {
-            "name": { "type": "String" },
-            "level": { "type": "int" }
+            "name": {
+                "type": "String"
+            },
+            "level": {
+                "type": "int"
+            }
         }
     },
     "rankDetailTitle": "Hạng và XP",
     "rankLevel": "Level {level}",
     "@rankLevel": {
         "placeholders": {
-            "level": { "type": "int" }
+            "level": {
+                "type": "int"
+            }
         }
     },
     "rankViewDetails": "Xem chi tiết các hạng",
@@ -411,13 +461,17 @@
     "rankNextTarget": "Hạng tiếp theo: {name}",
     "@rankNextTarget": {
         "placeholders": {
-            "name": { "type": "String" }
+            "name": {
+                "type": "String"
+            }
         }
     },
     "rankXpRemaining": "Cần thêm {xp} XP để đạt mốc XP tiếp theo",
     "@rankXpRemaining": {
         "placeholders": {
-            "xp": { "type": "String" }
+            "xp": {
+                "type": "String"
+            }
         }
     },
     "rankXpReached": "Đã đủ XP. Hoàn thành các điều kiện còn lại để lên hạng.",
@@ -439,7 +493,9 @@
     "rankOverallProgress": "Tiến độ các điều kiện: {percent}%",
     "@rankOverallProgress": {
         "placeholders": {
-            "percent": { "type": "String" }
+            "percent": {
+                "type": "String"
+            }
         }
     },
     "rankPromotionTitle": "Chúc mừng bạn thăng hạng!",
@@ -471,5 +527,697 @@
     "journeyMilestonesEmpty": "Chưa có điểm check-in",
     "journeyMilestonesEmptyMessage": "Cung đường này chưa có cột mốc check-in chính thức. Quản trị viên cần thêm cột mốc cho cung đường trước khi bạn có thể check-in. Bạn vẫn có thể mở bản đồ để đánh dấu mốc cá nhân.",
     "journeyReloadMilestones": "Tải lại cột mốc",
-    "journeyCheckinClose": "Đóng"
+    "journeyCheckinClose": "Đóng",
+    "commonRetry": "Thử lại",
+    "commonReload": "Tải lại",
+    "commonLoading": "Đang tải…",
+    "commonSaving": "Đang lưu…",
+    "commonDelete": "Xóa",
+    "commonClose": "Đóng",
+    "commonSaveChanges": "Lưu thay đổi",
+    "commonViewMore": "Xem thêm",
+    "commonNoData": "Chưa có dữ liệu",
+    "postCreateTitle": "Tạo bài viết",
+    "postEditTitle": "Chỉnh sửa bài viết",
+    "postSharingWithTrekViet": "Đang chia sẻ cùng cộng đồng TrekViệt",
+    "visibilityPublic": "Công khai",
+    "visibilityPrivate": "Chỉ mình tôi",
+    "whatsOnYourMind": "Bạn đang nghĩ gì?",
+    "postAddToPost": "Thêm vào bài viết",
+    "postAddPhoto": "Ảnh",
+    "postMaxImagesHint": "Chỉ có thể chọn tối đa 10 ảnh",
+    "postSelectedImagesCount": "{count} ảnh đã chọn",
+    "@postSelectedImagesCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "postRemoveImage": "Xóa ảnh",
+    "postTagLocation": "Gắn vị trí",
+    "postShareJourney": "Chia sẻ hành trình",
+    "postPublishButton": "Đăng bài",
+    "postDeleteTitle": "Xóa bài viết",
+    "postDeleteMessage": "Bạn có chắc chắn muốn xóa bài viết này không? Hành động này không thể hoàn tác.",
+    "postDeleteError": "Không thể xóa bài viết: {error}",
+    "@postDeleteError": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "postCopiedToClipboard": "Đã sao chép vào bộ nhớ tạm",
+    "postEditAction": "Chỉnh sửa bài viết",
+    "postDeleteAction": "Xóa bài viết",
+    "postPublishedSuccess": "Đã đăng bài viết thành công",
+    "syncBeforeCommunityShare": "Vui lòng đồng bộ hành trình trước khi chia sẻ lên cộng đồng",
+    "shareJourneyDefaultContent": "Hành trình trekking {name} của mình!",
+    "@shareJourneyDefaultContent": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "reportFeatureUnavailable": "Tính năng báo cáo chưa khả dụng",
+    "messagesTabTitle": "Tin nhắn",
+    "newMessageTooltip": "Nhắn tin mới",
+    "groupCreateTitle": "Tạo nhóm trekking",
+    "groupNameLabel": "Tên nhóm",
+    "groupMaxMembersHint": "Tối đa 10 thành viên cho nhóm thường",
+    "groupAddByEmailOrQr": "Thêm bằng Email/QR",
+    "unselect": "Bỏ chọn",
+    "groupCreating": "Đang tạo nhóm...",
+    "groupCreateButton": "Tạo nhóm",
+    "groupNameAndMemberRequired": "Vui lòng nhập tên nhóm và chọn ít nhất 1 thành viên",
+    "groupDetailsTitle": "Chi tiết nhóm",
+    "groupMemberCount": "Thành viên ({count})",
+    "@groupMemberCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "groupRenameDialogTitle": "Đổi tên nhóm",
+    "groupRenameButton": "Đổi tên",
+    "groupAddMemberButton": "Thêm thành viên",
+    "groupOwnerRole": "Trưởng nhóm",
+    "groupTransferOwnerTitle": "Chuyển quyền trưởng nhóm",
+    "groupTransferOwnerMessage": "Bạn có chắc muốn chuyển quyền trưởng nhóm cho {name}? Bạn sẽ trở thành thành viên thường.",
+    "@groupTransferOwnerMessage": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "groupTransferOwnerConfirm": "Chuyển quyền",
+    "groupTransferOwnerAction": "Chuyển quyền trưởng nhóm",
+    "groupRemoveMemberAction": "Xóa khỏi nhóm",
+    "groupLeaveAction": "Rời nhóm",
+    "groupLeaveOwnerHint": "Bạn là trưởng nhóm. Hãy chuyển quyền trưởng nhóm cho người khác trước khi rời nhóm.",
+    "messagesHeaderSubtitle": "Nhắn tin trực tiếp và nhóm trekking",
+    "noConversationsYet": "Chưa có cuộc trò chuyện nào",
+    "groupPaused": "Nhóm tạm dừng",
+    "directMessage": "Trò chuyện trực tiếp",
+    "viewMoreConversations": "Xem thêm cuộc trò chuyện",
+    "selectMember": "Chọn thành viên",
+    "searchUser": "Tìm kiếm người dùng",
+    "searchUserHint": "Nhập email hoặc tên người dùng...",
+    "emailOrQrContent": "Nội dung Email hoặc mã QR",
+    "searchButton": "Tìm kiếm",
+    "scanQrButton": "Quét mã QR",
+    "personalPage": "Trang cá nhân",
+    "groupSuspendedByAdmin": "Nhóm đã bị quản trị viên đình chỉ hoạt động",
+    "olderMessages": "Tin nhắn cũ hơn",
+    "recallMessage": "Thu hồi",
+    "reportMessage": "Báo cáo",
+    "reportReason": "Lý do báo cáo",
+    "reportMessageDesc": "Mô tả lý do bạn báo cáo tin nhắn này",
+    "reportSentToAdmin": "Đã gửi báo cáo cho quản trị viên",
+    "formerMember": "Thành viên cũ",
+    "messageRecalled": "Tin nhắn đã được thu hồi",
+    "typeMessageHint": "Nhập tin nhắn...",
+    "sendMessageTooltip": "Gửi",
+    "sendErrorRetryHint": "Lỗi gửi: {error}. Bấm để thử lại.",
+    "@sendErrorRetryHint": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "commentSaveError": "Không thể lưu bình luận: {error}",
+    "@commentSaveError": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "commentDeleteTitle": "Xóa bình luận",
+    "commentDeleteMessage": "Bạn có chắc muốn xóa bình luận này không?",
+    "commentDeleteError": "Không thể xóa bình luận: {error}",
+    "@commentDeleteError": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "commentEditTitle": "Chỉnh sửa bình luận",
+    "contentRequired": "Nội dung không được để trống",
+    "selectYourJourney": "Chọn hành trình của bạn",
+    "searchPlaceHint": "Tìm địa điểm trekking...",
+    "onlySyncedJourneysHint": "Chỉ có thể chia sẻ các hành trình đã đồng bộ lên hệ thống",
+    "noDataToSelect": "Không có dữ liệu để chọn",
+    "finishJourneyTitle": "Kết thúc hành trình?",
+    "finishJourneyDesc": "Bạn có chắc chắn muốn kết thúc hành trình này? Sau khi kết thúc, dữ liệu track log sẽ được lưu lại.",
+    "finishJourneySaveGpsNotice": "Sau khi kết thúc, bạn có thể lưu track log GPS thành tuyến đường mới để đóng góp cho cộng đồng.",
+    "keepGoingButton": "Tiếp tục đi",
+    "finishButton": "Kết thúc",
+    "finishAndSendToAdmin": "Kết thúc & Gửi duyệt",
+    "locationFetchFailed": "Không thể lấy vị trí hiện tại: {error}",
+    "@locationFetchFailed": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "locationFetchForMarkerFailed": "Không thể lấy vị trí GPS để tạo điểm mốc",
+    "sendToAdminButton": "Gửi cho Admin",
+    "markersSyncedSendToAdmin": "Các điểm mốc đã được đồng bộ lên máy chủ. Bạn có thể gửi đóng góp để quản trị viên duyệt đưa vào bản đồ chính thức.",
+    "markersSavedOfflineNeedSync": "Các điểm mốc đã được lưu offline. Khi có mạng và sau khi đồng bộ lên máy chủ, bạn có thể gửi đóng góp cho quản trị viên.",
+    "markersSavedOfflineAutoSync": "Các điểm mốc được lưu offline trên máy và sẽ tự động đồng bộ khi có kết nối mạng.",
+    "completeJourneyBeforeSendAdmin": "Hãy hoàn thành hành trình trước khi gửi đề xuất tuyến đường/cột mốc cho Admin.",
+    "milestonesLoadFailedRetry": "Không thể tải cột mốc. Bấm để thử lại.",
+    "downloadOrUpdateOfflineMap": "Tải / Cập nhật bản đồ Offline",
+    "journeyMapTitle": "Bản đồ hành trình",
+    "detailLabel": "Chi tiết",
+    "journeyDetailTitle": "Chi tiết hành trình",
+    "milestonesArrivedCount": "Đã đến {checked}/{total} cột mốc",
+    "@milestonesArrivedCount": {
+        "placeholders": {
+            "checked": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "backtrackReturnToStart": "Backtrack: Quay về điểm xuất phát",
+    "backtrackRecordRoute": "Backtrack: Ghi tracklog đường đi",
+    "savedRoute": "Tuyến đường đã lưu",
+    "recordingGpsForeground": "Đang ghi GPS chạy ngầm",
+    "pausedRecordingGps": "Tạm dừng ghi GPS",
+    "savedOfflineUsable": "Đã lưu offline, có thể dùng khi mất sóng",
+    "stopGpsRecording": "Dừng ghi GPS",
+    "recordRouteButton": "Ghi đường đi",
+    "startGpsRecording": "Bắt đầu ghi GPS",
+    "exitBacktrack": "Thoát Backtrack",
+    "returnAlongRoute": "Quay lại theo đường đã đi",
+    "backtrackOrangeTrailNotice": "Theo dõi vệt màu cam trên bản đồ để quay trở lại điểm xuất phát an toàn.",
+    "checkinPointLegend": "Điểm check-in",
+    "yourMarkerLegend": "Điểm mốc của bạn",
+    "yourLocationAccuracy": "Vị trí của bạn (±{accuracy}m)",
+    "@yourLocationAccuracy": {
+        "placeholders": {
+            "accuracy": {
+                "type": "String"
+            }
+        }
+    },
+    "sendMarkersToAdminCount": "Gửi {count} điểm mốc cho Admin",
+    "@sendMarkersToAdminCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "markMilestoneButton": "Đánh dấu mốc",
+    "savingJourneyProgress": "Đang lưu dữ liệu hành trình...",
+    "finishJourneyButton": "Kết thúc hành trình",
+    "shareToCommunityButton": "Chia sẻ lên cộng đồng",
+    "shareRouteToAdminButton": "Đóng góp tuyến đường cho Admin",
+    "cannotOpenRouteShare": "Không thể mở chia sẻ tuyến đường: {error}",
+    "@cannotOpenRouteShare": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "offlineMapAvailable": "Bản đồ offline khả dụng",
+    "offlineMapNotDownloaded": "Chưa tải bản đồ offline",
+    "tapViewMapNotice": "Chạm để xem bản đồ lộ trình chi tiết",
+    "checkinPhotosCount": "Ảnh check-in ({count})",
+    "@checkinPhotosCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "cannotOpenJourneyData": "Không thể mở dữ liệu hành trình",
+    "journeyPlansLabel": "Kế hoạch hành trình",
+    "journeyEstimatedTotal": "Ước tính tổng cộng: {count} ngày",
+    "@journeyEstimatedTotal": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "personCount": "{count} người",
+    "@personCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "provincesLabel": "Tỉnh thành",
+    "noPlansYet": "Chưa có kế hoạch hành trình nào",
+    "startFirstJourneyHint": "Hãy bắt đầu chuyến đi đầu tiên của bạn!",
+    "createPlanForNextTripHint": "Tạo kế hoạch cho chuyến đi sắp tới của bạn",
+    "otherLabel": "Khác",
+    "contributionTitle": "Đóng góp tuyến đường & cột mốc",
+    "contributionMarkerOnlyTitle": "Đóng góp cột mốc",
+    "contributionSuccessTitle": "Gửi đóng góp thành công!",
+    "contributionSavedOfflineTitle": "Đã lưu đóng góp offline!",
+    "contributionOfflineNotice": "Dữ liệu đóng góp đã được lưu trên máy của bạn. Khi có kết nối mạng, ứng dụng sẽ tự động đồng bộ và gửi đến quản trị viên để xem xét phê duyệt.",
+    "contributionMarkersReceived": "Cảm ơn bạn đã đóng góp {count} điểm mốc mới. Quản trị viên sẽ xem xét và phê duyệt để đưa lên bản đồ chính thức của TrekViệt.",
+    "@contributionMarkersReceived": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "contributionRouteAndMarkersReceived": "Cảm ơn bạn đã đóng góp tuyến đường cùng {count} điểm mốc mới. Quản trị viên sẽ xem xét và phê duyệt để đưa lên bản đồ chính thức của TrekViệt.",
+    "@contributionRouteAndMarkersReceived": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "contributionStatusPendingSync": "Trạng thái: Chờ đồng bộ khi có mạng",
+    "contributionViewHistoryNotice": "Bạn có thể xem lại trong Lịch sử đóng góp ở trang Hồ sơ.",
+    "contributionSourceJourney": "Từ hành trình: {name}",
+    "@contributionSourceJourney": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "contributionNameLabel": "Tên tuyến đường đề xuất *",
+    "contributionMarkerNameLabel": "Tên đóng góp *",
+    "contributionNameHint": "VD: Cung đường leo Fansipan qua Trạm Tôn...",
+    "contributionNameRequired": "Vui lòng nhập tên tuyến đường đề xuất",
+    "contributionDescLabel": "Mô tả chi tiết",
+    "contributionDescHint": "Mô tả về địa hình, cảnh quan, trải nghiệm thực tế...",
+    "contributionSafetyLabel": "Lưu ý an toàn / Mẹo đi đường",
+    "contributionSafetyHint": "Nguồn nước, điểm cắm trại an toàn, đoạn trơn trượt...",
+    "contributionSelectMarkersLabel": "Chọn các điểm mốc kèm theo ({count})",
+    "@contributionSelectMarkersLabel": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "contributionSelectMarkersHint": "Đánh dấu chọn các điểm mốc cá nhân bạn đã tạo để gửi duyệt kèm tuyến đường",
+    "contributionSubmitButton": "Gửi cho Admin duyệt",
+    "contributionSkipButton": "Bỏ qua đóng góp",
+    "markerFormCreateTitle": "Đánh dấu điểm mốc",
+    "markerFormEditTitle": "Chỉnh sửa điểm mốc",
+    "markerNameLabel": "Tên điểm mốc *",
+    "markerNameHint": "VD: Đỉnh núi, Suối nước, Điểm cắm trại...",
+    "markerTypeLabel": "Loại điểm mốc",
+    "markerGpsCoordinates": "Tọa độ GPS",
+    "markerPhotosLabel": "Hình ảnh điểm mốc",
+    "markerAddPhoto": "+ Thêm ảnh",
+    "markerNoteLabel": "Ghi chú thêm",
+    "markerNoteHint": "Lưu ý về nguồn nước, độ dốc, sóng điện thoại...",
+    "markerSaveOffline": "Lưu trên máy",
+    "markerSaveAndSync": "Lưu & Đồng bộ điểm mốc",
+    "markerSyncDesc": "Điểm mốc sẽ được lưu trên máy và tự động đồng bộ lên máy chủ khi có mạng.",
+    "markerSaveError": "Không thể lưu điểm mốc: {error}",
+    "@markerSaveError": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "placeReviewTitle": "Đánh giá địa điểm",
+    "anonymousTrekker": "Trekker ẩn danh",
+    "noReviewsYet": "Chưa có đánh giá nào",
+    "viewMoreReviews": "Xem thêm đánh giá",
+    "satisfactionLevelPrompt": "Mức độ hài lòng của bạn?",
+    "shareExperiencePrompt": "Chia sẻ trải nghiệm",
+    "shareExperienceHint": "Chia sẻ cảm nhận, lời khuyên và trải nghiệm về địa điểm này...",
+    "addPhotosPrompt": "Thêm hình ảnh",
+    "addPhotosMax10": "Tối đa 10 ảnh",
+    "anonymousReviewLabel": "Đánh giá ẩn danh",
+    "anonymousReviewDesc": "Tên của bạn sẽ không hiển thị công khai",
+    "submitReviewButton": "Gửi đánh giá",
+    "saveReviewEditButton": "Lưu đánh giá",
+    "reviewThankYouTitle": "Cảm ơn bạn!",
+    "reviewThankYouMessage": "Đánh giá của bạn đã được ghi nhận và sẽ giúp ích rất nhiều cho cộng đồng Trekker Việt Nam.",
+    "yourReviewSection": "Đánh giá của bạn",
+    "viewOtherReviewsButton": "Xem các đánh giá khác",
+    "backToHomeButton": "Quay về trang chủ",
+    "noFeaturedPlaces": "Chưa có địa điểm nổi bật nào",
+    "noMatchingRoutes": "Không tìm thấy cung đường phù hợp",
+    "noMatchingSuggestions": "Không tìm thấy gợi ý phù hợp",
+    "addRouteButton": "Thêm cung đường",
+    "addPlaceButton": "Thêm địa điểm",
+    "routeEstimatedDuration": "Thời gian ước tính: {duration}",
+    "@routeEstimatedDuration": {
+        "placeholders": {
+            "duration": {
+                "type": "String"
+            }
+        }
+    },
+    "routeMaxElevation": "Độ cao tối đa: {elevation} m",
+    "@routeMaxElevation": {
+        "placeholders": {
+            "elevation": {
+                "type": "String"
+            }
+        }
+    },
+    "routeElevationGain": "Độ cao tích lũy: {gain} m",
+    "@routeElevationGain": {
+        "placeholders": {
+            "gain": {
+                "type": "String"
+            }
+        }
+    },
+    "routeTotalDistance": "Tổng chiều dài: {distance} km",
+    "@routeTotalDistance": {
+        "placeholders": {
+            "distance": {
+                "type": "String"
+            }
+        }
+    },
+    "routeDescriptionTitle": "Mô tả cung đường",
+    "routeNoDescription": "Chưa có mô tả cho cung đường này.",
+    "routeDifficultyPrefix": "Độ khó: {difficulty}",
+    "@routeDifficultyPrefix": {
+        "placeholders": {
+            "difficulty": {
+                "type": "String"
+            }
+        }
+    },
+    "routePlacePrefix": "Địa điểm: {place}",
+    "@routePlacePrefix": {
+        "placeholders": {
+            "place": {
+                "type": "String"
+            }
+        }
+    },
+    "routeStartPrefix": "Điểm bắt đầu: {coords}",
+    "@routeStartPrefix": {
+        "placeholders": {
+            "coords": {
+                "type": "String"
+            }
+        }
+    },
+    "routeEndPrefix": "Điểm kết thúc: {coords}",
+    "@routeEndPrefix": {
+        "placeholders": {
+            "coords": {
+                "type": "String"
+            }
+        }
+    },
+    "downloadMapBeforeStart": "Tải bản đồ trước khi bắt đầu",
+    "cannotStartJourney": "Không thể bắt đầu hành trình: {error}",
+    "@cannotStartJourney": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "backToJourneyScreen": "Quay lại danh sách hành trình",
+    "difficultyEasy": "Dễ",
+    "difficultyModerate": "Trung bình",
+    "difficultyHard": "Khó",
+    "difficultyExpert": "Chuyên nghiệp",
+    "placeAboutSection": "Giới thiệu",
+    "placeNoDescription": "Chưa có thông tin giới thiệu cho địa điểm này.",
+    "placeRoutesSection": "Cung đường trekking ({count})",
+    "@placeRoutesSection": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "placeNoRoutes": "Chưa có cung đường nào tại địa điểm này.",
+    "offlineMapTitle": "Quản lý bản đồ Offline",
+    "offlineMapStorageUsed": "Dung lượng đã dùng: {size}",
+    "@offlineMapStorageUsed": {
+        "placeholders": {
+            "size": {
+                "type": "String"
+            }
+        }
+    },
+    "offlineMapCount": "{count} bản đồ đã tải",
+    "@offlineMapCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "noOfflineMapsTitle": "Chưa có bản đồ ngoại tuyến nào",
+    "noOfflineMapsDesc": "Hãy tải bản đồ của các cung đường bạn sắp đi để sử dụng khi mất kết nối mạng.",
+    "deleteOfflineMapTitle": "Xóa bản đồ ngoại tuyến",
+    "deleteOfflineMapConfirm": "Bạn có chắc chắn muốn xóa bản đồ của \"{name}\"? Bạn sẽ cần tải lại nếu muốn dùng offline.",
+    "@deleteOfflineMapConfirm": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "deleteOfflineMapButton": "Xóa bản đồ",
+    "deleteOfflineMapSuccess": "Đã xóa bản đồ {name}",
+    "@deleteOfflineMapSuccess": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "deleteOfflineMapError": "Không thể xóa bản đồ: {error}",
+    "@deleteOfflineMapError": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "offlineMapInUseNotice": "Bản đồ \"{name}\" đang được sử dụng bởi hành trình hiện tại.",
+    "@offlineMapInUseNotice": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "badgeUnlocked": "Đã đạt được",
+    "badgeLocked": "Chưa đạt được",
+    "badgeAchievedDate": "Đạt được ngày: {date}",
+    "@badgeAchievedDate": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            }
+        }
+    },
+    "badgeMissionProgress": "Tiến trình thử thách",
+    "viewAll": "Xem tất cả",
+    "shareAchievement": "Chia sẻ thành tích",
+    "shareAchievementText": "Mình vừa đạt được danh hiệu \"{title}\" trên TrekViệt! Cùng khám phá các cung đường trekking Việt Nam nhé!",
+    "@shareAchievementText": {
+        "placeholders": {
+            "title": {
+                "type": "String"
+            }
+        }
+    },
+    "suggestPlaceSuccess": "Đề xuất địa điểm đã được gửi thành công! Quản trị viên sẽ kiểm tra và phản hồi sớm.",
+    "filterAll": "Tất cả",
+    "cannotLoadRoutesError": "Không tải được một số cung đường: {error}",
+    "@cannotLoadRoutesError": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "noDistanceAvailable": "Chưa có cự ly",
+    "noReviewsYet": "Chưa có đánh giá",
+    "reviewsCount": "{rating} ({count} đánh giá)",
+    "@reviewsCount": {
+        "placeholders": {
+            "rating": {
+                "type": "String"
+            },
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "durationMinutes": "{minutes} phút",
+    "@durationMinutes": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "durationHours": "{hours} giờ",
+    "@durationHours": {
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            }
+        }
+    },
+    "durationHoursMinutes": "{hours} giờ {minutes} phút",
+    "@durationHoursMinutes": {
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            },
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "durationDays": "{days} ngày",
+    "@durationDays": {
+        "placeholders": {
+            "days": {
+                "type": "String"
+            }
+        }
+    },
+    "routeScope": "Tuyến đường",
+    "placeScope": "Địa điểm",
+    "mapInUseBadge": "Đang đi",
+    "downloadedOnDate": "Đã tải: {date}",
+    "@downloadedOnDate": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            }
+        }
+    },
+    "readyForOfflineUse": "Sẵn sàng sử dụng offline",
+    "manageOfflineMaps": "Quản lý bản đồ offline",
+    "homeNoPlacesToExplore": "Chưa có địa điểm để khám phá",
+    "yourMapPosterTitle": "Ảnh bản đồ của bạn",
+    "downloadPosterNow": "Tải ảnh ngay",
+    "loadProvinces": "Tải danh sách tỉnh",
+    "statElevation": "Độ cao",
+    "statDuration": "Thời gian",
+    "statRoutes": "Cung đường",
+    "difficultyExtreme": "Cực khó",
+    "commonError": "Đã có lỗi xảy ra. Vui lòng thử lại",
+    "statTotalDistance": "Tổng quãng đường",
+    "statElevationGain": "Độ cao tổng",
+    "statMaxElevation": "Điểm cao nhất",
+    "statEstimatedDuration": "Thời gian dự kiến",
+    "storageUsedLabel": "Dung lượng đã sử dụng",
+    "journeyCompletedTitle": "Hoàn thành hành trình!",
+    "termsOfUseTitle": "Điều khoản sử dụng",
+    "termsLastUpdated": "Cập nhật lần cuối: 20/12/2025",
+    "termsSection1Title": "Giới thiệu",
+    "termsSection1Content": "Chào mừng bạn đến với Trek Việt Nam, ứng dụng hỗ trợ điều hướng, ghi lại nhật ký hành trình trekking và kết nối cộng đồng đam mê dã ngoại tại Việt Nam. Bằng việc đăng ký tài khoản, bạn đồng ý tuân thủ các điều khoản này.",
+    "termsSection2Title": "Điều kiện sử dụng",
+    "termsSection2Content": "Bạn phải từ 16 tuổi trở lên hoặc có sự giám sát của người bảo hộ để sử dụng ứng dụng. Bạn chịu trách nhiệm hoàn toàn về tính bảo mật của mật khẩu và mọi hoạt động dưới tài khoản của mình.",
+    "termsSection3Title": "Quyền và nghĩa vụ của người dùng",
+    "termsSection3Content": "Người dùng được phép sử dụng bản đồ ngoại tuyến, lưu trữ lịch sử di chuyển và chia sẻ ảnh trekking lành mạnh lên cộng đồng. Nghiêm cấm hành vi phá hoại dữ liệu, đăng tải thông tin sai lệch về bản đồ biên giới hoặc địa danh nhạy cảm.",
+    "termsSection4Title": "Quyền sở hữu trí tuệ",
+    "termsSection4Content": "Toàn bộ mã nguồn, thiết kế đồ họa, hệ thống huy hiệu và cơ sở dữ liệu cung đường trekking độc quyền đều thuộc quyền sở hữu của Trek Việt Nam. Mọi hành vi sao chép không xin phép đều bị nghiêm cấm.",
+    "termsSection5Title": "Giới hạn trách nhiệm",
+    "termsSection5Content": "Trekking là hoạt động thể thao mạo hiểm ngoài trời. Chúng tôi cung cấp bản đồ GPS mang tính tham khảo và không chịu trách nhiệm pháp lý trước bất kỳ tai nạn, rủi ro tự nhiên hay lạc đường nào của bạn trên cung đường thực tế.",
+    "privacyPolicyTitle": "Chính sách bảo mật",
+    "privacySection1Title": "Thu thập dữ liệu",
+    "privacySection1Content": "Chúng tôi thu thập thông tin đăng ký (Tên, Email, Ảnh đại diện) và đặc biệt là dữ liệu vị trí GPS của bạn (ngay cả khi ứng dụng chạy ngầm) để vẽ bản đồ hành trình trekking và kích hoạt tính năng check-in.",
+    "privacySection2Title": "Sử dụng dữ liệu",
+    "privacySection2Content": "Dữ liệu vị trí được sử dụng để hiển thị vị trí của bạn trên bản đồ dã ngoại, thống kê tổng quãng đường di chuyển và mở khóa các huy hiệu thám hiểm cá nhân.",
+    "privacySection3Title": "Chia sẻ dữ liệu",
+    "privacySection3Content": "Thông tin và lịch sử đi trekking của bạn chỉ được chia sẻ công khai khi bạn chủ động ấn nút 'Đăng bài viết' trên diễn đàn Cộng đồng hoặc chia sẻ huy hiệu lên mạng xã hội.",
+    "privacySection4Title": "Bảo mật thông tin",
+    "privacySection4Content": "Trek Việt Nam áp dụng các biện pháp mã hóa đầu cuối tiên tiến nhất để bảo vệ thông tin cá nhân và dữ liệu tọa độ của bạn trước các truy cập trái phép.",
+    "privacySection5Title": "Quyền của bạn",
+    "privacySection5Content": "Bạn có quyền truy cập, chỉnh sửa thông tin hồ sơ cá nhân hoặc yêu cầu xóa vĩnh viễn tài khoản cùng toàn bộ lịch sử định vị GPS đã lưu trên máy chủ của chúng tôi bất kỳ lúc nào.",
+    "journeyOptionsTitle": "Tùy chọn",
+    "routeDetailOption": "Chi tiết Tuyến đường",
+    "journeyDetailOption": "Chi tiết Hành trình",
+    "selectPlaceTitle": "Chọn địa điểm",
+    "searchPlaceHint": "Tìm địa điểm",
+    "cannotLoadPlaces": "Không thể tải địa điểm.",
+    "noPlacesAvailable": "Chưa có địa điểm.",
+    "changePlaceButton": "Đổi địa điểm",
+    "searchRouteHint": "Tìm cung đường",
+    "cannotLoadRoutesAtPlace": "Không thể tải cung đường tại địa điểm này.",
+    "placeHasNoRoutes": "Địa điểm này chưa có cung đường.",
+    "routesAtPlacePrefix": "Cung đường tại {place}",
+    "@routesAtPlacePrefix": {
+        "placeholders": {
+            "place": {
+                "type": "String"
+            }
+        }
+    },
+    "downloadButton": "Tải xuống",
+    "retryDownloadButton": "Thử tải lại",
+    "cannotLoadRoutesGeneral": "Không thể tải cung đường. Vui lòng thử lại.",
+    "personalQrTitle": "QR cá nhân",
+    "personalQrDesc": "Người khác quét mã này để xem trang cá nhân và nhắn tin cho bạn.",
+    "copyCodeButton": "Sao chép mã",
+    "closeButton": "Đóng",
+    "noBioYet": "Chưa có giới thiệu.",
+    "userPostsCount": "{count} bài viết",
+    "@userPostsCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "aboutSection": "Giới thiệu",
+    "personalBio": "Giới thiệu cá nhân",
+    "myQrCode": "QR của tôi",
+    "reissueQrDialogTitle": "Cấp lại QR?",
+    "reissueQrDialogMessage": "Mã cũ sẽ ngừng hoạt động.",
+    "reissueButton": "Cấp lại",
+    "sendMessageButton": "Nhắn tin",
+    "cannotStartJourneyGeneral": "Không thể bắt đầu hành trình. Vui lòng thử lại.",
+    "viewMorePosts": "Xem thêm bài viết",
+    "communityProfileTitle": "Trang cá nhân cộng đồng",
+    "backToJourneyButton": "Quay lại hành trình",
+    "markerNameRequired": "Nhập tên cột mốc",
+    "syncFailedCheck": "Đồng bộ thất bại — cần kiểm tra",
+    "savedOfflinePendingSync": "Đã lưu trên máy · chờ đồng bộ",
+    "memberCountText": "{count} thành viên",
+    "@memberCountText": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "cancelJourneyButton": "Hủy hành trình",
+    "cancelJourneyConfirmTitle": "Hủy hành trình?",
+    "cancelJourneyConfirmMessage": "Bạn có chắc chắn muốn hủy hành trình này không? Trạng thái sẽ chuyển sang đã hủy.",
+    "editReviewOnceButton": "Chỉnh sửa đánh giá (1 lần)",
+    "completeJourneyToReview": "Hoàn thành hành trình tại đây để đánh giá.",
+    "reviewRemoved": "Đánh giá của bạn đã được gỡ.",
+    "reviewEditLimitReached": "Bạn đã dùng lượt chỉnh sửa đánh giá.",
+    "viewAllReviewsButton": "Xem tất cả đánh giá"
 }

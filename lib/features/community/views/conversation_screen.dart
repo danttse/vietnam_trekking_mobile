@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../data/datasources/social_api.dart';
 import '../viewmodels/conversation_view_model.dart';
 import 'community_helpers.dart';
@@ -76,6 +77,7 @@ class _ConversationState extends State<ConversationScreen> {
     listenable: model,
 
     builder: (context, _) {
+      final l10n = AppLocalizations.of(context);
       final chat = model.conversation;
 
       return Scaffold(
@@ -102,7 +104,7 @@ class _ConversationState extends State<ConversationScreen> {
               Expanded(
                 child: Text(
                   chat == null
-                      ? 'Tin nhắn'
+                      ? (l10n?.messagesTabTitle ?? 'Tin nhắn')
                       : conversationTitle(chat, model.ownerId),
 
                   overflow: TextOverflow.ellipsis,
@@ -115,8 +117,8 @@ class _ConversationState extends State<ConversationScreen> {
             if (chat != null)
               IconButton(
                 tooltip: chat['kind'] == 'GROUP'
-                    ? 'Thông tin nhóm'
-                    : 'Trang cá nhân',
+                    ? (l10n?.groupDetailsTitle ?? 'Chi tiết nhóm')
+                    : (l10n?.personalPage ?? 'Trang cá nhân'),
 
                 icon: const Icon(Icons.info_outline),
 
@@ -156,7 +158,7 @@ class _ConversationState extends State<ConversationScreen> {
                     TextButton(
                       onPressed: model.load,
 
-                      child: const Text('Thử lại'),
+                      child: Text(l10n?.commonRetry ?? 'Thử lại'),
                     ),
                   ],
                 ),
@@ -165,10 +167,13 @@ class _ConversationState extends State<ConversationScreen> {
             if (model.loading) const LinearProgressIndicator(),
 
             if (chat?['disabled'] == true)
-              const Padding(
-                padding: EdgeInsets.all(12),
+              Padding(
+                padding: const EdgeInsets.all(12),
 
-                child: Text('Nhóm đang tạm ngưng bởi quản trị viên.'),
+                child: Text(
+                  l10n?.groupSuspendedByAdmin ??
+                      'Nhóm đã bị quản trị viên đình chỉ hoạt động',
+                ),
               ),
 
             Expanded(
@@ -187,7 +192,9 @@ class _ConversationState extends State<ConversationScreen> {
                                 ? null
                                 : () => model.load(older: true),
 
-                            child: const Text('Tin nhắn cũ hơn'),
+                            child: Text(
+                              l10n?.olderMessages ?? 'Tin nhắn cũ hơn',
+                            ),
                           )
                         : const SizedBox(height: 12);
                   }
@@ -259,8 +266,9 @@ class _ConversationState extends State<ConversationScreen> {
                                                 children: [
                                                   if (own)
                                                     ListTile(
-                                                      title: const Text(
-                                                        'Thu hồi tin nhắn',
+                                                      title: Text(
+                                                        l10n?.recallMessage ??
+                                                            'Thu hồi tin nhắn',
                                                       ),
 
                                                       onTap: () =>
@@ -272,8 +280,9 @@ class _ConversationState extends State<ConversationScreen> {
 
                                                   if (!own)
                                                     ListTile(
-                                                      title: const Text(
-                                                        'Báo cáo tin nhắn',
+                                                      title: Text(
+                                                        l10n?.reportMessage ??
+                                                            'Báo cáo tin nhắn',
                                                       ),
 
                                                       onTap: () =>
@@ -304,9 +313,11 @@ class _ConversationState extends State<ConversationScreen> {
                                           final reason = await socialText(
                                             context,
 
-                                            'Lý do báo cáo',
+                                            l10n?.reportReason ??
+                                                'Lý do báo cáo',
 
-                                            description: 'Nội dung tin nhắn này sẽ được gửi kèm lý do tới quản trị viên.',
+                                            description: l10n?.reportMessageDesc ??
+                                                'Nội dung tin nhắn này sẽ được gửi kèm lý do tới quản trị viên.',
                                           );
 
                                           if (reason == null) return;
@@ -320,9 +331,10 @@ class _ConversationState extends State<ConversationScreen> {
                                           if (context.mounted) {
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(
-                                                  const SnackBar(
+                                                  SnackBar(
                                                     content: Text(
-                                                      'Đã gửi báo cáo đến quản trị viên.',
+                                                      l10n?.reportSentToAdmin ??
+                                                          'Đã gửi báo cáo đến quản trị viên.',
                                                     ),
                                                   ),
                                                 );
@@ -377,7 +389,8 @@ class _ConversationState extends State<ConversationScreen> {
 
                                           child: Text(
                                             sender?['name'] as String? ??
-                                                'Thành viên cũ',
+                                                (l10n?.formerMember ??
+                                                    'Thành viên cũ'),
 
                                             style: Theme.of(context)
                                                 .textTheme
@@ -391,7 +404,8 @@ class _ConversationState extends State<ConversationScreen> {
 
                                     Text(
                                       m['deleted'] == true
-                                          ? 'Tin nhắn đã được thu hồi'
+                                          ? (l10n?.messageRecalled ??
+                                              'Tin nhắn đã được thu hồi')
                                           : m['content'] as String,
 
                                       style: TextStyle(
@@ -434,7 +448,8 @@ class _ConversationState extends State<ConversationScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
 
                 child: Text(
-                  '${model.sendError}\nNội dung vẫn được giữ. Bấm gửi để thử lại.',
+                  l10n?.sendErrorRetryHint(model.sendError!) ??
+                      '${model.sendError}\nNội dung vẫn được giữ. Bấm gửi để thử lại.',
 
                   style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
@@ -465,10 +480,10 @@ class _ConversationState extends State<ConversationScreen> {
 
                         maxLength: 4000,
 
-                        decoration: const InputDecoration(
-                          hintText: 'Nhập tin nhắn…',
+                        decoration: InputDecoration(
+                          hintText: l10n?.typeMessageHint ?? 'Nhập tin nhắn…',
 
-                          border: OutlineInputBorder(),
+                          border: const OutlineInputBorder(),
 
                           counterText: '',
                         ),
@@ -476,7 +491,7 @@ class _ConversationState extends State<ConversationScreen> {
                     ),
 
                     IconButton(
-                      tooltip: 'Gửi tin nhắn',
+                      tooltip: l10n?.sendMessageTooltip ?? 'Gửi tin nhắn',
 
                       onPressed:
                           model.sending ||

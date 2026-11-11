@@ -39,25 +39,32 @@ class _ShowCommentScreenState extends State<ShowCommentScreen> {
     super.dispose();
   }
 
-  Future<void> _edit(CommentModel comment) => showDialog<void>(
-    context: context,
-    barrierDismissible: false,
-    builder: (_) => EditCommunityCommentDialog(
-      content: comment.content,
-      onSave: (text) async {
-        final saved = await _viewModel.editComment(comment, text);
-        return saved
-            ? null
-            : (_viewModel.actionError ?? 'Không thể lưu bình luận.');
-      },
-    ),
-  );
+  Future<void> _edit(CommentModel comment) {
+    final l10n = AppLocalizations.of(context);
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => EditCommunityCommentDialog(
+        content: comment.content,
+        onSave: (text) async {
+          final saved = await _viewModel.editComment(comment, text);
+          return saved
+              ? null
+              : (_viewModel.actionError ??
+                  l10n?.commentSaveError('') ??
+                  'Không thể lưu bình luận.');
+        },
+      ),
+    );
+  }
 
   Future<void> _delete(CommentModel comment) async {
+    final l10n = AppLocalizations.of(context);
     if (!await confirmCommunityDelete(
       context,
-      title: 'Xóa bình luận?',
-      message: 'Nội dung bình luận sẽ bị xóa. Các phản hồi vẫn được giữ lại.',
+      title: l10n?.commentDeleteTitle ?? 'Xóa bình luận?',
+      message: l10n?.commentDeleteMessage ??
+          'Nội dung bình luận sẽ bị xóa. Các phản hồi vẫn được giữ lại.',
     )) {
       return;
     }
@@ -66,7 +73,11 @@ class _ShowCommentScreenState extends State<ShowCommentScreen> {
     if (!mounted || deleted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(_viewModel.actionError ?? 'Không thể xóa bình luận.'),
+        content: Text(
+          _viewModel.actionError ??
+              l10n?.commentDeleteError('') ??
+              'Không thể xóa bình luận.',
+        ),
       ),
     );
   }
@@ -100,7 +111,7 @@ class _ShowCommentScreenState extends State<ShowCommentScreen> {
                           Text(_viewModel.error!, textAlign: TextAlign.center),
                           TextButton(
                             onPressed: _viewModel.loadComments,
-                            child: const Text('Thử lại'),
+                            child: Text(l10n.commonRetry),
                           ),
                         ],
                       ),

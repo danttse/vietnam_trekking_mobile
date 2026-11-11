@@ -107,9 +107,12 @@ class _SelectProvinceSheetState extends State<SelectProvinceSheet>
         debugPrint('[SelectProvinceSheet] unexpected save error: $e');
       }
       if (mounted) {
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Đã có lỗi xảy ra. Vui lòng thử lại'),
+            content: Text(
+              l10n?.commonError ?? 'Đã có lỗi xảy ra. Vui lòng thử lại',
+            ),
             backgroundColor: Theme.of(context).colorScheme.error,
             behavior: SnackBarBehavior.floating,
           ),

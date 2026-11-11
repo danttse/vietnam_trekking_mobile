@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/widgets/app_bar/app_top_bar_with_back.dart';
 import '../../../core/widgets/buttons/btn_outline_style.dart';
 import '../../../core/widgets/cards/profile_progress_bar.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../community/views/community_share.dart';
 import '../data/models/badge_model.dart';
 import '../data/models/profile_model.dart';
@@ -22,6 +23,7 @@ class _BadgeDetailScreenState extends State<BadgeDetailScreen> {
   late final BadgeDetailViewModel _viewModel;
 
   Future<void> _showAllBadges() async {
+    final l10n = AppLocalizations.of(context)!;
     final selected = await showModalBottomSheet<BadgeModel>(
       context: context,
       isScrollControlled: true,
@@ -32,13 +34,13 @@ class _BadgeDetailScreenState extends State<BadgeDetailScreen> {
             controller: controller,
             padding: const EdgeInsets.all(16),
             children: [
-              const ListTile(title: Text('Tất cả huy hiệu')),
+              ListTile(title: Text(l10n.allBadgesTitle)),
               ..._viewModel.allBadges.map(
                 (badge) => ListTile(
                   leading: Icon(badge.icon),
                   title: Text(badge.title),
                   subtitle: Text(
-                    badge.isUnlocked ? 'Đã đạt được' : 'Chưa mở khóa',
+                    badge.isUnlocked ? l10n.badgeUnlocked : l10n.badgeLocked,
                   ),
                   onTap: () => Navigator.pop(context, badge),
                 ),
@@ -98,6 +100,7 @@ class _BadgeDetailScreenState extends State<BadgeDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
@@ -111,7 +114,7 @@ class _BadgeDetailScreenState extends State<BadgeDetailScreen> {
             return Column(
               children: [
                 AppTopBarWithBack(
-                  title: 'Chi tiết huy hiệu',
+                  title: l10n.badgeDetailTitle,
                   onBack: () => Navigator.pop(context),
                 ),
                 Expanded(
@@ -187,7 +190,7 @@ class _BadgeDetailScreenState extends State<BadgeDetailScreen> {
                         if (badge.achievedDate != null) ...[
                           const SizedBox(height: 8),
                           Text(
-                            'Ngày đạt được: ${badge.achievedDate}',
+                            l10n.badgeAchievedDate(badge.achievedDate!),
                             style: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
@@ -199,7 +202,7 @@ class _BadgeDetailScreenState extends State<BadgeDetailScreen> {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: ProfileProvinceProgressBar(
-                            title: 'TIẾN TRÌNH NHIỆM VỤ',
+                            title: l10n.badgeMissionProgress,
                             current: badge.currentProgress,
                             total: badge.totalProgress,
                             unit: badge.progressUnit,
@@ -213,7 +216,7 @@ class _BadgeDetailScreenState extends State<BadgeDetailScreen> {
                             children: [
                               Expanded(
                                 child: Text(
-                                  'HUY HIỆU KHÁC CỦA BẠN',
+                                  l10n.otherBadgesTitle,
                                   style: TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.bold,
@@ -234,7 +237,7 @@ class _BadgeDetailScreenState extends State<BadgeDetailScreen> {
                                     vertical: 2,
                                   ),
                                   child: Text(
-                                    'Xem tất cả',
+                                    l10n.viewAll,
                                     style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w600,
@@ -326,17 +329,14 @@ class _BadgeDetailScreenState extends State<BadgeDetailScreen> {
                   child: SizedBox(
                     width: double.infinity,
                     child: BtnOutlineStyle(
-                      text: 'Chia sẻ thành tích',
+                      text: l10n.shareAchievement,
                       icon: const Icon(Icons.share_outlined, size: 20),
                       onPressed: !isUnlocked
                           ? null
                           : () => openCommunityShare(
                               context,
                               type: 'BADGE_SHARE',
-                              content:
-                                  'Mình đã đạt huy hiệu ${badge.title}!\n'
-                                  '${badge.description}'
-                                  '${badge.achievedDate == null ? '' : '\nNgày đạt được: ${badge.achievedDate}'}\n#TrekViet',
+                              content: l10n.shareAchievementText(badge.title),
                             ),
                     ),
                   ),

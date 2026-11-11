@@ -6,7 +6,7 @@ import '../../../core/widgets/cards/post_card.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/models/post_model.dart';
 import '../viewmodels/community_view_model.dart';
-import 'create_new_post_creen.dart';
+import 'create_new_post_screen.dart';
 import 'show_comment_screen.dart';
 import 'community_action_dialogs.dart';
 import 'community_people.dart';
@@ -52,7 +52,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
   Widget _buildFilterChips(ColorScheme colorScheme, AppLocalizations l10n) {
     final tabs = [
       l10n.communityTabPosts,
-      'Tin nhắn',
+      l10n.messagesTabTitle,
       l10n.communityTabPersonal,
     ];
 
@@ -98,16 +98,17 @@ class _CommunityScreenState extends State<CommunityScreen> {
   Future<void> _editPost(PostModel post) async {
     final updated = await Navigator.push<PostModel>(
       context,
-      MaterialPageRoute(builder: (_) => CreateNewPostCreen(post: post)),
+      MaterialPageRoute(builder: (_) => CreateNewPostScreen(post: post)),
     );
     if (mounted && updated != null) await _viewModel.loadPosts(silent: true);
   }
 
   Future<void> _deletePost(PostModel post) async {
+    final l10n = AppLocalizations.of(context)!;
     if (!await confirmCommunityDelete(
       context,
-      title: 'Xóa bài viết?',
-      message: 'Bài viết và nội dung bình luận sẽ bị xóa khỏi cộng đồng.',
+      title: l10n.postDeleteTitle,
+      message: l10n.postDeleteMessage,
     )) {
       return;
     }
@@ -116,7 +117,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
     if (!mounted || deleted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(_viewModel.actionError ?? 'Không thể xóa bài viết.'),
+        content: Text(_viewModel.actionError ?? l10n.postDeleteError('')),
       ),
     );
   }
@@ -129,12 +130,13 @@ class _CommunityScreenState extends State<CommunityScreen> {
   }
 
   Future<void> _copyPost(PostModel post) async {
+    final l10n = AppLocalizations.of(context)!;
     await Clipboard.setData(
       ClipboardData(text: [post.content, ...post.images].join('\n')),
     );
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Đã sao chép nội dung bài viết.')),
+      SnackBar(content: Text(l10n.postCopiedToClipboard)),
     );
   }
 
@@ -160,7 +162,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   if (_viewModel.ownsPost(post)) ...[
                     ListTile(
                       leading: const Icon(Icons.edit_outlined),
-                      title: const Text('Sửa bài viết'),
+                      title: Text(l10n.postEditAction),
                       onTap: () {
                         Navigator.pop(modalContext);
                         _editPost(post);
@@ -168,7 +170,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                     ),
                     ListTile(
                       leading: const Icon(Icons.delete_outline),
-                      title: const Text('Xóa bài viết'),
+                      title: Text(l10n.postDeleteAction),
                       onTap: () {
                         Navigator.pop(modalContext);
                         _deletePost(post);
@@ -270,10 +272,8 @@ class _CommunityScreenState extends State<CommunityScreen> {
                     onTap: () {
                       Navigator.pop(modalContext);
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            'Tính năng báo cáo bài viết chưa khả dụng.',
-                          ),
+                        SnackBar(
+                          content: Text(l10n.reportFeatureUnavailable),
                         ),
                       );
                     },
@@ -353,7 +353,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                           Text(_viewModel.error!, textAlign: TextAlign.center),
                           TextButton(
                             onPressed: _viewModel.loadPosts,
-                            child: const Text('Thử lại'),
+                            child: Text(l10n.commonRetry),
                           ),
                         ],
                       ),
@@ -381,7 +381,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                           ),
                           TextButton(
                             onPressed: _viewModel.loadPosts,
-                            child: const Text('Tải lại'),
+                            child: Text(l10n.commonReload),
                           ),
                         ],
                       ),
@@ -408,8 +408,8 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                   : _viewModel.loadMore,
                               child: Text(
                                 _viewModel.isLoadingMore
-                                    ? 'Đang tải...'
-                                    : 'Xem thêm',
+                                    ? l10n.commonLoading
+                                    : l10n.commonViewMore,
                               ),
                             );
                           }
@@ -466,7 +466,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                       final newPost = await Navigator.push<PostModel>(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const CreateNewPostCreen(),
+                          builder: (context) => const CreateNewPostScreen(),
                         ),
                       );
                       if (mounted && newPost != null) {

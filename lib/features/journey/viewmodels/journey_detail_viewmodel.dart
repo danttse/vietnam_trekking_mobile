@@ -13,6 +13,7 @@ import '../data/models/milestone_model.dart';
 class JourneyDetailViewModel extends ChangeNotifier {
   JourneyModel? _journey;
   final TrekkingCatalogService _api;
+  final CheckinDao _checkinDao;
   StreamSubscription<String>? _offlineSubscription;
 
   Future<void>? _refreshing;
@@ -25,9 +26,11 @@ class JourneyDetailViewModel extends ChangeNotifier {
   JourneyDetailViewModel({
     JourneyModel? route,
     TrekkingCatalogService? catalog,
+    CheckinDao? checkinDao,
     bool autoLoad = true,
   }) : _journey = route,
-       _api = catalog ?? TrekkingCatalogService() {
+       _api = catalog ?? TrekkingCatalogService(),
+       _checkinDao = checkinDao ?? CheckinDao(dbHelper: (catalog ?? TrekkingCatalogService()).offline.databaseHelper) {
     _milestones = [];
     _offlineSubscription = _api.offline.changes.listen((owner) async {
       if (!_disposed &&
@@ -126,39 +129,47 @@ class JourneyDetailViewModel extends ChangeNotifier {
           .toList();
       // Lay danh sach checkin tu SQLite va server
       final verified = <String, DateTime?>{};
-      try {
-        final checkins = await _api.getJourneyCheckins(activeJourney.journeyId);
-        for (final checkin in checkins) {
-          final syncStatus =
-              checkin['offlineSyncStatus'] ?? checkin['syncStatus'];
-          final verification = (checkin['verification'] is Map)
-              ? (checkin['verification'] as Map)['status']
-              : checkin['verificationStatus'] ?? checkin['verification'];
-          final isVerified = verification == 'VERIFIED' ||
-              verification == 'APPROVED' ||
-              verification == 'PENDING_VERIFICATION';
-          final isLocalPending = syncStatus == 'PENDING';
-          if (syncStatus != 'FAILED' && (isVerified || isLocalPending)) {
-            // Trich xuat milestoneId an toan
-            final rawMId = checkin['milestoneId'] ?? checkin['milestone'] ?? checkin['milestone_id'];
-            final mId = (rawMId is Map)
-                ? (rawMId['_id'] ?? rawMId['id'] ?? rawMId['milestoneId'])?.toString()
-                : rawMId?.toString();
-            if (mId != null && mId.isNotEmpty) {
-              verified[mId] = DateTime.tryParse(
-                (checkin['checkedAt'] ?? checkin['createdAt'] ?? checkin['checkinTime'] ?? '').toString(),
-              ) ?? DateTime.now();
+      final candidateJourneyIds = {
+        current.journeyId,
+        if (current.clientJourneyId != null && current.clientJourneyId!.isNotEmpty) current.clientJourneyId!,
+        activeJourney.journeyId,
+        if (activeJourney.clientJourneyId != null && activeJourney.clientJourneyId!.isNotEmpty) activeJourney.clientJourneyId!,
+      };
+
+      for (final jId in candidateJourneyIds) {
+        try {
+          final checkins = await _api.getJourneyCheckins(jId);
+          for (final checkin in checkins) {
+            final syncStatus =
+                checkin['offlineSyncStatus'] ?? checkin['syncStatus'];
+            final verification = (checkin['verification'] is Map)
+                ? (checkin['verification'] as Map)['status']
+                : checkin['verificationStatus'] ?? checkin['verification'];
+            final isVerified = verification == 'VERIFIED' ||
+                verification == 'APPROVED' ||
+                verification == 'PENDING_VERIFICATION';
+            final isLocalPending = syncStatus == 'PENDING';
+            if (syncStatus != 'FAILED' && (isVerified || isLocalPending)) {
+              // Trich xuat milestoneId an toan
+              final rawMId = checkin['milestoneId'] ?? checkin['milestone'] ?? checkin['milestone_id'];
+              final mId = (rawMId is Map)
+                  ? (rawMId['_id'] ?? rawMId['id'] ?? rawMId['milestoneId'])?.toString()
+                  : rawMId?.toString();
+              if (mId != null && mId.isNotEmpty) {
+                verified[mId] = DateTime.tryParse(
+                  (checkin['checkedAt'] ?? checkin['createdAt'] ?? checkin['checkinTime'] ?? '').toString(),
+                ) ?? DateTime.now();
+              }
             }
           }
+        } catch (e) {
+          debugPrint('[JourneyDetailViewModel] optional checkins load for $jId: $e');
         }
-      } catch (e) {
-        debugPrint('[JourneyDetailViewModel] optional checkins load: $e');
       }
+
       // Kiem tra truc tiep tu bang offline_checkins
       try {
-        final localCheckins = await CheckinDao().getCheckinsByJourney(
-          activeJourney.journeyId,
-        );
+        final localCheckins = await _checkinDao.getCheckinsByJourneyIds(candidateJourneyIds);
         for (final c in localCheckins) {
           final isRejected = c.verificationStatus == 'REJECTED' || c.verificationStatus == 'FAILED';
           if (c.syncStatus != 'FAILED' && !isRejected) {
@@ -171,19 +182,37 @@ class JourneyDetailViewModel extends ChangeNotifier {
         debugPrint('[JourneyDetailViewModel] local checkins load error: $e');
       }
       _milestones = milestones.map((m) {
+        final mIdNorm = m.id.trim().toLowerCase();
         final isChecked =
             verified.containsKey(m.id) ||
             verified.containsKey(m.milestoneId) ||
             _localCheckedInMilestones.contains(m.id) ||
-            _localCheckedInMilestones.contains(m.milestoneId);
+            _localCheckedInMilestones.contains(m.milestoneId) ||
+            verified.keys.any((k) => k.trim().toLowerCase() == mIdNorm) ||
+            _localCheckedInMilestones.any((k) => k.trim().toLowerCase() == mIdNorm);
         if (isChecked) {
+          _localCheckedInMilestones.add(m.id);
           return m.copyWith(
             isCheckedIn: true,
-            checkedInAt: verified[m.id] ?? verified[m.milestoneId] ?? DateTime.now(),
+            checkedInAt: verified[m.id] ??
+                verified[m.milestoneId] ??
+                DateTime.now(),
           );
         }
         return m;
       }).toList();
+
+      // Luu danh sach milestone da check-in vao SharedPreferences de dam bao luon giu trang thai
+      final jId = _journey?.journeyId;
+      if (jId != null && jId.isNotEmpty && _localCheckedInMilestones.isNotEmpty) {
+        try {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setStringList(
+            'journey_checked_in_milestones_$jId',
+            _localCheckedInMilestones.toList(),
+          );
+        } catch (_) {}
+      }
       _hasLoadedMilestones = true;
       milestoneError = null;
       error = null;
@@ -222,6 +251,10 @@ class JourneyDetailViewModel extends ChangeNotifier {
     };
     if (action == null) return;
     await updateStatus(action);
+  }
+
+  Future<void> cancelJourney() async {
+    await updateStatus('cancel');
   }
 
   Future<void> updateStatus(String action) async {
@@ -299,9 +332,23 @@ class JourneyDetailViewModel extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       final savedImages =
           prefs.getStringList('journey_checkin_images_$id') ?? [];
+      final savedMilestones =
+          prefs.getStringList('journey_checked_in_milestones_$id') ?? [];
       if (!_disposed) {
         _checkinImages.clear();
         _checkinImages.addAll(savedImages);
+        _localCheckedInMilestones.addAll(savedMilestones);
+        if (savedMilestones.isNotEmpty && _milestones.isNotEmpty) {
+          _milestones = _milestones.map((m) {
+            final mIdNorm = m.id.trim().toLowerCase();
+            if (_localCheckedInMilestones.contains(m.id) ||
+                _localCheckedInMilestones.contains(m.milestoneId) ||
+                _localCheckedInMilestones.any((k) => k.trim().toLowerCase() == mIdNorm)) {
+              return m.copyWith(isCheckedIn: true);
+            }
+            return m;
+          }).toList();
+        }
         notifyListeners();
       }
     } catch (_) {}
@@ -310,7 +357,22 @@ class JourneyDetailViewModel extends ChangeNotifier {
 
   void checkIn(String milestoneId) {
     _localCheckedInMilestones.add(milestoneId);
-    final index = _milestones.indexWhere((m) => m.id == milestoneId);
+    final id = _journey?.journeyId;
+    if (id != null && id.isNotEmpty) {
+      SharedPreferences.getInstance().then((prefs) {
+        prefs.setStringList(
+          'journey_checked_in_milestones_$id',
+          _localCheckedInMilestones.toList(),
+        );
+      }).catchError((_) {});
+    }
+    final targetNorm = milestoneId.trim().toLowerCase();
+    final index = _milestones.indexWhere(
+      (m) =>
+          m.id == milestoneId ||
+          m.milestoneId == milestoneId ||
+          m.id.trim().toLowerCase() == targetNorm,
+    );
     if (index != -1) {
       _milestones = List.from(_milestones);
       _milestones[index] = _milestones[index].copyWith(
@@ -335,7 +397,7 @@ class JourneyDetailViewModel extends ChangeNotifier {
     if (id != null && id.isNotEmpty) {
       SharedPreferences.getInstance().then((prefs) {
         prefs.setStringList('journey_checkin_images_$id', _checkinImages);
-      });
+      }).catchError((_) {});
     }
     notifyListeners();
   }
@@ -347,7 +409,7 @@ class JourneyDetailViewModel extends ChangeNotifier {
       if (id != null && id.isNotEmpty) {
         SharedPreferences.getInstance().then((prefs) {
           prefs.setStringList('journey_checkin_images_$id', _checkinImages);
-        });
+        }).catchError((_) {});
       }
       notifyListeners();
     }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../data/datasources/social_api.dart';
 import 'community_people.dart';
 
@@ -64,12 +65,13 @@ class _GroupDetailsState extends State<GroupDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final c = chat;
 
     final own = c?['ownerId'] == widget.me;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Thông tin nhóm')),
+      appBar: AppBar(title: Text(l10n?.groupDetailsTitle ?? 'Chi tiết nhóm')),
 
       body: c == null
           ? Center(
@@ -87,7 +89,10 @@ class _GroupDetailsState extends State<GroupDetailsScreen> {
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
 
-                Text('${(c['members'] as List).length}/50 thành viên'),
+                Text(
+                  l10n?.groupMemberCount((c['members'] as List).length) ??
+                      '${(c['members'] as List).length}/50 thành viên',
+                ),
 
                 if (busy) const LinearProgressIndicator(),
 
@@ -103,7 +108,7 @@ class _GroupDetailsState extends State<GroupDetailsScreen> {
                                 final name = await socialText(
                                   context,
 
-                                  'Đổi tên nhóm',
+                                  l10n?.groupRenameDialogTitle ?? 'Đổi tên nhóm',
 
                                   initial: c['name'] as String,
 
@@ -121,7 +126,7 @@ class _GroupDetailsState extends State<GroupDetailsScreen> {
                                 }
                               },
 
-                        child: const Text('Đổi tên'),
+                        child: Text(l10n?.groupRenameButton ?? 'Đổi tên'),
                       ),
 
                       TextButton(
@@ -151,7 +156,7 @@ class _GroupDetailsState extends State<GroupDetailsScreen> {
                                 }
                               },
 
-                        child: const Text('Thêm thành viên'),
+                        child: Text(l10n?.groupAddMemberButton ?? 'Thêm thành viên'),
                       ),
                     ],
                   ),
@@ -167,7 +172,7 @@ class _GroupDetailsState extends State<GroupDetailsScreen> {
                     title: Text(m['name'] as String),
 
                     subtitle: m['userId'] == c['ownerId']
-                        ? const Text('Chủ nhóm')
+                        ? Text(l10n?.groupOwnerRole ?? 'Trưởng nhóm')
                         : null,
 
                     onTap: () => Navigator.push(
@@ -190,24 +195,35 @@ class _GroupDetailsState extends State<GroupDetailsScreen> {
                                   context: context,
 
                                   builder: (dialog) => AlertDialog(
-                                    title: const Text('Chuyển quyền chủ nhóm?'),
+                                    title: Text(
+                                      l10n?.groupTransferOwnerTitle ??
+                                          'Chuyển quyền trưởng nhóm',
+                                    ),
 
                                     content: Text(
-                                      'Trao quyền quản lý nhóm cho ${m['name']}.',
+                                      l10n?.groupTransferOwnerMessage(
+                                            m['name'] as String,
+                                          ) ??
+                                          'Trao quyền quản lý nhóm cho ${m['name']}.',
                                     ),
 
                                     actions: [
                                       TextButton(
                                         onPressed: () => Navigator.pop(dialog),
 
-                                        child: const Text('Hủy'),
+                                        child: Text(
+                                          l10n?.cancelButton ?? 'Hủy',
+                                        ),
                                       ),
 
                                       FilledButton(
                                         onPressed: () =>
                                             Navigator.pop(dialog, true),
 
-                                        child: const Text('Chuyển quyền'),
+                                        child: Text(
+                                          l10n?.groupTransferOwnerConfirm ??
+                                              'Chuyển quyền',
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -232,16 +248,22 @@ class _GroupDetailsState extends State<GroupDetailsScreen> {
                             },
 
                             itemBuilder: (_) => [
-                              const PopupMenuItem(
+                              PopupMenuItem(
                                 value: 'transfer',
 
-                                child: Text('Chuyển quyền chủ nhóm'),
+                                child: Text(
+                                  l10n?.groupTransferOwnerAction ??
+                                      'Chuyển quyền trưởng nhóm',
+                                ),
                               ),
 
-                              const PopupMenuItem(
+                              PopupMenuItem(
                                 value: 'remove',
 
-                                child: Text('Mời ra khỏi nhóm'),
+                                child: Text(
+                                  l10n?.groupRemoveMemberAction ??
+                                      'Xóa khỏi nhóm',
+                                ),
                               ),
                             ],
                           )
@@ -265,12 +287,13 @@ class _GroupDetailsState extends State<GroupDetailsScreen> {
                           }
                         },
 
-                  child: const Text('Rời nhóm'),
+                  child: Text(l10n?.groupLeaveAction ?? 'Rời nhóm'),
                 ),
 
                 if (own)
-                  const Text(
-                    'Chuyển quyền chủ nhóm cho một thành viên trước khi rời nhóm.',
+                  Text(
+                    l10n?.groupLeaveOwnerHint ??
+                        'Chuyển quyền chủ nhóm cho một thành viên trước khi rời nhóm.',
                   ),
               ],
             ),

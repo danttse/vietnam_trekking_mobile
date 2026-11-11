@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../viewmodels/social_view_model.dart';
 import 'community_people.dart';
 import 'conversation_screen.dart';
@@ -15,30 +16,32 @@ class CommunityMessages extends StatelessWidget {
   const CommunityMessages({super.key, required this.model});
 
   @override
-  Widget build(BuildContext context) => ListenableBuilder(
-    listenable: model,
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return ListenableBuilder(
+      listenable: model,
 
-    builder: (context, _) => RefreshIndicator(
-      onRefresh: model.load,
+      builder: (context, _) => RefreshIndicator(
+        onRefresh: model.load,
 
-      child: ListView(
-        physics: const AlwaysScrollableScrollPhysics(),
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
 
-        padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
 
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  'Tin nhắn',
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l10n?.messagesTabTitle ?? 'Tin nhắn',
 
-                  style: Theme.of(context).textTheme.headlineSmall,
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
                 ),
-              ),
 
-              IconButton(
-                tooltip: 'Tin nhắn mới',
+                IconButton(
+                  tooltip: l10n?.newMessageTooltip ?? 'Tin nhắn mới',
 
                 onPressed: () => Navigator.push(
                   context,
@@ -50,7 +53,7 @@ class CommunityMessages extends StatelessWidget {
               ),
 
               IconButton(
-                tooltip: 'Tạo nhóm',
+                tooltip: l10n?.groupCreateButton ?? 'Tạo nhóm',
 
                 onPressed: () async {
                   final id = await Navigator.push<String>(
@@ -83,8 +86,9 @@ class CommunityMessages extends StatelessWidget {
             ],
           ),
 
-          const Text(
-            'Nhắn tin trực tiếp hoặc cùng nhau lên kế hoạch cho chuyến đi.',
+          Text(
+            l10n?.messagesHeaderSubtitle ??
+                'Nhắn tin trực tiếp hoặc cùng nhau lên kế hoạch cho chuyến đi.',
           ),
 
           const SizedBox(height: 16),
@@ -96,18 +100,22 @@ class CommunityMessages extends StatelessWidget {
               children: [
                 Text(model.error!),
 
-                TextButton(onPressed: model.load, child: const Text('Thử lại')),
+                TextButton(
+                  onPressed: model.load,
+                  child: Text(l10n?.commonRetry ?? 'Thử lại'),
+                ),
               ],
             ),
 
           if (!model.loading &&
               model.error == null &&
               model.conversations.isEmpty)
-            const Padding(
-              padding: EdgeInsets.all(28),
+            Padding(
+              padding: const EdgeInsets.all(28),
 
               child: Text(
-                'Chưa có hội thoại. Tìm người bằng email hoặc QR để bắt đầu.',
+                l10n?.noConversationsYet ??
+                    'Chưa có hội thoại. Tìm người bằng email hoặc QR để bắt đầu.',
               ),
             ),
 
@@ -139,10 +147,11 @@ class CommunityMessages extends StatelessWidget {
 
                 subtitle: Text(
                   c['disabled'] == true
-                      ? 'Nhóm đang tạm ngưng'
+                      ? (l10n?.groupPaused ?? 'Nhóm đang tạm ngưng')
                       : c['kind'] == 'GROUP'
-                      ? '${(c['members'] as List).length} thành viên'
-                      : 'Tin nhắn cá nhân',
+                      ? (l10n?.groupMemberCount((c['members'] as List).length) ??
+                          '${(c['members'] as List).length} thành viên')
+                      : (l10n?.directMessage ?? 'Tin nhắn cá nhân'),
                 ),
 
                 trailing: (c['unreadCount'] as int) > 0
@@ -171,10 +180,11 @@ class CommunityMessages extends StatelessWidget {
             TextButton(
               onPressed: model.loading ? null : () => model.load(more: true),
 
-              child: const Text('Xem thêm hội thoại'),
+              child: Text(l10n?.viewMoreConversations ?? 'Xem thêm hội thoại'),
             ),
         ],
       ),
     ),
   );
+  }
 }

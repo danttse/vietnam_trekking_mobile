@@ -451,6 +451,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get journeyUpcoming => 'Sắp tới';
 
   @override
+  String get journeyCancelled => 'Đã hủy';
+
+  @override
   String get journeyStatTrips => 'Chuyến đi';
 
   @override
@@ -689,7 +692,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get statNewBadge => 'Huy hiệu mới';
 
   @override
-  String get statMaxElevation => 'Độ cao tối đa';
+  String get statMaxElevation => 'Điểm cao nhất';
 
   @override
   String get statConqueredProvinces => 'Tỉnh đã chinh phục';
@@ -1127,4 +1130,1161 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get journeyCheckinClose => 'Đóng';
+
+  @override
+  String get commonRetry => 'Thử lại';
+
+  @override
+  String get commonReload => 'Tải lại';
+
+  @override
+  String get commonLoading => 'Đang tải…';
+
+  @override
+  String get commonSaving => 'Đang lưu…';
+
+  @override
+  String get commonDelete => 'Xóa';
+
+  @override
+  String get commonClose => 'Đóng';
+
+  @override
+  String get commonSaveChanges => 'Lưu thay đổi';
+
+  @override
+  String get commonViewMore => 'Xem thêm';
+
+  @override
+  String get commonNoData => 'Chưa có dữ liệu';
+
+  @override
+  String get postCreateTitle => 'Tạo bài viết';
+
+  @override
+  String get postEditTitle => 'Chỉnh sửa bài viết';
+
+  @override
+  String get postSharingWithTrekViet => 'Đang chia sẻ cùng cộng đồng TrekViệt';
+
+  @override
+  String get visibilityPublic => 'Công khai';
+
+  @override
+  String get visibilityPrivate => 'Chỉ mình tôi';
+
+  @override
+  String get whatsOnYourMind => 'Bạn đang nghĩ gì?';
+
+  @override
+  String get postAddToPost => 'Thêm vào bài viết';
+
+  @override
+  String get postAddPhoto => 'Ảnh';
+
+  @override
+  String get postMaxImagesHint => 'Chỉ có thể chọn tối đa 10 ảnh';
+
+  @override
+  String postSelectedImagesCount(int count) {
+    return '$count ảnh đã chọn';
+  }
+
+  @override
+  String get postRemoveImage => 'Xóa ảnh';
+
+  @override
+  String get postTagLocation => 'Gắn vị trí';
+
+  @override
+  String get postShareJourney => 'Chia sẻ hành trình';
+
+  @override
+  String get postPublishButton => 'Đăng bài';
+
+  @override
+  String get postDeleteTitle => 'Xóa bài viết';
+
+  @override
+  String get postDeleteMessage =>
+      'Bạn có chắc chắn muốn xóa bài viết này không? Hành động này không thể hoàn tác.';
+
+  @override
+  String postDeleteError(String error) {
+    return 'Không thể xóa bài viết: $error';
+  }
+
+  @override
+  String get postCopiedToClipboard => 'Đã sao chép vào bộ nhớ tạm';
+
+  @override
+  String get postEditAction => 'Chỉnh sửa bài viết';
+
+  @override
+  String get postDeleteAction => 'Xóa bài viết';
+
+  @override
+  String get postPublishedSuccess => 'Đã đăng bài viết thành công';
+
+  @override
+  String get syncBeforeCommunityShare =>
+      'Vui lòng đồng bộ hành trình trước khi chia sẻ lên cộng đồng';
+
+  @override
+  String shareJourneyDefaultContent(String name) {
+    return 'Hành trình trekking $name của mình!';
+  }
+
+  @override
+  String get reportFeatureUnavailable => 'Tính năng báo cáo chưa khả dụng';
+
+  @override
+  String get messagesTabTitle => 'Tin nhắn';
+
+  @override
+  String get newMessageTooltip => 'Nhắn tin mới';
+
+  @override
+  String get groupCreateTitle => 'Tạo nhóm trekking';
+
+  @override
+  String get groupNameLabel => 'Tên nhóm';
+
+  @override
+  String get groupMaxMembersHint => 'Tối đa 10 thành viên cho nhóm thường';
+
+  @override
+  String get groupAddByEmailOrQr => 'Thêm bằng Email/QR';
+
+  @override
+  String get unselect => 'Bỏ chọn';
+
+  @override
+  String get groupCreating => 'Đang tạo nhóm...';
+
+  @override
+  String get groupCreateButton => 'Tạo nhóm';
+
+  @override
+  String get groupNameAndMemberRequired =>
+      'Vui lòng nhập tên nhóm và chọn ít nhất 1 thành viên';
+
+  @override
+  String get groupDetailsTitle => 'Chi tiết nhóm';
+
+  @override
+  String groupMemberCount(int count) {
+    return 'Thành viên ($count)';
+  }
+
+  @override
+  String get groupRenameDialogTitle => 'Đổi tên nhóm';
+
+  @override
+  String get groupRenameButton => 'Đổi tên';
+
+  @override
+  String get groupAddMemberButton => 'Thêm thành viên';
+
+  @override
+  String get groupOwnerRole => 'Trưởng nhóm';
+
+  @override
+  String get groupTransferOwnerTitle => 'Chuyển quyền trưởng nhóm';
+
+  @override
+  String groupTransferOwnerMessage(String name) {
+    return 'Bạn có chắc muốn chuyển quyền trưởng nhóm cho $name? Bạn sẽ trở thành thành viên thường.';
+  }
+
+  @override
+  String get groupTransferOwnerConfirm => 'Chuyển quyền';
+
+  @override
+  String get groupTransferOwnerAction => 'Chuyển quyền trưởng nhóm';
+
+  @override
+  String get groupRemoveMemberAction => 'Xóa khỏi nhóm';
+
+  @override
+  String get groupLeaveAction => 'Rời nhóm';
+
+  @override
+  String get groupLeaveOwnerHint =>
+      'Bạn là trưởng nhóm. Hãy chuyển quyền trưởng nhóm cho người khác trước khi rời nhóm.';
+
+  @override
+  String get messagesHeaderSubtitle => 'Nhắn tin trực tiếp và nhóm trekking';
+
+  @override
+  String get noConversationsYet => 'Chưa có cuộc trò chuyện nào';
+
+  @override
+  String get groupPaused => 'Nhóm tạm dừng';
+
+  @override
+  String get directMessage => 'Trò chuyện trực tiếp';
+
+  @override
+  String get viewMoreConversations => 'Xem thêm cuộc trò chuyện';
+
+  @override
+  String get selectMember => 'Chọn thành viên';
+
+  @override
+  String get searchUser => 'Tìm kiếm người dùng';
+
+  @override
+  String get searchUserHint => 'Nhập email hoặc tên người dùng...';
+
+  @override
+  String get emailOrQrContent => 'Nội dung Email hoặc mã QR';
+
+  @override
+  String get searchButton => 'Tìm kiếm';
+
+  @override
+  String get scanQrButton => 'Quét mã QR';
+
+  @override
+  String get personalPage => 'Trang cá nhân';
+
+  @override
+  String get groupSuspendedByAdmin =>
+      'Nhóm đã bị quản trị viên đình chỉ hoạt động';
+
+  @override
+  String get olderMessages => 'Tin nhắn cũ hơn';
+
+  @override
+  String get recallMessage => 'Thu hồi';
+
+  @override
+  String get reportMessage => 'Báo cáo';
+
+  @override
+  String get reportReason => 'Lý do báo cáo';
+
+  @override
+  String get reportMessageDesc => 'Mô tả lý do bạn báo cáo tin nhắn này';
+
+  @override
+  String get reportSentToAdmin => 'Đã gửi báo cáo cho quản trị viên';
+
+  @override
+  String get formerMember => 'Thành viên cũ';
+
+  @override
+  String get messageRecalled => 'Tin nhắn đã được thu hồi';
+
+  @override
+  String get typeMessageHint => 'Nhập tin nhắn...';
+
+  @override
+  String get sendMessageTooltip => 'Gửi';
+
+  @override
+  String sendErrorRetryHint(String error) {
+    return 'Lỗi gửi: $error. Bấm để thử lại.';
+  }
+
+  @override
+  String commentSaveError(String error) {
+    return 'Không thể lưu bình luận: $error';
+  }
+
+  @override
+  String get commentDeleteTitle => 'Xóa bình luận';
+
+  @override
+  String get commentDeleteMessage =>
+      'Bạn có chắc muốn xóa bình luận này không?';
+
+  @override
+  String commentDeleteError(String error) {
+    return 'Không thể xóa bình luận: $error';
+  }
+
+  @override
+  String get commentEditTitle => 'Chỉnh sửa bình luận';
+
+  @override
+  String get contentRequired => 'Nội dung không được để trống';
+
+  @override
+  String get selectYourJourney => 'Chọn hành trình của bạn';
+
+  @override
+  String get searchPlaceHint => 'Tìm địa điểm';
+
+  @override
+  String get onlySyncedJourneysHint =>
+      'Chỉ có thể chia sẻ các hành trình đã đồng bộ lên hệ thống';
+
+  @override
+  String get noDataToSelect => 'Không có dữ liệu để chọn';
+
+  @override
+  String get finishJourneyTitle => 'Kết thúc hành trình?';
+
+  @override
+  String get finishJourneyDesc =>
+      'Bạn có chắc chắn muốn kết thúc hành trình này? Sau khi kết thúc, dữ liệu track log sẽ được lưu lại.';
+
+  @override
+  String get finishJourneySaveGpsNotice =>
+      'Sau khi kết thúc, bạn có thể lưu track log GPS thành tuyến đường mới để đóng góp cho cộng đồng.';
+
+  @override
+  String get keepGoingButton => 'Tiếp tục đi';
+
+  @override
+  String get finishButton => 'Kết thúc';
+
+  @override
+  String get finishAndSendToAdmin => 'Kết thúc & Gửi duyệt';
+
+  @override
+  String locationFetchFailed(String error) {
+    return 'Không thể lấy vị trí hiện tại: $error';
+  }
+
+  @override
+  String get locationFetchForMarkerFailed =>
+      'Không thể lấy vị trí GPS để tạo điểm mốc';
+
+  @override
+  String get sendToAdminButton => 'Gửi cho Admin';
+
+  @override
+  String get markersSyncedSendToAdmin =>
+      'Các điểm mốc đã được đồng bộ lên máy chủ. Bạn có thể gửi đóng góp để quản trị viên duyệt đưa vào bản đồ chính thức.';
+
+  @override
+  String get markersSavedOfflineNeedSync =>
+      'Các điểm mốc đã được lưu offline. Khi có mạng và sau khi đồng bộ lên máy chủ, bạn có thể gửi đóng góp cho quản trị viên.';
+
+  @override
+  String get markersSavedOfflineAutoSync =>
+      'Các điểm mốc được lưu offline trên máy và sẽ tự động đồng bộ khi có kết nối mạng.';
+
+  @override
+  String get completeJourneyBeforeSendAdmin =>
+      'Hãy hoàn thành hành trình trước khi gửi đề xuất tuyến đường/cột mốc cho Admin.';
+
+  @override
+  String get milestonesLoadFailedRetry =>
+      'Không thể tải cột mốc. Bấm để thử lại.';
+
+  @override
+  String get downloadOrUpdateOfflineMap => 'Tải / Cập nhật bản đồ Offline';
+
+  @override
+  String get journeyMapTitle => 'Bản đồ hành trình';
+
+  @override
+  String get detailLabel => 'Chi tiết';
+
+  @override
+  String get journeyDetailTitle => 'Chi tiết hành trình';
+
+  @override
+  String milestonesArrivedCount(int checked, int total) {
+    return 'Đã đến $checked/$total cột mốc';
+  }
+
+  @override
+  String get backtrackReturnToStart => 'Backtrack: Quay về điểm xuất phát';
+
+  @override
+  String get backtrackRecordRoute => 'Backtrack: Ghi tracklog đường đi';
+
+  @override
+  String get savedRoute => 'Tuyến đường đã lưu';
+
+  @override
+  String get recordingGpsForeground => 'Đang ghi GPS chạy ngầm';
+
+  @override
+  String get pausedRecordingGps => 'Tạm dừng ghi GPS';
+
+  @override
+  String get savedOfflineUsable => 'Đã lưu offline, có thể dùng khi mất sóng';
+
+  @override
+  String get stopGpsRecording => 'Dừng ghi GPS';
+
+  @override
+  String get recordRouteButton => 'Ghi đường đi';
+
+  @override
+  String get startGpsRecording => 'Bắt đầu ghi GPS';
+
+  @override
+  String get exitBacktrack => 'Thoát Backtrack';
+
+  @override
+  String get returnAlongRoute => 'Quay lại theo đường đã đi';
+
+  @override
+  String get backtrackOrangeTrailNotice =>
+      'Theo dõi vệt màu cam trên bản đồ để quay trở lại điểm xuất phát an toàn.';
+
+  @override
+  String get checkinPointLegend => 'Điểm check-in';
+
+  @override
+  String get yourMarkerLegend => 'Điểm mốc của bạn';
+
+  @override
+  String yourLocationAccuracy(String accuracy) {
+    return 'Vị trí của bạn (±${accuracy}m)';
+  }
+
+  @override
+  String sendMarkersToAdminCount(int count) {
+    return 'Gửi $count điểm mốc cho Admin';
+  }
+
+  @override
+  String get markMilestoneButton => 'Đánh dấu mốc';
+
+  @override
+  String get savingJourneyProgress => 'Đang lưu dữ liệu hành trình...';
+
+  @override
+  String get finishJourneyButton => 'Kết thúc hành trình';
+
+  @override
+  String get shareToCommunityButton => 'Chia sẻ lên cộng đồng';
+
+  @override
+  String get shareRouteToAdminButton => 'Đóng góp tuyến đường cho Admin';
+
+  @override
+  String cannotOpenRouteShare(String error) {
+    return 'Không thể mở chia sẻ tuyến đường: $error';
+  }
+
+  @override
+  String get offlineMapAvailable => 'Bản đồ offline khả dụng';
+
+  @override
+  String get offlineMapNotDownloaded => 'Chưa tải bản đồ offline';
+
+  @override
+  String get tapViewMapNotice => 'Chạm để xem bản đồ lộ trình chi tiết';
+
+  @override
+  String checkinPhotosCount(int count) {
+    return 'Ảnh check-in ($count)';
+  }
+
+  @override
+  String get cannotOpenJourneyData => 'Không thể mở dữ liệu hành trình';
+
+  @override
+  String get journeyPlansLabel => 'Kế hoạch hành trình';
+
+  @override
+  String journeyEstimatedTotal(int count) {
+    return 'Ước tính tổng cộng: $count ngày';
+  }
+
+  @override
+  String personCount(int count) {
+    return '$count người';
+  }
+
+  @override
+  String get provincesLabel => 'Tỉnh thành';
+
+  @override
+  String get noPlansYet => 'Chưa có kế hoạch hành trình nào';
+
+  @override
+  String get startFirstJourneyHint => 'Hãy bắt đầu chuyến đi đầu tiên của bạn!';
+
+  @override
+  String get createPlanForNextTripHint =>
+      'Tạo kế hoạch cho chuyến đi sắp tới của bạn';
+
+  @override
+  String get otherLabel => 'Khác';
+
+  @override
+  String get contributionTitle => 'Đóng góp tuyến đường & cột mốc';
+
+  @override
+  String get contributionMarkerOnlyTitle => 'Đóng góp cột mốc';
+
+  @override
+  String get contributionSuccessTitle => 'Gửi đóng góp thành công!';
+
+  @override
+  String get contributionSavedOfflineTitle => 'Đã lưu đóng góp offline!';
+
+  @override
+  String get contributionOfflineNotice =>
+      'Dữ liệu đóng góp đã được lưu trên máy của bạn. Khi có kết nối mạng, ứng dụng sẽ tự động đồng bộ và gửi đến quản trị viên để xem xét phê duyệt.';
+
+  @override
+  String contributionMarkersReceived(int count) {
+    return 'Cảm ơn bạn đã đóng góp $count điểm mốc mới. Quản trị viên sẽ xem xét và phê duyệt để đưa lên bản đồ chính thức của TrekViệt.';
+  }
+
+  @override
+  String contributionRouteAndMarkersReceived(int count) {
+    return 'Cảm ơn bạn đã đóng góp tuyến đường cùng $count điểm mốc mới. Quản trị viên sẽ xem xét và phê duyệt để đưa lên bản đồ chính thức của TrekViệt.';
+  }
+
+  @override
+  String get contributionStatusPendingSync =>
+      'Trạng thái: Chờ đồng bộ khi có mạng';
+
+  @override
+  String get contributionViewHistoryNotice =>
+      'Bạn có thể xem lại trong Lịch sử đóng góp ở trang Hồ sơ.';
+
+  @override
+  String contributionSourceJourney(String name) {
+    return 'Từ hành trình: $name';
+  }
+
+  @override
+  String get contributionNameLabel => 'Tên tuyến đường đề xuất *';
+
+  @override
+  String get contributionMarkerNameLabel => 'Tên đóng góp *';
+
+  @override
+  String get contributionNameHint =>
+      'VD: Cung đường leo Fansipan qua Trạm Tôn...';
+
+  @override
+  String get contributionNameRequired =>
+      'Vui lòng nhập tên tuyến đường đề xuất';
+
+  @override
+  String get contributionDescLabel => 'Mô tả chi tiết';
+
+  @override
+  String get contributionDescHint =>
+      'Mô tả về địa hình, cảnh quan, trải nghiệm thực tế...';
+
+  @override
+  String get contributionSafetyLabel => 'Lưu ý an toàn / Mẹo đi đường';
+
+  @override
+  String get contributionSafetyHint =>
+      'Nguồn nước, điểm cắm trại an toàn, đoạn trơn trượt...';
+
+  @override
+  String contributionSelectMarkersLabel(int count) {
+    return 'Chọn các điểm mốc kèm theo ($count)';
+  }
+
+  @override
+  String get contributionSelectMarkersHint =>
+      'Đánh dấu chọn các điểm mốc cá nhân bạn đã tạo để gửi duyệt kèm tuyến đường';
+
+  @override
+  String get contributionSubmitButton => 'Gửi cho Admin duyệt';
+
+  @override
+  String get contributionSkipButton => 'Bỏ qua đóng góp';
+
+  @override
+  String get markerFormCreateTitle => 'Đánh dấu điểm mốc';
+
+  @override
+  String get markerFormEditTitle => 'Chỉnh sửa điểm mốc';
+
+  @override
+  String get markerNameLabel => 'Tên điểm mốc *';
+
+  @override
+  String get markerNameHint => 'VD: Đỉnh núi, Suối nước, Điểm cắm trại...';
+
+  @override
+  String get markerTypeLabel => 'Loại điểm mốc';
+
+  @override
+  String get markerGpsCoordinates => 'Tọa độ GPS';
+
+  @override
+  String get markerPhotosLabel => 'Hình ảnh điểm mốc';
+
+  @override
+  String get markerAddPhoto => '+ Thêm ảnh';
+
+  @override
+  String get markerNoteLabel => 'Ghi chú thêm';
+
+  @override
+  String get markerNoteHint =>
+      'Lưu ý về nguồn nước, độ dốc, sóng điện thoại...';
+
+  @override
+  String get markerSaveOffline => 'Lưu trên máy';
+
+  @override
+  String get markerSaveAndSync => 'Lưu & Đồng bộ điểm mốc';
+
+  @override
+  String get markerSyncDesc =>
+      'Điểm mốc sẽ được lưu trên máy và tự động đồng bộ lên máy chủ khi có mạng.';
+
+  @override
+  String markerSaveError(String error) {
+    return 'Không thể lưu điểm mốc: $error';
+  }
+
+  @override
+  String get placeReviewTitle => 'Đánh giá địa điểm';
+
+  @override
+  String get anonymousTrekker => 'Trekker ẩn danh';
+
+  @override
+  String get noReviewsYet => 'Chưa có đánh giá';
+
+  @override
+  String get viewMoreReviews => 'Xem thêm đánh giá';
+
+  @override
+  String get satisfactionLevelPrompt => 'Mức độ hài lòng của bạn?';
+
+  @override
+  String get shareExperiencePrompt => 'Chia sẻ trải nghiệm';
+
+  @override
+  String get shareExperienceHint =>
+      'Chia sẻ cảm nhận, lời khuyên và trải nghiệm về địa điểm này...';
+
+  @override
+  String get addPhotosPrompt => 'Thêm hình ảnh';
+
+  @override
+  String get addPhotosMax10 => 'Tối đa 10 ảnh';
+
+  @override
+  String get anonymousReviewLabel => 'Đánh giá ẩn danh';
+
+  @override
+  String get anonymousReviewDesc => 'Tên của bạn sẽ không hiển thị công khai';
+
+  @override
+  String get submitReviewButton => 'Gửi đánh giá';
+
+  @override
+  String get saveReviewEditButton => 'Lưu đánh giá';
+
+  @override
+  String get reviewThankYouTitle => 'Cảm ơn bạn!';
+
+  @override
+  String get reviewThankYouMessage =>
+      'Đánh giá của bạn đã được ghi nhận và sẽ giúp ích rất nhiều cho cộng đồng Trekker Việt Nam.';
+
+  @override
+  String get yourReviewSection => 'Đánh giá của bạn';
+
+  @override
+  String get viewOtherReviewsButton => 'Xem các đánh giá khác';
+
+  @override
+  String get backToHomeButton => 'Quay về trang chủ';
+
+  @override
+  String get noFeaturedPlaces => 'Chưa có địa điểm nổi bật nào';
+
+  @override
+  String get noMatchingRoutes => 'Không tìm thấy cung đường phù hợp';
+
+  @override
+  String get noMatchingSuggestions => 'Không tìm thấy gợi ý phù hợp';
+
+  @override
+  String get addRouteButton => 'Thêm cung đường';
+
+  @override
+  String get addPlaceButton => 'Thêm địa điểm';
+
+  @override
+  String routeEstimatedDuration(String duration) {
+    return 'Thời gian ước tính: $duration';
+  }
+
+  @override
+  String routeMaxElevation(String elevation) {
+    return 'Độ cao tối đa: $elevation m';
+  }
+
+  @override
+  String routeElevationGain(String gain) {
+    return 'Độ cao tích lũy: $gain m';
+  }
+
+  @override
+  String routeTotalDistance(String distance) {
+    return 'Tổng chiều dài: $distance km';
+  }
+
+  @override
+  String get routeDescriptionTitle => 'Mô tả cung đường';
+
+  @override
+  String get routeNoDescription => 'Chưa có mô tả cho cung đường này.';
+
+  @override
+  String routeDifficultyPrefix(String difficulty) {
+    return 'Độ khó: $difficulty';
+  }
+
+  @override
+  String routePlacePrefix(String place) {
+    return 'Địa điểm: $place';
+  }
+
+  @override
+  String routeStartPrefix(String coords) {
+    return 'Điểm bắt đầu: $coords';
+  }
+
+  @override
+  String routeEndPrefix(String coords) {
+    return 'Điểm kết thúc: $coords';
+  }
+
+  @override
+  String get downloadMapBeforeStart => 'Tải bản đồ trước khi bắt đầu';
+
+  @override
+  String cannotStartJourney(String error) {
+    return 'Không thể bắt đầu hành trình: $error';
+  }
+
+  @override
+  String get backToJourneyScreen => 'Quay lại danh sách hành trình';
+
+  @override
+  String get difficultyEasy => 'Dễ';
+
+  @override
+  String get difficultyModerate => 'Trung bình';
+
+  @override
+  String get difficultyHard => 'Khó';
+
+  @override
+  String get difficultyExpert => 'Chuyên nghiệp';
+
+  @override
+  String get placeAboutSection => 'Giới thiệu';
+
+  @override
+  String get placeNoDescription =>
+      'Chưa có thông tin giới thiệu cho địa điểm này.';
+
+  @override
+  String placeRoutesSection(int count) {
+    return 'Cung đường trekking ($count)';
+  }
+
+  @override
+  String get placeNoRoutes => 'Chưa có cung đường nào tại địa điểm này.';
+
+  @override
+  String get offlineMapTitle => 'Quản lý bản đồ Offline';
+
+  @override
+  String offlineMapStorageUsed(String size) {
+    return 'Dung lượng đã dùng: $size';
+  }
+
+  @override
+  String offlineMapCount(int count) {
+    return '$count bản đồ đã tải';
+  }
+
+  @override
+  String get noOfflineMapsTitle => 'Chưa có bản đồ ngoại tuyến nào';
+
+  @override
+  String get noOfflineMapsDesc =>
+      'Hãy tải bản đồ của các cung đường bạn sắp đi để sử dụng khi mất kết nối mạng.';
+
+  @override
+  String get deleteOfflineMapTitle => 'Xóa bản đồ ngoại tuyến';
+
+  @override
+  String deleteOfflineMapConfirm(String name) {
+    return 'Bạn có chắc chắn muốn xóa bản đồ của \"$name\"? Bạn sẽ cần tải lại nếu muốn dùng offline.';
+  }
+
+  @override
+  String get deleteOfflineMapButton => 'Xóa bản đồ';
+
+  @override
+  String deleteOfflineMapSuccess(String name) {
+    return 'Đã xóa bản đồ $name';
+  }
+
+  @override
+  String deleteOfflineMapError(String error) {
+    return 'Không thể xóa bản đồ: $error';
+  }
+
+  @override
+  String offlineMapInUseNotice(String name) {
+    return 'Bản đồ \"$name\" đang được sử dụng bởi hành trình hiện tại.';
+  }
+
+  @override
+  String get badgeUnlocked => 'Đã đạt được';
+
+  @override
+  String get badgeLocked => 'Chưa đạt được';
+
+  @override
+  String badgeAchievedDate(String date) {
+    return 'Đạt được ngày: $date';
+  }
+
+  @override
+  String get badgeMissionProgress => 'Tiến trình thử thách';
+
+  @override
+  String get viewAll => 'Xem tất cả';
+
+  @override
+  String get shareAchievement => 'Chia sẻ thành tích';
+
+  @override
+  String shareAchievementText(String title) {
+    return 'Mình vừa đạt được danh hiệu \"$title\" trên TrekViệt! Cùng khám phá các cung đường trekking Việt Nam nhé!';
+  }
+
+  @override
+  String get suggestPlaceSuccess =>
+      'Đề xuất địa điểm đã được gửi thành công! Quản trị viên sẽ kiểm tra và phản hồi sớm.';
+
+  @override
+  String get filterAll => 'Tất cả';
+
+  @override
+  String cannotLoadRoutesError(String error) {
+    return 'Không tải được một số cung đường: $error';
+  }
+
+  @override
+  String get noDistanceAvailable => 'Chưa có cự ly';
+
+  @override
+  String reviewsCount(String rating, int count) {
+    return '$rating ($count đánh giá)';
+  }
+
+  @override
+  String durationMinutes(int minutes) {
+    return '$minutes phút';
+  }
+
+  @override
+  String durationHours(int hours) {
+    return '$hours giờ';
+  }
+
+  @override
+  String durationHoursMinutes(int hours, int minutes) {
+    return '$hours giờ $minutes phút';
+  }
+
+  @override
+  String durationDays(String days) {
+    return '$days ngày';
+  }
+
+  @override
+  String get routeScope => 'Tuyến đường';
+
+  @override
+  String get placeScope => 'Địa điểm';
+
+  @override
+  String get mapInUseBadge => 'Đang đi';
+
+  @override
+  String downloadedOnDate(String date) {
+    return 'Đã tải: $date';
+  }
+
+  @override
+  String get readyForOfflineUse => 'Sẵn sàng sử dụng offline';
+
+  @override
+  String get manageOfflineMaps => 'Quản lý bản đồ offline';
+
+  @override
+  String get homeNoPlacesToExplore => 'Chưa có địa điểm để khám phá';
+
+  @override
+  String get yourMapPosterTitle => 'Ảnh bản đồ của bạn';
+
+  @override
+  String get downloadPosterNow => 'Tải ảnh ngay';
+
+  @override
+  String get loadProvinces => 'Tải danh sách tỉnh';
+
+  @override
+  String get statElevation => 'Độ cao';
+
+  @override
+  String get statDuration => 'Thời gian';
+
+  @override
+  String get statRoutes => 'Cung đường';
+
+  @override
+  String get difficultyExtreme => 'Cực khó';
+
+  @override
+  String get commonError => 'Đã có lỗi xảy ra. Vui lòng thử lại';
+
+  @override
+  String get statTotalDistance => 'Tổng quãng đường';
+
+  @override
+  String get statElevationGain => 'Độ cao tổng';
+
+  @override
+  String get statEstimatedDuration => 'Thời gian dự kiến';
+
+  @override
+  String get storageUsedLabel => 'Dung lượng đã sử dụng';
+
+  @override
+  String get journeyCompletedTitle => 'Hoàn thành hành trình!';
+
+  @override
+  String get termsOfUseTitle => 'Điều khoản sử dụng';
+
+  @override
+  String get termsLastUpdated => 'Cập nhật lần cuối: 20/12/2025';
+
+  @override
+  String get termsSection1Title => 'Giới thiệu';
+
+  @override
+  String get termsSection1Content =>
+      'Chào mừng bạn đến với Trek Việt Nam, ứng dụng hỗ trợ điều hướng, ghi lại nhật ký hành trình trekking và kết nối cộng đồng đam mê dã ngoại tại Việt Nam. Bằng việc đăng ký tài khoản, bạn đồng ý tuân thủ các điều khoản này.';
+
+  @override
+  String get termsSection2Title => 'Điều kiện sử dụng';
+
+  @override
+  String get termsSection2Content =>
+      'Bạn phải từ 16 tuổi trở lên hoặc có sự giám sát của người bảo hộ để sử dụng ứng dụng. Bạn chịu trách nhiệm hoàn toàn về tính bảo mật của mật khẩu và mọi hoạt động dưới tài khoản của mình.';
+
+  @override
+  String get termsSection3Title => 'Quyền và nghĩa vụ của người dùng';
+
+  @override
+  String get termsSection3Content =>
+      'Người dùng được phép sử dụng bản đồ ngoại tuyến, lưu trữ lịch sử di chuyển và chia sẻ ảnh trekking lành mạnh lên cộng đồng. Nghiêm cấm hành vi phá hoại dữ liệu, đăng tải thông tin sai lệch về bản đồ biên giới hoặc địa danh nhạy cảm.';
+
+  @override
+  String get termsSection4Title => 'Quyền sở hữu trí tuệ';
+
+  @override
+  String get termsSection4Content =>
+      'Toàn bộ mã nguồn, thiết kế đồ họa, hệ thống huy hiệu và cơ sở dữ liệu cung đường trekking độc quyền đều thuộc quyền sở hữu của Trek Việt Nam. Mọi hành vi sao chép không xin phép đều bị nghiêm cấm.';
+
+  @override
+  String get termsSection5Title => 'Giới hạn trách nhiệm';
+
+  @override
+  String get termsSection5Content =>
+      'Trekking là hoạt động thể thao mạo hiểm ngoài trời. Chúng tôi cung cấp bản đồ GPS mang tính tham khảo và không chịu trách nhiệm pháp lý trước bất kỳ tai nạn, rủi ro tự nhiên hay lạc đường nào của bạn trên cung đường thực tế.';
+
+  @override
+  String get privacyPolicyTitle => 'Chính sách bảo mật';
+
+  @override
+  String get privacySection1Title => 'Thu thập dữ liệu';
+
+  @override
+  String get privacySection1Content =>
+      'Chúng tôi thu thập thông tin đăng ký (Tên, Email, Ảnh đại diện) và đặc biệt là dữ liệu vị trí GPS của bạn (ngay cả khi ứng dụng chạy ngầm) để vẽ bản đồ hành trình trekking và kích hoạt tính năng check-in.';
+
+  @override
+  String get privacySection2Title => 'Sử dụng dữ liệu';
+
+  @override
+  String get privacySection2Content =>
+      'Dữ liệu vị trí được sử dụng để hiển thị vị trí của bạn trên bản đồ dã ngoại, thống kê tổng quãng đường di chuyển và mở khóa các huy hiệu thám hiểm cá nhân.';
+
+  @override
+  String get privacySection3Title => 'Chia sẻ dữ liệu';
+
+  @override
+  String get privacySection3Content =>
+      'Thông tin và lịch sử đi trekking của bạn chỉ được chia sẻ công khai khi bạn chủ động ấn nút \'Đăng bài viết\' trên diễn đàn Cộng đồng hoặc chia sẻ huy hiệu lên mạng xã hội.';
+
+  @override
+  String get privacySection4Title => 'Bảo mật thông tin';
+
+  @override
+  String get privacySection4Content =>
+      'Trek Việt Nam áp dụng các biện pháp mã hóa đầu cuối tiên tiến nhất để bảo vệ thông tin cá nhân và dữ liệu tọa độ của bạn trước các truy cập trái phép.';
+
+  @override
+  String get privacySection5Title => 'Quyền của bạn';
+
+  @override
+  String get privacySection5Content =>
+      'Bạn có quyền truy cập, chỉnh sửa thông tin hồ sơ cá nhân hoặc yêu cầu xóa vĩnh viễn tài khoản cùng toàn bộ lịch sử định vị GPS đã lưu trên máy chủ của chúng tôi bất kỳ lúc nào.';
+
+  @override
+  String get journeyOptionsTitle => 'Tùy chọn';
+
+  @override
+  String get routeDetailOption => 'Chi tiết Tuyến đường';
+
+  @override
+  String get journeyDetailOption => 'Chi tiết Hành trình';
+
+  @override
+  String get selectPlaceTitle => 'Chọn địa điểm';
+
+  @override
+  String get cannotLoadPlaces => 'Không thể tải địa điểm.';
+
+  @override
+  String get noPlacesAvailable => 'Chưa có địa điểm.';
+
+  @override
+  String get changePlaceButton => 'Đổi địa điểm';
+
+  @override
+  String get searchRouteHint => 'Tìm cung đường';
+
+  @override
+  String get cannotLoadRoutesAtPlace =>
+      'Không thể tải cung đường tại địa điểm này.';
+
+  @override
+  String get placeHasNoRoutes => 'Địa điểm này chưa có cung đường.';
+
+  @override
+  String routesAtPlacePrefix(String place) {
+    return 'Cung đường tại $place';
+  }
+
+  @override
+  String get downloadButton => 'Tải xuống';
+
+  @override
+  String get retryDownloadButton => 'Thử tải lại';
+
+  @override
+  String get cannotLoadRoutesGeneral =>
+      'Không thể tải cung đường. Vui lòng thử lại.';
+
+  @override
+  String get personalQrTitle => 'QR cá nhân';
+
+  @override
+  String get personalQrDesc =>
+      'Người khác quét mã này để xem trang cá nhân và nhắn tin cho bạn.';
+
+  @override
+  String get copyCodeButton => 'Sao chép mã';
+
+  @override
+  String get closeButton => 'Đóng';
+
+  @override
+  String get noBioYet => 'Chưa có giới thiệu.';
+
+  @override
+  String userPostsCount(int count) {
+    return '$count bài viết';
+  }
+
+  @override
+  String get aboutSection => 'Giới thiệu';
+
+  @override
+  String get personalBio => 'Giới thiệu cá nhân';
+
+  @override
+  String get myQrCode => 'QR của tôi';
+
+  @override
+  String get reissueQrDialogTitle => 'Cấp lại QR?';
+
+  @override
+  String get reissueQrDialogMessage => 'Mã cũ sẽ ngừng hoạt động.';
+
+  @override
+  String get reissueButton => 'Cấp lại';
+
+  @override
+  String get sendMessageButton => 'Nhắn tin';
+
+  @override
+  String get cannotStartJourneyGeneral =>
+      'Không thể bắt đầu hành trình. Vui lòng thử lại.';
+
+  @override
+  String get viewMorePosts => 'Xem thêm bài viết';
+
+  @override
+  String get communityProfileTitle => 'Trang cá nhân cộng đồng';
+
+  @override
+  String get backToJourneyButton => 'Quay lại hành trình';
+
+  @override
+  String get markerNameRequired => 'Nhập tên cột mốc';
+
+  @override
+  String get syncFailedCheck => 'Đồng bộ thất bại — cần kiểm tra';
+
+  @override
+  String get savedOfflinePendingSync => 'Đã lưu trên máy · chờ đồng bộ';
+
+  @override
+  String memberCountText(int count) {
+    return '$count thành viên';
+  }
+
+  @override
+  String get cancelJourneyButton => 'Hủy hành trình';
+
+  @override
+  String get cancelJourneyConfirmTitle => 'Hủy hành trình?';
+
+  @override
+  String get cancelJourneyConfirmMessage =>
+      'Bạn có chắc chắn muốn hủy hành trình này không? Trạng thái sẽ chuyển sang đã hủy.';
+
+  @override
+  String get editReviewOnceButton => 'Chỉnh sửa đánh giá (1 lần)';
+
+  @override
+  String get completeJourneyToReview =>
+      'Hoàn thành hành trình tại đây để đánh giá.';
+
+  @override
+  String get reviewRemoved => 'Đánh giá của bạn đã được gỡ.';
+
+  @override
+  String get reviewEditLimitReached => 'Bạn đã dùng lượt chỉnh sửa đánh giá.';
+
+  @override
+  String get viewAllReviewsButton => 'Xem tất cả đánh giá';
 }

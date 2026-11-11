@@ -19,6 +19,7 @@ import '../../profile/views/profile_screen.dart';
 import '../view_models/user_navigation_viewmodel.dart';
 import '../../route/view/route_detail_screen.dart';
 import '../../../core/services/trekking_catalog_service.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Màn hình điều phối chính phía người dùng (User Shell Navigation)
 class UserNavigationScreen extends StatefulWidget {
@@ -160,10 +161,11 @@ class _UserNavigationScreenState extends State<UserNavigationScreen>
                       );
                     } catch (_) {
                       if (context.mounted) {
+                        final l10n = AppLocalizations.of(context)!;
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
+                          SnackBar(
                             content: Text(
-                              'Không thể tải cung đường. Vui lòng thử lại.',
+                              l10n.cannotLoadRoutesGeneral,
                             ),
                           ),
                         );

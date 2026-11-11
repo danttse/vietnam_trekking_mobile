@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/network/api_error_handler.dart';
+import '../../../l10n/app_localizations.dart';
 import '../data/models/review_model.dart';
 import '../data/repositories/journey_repository.dart';
 import 'widgets/rating_stars.dart';
@@ -58,8 +59,11 @@ class _PlaceReviewsScreenState extends State<PlaceReviewsScreen> {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Đánh giá địa điểm')),
+      appBar: AppBar(
+        title: Text(l10n?.placeReviewTitle ?? 'Đánh giá địa điểm'),
+      ),
       body: RefreshIndicator(
         onRefresh: () => _load(refresh: true),
         child: ListView(
@@ -89,7 +93,7 @@ class _PlaceReviewsScreenState extends State<PlaceReviewsScreen> {
                           Expanded(
                             child: Text(
                               review.isAnonymous
-                                  ? 'Trekker ẩn danh'
+                                  ? (l10n?.anonymousTrekker ?? 'Trekker ẩn danh')
                                   : review.displayName ?? 'Trekker',
                               style: const TextStyle(
                                 fontWeight: FontWeight.w600,
@@ -142,20 +146,24 @@ class _PlaceReviewsScreenState extends State<PlaceReviewsScreen> {
             if (_loading) const Center(child: CircularProgressIndicator()),
             if (_error != null) ...[
               Text(_error!, textAlign: TextAlign.center),
-              TextButton(onPressed: _load, child: const Text('Thử lại')),
+              TextButton(
+                onPressed: _load,
+                child: Text(l10n?.commonRetry ?? 'Thử lại'),
+              ),
             ],
             if (!_loading && _error == null && _reviews.isEmpty)
-              const Padding(
-                padding: EdgeInsets.all(32),
+              Padding(
+                padding: const EdgeInsets.all(32),
                 child: Text(
-                  'Chưa có đánh giá. Hãy chia sẻ trải nghiệm của bạn!',
+                  l10n?.noReviewsYet ??
+                      'Chưa có đánh giá. Hãy chia sẻ trải nghiệm của bạn!',
                   textAlign: TextAlign.center,
                 ),
               ),
             if (!_loading && _error == null && _hasMore && _reviews.isNotEmpty)
               TextButton(
                 onPressed: _load,
-                child: const Text('Xem thêm đánh giá'),
+                child: Text(l10n?.viewMoreReviews ?? 'Xem thêm đánh giá'),
               ),
           ],
         ),

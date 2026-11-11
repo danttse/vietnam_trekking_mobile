@@ -10,14 +10,14 @@ import '../data/models/post_model.dart';
 import '../viewmodels/create_new_post_viewmodel.dart';
 import 'community_attachment_picker.dart';
 
-class CreateNewPostCreen extends StatefulWidget {
+class CreateNewPostScreen extends StatefulWidget {
   final PostModel? post;
   final CreateNewPostViewModel? viewModel;
   final String initialContent;
   final String initialType;
   final CommunityAttachment? initialJourney;
 
-  const CreateNewPostCreen({
+  const CreateNewPostScreen({
     super.key,
     this.post,
     this.viewModel,
@@ -27,10 +27,10 @@ class CreateNewPostCreen extends StatefulWidget {
   });
 
   @override
-  State<CreateNewPostCreen> createState() => _CreateNewPostState();
+  State<CreateNewPostScreen> createState() => _CreateNewPostState();
 }
 
-class _CreateNewPostState extends State<CreateNewPostCreen> {
+class _CreateNewPostState extends State<CreateNewPostScreen> {
   late final _vm =
       widget.viewModel ??
       CreateNewPostViewModel(
@@ -61,7 +61,7 @@ class _CreateNewPostState extends State<CreateNewPostCreen> {
     }
   }
 
-  Widget _thumbnail(Widget image, VoidCallback remove) => SizedBox(
+  Widget _thumbnail(Widget image, VoidCallback remove, [String? removeTooltip]) => SizedBox(
     width: 88,
     height: 88,
     child: Stack(
@@ -76,7 +76,7 @@ class _CreateNewPostState extends State<CreateNewPostCreen> {
           top: 0,
           right: 0,
           child: IconButton.filledTonal(
-            tooltip: 'Gỡ ảnh',
+            tooltip: removeTooltip ?? 'Gỡ ảnh',
             visualDensity: VisualDensity.compact,
             icon: const Icon(Icons.close, size: 18),
             onPressed: _vm.isLoading ? null : remove,
@@ -112,28 +112,31 @@ class _CreateNewPostState extends State<CreateNewPostCreen> {
             ),
           ),
           const SizedBox(width: 10),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: colorScheme.onSurface,
+            ),
+          ),
+          const SizedBox(width: 5),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
+                  resultSelection,
                   style: TextStyle(
                     fontSize: 14,
-                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.italic,
                     color: colorScheme.onSurface,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
-            ),
-          ),
-          Text(
-            resultSelection,
-            style: TextStyle(
-              fontSize: 14,
-              fontStyle: FontStyle.italic,
-              color: colorScheme.onSurface,
             ),
           ),
         ],
@@ -153,7 +156,9 @@ class _CreateNewPostState extends State<CreateNewPostCreen> {
           child: Column(
             children: [
               AppTopBarWithBack(
-                title: _vm.isEditing ? 'Chỉnh sửa bài viết' : 'Tạo bài viết mới',
+                title: _vm.isEditing
+                    ? (l10n?.postEditTitle ?? 'Chỉnh sửa bài viết')
+                    : (l10n?.postCreateTitle ?? 'Tạo bài viết mới'),
               ),
               Expanded(
                 child: ListenableBuilder(
@@ -164,15 +169,21 @@ class _CreateNewPostState extends State<CreateNewPostCreen> {
                       child: Column(
                         children: [
                           ProfileHeaderCard(
-                            name: _vm.userName.isNotEmpty ? _vm.userName : 'Đang tải...',
+                            name: _vm.userName.isNotEmpty
+                                ? _vm.userName
+                                : (l10n?.commonLoading ?? 'Đang tải...'),
                             memberSince: _vm.userMemberSince,
                             bio: '',
                             avatarUrl: _vm.userAvatarUrl,
-                            subTitle: 'Đang chia sẻ với TrekViệt',
+                            subTitle: l10n?.postSharingWithTrekViet ??
+                                'Đang chia sẻ với TrekViệt',
                           ),
                           const SizedBox(height: 12),
                           HorizontalChipBar(
-                            items: const ['Công khai', 'Chỉ mình tôi'],
+                            items: [
+                              l10n?.visibilityPublic ?? 'Công khai',
+                              l10n?.visibilityPrivate ?? 'Chỉ mình tôi',
+                            ],
                             selectedIndex: _vm.visibility == 'PRIVATE' ? 1 : 0,
                             onSelect: (index) {
                               if (!_vm.isLoading) {
@@ -192,6 +203,7 @@ class _CreateNewPostState extends State<CreateNewPostCreen> {
                             decoration: InputDecoration(
                               hintText:
                                   l10n?.createNewPostHintText ??
+                                  l10n?.whatsOnYourMind ??
                                   'Bạn đang nghĩ gì?',
                               filled: true,
                               fillColor: colorScheme.surfaceContainerHighest,
@@ -209,19 +221,20 @@ class _CreateNewPostState extends State<CreateNewPostCreen> {
                           ),
                           const SizedBox(height: 12),
                           ProfileSettingGroupItem(
-                            title: 'Thêm vào bài viết',
+                            title: l10n?.postAddToPost ?? 'Thêm vào bài viết',
                             items: [
                               _buildItemSelection(
                                 context,
-                                'Thêm ảnh',
+                                l10n?.postAddPhoto ?? 'Thêm ảnh',
                                 Icons.camera_alt,
                                 () {
                                   if (_vm.imageCount >=
                                       CreateNewPostViewModel.maxImages) {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
+                                      SnackBar(
                                         content: Text(
-                                          'Chỉ được chọn tối đa 5 hình ảnh',
+                                          l10n?.postMaxImagesHint ??
+                                              'Chỉ được chọn tối đa 5 hình ảnh',
                                         ),
                                       ),
                                     );
@@ -230,12 +243,14 @@ class _CreateNewPostState extends State<CreateNewPostCreen> {
                                   }
                                 },
                                 _vm.selectedImages.isNotEmpty
-                                    ? '${_vm.selectedImages.length} ảnh đã chọn'
+                                    ? (l10n?.postSelectedImagesCount(
+                                            _vm.selectedImages.length) ??
+                                        '${_vm.selectedImages.length} ảnh đã chọn')
                                     : '',
                               ),
                               _buildItemSelection(
                                 context,
-                                'Gắn thẻ địa điểm',
+                                l10n?.postTagLocation ?? 'Gắn thẻ địa điểm',
                                 Icons.location_pin,
                                 _vm.isLoading
                                     ? () {}
@@ -244,7 +259,7 @@ class _CreateNewPostState extends State<CreateNewPostCreen> {
                               ),
                               _buildItemSelection(
                                 context,
-                                'Chia sẻ hành trình',
+                                l10n?.postShareJourney ?? 'Chia sẻ hành trình',
                                 Icons.hiking,
                                 _vm.isLoading
                                     ? () {}
@@ -274,6 +289,7 @@ class _CreateNewPostState extends State<CreateNewPostCreen> {
                                             ),
                                       ),
                                       () => _vm.removeExistingImage(index),
+                                      l10n?.postRemoveImage,
                                     );
                                   }
                                   final local =
@@ -313,7 +329,9 @@ class _CreateNewPostState extends State<CreateNewPostCreen> {
                             ),
                           const SizedBox(height: 12),
                           BtnLoginPrimary(
-                            text: _vm.isEditing ? 'Lưu thay đổi' : 'Đăng bài viết',
+                            text: _vm.isEditing
+                                ? (l10n?.commonSaveChanges ?? 'Lưu thay đổi')
+                                : (l10n?.postPublishButton ?? 'Đăng bài viết'),
                             isLoading: _vm.isLoading,
                             onPressed: () async {
                               final result = await _vm.submitPost();

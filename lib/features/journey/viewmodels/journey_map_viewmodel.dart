@@ -105,16 +105,18 @@ class JourneyMapViewModel extends ChangeNotifier {
   // Lay danh sach checkin tu SQLite cho ban do
   Future<void> _loadLocalCheckins() async {
     final jId = _journey.journeyId;
-    if (jId.isEmpty) return;
+    final cId = _journey.clientJourneyId;
+    final ids = {if (jId.isNotEmpty) jId, if (cId != null && cId.isNotEmpty) cId};
+    if (ids.isEmpty) return;
     try {
-      final checkins = await CheckinDao().getCheckinsByJourney(jId);
+      final checkins = await CheckinDao().getCheckinsByJourneyIds(ids);
       final checkedIds = checkins
-          .where((c) => c.syncStatus != 'FAILED')
+          .where((c) => c.verificationStatus != 'REJECTED')
           .map((c) => c.milestoneId)
           .toSet();
       if (checkedIds.isNotEmpty) {
         _milestones = _milestones.map((m) {
-          if (checkedIds.contains(m.id)) {
+          if (checkedIds.contains(m.id) || checkedIds.contains(m.milestoneId)) {
             return m.copyWith(isCheckedIn: true, checkedInAt: DateTime.now());
           }
           return m;

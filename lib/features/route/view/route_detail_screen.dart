@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:vietnam_trekking_mobile/core/widgets/buttons/btn_login_style.dart';
 import 'package:vietnam_trekking_mobile/core/widgets/buttons/btn_outline_style.dart';
 
-import '../../journey/data/models/journey_model.dart';
-import '../data/models/route_model.dart';
-import '../viewmodel/route_detail_viewmodel.dart';
-import '../../journey/views/journey_map_screen.dart';
-import 'download_offline_map_screen.dart';
+import '../../../core/services/trekking_catalog_service.dart';
 import '../../../core/widgets/cards/card_home_stats.dart';
 import '../../../core/widgets/cards/trekking_map_preview.dart';
 import '../../../core/widgets/carousels/place_image_gallery.dart';
-import '../../../core/services/trekking_catalog_service.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../journey/data/models/journey_model.dart';
+import '../../journey/views/journey_map_screen.dart';
 import '../../offline_map/services/offline_map_storage_service.dart';
+import '../data/models/route_model.dart';
+import '../viewmodel/route_detail_viewmodel.dart';
+import 'download_offline_map_screen.dart';
 
 class RouteDetailScreen extends StatefulWidget {
   final RouteModel? route;
@@ -36,15 +37,49 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
   late final RouteDetailViewModel _viewModel;
   bool _startingJourney = false;
 
+  String _difficultyText(RouteModel? route, AppLocalizations l10n) {
+    if (route == null) return '--';
+    switch (route.difficulty) {
+      case RouteDifficulty.easy:
+        return l10n.difficultyEasy;
+      case RouteDifficulty.moderate:
+        return l10n.difficultyModerate;
+      case RouteDifficulty.hard:
+        return l10n.difficultyHard;
+      case RouteDifficulty.extreme:
+        return l10n.difficultyExtreme;
+    }
+  }
+
+  String _durationText(RouteModel? route, AppLocalizations l10n) {
+    if (route == null) return '--';
+    final minutes = route.estimatedDuration.inMinutes;
+    if (minutes <= 0) return '--';
+    if (minutes >= 1440) {
+      final days = minutes / 1440;
+      final daysStr = days == days.roundToDouble()
+          ? days.toInt().toString()
+          : days.toStringAsFixed(1);
+      return l10n.durationDays(daysStr);
+    }
+    final hours = minutes ~/ 60;
+    final remaining = minutes % 60;
+    if (hours == 0) {
+      return l10n.durationMinutes(remaining);
+    }
+    return remaining == 0
+        ? l10n.durationHours(hours)
+        : l10n.durationHoursMinutes(hours, remaining);
+  }
+
   Future<void> _startJourney() async {
     final journey = widget.pendingJourney;
     if (journey == null || _startingJourney) return;
+    final l10n = AppLocalizations.of(context)!;
     if (!_viewModel.isDownloaded) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Vui lòng tải bản đồ offline trước khi bắt đầu hành trình.',
-          ),
+        SnackBar(
+          content: Text(l10n.downloadMapBeforeStart),
         ),
       );
       return;
@@ -57,11 +92,11 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
       }
       final updated = await api.getJourney(journey.journeyId);
       if (mounted) Navigator.pop(context, updated);
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Không thể bắt đầu hành trình. Vui lòng thử lại.'),
+          SnackBar(
+            content: Text(l10n.cannotStartJourney(e.toString())),
           ),
         );
       }
@@ -95,6 +130,9 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
+    final difficultyText = _difficultyText(_viewModel.route, l10n);
+    final durationText = _durationText(_viewModel.route, l10n);
     final width = MediaQuery.sizeOf(context).width;
     final topInset = MediaQuery.paddingOf(context).top;
     final heroHeight = (_viewModel.heroImages.length > 1
@@ -177,7 +215,7 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
-                            _viewModel.difficultyText,
+                            difficultyText,
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 11,
@@ -262,7 +300,7 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                           children: [
                             Expanded(
                               child: CardHomeStats(
-                                title: 'Tổng quãng đường',
+                                title: l10n.statTotalDistance,
                                 value: _viewModel.totalDistanceText,
                                 icon: Icons.linear_scale,
                                 iconColor: colorScheme.onSurfaceVariant,
@@ -271,7 +309,7 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                             const SizedBox(width: 12),
                             Expanded(
                               child: CardHomeStats(
-                                title: 'Độ cao tổng',
+                                title: l10n.statElevationGain,
                                 value: _viewModel.elevationGainText,
                                 icon: Icons.terrain,
                                 iconColor: colorScheme.onSurfaceVariant,
@@ -284,7 +322,7 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                           children: [
                             Expanded(
                               child: CardHomeStats(
-                                title: 'Điểm cao nhất',
+                                title: l10n.statMaxElevation,
                                 value: _viewModel.maxElevationText,
                                 icon: Icons.navigation_outlined,
                                 iconColor: colorScheme.onSurfaceVariant,
@@ -293,8 +331,8 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                             const SizedBox(width: 12),
                             Expanded(
                               child: CardHomeStats(
-                                title: 'Thời gian dự kiến',
-                                value: _viewModel.estimatedDurationText,
+                                title: l10n.statEstimatedDuration,
+                                value: durationText,
                                 icon: Icons.calendar_today_outlined,
                                 iconColor: colorScheme.onSurfaceVariant,
                               ),
@@ -303,7 +341,7 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                         ),
                         const SizedBox(height: 20),
                         Text(
-                          'MÔ TẢ CUNG ĐƯỜNG',
+                          l10n.routeDescriptionTitle,
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
@@ -315,7 +353,8 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                           _viewModel.route?.description?.trim().isNotEmpty ==
                                   true
                               ? _viewModel.route!.description!
-                              : 'Cung đường chưa có mô tả.',
+                              : l10n.routeNoDescription,
+                          textAlign: TextAlign.justify,
                           style: TextStyle(
                             fontSize: 13,
                             height: 1.6,
@@ -323,20 +362,28 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        Text('Độ khó: ${_viewModel.difficultyText}'),
+                        Text(l10n.routeDifficultyPrefix(difficultyText)),
                         if (_viewModel.route?.placeName != null)
-                          Text('Địa điểm: ${_viewModel.route!.placeName}'),
+                          Text(
+                            l10n.routePlacePrefix(
+                              _viewModel.route!.placeName!,
+                            ),
+                          ),
                         if (_viewModel.route != null) ...[
                           Text(
-                            'Điểm bắt đầu: ${_viewModel.route!.startPoint.latitude.toStringAsFixed(6)}, ${_viewModel.route!.startPoint.longitude.toStringAsFixed(6)}',
+                            l10n.routeStartPrefix(
+                              '${_viewModel.route!.startPoint.latitude.toStringAsFixed(6)}, ${_viewModel.route!.startPoint.longitude.toStringAsFixed(6)}',
+                            ),
                           ),
                           Text(
-                            'Điểm kết thúc: ${_viewModel.route!.endPoint.latitude.toStringAsFixed(6)}, ${_viewModel.route!.endPoint.longitude.toStringAsFixed(6)}',
+                            l10n.routeEndPrefix(
+                              '${_viewModel.route!.endPoint.latitude.toStringAsFixed(6)}, ${_viewModel.route!.endPoint.longitude.toStringAsFixed(6)}',
+                            ),
                           ),
                         ],
                         const SizedBox(height: 20),
                         Text(
-                          "BẢN ĐỒ LỘ TRÌNH",
+                          l10n.journeyDetailMapTitle,
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
@@ -367,7 +414,7 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                                 listenable: _viewModel,
                                 builder: (context, _) {
                                   return BtnLoginPrimary(
-                                    text: 'Tải bản đồ Offline',
+                                    text: l10n.journeyDetailDownloadMap,
                                     isLoading: _viewModel.isDownloading,
                                     onPressed: () async {
                                       final result =
@@ -397,7 +444,7 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                             SizedBox(
                               width: double.infinity,
                               child: BtnOutlineStyle(
-                                text: 'Bắt đầu hành trình',
+                                text: l10n.journeyActionStart,
                                 icon: const Icon(Icons.play_arrow_outlined),
                                 onPressed: _startJourney,
                               ),
@@ -406,7 +453,7 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                             SizedBox(
                               width: double.infinity,
                               child: BtnLoginPrimary(
-                                text: 'Bắt đầu hành trình',
+                                text: l10n.journeyActionStart,
                                 isLoading: _startingJourney,
                                 onPressed: _startJourney,
                               ),
@@ -418,7 +465,7 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                                 listenable: _viewModel,
                                 builder: (context, _) {
                                   return BtnOutlineStyle(
-                                    text: 'Xem bản đồ Offline',
+                                    text: l10n.journeyDetailViewMap,
                                     icon: const Icon(
                                       Icons.open_in_new_outlined,
                                     ),
@@ -450,7 +497,7 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                                       context,
                                       widget.pendingJourney,
                                     ),
-                              child: const Text('Về trang hành trình'),
+                              child: Text(l10n.backToJourneyScreen),
                             ),
                           ),
                           const SizedBox(height: 16),
@@ -462,7 +509,7 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                                 listenable: _viewModel,
                                 builder: (context, _) {
                                   return BtnLoginPrimary(
-                                    text: 'Tải bản đồ Offline',
+                                    text: l10n.journeyDetailDownloadMap,
                                     isLoading: _viewModel.isDownloading,
                                     onPressed: () async {
                                       final result =
@@ -495,7 +542,7 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                                 listenable: _viewModel,
                                 builder: (context, _) {
                                   return BtnOutlineStyle(
-                                    text: 'Xem bản đồ Offline',
+                                    text: l10n.journeyDetailViewMap,
                                     icon: const Icon(
                                       Icons.open_in_new_outlined,
                                     ),

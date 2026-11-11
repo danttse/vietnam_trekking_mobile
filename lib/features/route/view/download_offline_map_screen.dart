@@ -79,9 +79,10 @@ class _DownloadOfflineMapScreenState extends State<DownloadOfflineMapScreen> {
       );
     } catch (_) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Không thể bắt đầu hành trình. Vui lòng thử lại.'),
+          SnackBar(
+            content: Text(l10n.cannotStartJourneyGeneral),
           ),
         );
       }
@@ -252,7 +253,7 @@ class _DownloadOfflineMapScreenState extends State<DownloadOfflineMapScreen> {
           child: SizedBox(
             width: double.infinity,
             child: BtnLoginPrimary(
-              text: 'Tải xuống',
+              text: l10n.downloadButton,
               onPressed: _viewModel.startDownload,
             ),
           ),
@@ -568,7 +569,7 @@ class _DownloadOfflineMapScreenState extends State<DownloadOfflineMapScreen> {
                                   const SizedBox(height: 16),
                                   FilledButton(
                                     onPressed: _viewModel.startDownload,
-                                    child: const Text('Thử tải lại'),
+                                    child: Text(l10n.retryDownloadButton),
                                   ),
                                 ],
                               ),

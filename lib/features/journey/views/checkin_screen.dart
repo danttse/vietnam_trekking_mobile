@@ -6,8 +6,9 @@ import 'package:geolocator/geolocator.dart';
 import '../viewmodels/checkin_viewmodel.dart';
 import '../data/models/milestone_model.dart';
 import '../data/services/checkin_service.dart';
-import '../../../core/widgets/buttons/btn_login_style.dart';
 import '../../../core/widgets/app_bar/app_top_bar_with_back.dart';
+import '../../../core/widgets/buttons/btn_login_style.dart';
+import '../../../l10n/app_localizations.dart';
 import 'checkin_success_screen.dart';
 
 class CheckinScreen extends StatefulWidget {
@@ -92,8 +93,6 @@ class _CheckinScreenState extends State<CheckinScreen>
         });
   }
 
-  // ── ViewModel listener ────────────────────────────────────────────────────
-
   void _onVmChange() {
     if (!mounted) return;
     if (_vm.submitState == CheckinSubmitState.success) {
@@ -131,8 +130,6 @@ class _CheckinScreenState extends State<CheckinScreen>
     super.dispose();
   }
 
-  // ── Checkin action ────────────────────────────────────────────────────────
-
   Future<void> _performCheckin() async {
     await _vm.performCheckin(({
       required String milestoneId,
@@ -165,23 +162,24 @@ class _CheckinScreenState extends State<CheckinScreen>
     });
   }
 
-  // ── Build ─────────────────────────────────────────────────────────────────
-
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
     final inRange = _vm.gpsState == CheckinGpsState.inRange;
 
     return Scaffold(
       backgroundColor: cs.surface,
       body: Column(
         children: [
-          AppTopBarWithBack(title: 'Check-in'),
+          AppTopBarWithBack(
+            title: l10n?.checkinControlPointTitle ?? 'Điểm kiểm soát Check-in',
+          ),
           _locationPermissionDenied
               ? _buildPermissionDenied(cs)
               : Column(
                   children: [
-                    // ── GPS status chip ──────────────────────────────────────
+                    //GPS status chip
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Row(
@@ -210,18 +208,14 @@ class _CheckinScreenState extends State<CheckinScreen>
                     ),
 
                     const SizedBox(height: 12),
-
-                    // ── Radar ─────────────────────────────────────────────────
                     Expanded(child: Center(child: _buildRadar(cs, inRange))),
-
-                    // ── Milestone info ────────────────────────────────────────
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'ĐIỂM CẦN ĐẾN',
+                            l10n?.checkinTargetPointLabel ?? 'ĐIỂM CẦN ĐẾN',
                             style: TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.w600,
@@ -296,10 +290,13 @@ class _CheckinScreenState extends State<CheckinScreen>
                             Expanded(
                               child: Text(
                                 inRange
-                                    ? 'Bạn đang trong phạm vi check-in! (Cách ${_vm.distanceLabel})'
-                                    : 'Cần ở trong vòng bán kính '
-                                          '${widget.milestone.checkinRadiusMeters.toInt()}m. '
-                                          'Khoảng cách hiện tại: ${_vm.distanceLabel}',
+                                    ? (l10n?.checkinWithinRange(
+                                      _vm.distanceToTarget?.toInt() ?? 0) ??
+                                        'Bạn đang trong phạm vi check-in! (Cách ${_vm.distanceLabel})')
+                                    : (l10n?.checkinRadiusNotice ??
+                                        'Cần ở trong vòng bán kính '
+                                            '${widget.milestone.checkinRadiusMeters.toInt()}m. '
+                                            'Khoảng cách hiện tại: ${_vm.distanceLabel}'),
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: inRange
@@ -319,7 +316,7 @@ class _CheckinScreenState extends State<CheckinScreen>
                     Padding(
                       padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                       child: BtnLoginPrimary(
-                        text: 'Check-in ngay',
+                        text: l10n?.checkinNowButton ?? 'Check-in ngay',
                         isLoading:
                             _vm.submitState == CheckinSubmitState.submitting,
                         onPressed: _vm.canCheckin ? _performCheckin : null,

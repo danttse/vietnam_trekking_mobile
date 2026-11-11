@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vietnam_trekking_mobile/app/theme/app_theme.dart';
 import 'package:vietnam_trekking_mobile/core/services/trekking_catalog_service.dart';
 import 'package:vietnam_trekking_mobile/features/journey/data/models/journey_model.dart';
@@ -96,6 +97,7 @@ void main() {
   late DetailCatalog api;
   late JourneyDetailViewModel vm;
   setUp(() {
+    SharedPreferences.setMockInitialValues({});
     api = DetailCatalog();
     vm = JourneyDetailViewModel(route: trip, catalog: api, autoLoad: false);
   });
@@ -284,4 +286,39 @@ void main() {
       await tester.pumpWidget(const SizedBox());
     });
   }
+
+  test('re-entering screen loads verified check-ins with backend schema and candidate IDs', () async {
+    final tripWithClient = JourneyModel(
+      journeyId: 'server-trip-123',
+      clientJourneyId: 'local-trip-456',
+      name: 'demo',
+      route: trip.route,
+      status: JourneyStatus.active,
+    );
+    api.points = [point('ms-1', 1), point('ms-2', 2)];
+    api.checkins = [
+      {
+        'milestoneCheckinId': 'chk-001',
+        'journeyId': 'server-trip-123',
+        'milestoneId': 'ms-1',
+        'location': {
+          'type': 'Point',
+          'coordinates': [106.17, 11.38],
+        },
+        'verification': {'method': 'GPS', 'status': 'VERIFIED'},
+        'checkedAt': DateTime.now().toUtc().toIso8601String(),
+      },
+    ];
+
+    // Simulate opening JourneyDetailScreen anew (new ViewModel created)
+    final newVm = JourneyDetailViewModel(route: tripWithClient, catalog: api, autoLoad: false);
+    addTearDown(() => newVm.dispose());
+    await newVm.loadMilestones();
+
+    expect(newVm.milestones.length, 2);
+    expect(newVm.milestones[0].isCheckedIn, isTrue);
+    expect(newVm.milestones[0].id, 'ms-1');
+    expect(newVm.milestones[1].isCheckedIn, isFalse);
+    expect(newVm.checkedInCount, 1);
+  });
 }

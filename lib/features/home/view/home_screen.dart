@@ -169,7 +169,7 @@ class _HomeScreenState extends State<HomeScreen>
                                 title: Text(viewModel.activityError!),
                                 trailing: TextButton(
                                   onPressed: viewModel.loadActivity,
-                                  child: const Text('Thử lại'),
+                                  child: Text(l10n.commonRetry),
                                 ),
                               ),
                             Padding(
@@ -367,8 +367,8 @@ class _HomeScreenState extends State<HomeScreen>
                                                       viewModel.placesError!,
                                                     ),
                                                   )
-                                                : const Text(
-                                                    'Chưa có địa điểm để khám phá',
+                                                : Text(
+                                                    l10n.homeNoPlacesToExplore,
                                                   ),
                                           );
                                         }
@@ -435,7 +435,7 @@ class _HomeScreenState extends State<HomeScreen>
                                     child: FloatingActionButton.small(
                                       backgroundColor: colorScheme.primary,
                                       child: const Icon(
-                                        Icons.image_outlined,
+                                        Icons.map_outlined,
                                         color: Colors.white,
                                       ),
                                       onPressed: () async {
@@ -446,7 +446,7 @@ class _HomeScreenState extends State<HomeScreen>
                                           backgroundColor: colorScheme
                                               .surfaceContainerHighest,
                                           builder: (_) => AppDraggableSheet(
-                                            title: "Ảnh bản đồ của bạn",
+                                            title: l10n.yourMapPosterTitle,
                                             contentBuilder:
                                                 ((
                                                   context,
@@ -469,7 +469,7 @@ class _HomeScreenState extends State<HomeScreen>
                                                         height: 16,
                                                       ),
                                                       BtnLoginPrimary(
-                                                        text: "Tải ảnh ngay",
+                                                        text: l10n.downloadPosterNow,
                                                         onPressed: viewModel
                                                             .captureAndSave,
                                                       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../viewmodels/journey_list_viewmodel.dart';
+import '../../../l10n/app_localizations.dart';
 import '../data/models/journey_model.dart';
 import 'widgets/journey_card.dart';
 import 'widgets/trekking_empty_state.dart';
@@ -66,7 +67,7 @@ class _JourneyListScreenState extends State<JourneyListScreen> {
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: _openCreate,
-            backgroundColor: const Color(0xFFE8620A),
+            backgroundColor: cs.primary,
             child: const Icon(Icons.add, color: Colors.white),
           ),
         );
@@ -74,12 +75,11 @@ class _JourneyListScreenState extends State<JourneyListScreen> {
     );
   }
 
-  // ── Header ────────────────────────────────────────────────────────────────
-
   Widget _buildHeader(ColorScheme cs) {
+    final l10n = AppLocalizations.of(context);
     final tabCount = _vm.tab == JourneyListTab.completed
-        ? '${_vm.totalCompleted} Chuyến đi'
-        : '${_vm.upcomingCount} Chuyến sắp tới';
+        ? '${_vm.totalCompleted} ${l10n?.journeyStatTrips ?? "Chuyến đi"}'
+        : '${_vm.upcomingCount} ${l10n?.journeyUpcoming ?? "Sắp tới"}';
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
@@ -88,7 +88,7 @@ class _JourneyListScreenState extends State<JourneyListScreen> {
         children: [
           Expanded(
             child: Text(
-              'Hành Trình',
+              l10n?.navJourney ?? 'Hành Trình',
               style: TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.w700,
@@ -119,24 +119,33 @@ class _JourneyListScreenState extends State<JourneyListScreen> {
   // ── Summary stats (only on completed tab) ────────────────────────────────
 
   Widget _buildSummary(ColorScheme cs) {
+    final l10n = AppLocalizations.of(context);
     if (_vm.tab != JourneyListTab.completed) {
       // Show upcoming summary
       return Padding(
         padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
         child: Row(
           children: [
-            _SummaryChip(value: '${_vm.upcomingCount}', label: 'Kế hoạch'),
-            const SizedBox(width: 10),
             _SummaryChip(
-              value:
-                  '${(_vm.upcomingJourneys.fold<double>(0, (s, j) => s + j.routeDistanceMeters) / 1000).toStringAsFixed(0)} km',
-              label: 'Tổng dự kiến',
+              value: '${_vm.upcomingCount}',
+              label: l10n?.journeyPlansLabel ?? 'Kế hoạch',
             ),
             const SizedBox(width: 10),
             _SummaryChip(
               value:
+                  '${(_vm.upcomingJourneys.fold<double>(0, (s, j) => s + j.routeDistanceMeters) / 1000).toStringAsFixed(0)} km',
+              label: l10n?.journeyEstimatedTotal(0) ?? 'Tổng dự kiến',
+            ),
+            const SizedBox(width: 10),
+            _SummaryChip(
+              value: l10n?.personCount(
+                    _vm.upcomingJourneys.fold<int>(
+                      0,
+                      (s, j) => s + j.memberCount,
+                    ),
+                  ) ??
                   '${_vm.upcomingJourneys.fold<int>(0, (s, j) => s + j.memberCount)} người',
-              label: 'Bạn đồng hành',
+              label: l10n?.journeyStatCompanions ?? 'Bạn đồng hành',
             ),
           ],
         ),
@@ -146,34 +155,39 @@ class _JourneyListScreenState extends State<JourneyListScreen> {
       padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
       child: Row(
         children: [
-          _SummaryChip(value: '${_vm.totalCompleted}', label: 'Chuyến đi'),
+          _SummaryChip(
+            value: '${_vm.totalCompleted}',
+            label: l10n?.journeyStatTrips ?? 'Chuyến đi',
+          ),
           const SizedBox(width: 10),
           _SummaryChip(
             value: '${_vm.totalDistanceKm.toStringAsFixed(0)} km',
-            label: 'Quãng đường',
+            label: l10n?.journeyStatDistance ?? 'Quãng đường',
           ),
           const SizedBox(width: 10),
-          _SummaryChip(value: '${_vm.totalCheckins}/63', label: 'Tỉnh thành'),
+          _SummaryChip(
+            value: '${_vm.totalCheckins}/63',
+            label: l10n?.provincesLabel ?? 'Tỉnh thành',
+          ),
         ],
       ),
     );
   }
 
-  // ── Tab bar ───────────────────────────────────────────────────────────────
-
   Widget _buildTabBar(ColorScheme cs) {
+    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
       child: Row(
         children: [
           _TabButton(
-            label: 'Đã hoàn thành',
+            label: l10n?.journeyCompleted ?? 'Đã hoàn thành',
             selected: _vm.tab == JourneyListTab.completed,
             onTap: () => _vm.setTab(JourneyListTab.completed),
           ),
           const SizedBox(width: 24),
           _TabButton(
-            label: 'Sắp tới',
+            label: l10n?.journeyUpcoming ?? 'Sắp tới',
             selected: _vm.tab == JourneyListTab.upcoming,
             onTap: () => _vm.setTab(JourneyListTab.upcoming),
           ),
@@ -182,12 +196,10 @@ class _JourneyListScreenState extends State<JourneyListScreen> {
     );
   }
 
-  // ── Body ──────────────────────────────────────────────────────────────────
-
   Widget _buildBody(ColorScheme cs) {
     if (_vm.loading) {
-      return const Center(
-        child: CircularProgressIndicator(color: Color(0xFFE8620A)),
+      return Center(
+        child: CircularProgressIndicator(color: cs.primary),
       );
     }
     if (_vm.error != null) {
@@ -195,21 +207,24 @@ class _JourneyListScreenState extends State<JourneyListScreen> {
     }
 
     final items = _vm.current;
+    final l10n = AppLocalizations.of(context);
 
     if (items.isEmpty) {
       return TrekkingEmptyState.empty(
         title: _vm.tab == JourneyListTab.completed
-            ? 'Chưa có hành trình nào'
-            : 'Chưa có kế hoạch nào',
+            ? (l10n?.journeyEmptyList ?? 'Chưa có hành trình nào')
+            : (l10n?.noPlansYet ?? 'Chưa có kế hoạch nào'),
         subtitle: _vm.tab == JourneyListTab.completed
-            ? 'Bắt đầu hành trình đầu tiên của bạn'
-            : 'Tạo kế hoạch trekking cho chuyến đi sắp tới',
+            ? (l10n?.startFirstJourneyHint ??
+                'Bắt đầu hành trình đầu tiên của bạn')
+            : (l10n?.createPlanForNextTripHint ??
+                'Tạo kế hoạch trekking cho chuyến đi sắp tới'),
         onRetry: _vm.refresh,
       );
     }
 
     return RefreshIndicator(
-      color: const Color(0xFFE8620A),
+      color: cs.primary,
       onRefresh: _vm.refresh,
       child: ListView(
         padding: const EdgeInsets.only(top: 12, bottom: 100),
@@ -220,11 +235,13 @@ class _JourneyListScreenState extends State<JourneyListScreen> {
 
   List<Widget> _buildGroupedList(List<JourneyModel> items, ColorScheme cs) {
     // Group by month/year
+    final l10n = AppLocalizations.of(context);
     final Map<String, List<JourneyModel>> groups = {};
     for (final j in items) {
       final dt =
           j.completedAt ?? j.plannedStartAt ?? j.startedAt ?? j.createdAt;
-      final key = dt != null ? 'THÁNG ${dt.month}, ${dt.year}' : 'KHÁC';
+      final otherLabel = (l10n?.otherLabel ?? 'Khác').toUpperCase();
+      final key = dt != null ? 'THÁNG ${dt.month}, ${dt.year}' : otherLabel;
       groups.putIfAbsent(key, () => []).add(j);
     }
 
@@ -251,8 +268,6 @@ class _JourneyListScreenState extends State<JourneyListScreen> {
     return widgets;
   }
 }
-
-// ── Small helper widgets ──────────────────────────────────────────────────
 
 class _SummaryChip extends StatelessWidget {
   final String value;
@@ -314,7 +329,7 @@ class _TabButton extends StatelessWidget {
             style: TextStyle(
               fontSize: 14,
               fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
-              color: selected ? const Color(0xFFE8620A) : cs.onSurfaceVariant,
+              color: selected ? cs.primary : cs.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: 4),
@@ -323,7 +338,7 @@ class _TabButton extends StatelessWidget {
               height: 2,
               width: 40,
               decoration: BoxDecoration(
-                color: const Color(0xFFE8620A),
+                color: cs.primary,
                 borderRadius: BorderRadius.circular(1),
               ),
             ),

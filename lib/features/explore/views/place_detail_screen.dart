@@ -7,6 +7,7 @@ import '../../../core/network/api_error_handler.dart';
 import '../../../core/services/trekking_catalog_service.dart';
 import '../../../core/widgets/cards/trekking_map_preview.dart';
 import '../../../core/widgets/carousels/place_image_gallery.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../route/data/models/route_model.dart';
 import '../../route/view/route_detail_screen.dart';
 import '../../offline_map/services/offline_map_storage_service.dart';
@@ -65,29 +66,35 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
     }
   }
 
-  String? get _difficulty => switch (_place?['difficulty']) {
-    'EASY' => 'Dễ',
-    'MODERATE' => 'Trung bình',
-    'HARD' => 'Khó',
-    'EXPERT' => 'Rất khó',
+  String? _getDifficulty(AppLocalizations l10n) => switch (_place?['difficulty']) {
+    'EASY' => l10n.difficultyEasy,
+    'MODERATE' => l10n.difficultyModerate,
+    'HARD' => l10n.difficultyHard,
+    'EXPERT' => l10n.difficultyExpert,
     _ => null,
   };
 
-  String _duration(num? minutes) {
+  String _duration(num? minutes, AppLocalizations l10n) {
     if (minutes == null || minutes <= 0) return '—';
     final value = minutes.round();
     if (value >= 1440) {
       final days = value / 1440;
-      return '${days == days.roundToDouble() ? days.toInt() : days.toStringAsFixed(1)} ngày';
+      final daysStr = days == days.roundToDouble()
+          ? days.toInt().toString()
+          : days.toStringAsFixed(1);
+      return l10n.durationDays(daysStr);
     }
     final hours = value ~/ 60;
     final remainder = value % 60;
-    return hours == 0
-        ? '$remainder phút'
-        : '$hours giờ${remainder == 0 ? '' : ' $remainder phút'}';
+    if (hours == 0) {
+      return l10n.durationMinutes(remainder);
+    }
+    return remainder == 0
+        ? l10n.durationHours(hours)
+        : l10n.durationHoursMinutes(hours, remainder);
   }
 
-  Widget _hero(ColorScheme colors) {
+  Widget _hero(ColorScheme colors, AppLocalizations l10n) {
     final urls = (_place?['images'] as List? ?? [])
         .whereType<String>()
         .where((url) => url.trim().isNotEmpty)
@@ -98,6 +105,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
             ? (width * 0.72).clamp(260.0, 380.0)
             : (width * 0.65).clamp(240.0, 360.0)) +
         topInset;
+    final difficulty = _getDifficulty(l10n);
 
     return SizedBox(
       key: const ValueKey('place-hero'),
@@ -154,7 +162,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                   ),
                 ),
                 const Spacer(),
-                if (_difficulty != null)
+                if (difficulty != null)
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 10,
@@ -165,7 +173,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      _difficulty!,
+                      difficulty,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 11,
@@ -281,11 +289,15 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
         ),
       );
 
-  Widget _routeCard(RouteModel route, ColorScheme colors) {
+  Widget _routeCard(
+    RouteModel route,
+    ColorScheme colors,
+    AppLocalizations l10n,
+  ) {
     final distance = route.distanceMeters > 0
         ? '${route.distanceKm.toStringAsFixed(1)} km'
-        : 'Chưa có cự ly';
-    final duration = _duration(route.estimatedDuration.inMinutes);
+        : l10n.noDistanceAvailable;
+    final duration = _duration(route.estimatedDuration.inMinutes, l10n);
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Material(
@@ -363,7 +375,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
     );
   }
 
-  Widget _content(ColorScheme colors) {
+  Widget _content(ColorScheme colors, AppLocalizations l10n) {
     final elevation = _place?['elevationMeters'] as num?;
     final rating = (_place?['ratingAverage'] as num? ?? 0).toDouble();
     final reviewCount = (_place?['ratingCount'] as num? ?? 0).toInt();
@@ -380,13 +392,17 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
               Expanded(
                 child: Text(
                   reviewCount == 0
-                      ? 'Chưa có đánh giá'
-                      : '${rating.toStringAsFixed(1)} ($reviewCount đánh giá)',
+                      ? l10n.noReviewsYet
+                      : l10n.reviewsCount(
+                          rating.toStringAsFixed(1),
+                          reviewCount,
+                        ),
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                     color: colors.onSurface,
                   ),
+                  textAlign: TextAlign.justify,
                 ),
               ),
             ],
@@ -397,30 +413,31 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
             children: [
               _stat(
                 '${_routes.length}',
-                'Cung đường',
+                l10n.statRoutes,
                 Icons.route_outlined,
                 colors,
               ),
               const SizedBox(width: 8),
               _stat(
-                _duration(_place?['averageDurationMinutes'] as num?),
-                'Thời gian',
+                _duration(_place?['averageDurationMinutes'] as num?, l10n),
+                l10n.statDuration,
                 Icons.schedule_outlined,
                 colors,
               ),
               const SizedBox(width: 8),
               _stat(
                 elevation == null ? '—' : '${elevation.round()} m',
-                'Độ cao',
+                l10n.statElevation,
                 Icons.terrain_outlined,
                 colors,
               ),
             ],
           ),
           const SizedBox(height: 28),
-          _sectionTitle('GIỚI THIỆU', colors),
+          _sectionTitle(l10n.placeAboutSection, colors),
           Text(
-            description.isEmpty ? 'Địa điểm chưa có mô tả.' : description,
+            description.isEmpty ? l10n.placeNoDescription : description,
+            textAlign: TextAlign.justify,
             style: TextStyle(
               fontSize: 13,
               height: 1.65,
@@ -428,15 +445,15 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
             ),
           ),
           const SizedBox(height: 28),
-          _sectionTitle('CUNG ĐƯỜNG (${_routes.length})', colors),
+          _sectionTitle(l10n.placeRoutesSection(_routes.length), colors),
           if (_routes.isEmpty)
             Text(
-              'Địa điểm chưa có cung đường.',
+              l10n.placeNoRoutes,
               style: TextStyle(color: colors.onSurfaceVariant, fontSize: 13),
             ),
-          for (final route in _routes) _routeCard(route, colors),
+          for (final route in _routes) _routeCard(route, colors, l10n),
           const SizedBox(height: 18),
-          _sectionTitle('BẢN ĐỒ LỘ TRÌNH', colors),
+          _sectionTitle(l10n.journeyDetailMapTitle, colors),
           TrekkingMapPreview(
             storage: widget.mapStorage,
             key: ValueKey('${widget.placeId}:$_mapRevision'),
@@ -461,6 +478,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
+    final l10n = AppLocalizations.of(context)!;
     final showPlace = !_loading && _error == null && _place != null;
     return Scaffold(
       backgroundColor: colors.surface,
@@ -482,7 +500,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                   children: [
                     Text(_error!, textAlign: TextAlign.center),
                     const SizedBox(height: 12),
-                    TextButton(onPressed: _load, child: const Text('Thử lại')),
+                    TextButton(onPressed: _load, child: Text(l10n.commonRetry)),
                   ],
                 ),
               ),
@@ -492,7 +510,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
               bottom: true,
               child: Column(
                 children: [
-                  _hero(colors),
+                  _hero(colors, l10n),
                   Expanded(
                     child: Transform.translate(
                       offset: const Offset(0, -20),
@@ -511,7 +529,9 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                           child: CustomScrollView(
                             physics: const AlwaysScrollableScrollPhysics(),
                             slivers: [
-                              SliverToBoxAdapter(child: _content(colors)),
+                              SliverToBoxAdapter(
+                                child: _content(colors, l10n),
+                              ),
                             ],
                           ),
                         ),

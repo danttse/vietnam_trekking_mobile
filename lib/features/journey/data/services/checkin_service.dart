@@ -67,7 +67,14 @@ class CheckinService {
       'milestoneId': milestoneId,
       'latitude': latitude,
       'longitude': longitude,
+      'location': {
+        'type': 'Point',
+        'coordinates': [longitude, latitude],
+      },
       'accuracyMeters': accuracyMeters,
+      'distanceToMilestoneMeters': distanceToTarget,
+      'userId': userId,
+      'syncSource': 'ONLINE',
       'checkedAt': DateTime.now().toUtc().toIso8601String(),
     });
     final verification =

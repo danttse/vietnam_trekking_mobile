@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import '../viewmodels/marker_form_viewmodel.dart';
 import '../data/models/marker_model.dart';
 import '../../../core/widgets/buttons/btn_login_style.dart';
+import '../../../l10n/app_localizations.dart';
 import 'widgets/trekking_button.dart';
 
 /// Compact marker sheet leaves the route visible above it.
@@ -135,6 +136,7 @@ class _MarkerFormScreenState extends State<MarkerFormScreen> {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
     final saving = _vm.state == MarkerFormState.saving;
     return PopScope(
       canPop: !saving,
@@ -183,8 +185,10 @@ class _MarkerFormScreenState extends State<MarkerFormScreen> {
                         Expanded(
                           child: Text(
                             _vm.isEditing
-                                ? 'Chỉnh sửa cột mốc'
-                                : 'Đánh dấu cột mốc',
+                                ? (l10n?.markerFormEditTitle ??
+                                    'Chỉnh sửa cột mốc')
+                                : (l10n?.markerFormCreateTitle ??
+                                    'Đánh dấu cột mốc'),
                             style: TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.w700,
@@ -201,14 +205,18 @@ class _MarkerFormScreenState extends State<MarkerFormScreen> {
                       ],
                     ),
                     Text(
-                      'Lưu cột mốc riêng, sau đó chọn “Gửi cho admin” trên bản đồ để đóng góp điểm này.',
+                      l10n?.markerSyncDesc ??
+                          'Lưu cột mốc riêng, sau đó chọn “Gửi cho admin” trên bản đồ để đóng góp điểm này.',
                       style: TextStyle(
                         fontSize: 11,
                         color: cs.onSurfaceVariant,
                       ),
                     ),
                     const SizedBox(height: 14),
-                    _label('TÊN CỘT MỐC *', cs),
+                    _label(
+                      (l10n?.markerNameLabel ?? 'TÊN CỘT MỐC *').toUpperCase(),
+                      cs,
+                    ),
                     const SizedBox(height: 6),
                     TextFormField(
                       controller: _nameCtrl,
@@ -219,11 +227,11 @@ class _MarkerFormScreenState extends State<MarkerFormScreen> {
                       style: const TextStyle(fontSize: 13),
                       decoration: _deco(
                         cs,
-                        'Cột mốc mới',
+                        l10n?.markerNameHint ?? 'Cột mốc mới',
                       ).copyWith(counterText: ''),
                       validator: (value) => value?.trim().isNotEmpty == true
                           ? null
-                          : 'Nhập tên cột mốc',
+                          : (l10n?.markerNameRequired ?? 'Nhập tên cột mốc'),
                     ),
                     const SizedBox(height: 12),
                     Row(
@@ -233,7 +241,11 @@ class _MarkerFormScreenState extends State<MarkerFormScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _label('LOẠI *', cs),
+                              _label(
+                                (l10n?.markerTypeLabel ?? 'LOẠI *')
+                                    .toUpperCase(),
+                                cs,
+                              ),
                               const SizedBox(height: 6),
                               DropdownButtonFormField<String>(
                                 initialValue: _vm.selectedType,
@@ -266,7 +278,11 @@ class _MarkerFormScreenState extends State<MarkerFormScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _label('TỌA ĐỘ GPS', cs),
+                              _label(
+                                (l10n?.markerGpsCoordinates ?? 'TỌA ĐỘ GPS')
+                                    .toUpperCase(),
+                                cs,
+                              ),
                               const SizedBox(height: 6),
                               Container(
                                 padding: const EdgeInsets.all(10),
@@ -297,7 +313,12 @@ class _MarkerFormScreenState extends State<MarkerFormScreen> {
                       ],
                     ),
                     const SizedBox(height: 12),
-                    _label('ẢNH MINH HỌA • TỐI ĐA 5 ẢNH', cs),
+                    _label(
+                      (l10n?.markerPhotosLabel ??
+                              'ẢNH MINH HỌA • TỐI ĐA 5 ẢNH')
+                          .toUpperCase(),
+                      cs,
+                    ),
                     const SizedBox(height: 6),
                     SizedBox(
                       height: 72,
@@ -339,7 +360,7 @@ class _MarkerFormScreenState extends State<MarkerFormScreen> {
                                         ),
                                         const SizedBox(height: 4),
                                         Text(
-                                          'Thêm ảnh',
+                                          l10n?.markerAddPhoto ?? 'Thêm ảnh',
                                           style: TextStyle(
                                             color: cs.onSurfaceVariant,
                                             fontSize: 10,
@@ -403,7 +424,12 @@ class _MarkerFormScreenState extends State<MarkerFormScreen> {
                     const SizedBox(height: 12),
                     Row(
                       children: [
-                        Expanded(child: _label('GHI CHÚ', cs)),
+                        Expanded(
+                          child: _label(
+                            (l10n?.markerNoteLabel ?? 'GHI CHÚ').toUpperCase(),
+                            cs,
+                          ),
+                        ),
                         Text(
                           '${_noteCtrl.text.length}/350',
                           style: TextStyle(
@@ -424,7 +450,8 @@ class _MarkerFormScreenState extends State<MarkerFormScreen> {
                       style: const TextStyle(fontSize: 12),
                       decoration: _deco(
                         cs,
-                        'Cảnh đẹp, bãi nghỉ, nguồn nước…',
+                        l10n?.markerNoteHint ??
+                            'Cảnh đẹp, bãi nghỉ, nguồn nước…',
                       ).copyWith(counterText: ''),
                     ),
                     if (_vm.accuracy != null)
@@ -443,7 +470,7 @@ class _MarkerFormScreenState extends State<MarkerFormScreen> {
                       children: [
                         Expanded(
                           child: TrekkingSecondaryButton(
-                            label: 'Lưu trên máy',
+                            label: l10n?.markerSaveOffline ?? 'Lưu trên máy',
                             onPressed: saving || _picking
                                 ? null
                                 : () => _save(false),
@@ -452,7 +479,7 @@ class _MarkerFormScreenState extends State<MarkerFormScreen> {
                         const SizedBox(width: 10),
                         Expanded(
                           child: BtnLoginPrimary(
-                            text: 'Lưu & đồng bộ',
+                            text: l10n?.markerSaveAndSync ?? 'Lưu & đồng bộ',
                             isLoading: saving,
                             onPressed: saving || _picking
                                 ? null
@@ -463,7 +490,8 @@ class _MarkerFormScreenState extends State<MarkerFormScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Đồng bộ lưu cột mốc vào tài khoản. Chọn “Gửi cho admin” để gửi xét duyệt.',
+                      l10n?.markerSyncDesc ??
+                          'Đồng bộ lưu cột mốc vào tài khoản. Chọn “Gửi cho admin” để gửi xét duyệt.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 10,

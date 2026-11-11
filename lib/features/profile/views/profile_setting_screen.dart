@@ -133,7 +133,7 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                     onTapAction: () => _settingViewModel.changeAvatar(context),
                   ),
                   ProfileSettingItem(
-                    mainTitle: 'Quản lý bản đồ offline',
+                    mainTitle: l10n.manageOfflineMaps,
                     icon: Icons.map_outlined,
                     onTapAction: () =>
                         _settingViewModel.openOfflineMapManagement(context),

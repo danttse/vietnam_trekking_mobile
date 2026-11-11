@@ -171,7 +171,7 @@ class _CheckinSuccessScreenState extends State<CheckinSuccessScreen> {
                   const SizedBox(height: 6),
                   Text(
                     widget.journeyFinished
-                        ? 'Hoàn thành hành trình!'
+                        ? l10n.journeyCompletedTitle
                         : l10n.checkinSuccessTitle,
                     style: TextStyle(
                       fontSize: 24,
@@ -262,7 +262,7 @@ class _CheckinSuccessScreenState extends State<CheckinSuccessScreen> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Thêm ảnh check-in (tối đa 2 ảnh)',
+                      l10n.addPhotosPrompt,
                       style: TextStyle(
                         color: colorScheme.onSurface,
                         fontSize: 14,
@@ -339,7 +339,7 @@ class _CheckinSuccessScreenState extends State<CheckinSuccessScreen> {
                     width: double.infinity,
                     child: BtnLoginPrimary(
                       text: widget.journeyFinished
-                          ? 'Quay lại hành trình'
+                          ? l10n.backToJourneyButton
                           : l10n.continueJourneyButton,
                       onPressed: () {
                         Navigator.pop(context, _checkinImages);
