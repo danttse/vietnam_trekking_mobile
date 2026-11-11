@@ -21,19 +21,15 @@ class TrekkingEmptyState extends StatelessWidget {
     String title = 'Chưa có dữ liệu',
     String? subtitle,
     VoidCallback? onRetry,
-  }) =>
-      TrekkingEmptyState(
-        icon: Icons.inbox_outlined,
-        title: title,
-        subtitle: subtitle,
-        retryLabel: 'Làm mới',
-        onRetry: onRetry,
-      );
+  }) => TrekkingEmptyState(
+    icon: Icons.inbox_outlined,
+    title: title,
+    subtitle: subtitle,
+    retryLabel: 'Làm mới',
+    onRetry: onRetry,
+  );
 
-  factory TrekkingEmptyState.error({
-    String? message,
-    VoidCallback? onRetry,
-  }) =>
+  factory TrekkingEmptyState.error({String? message, VoidCallback? onRetry}) =>
       TrekkingEmptyState(
         icon: Icons.error_outline_rounded,
         title: 'Đã xảy ra lỗi',
@@ -60,7 +56,11 @@ class TrekkingEmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 56, color: cs.onSurfaceVariant.withValues(alpha: 0.4)),
+            Icon(
+              icon,
+              size: 56,
+              color: cs.onSurfaceVariant.withValues(alpha: 0.4),
+            ),
             const SizedBox(height: 16),
             Text(
               title,
@@ -76,8 +76,7 @@ class TrekkingEmptyState extends StatelessWidget {
               Text(
                 subtitle!,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 13, color: cs.onSurfaceVariant),
+                style: TextStyle(fontSize: 13, color: cs.onSurfaceVariant),
               ),
             ],
             if (onRetry != null) ...[

@@ -63,26 +63,32 @@ class OfflineCheckin {
   });
 
   factory OfflineCheckin.fromMap(Map<String, dynamic> map) {
+    DateTime parseDate(dynamic v) {
+      if (v is DateTime) return v;
+      if (v is int) return DateTime.fromMillisecondsSinceEpoch(v);
+      if (v is String) {
+        final d = DateTime.tryParse(v);
+        if (d != null) return d;
+      }
+      return DateTime.now();
+    }
+
     return OfflineCheckin(
-      localCheckinId: map['localCheckinId'] as String,
-      serverCheckinId: map['serverCheckinId'] as String?,
-      localJourneyId: map['localJourneyId'] as String,
-      milestoneId: map['milestoneId'] as String,
-      userId: map['userId'] as String,
-      latitude: map['latitude'] as double,
-      longitude: map['longitude'] as double,
+      localCheckinId: (map['localCheckinId'] ?? '').toString(),
+      serverCheckinId: map['serverCheckinId']?.toString(),
+      localJourneyId: (map['localJourneyId'] ?? '').toString(),
+      milestoneId: (map['milestoneId'] ?? '').toString(),
+      userId: (map['userId'] ?? '').toString(),
+      latitude: (map['latitude'] as num?)?.toDouble() ?? 0.0,
+      longitude: (map['longitude'] as num?)?.toDouble() ?? 0.0,
       accuracyMeters: (map['accuracyMeters'] as num?)?.toDouble(),
-      distanceToTargetMeters:
-          (map['distanceToTargetMeters'] as num?)?.toDouble(),
-      verificationStatus: map['verificationStatus'] as String?,
-      checkedAt: DateTime.parse(map['checkedAt'] as String),
-      syncStatus: map['syncStatus'] as String? ?? 'PENDING',
-      createdAt: map['createdAt'] != null
-          ? DateTime.parse(map['createdAt'] as String)
-          : null,
-      updatedAt: map['updatedAt'] != null
-          ? DateTime.parse(map['updatedAt'] as String)
-          : null,
+      distanceToTargetMeters: (map['distanceToTargetMeters'] as num?)
+          ?.toDouble(),
+      verificationStatus: map['verificationStatus']?.toString(),
+      checkedAt: parseDate(map['checkedAt']),
+      syncStatus: (map['syncStatus'] ?? 'PENDING').toString(),
+      createdAt: map['createdAt'] != null ? parseDate(map['createdAt']) : null,
+      updatedAt: map['updatedAt'] != null ? parseDate(map['updatedAt']) : null,
     );
   }
 

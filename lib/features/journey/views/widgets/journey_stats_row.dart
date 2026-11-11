@@ -10,9 +10,7 @@ class JourneyStatsRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: stats
-          .map((s) => Expanded(child: _StatBox(stat: s)))
-          .toList(),
+      children: stats.map((s) => Expanded(child: _StatBox(stat: s))).toList(),
     );
   }
 }
@@ -52,10 +50,7 @@ class _StatBox extends StatelessWidget {
           Text(
             stat.label,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 10,
-              color: cs.onSurfaceVariant,
-            ),
+            style: TextStyle(fontSize: 10, color: cs.onSurfaceVariant),
           ),
         ],
       ),

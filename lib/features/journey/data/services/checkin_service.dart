@@ -71,7 +71,9 @@ class CheckinService {
       'checkedAt': DateTime.now().toUtc().toIso8601String(),
     });
     final verification =
-        data['verification']?['status']?.toString() ?? 'PENDING';
+        data['verification']?['status']?.toString() ??
+        data['verificationStatus']?.toString() ??
+        'VERIFIED';
     return CheckinResult(
       serverCheckinId: data['checkinId']?.toString() ?? '',
       milestoneType: data['milestoneType'] ?? 'CHECKPOINT',

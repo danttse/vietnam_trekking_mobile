@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../data/models/marker_model.dart';
 
 /// Card cho một Journey Marker trong danh sách / bottom sheet.
@@ -25,8 +26,7 @@ class MarkerCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: cs.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-            color: color.withValues(alpha: 0.3), width: 1),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
       ),
       child: Row(
         children: [
@@ -59,14 +59,12 @@ class MarkerCard extends StatelessWidget {
                       ),
                     ),
                     if (!marker.isSynced)
-                      const Icon(Icons.cloud_off,
-                          size: 12, color: Colors.grey),
+                      const Icon(Icons.cloud_off, size: 12, color: Colors.grey),
                   ],
                 ),
                 Text(
                   marker.typeLabel,
-                  style: TextStyle(
-                      fontSize: 11, color: cs.onSurfaceVariant),
+                  style: TextStyle(fontSize: 11, color: cs.onSurfaceVariant),
                 ),
                 if (marker.note != null && marker.note!.isNotEmpty)
                   Padding(
@@ -76,7 +74,9 @@ class MarkerCard extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                          fontSize: 11, color: cs.onSurfaceVariant),
+                        fontSize: 11,
+                        color: cs.onSurfaceVariant,
+                      ),
                     ),
                   ),
               ],
@@ -85,29 +85,34 @@ class MarkerCard extends StatelessWidget {
           // Actions
           if (onEdit != null || onDelete != null)
             PopupMenuButton<String>(
-              icon: Icon(Icons.more_vert,
-                  size: 18, color: cs.onSurfaceVariant),
+              icon: Icon(Icons.more_vert, size: 18, color: cs.onSurfaceVariant),
               color: cs.surfaceContainerHighest,
               itemBuilder: (_) => [
                 if (onEdit != null)
                   const PopupMenuItem(
                     value: 'edit',
-                    child: Row(children: [
-                      Icon(Icons.edit_outlined, size: 16),
-                      SizedBox(width: 8),
-                      Text('Chỉnh sửa'),
-                    ]),
+                    child: Row(
+                      children: [
+                        Icon(Icons.edit_outlined, size: 16),
+                        SizedBox(width: 8),
+                        Text('Chỉnh sửa'),
+                      ],
+                    ),
                   ),
                 if (onDelete != null)
                   const PopupMenuItem(
                     value: 'delete',
-                    child: Row(children: [
-                      Icon(Icons.delete_outline,
-                          size: 16, color: Colors.redAccent),
-                      SizedBox(width: 8),
-                      Text('Xóa',
-                          style: TextStyle(color: Colors.redAccent)),
-                    ]),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.delete_outline,
+                          size: 16,
+                          color: Colors.redAccent,
+                        ),
+                        SizedBox(width: 8),
+                        Text('Xóa', style: TextStyle(color: Colors.redAccent)),
+                      ],
+                    ),
                   ),
               ],
               onSelected: (v) {

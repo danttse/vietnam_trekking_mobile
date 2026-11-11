@@ -98,7 +98,8 @@ class CachedMilestone {
       latitude: map['latitude'] as double,
       longitude: map['longitude'] as double,
       altitude: map['altitude'] as double?,
-      checkinRadiusMeters: (map['checkinRadiusMeters'] as num?)?.toDouble() ?? 50.0,
+      checkinRadiusMeters:
+          (map['checkinRadiusMeters'] as num?)?.toDouble() ?? 50.0,
       required: (map['required'] as int? ?? 1) == 1,
       imageUrl: map['imageUrl'] as String?,
       cachedAt: map['cachedAt'] != null

@@ -1,6 +1,8 @@
-import 'package:shared_preferences/shared_preferences.dart';
+import '../../../core/database/daos/checkin_dao.dart';
+
 import 'dart:async';
 import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
@@ -100,15 +102,19 @@ class JourneyMapViewModel extends ChangeNotifier {
     _errorMessage = null;
   }
 
+  // Lay danh sach checkin tu SQLite cho ban do
   Future<void> _loadLocalCheckins() async {
     final jId = _journey.journeyId;
     if (jId.isEmpty) return;
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final savedMilestones = prefs.getStringList('journey_checkins_$jId') ?? [];
-      if (savedMilestones.isNotEmpty) {
+      final checkins = await CheckinDao().getCheckinsByJourney(jId);
+      final checkedIds = checkins
+          .where((c) => c.syncStatus != 'FAILED')
+          .map((c) => c.milestoneId)
+          .toSet();
+      if (checkedIds.isNotEmpty) {
         _milestones = _milestones.map((m) {
-          if (savedMilestones.contains(m.id)) {
+          if (checkedIds.contains(m.id)) {
             return m.copyWith(isCheckedIn: true, checkedInAt: DateTime.now());
           }
           return m;
@@ -118,6 +124,7 @@ class JourneyMapViewModel extends ChangeNotifier {
     } catch (_) {}
   }
 
+  // Cap nhat checkin milestone vao bo nho ban do
   void checkInMilestone(String milestoneId) {
     final index = _milestones.indexWhere((m) => m.id == milestoneId);
     if (index == -1) return;
@@ -126,16 +133,6 @@ class JourneyMapViewModel extends ChangeNotifier {
       isCheckedIn: true,
       checkedInAt: DateTime.now(),
     );
-    final jId = _journey.journeyId;
-    if (jId.isNotEmpty) {
-      SharedPreferences.getInstance().then((prefs) {
-        final existing = prefs.getStringList('journey_checkins_$jId') ?? [];
-        if (!existing.contains(milestoneId)) {
-          existing.add(milestoneId);
-          prefs.setStringList('journey_checkins_$jId', existing);
-        }
-      });
-    }
     notifyListeners();
   }
 
@@ -188,10 +185,7 @@ class JourneyMapViewModel extends ChangeNotifier {
         }
       }
       final storage = customMapStorage ?? OfflineMapStorageService();
-      final map = await storage.findReadyMap(
-        routeId,
-        _journey.trekkingPlaceId,
-      );
+      final map = await storage.findReadyMap(routeId, _journey.trekkingPlaceId);
       if (map == null) {
         throw StateError('Chưa có bản đồ offline đã cài cho địa điểm này.');
       }

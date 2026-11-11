@@ -1,4 +1,5 @@
 import 'package:sqflite/sqflite.dart';
+
 import '../database_helper.dart';
 import '../models/sync_queue_item.dart';
 import '../models/local_contribution.dart';
@@ -8,7 +9,7 @@ class SyncDao {
   final DatabaseHelper _dbHelper;
 
   SyncDao({DatabaseHelper? dbHelper})
-      : _dbHelper = dbHelper ?? DatabaseHelper.instance;
+    : _dbHelper = dbHelper ?? DatabaseHelper.instance;
 
   Future<Database> get _db => _dbHelper.database;
 
@@ -179,9 +180,7 @@ class SyncDao {
     );
   }
 
-  Future<LocalContribution?> getContribution(
-    String localContributionId,
-  ) async {
+  Future<LocalContribution?> getContribution(String localContributionId) async {
     final db = await _db;
     final rows = await db.query(
       'local_contributions',
@@ -193,9 +192,7 @@ class SyncDao {
     return LocalContribution.fromMap(rows.first);
   }
 
-  Future<List<LocalContribution>> getContributionsByUser(
-    String userId,
-  ) async {
+  Future<List<LocalContribution>> getContributionsByUser(String userId) async {
     final db = await _db;
     final rows = await db.query(
       'local_contributions',

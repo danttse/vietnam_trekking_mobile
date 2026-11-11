@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import '../../../core/widgets/cards/image_load_card.dart';
 import '../../community/views/community_share.dart';
 
@@ -46,7 +47,6 @@ class _JourneyDetailScreenState extends State<JourneyDetailScreen> {
   Future<void> _openMilestone(MilestoneModel milestone) async {
     final result = await Navigator.push(
       context,
-      //chuyen sang man checkin milestone
       MaterialPageRoute(
         builder: (_) => MilestoneCheckinScreen(
           milestone: milestone,
@@ -61,10 +61,14 @@ class _JourneyDetailScreenState extends State<JourneyDetailScreen> {
       ),
     );
     if (mounted) {
-      _viewModel.checkIn(milestone.id);
-      if (result is List) {
-        for (final img in result) {
-          if (img is String) _viewModel.addCheckinImage(img);
+      // Chi ghi nhan khi checkin thanh cong
+      final isSuccess = result == true || (result is List);
+      if (isSuccess) {
+        _viewModel.checkIn(milestone.id);
+        if (result is List) {
+          for (final img in result) {
+            if (img is String) _viewModel.addCheckinImage(img);
+          }
         }
       }
       await _viewModel.loadMilestones();
@@ -703,9 +707,8 @@ class _JourneyDetailScreenState extends State<JourneyDetailScreen> {
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,
                                       letterSpacing: 0.8,
-                                      color: colorScheme.onSurfaceVariant.withValues(
-                                        alpha: 0.8,
-                                      ),
+                                      color: colorScheme.onSurfaceVariant
+                                          .withValues(alpha: 0.8),
                                     ),
                                   ),
                                   const SizedBox(height: 8),
@@ -713,13 +716,19 @@ class _JourneyDetailScreenState extends State<JourneyDetailScreen> {
                                     height: 72,
                                     child: ListView.builder(
                                       scrollDirection: Axis.horizontal,
-                                      itemCount: _viewModel.checkinImages.length,
+                                      itemCount:
+                                          _viewModel.checkinImages.length,
                                       itemBuilder: (context, index) {
                                         return Padding(
-                                          padding: const EdgeInsets.only(right: 10),
+                                          padding: const EdgeInsets.only(
+                                            right: 10,
+                                          ),
                                           child: ImageLoadCard(
-                                            imageUrl: File(_viewModel.checkinImages[index]),
-                                            onTapRemove: () => _viewModel.removeCheckinImage(index),
+                                            imageUrl: File(
+                                              _viewModel.checkinImages[index],
+                                            ),
+                                            onTapRemove: () => _viewModel
+                                                .removeCheckinImage(index),
                                           ),
                                         );
                                       },

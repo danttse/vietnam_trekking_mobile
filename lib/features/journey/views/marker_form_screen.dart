@@ -354,7 +354,8 @@ class _MarkerFormScreenState extends State<MarkerFormScreen> {
                           Expanded(
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
-                              itemCount: _vm.mediaLocalPaths.length +
+                              itemCount:
+                                  _vm.mediaLocalPaths.length +
                                   _vm.mediaRemoteUrls.length,
                               itemBuilder: (context, index) {
                                 if (index < _vm.mediaLocalPaths.length) {
@@ -365,10 +366,9 @@ class _MarkerFormScreenState extends State<MarkerFormScreen> {
                                       Image.file(
                                         File(path),
                                         fit: BoxFit.cover,
-                                        errorBuilder: (_, _, _) =>
-                                            const Icon(
-                                              Icons.broken_image_outlined,
-                                            ),
+                                        errorBuilder: (_, _, _) => const Icon(
+                                          Icons.broken_image_outlined,
+                                        ),
                                       ),
                                       onRemove: saving
                                           ? null
@@ -385,10 +385,9 @@ class _MarkerFormScreenState extends State<MarkerFormScreen> {
                                     Image.network(
                                       url,
                                       fit: BoxFit.cover,
-                                      errorBuilder: (_, _, _) =>
-                                          const Icon(
-                                            Icons.broken_image_outlined,
-                                          ),
+                                      errorBuilder: (_, _, _) => const Icon(
+                                        Icons.broken_image_outlined,
+                                      ),
                                     ),
                                     onRemove: saving
                                         ? null

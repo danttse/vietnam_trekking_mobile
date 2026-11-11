@@ -212,7 +212,9 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
           ),
         ),
       );
-      if (result != null && mounted) {
+      // Chi cap nhat khi checkin thanh cong
+      final isSuccess = result == true || (result is List);
+      if (isSuccess && mounted) {
         _viewModel.checkInMilestone(milestone.id);
         await _mapRenderer.clearAll();
         await _mapRenderer.addMapLayers(

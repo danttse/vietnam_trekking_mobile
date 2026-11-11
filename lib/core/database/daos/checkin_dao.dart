@@ -1,4 +1,5 @@
 import 'package:sqflite/sqflite.dart';
+
 import '../database_helper.dart';
 import '../models/offline_checkin.dart';
 
@@ -7,7 +8,7 @@ class CheckinDao {
   final DatabaseHelper _dbHelper;
 
   CheckinDao({DatabaseHelper? dbHelper})
-      : _dbHelper = dbHelper ?? DatabaseHelper.instance;
+    : _dbHelper = dbHelper ?? DatabaseHelper.instance;
 
   Future<Database> get _db => _dbHelper.database;
 
@@ -44,31 +45,50 @@ class CheckinDao {
     return OfflineCheckin.fromMap(rows.first);
   }
 
-  Future<List<OfflineCheckin>> getCheckinsByJourney(
-    String localJourneyId,
-  ) async {
+  // Lay danh sach checkin theo journey id (ho tro ca local va server id)
+  Future<List<OfflineCheckin>> getCheckinsByJourney(String journeyRef) async {
     final db = await _db;
-    final rows = await db.query(
-      _table,
-      where: 'localJourneyId = ?',
-      whereArgs: [localJourneyId],
-      orderBy: 'checkedAt ASC',
+    final rows = await db.rawQuery(
+      '''
+      SELECT c.* FROM $_table c
+      WHERE c.localJourneyId = ?
+         OR c.localJourneyId IN (
+           SELECT j.localJourneyId FROM local_journeys j
+           WHERE j.localJourneyId = ? OR j.serverJourneyId = ?
+         )
+         OR (c.serverCheckinId IS NOT NULL AND c.localJourneyId IN (
+           SELECT j.serverJourneyId FROM local_journeys j
+           WHERE j.localJourneyId = ? OR j.serverJourneyId = ?
+         ))
+      ORDER BY c.checkedAt ASC
+    ''',
+      [journeyRef, journeyRef, journeyRef, journeyRef, journeyRef],
     );
-    return rows.map(OfflineCheckin.fromMap).toList();
+    return rows
+        .map((r) => OfflineCheckin.fromMap(Map<String, dynamic>.from(r)))
+        .toList();
   }
 
-  /// Kiểm tra xem milestone đã được check-in trong journey này chưa
+  // Kiem tra milestone da duoc checkin chua
   Future<bool> hasCheckin({
     required String localJourneyId,
     required String milestoneId,
     required String userId,
   }) async {
     final db = await _db;
-    final rows = await db.query(
-      _table,
-      where: 'localJourneyId = ? AND milestoneId = ? AND userId = ?',
-      whereArgs: [localJourneyId, milestoneId, userId],
-      limit: 1,
+    final rows = await db.rawQuery(
+      '''
+      SELECT 1 FROM $_table c
+      WHERE c.milestoneId = ? AND c.userId = ? AND (
+        c.localJourneyId = ?
+        OR c.localJourneyId IN (
+          SELECT j.localJourneyId FROM local_journeys j
+          WHERE j.localJourneyId = ? OR j.serverJourneyId = ?
+        )
+      )
+      LIMIT 1
+    ''',
+      [milestoneId, userId, localJourneyId, localJourneyId, localJourneyId],
     );
     return rows.isNotEmpty;
   }

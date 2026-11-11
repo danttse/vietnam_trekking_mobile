@@ -365,13 +365,19 @@ class TrekkingCatalogService {
     String journeyId,
   ) async {
     final owner = await offline.requireOwner();
-    final ref = await offline.localJourneyId(journeyId);
-    final snapshot = await offline.read('/journeys/$ref', owner: owner) as Map;
-    final serverId =
-        snapshot['serverJourneyId'] ??
-        ((snapshot['offlineSyncStatus'] ?? 'SYNCED') == 'SYNCED'
-            ? snapshot['journeyId']
-            : null);
+    var ref = journeyId;
+    try {
+      ref = await offline.localJourneyId(journeyId);
+    } on StateError {
+      // Journey chua luu local
+    }
+    final snapshot = await offline.read('/journeys/$ref', owner: owner);
+    final serverId = snapshot is Map
+        ? snapshot['serverJourneyId'] ??
+              ((snapshot['offlineSyncStatus'] ?? 'SYNCED') == 'SYNCED'
+                  ? snapshot['journeyId']
+                  : null)
+        : (RegExp(r'^[a-fA-F0-9]{24}$').hasMatch(journeyId) ? journeyId : null);
     if (serverId != null) {
       try {
         final data =
@@ -382,7 +388,11 @@ class TrekkingCatalogService {
         if (!OfflineStore.canUseCache(e)) rethrow;
       }
     }
-    return offline.checkins(journeyId);
+    try {
+      return await offline.checkins(journeyId);
+    } on StateError {
+      return [];
+    }
   }
 
   static RouteModel parseRoute(

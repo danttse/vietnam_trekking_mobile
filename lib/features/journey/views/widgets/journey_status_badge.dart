@@ -90,9 +90,10 @@ class _BadgeConfig {
   final Color bg;
   final Color border;
   final Color text;
-  const _BadgeConfig(
-      {required this.label,
-      required this.bg,
-      required this.border,
-      required this.text});
+  const _BadgeConfig({
+    required this.label,
+    required this.bg,
+    required this.border,
+    required this.text,
+  });
 }

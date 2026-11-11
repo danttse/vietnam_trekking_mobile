@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -82,7 +83,8 @@ class _CheckinSuccessScreenState extends State<CheckinSuccessScreen> {
       final jId = widget.journey?.journeyId;
       if (jId != null && jId.isNotEmpty) {
         final prefs = await SharedPreferences.getInstance();
-        final existing = prefs.getStringList('journey_checkin_images_$jId') ?? [];
+        final existing =
+            prefs.getStringList('journey_checkin_images_$jId') ?? [];
         for (final img in _checkinImages) {
           if (!existing.contains(img)) existing.add(img);
         }
@@ -274,7 +276,9 @@ class _CheckinSuccessScreenState extends State<CheckinSuccessScreen> {
                     child: Row(
                       children: [
                         InkWell(
-                          onTap: _checkinImages.length >= 2 ? null : _pickCheckinImages,
+                          onTap: _checkinImages.length >= 2
+                              ? null
+                              : _pickCheckinImages,
                           borderRadius: BorderRadius.circular(12),
                           child: Container(
                             width: 72,
@@ -283,8 +287,9 @@ class _CheckinSuccessScreenState extends State<CheckinSuccessScreen> {
                               color: colorScheme.surfaceContainerHighest,
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                color: colorScheme.onSurfaceVariant
-                                    .withValues(alpha: 0.25),
+                                color: colorScheme.onSurfaceVariant.withValues(
+                                  alpha: 0.25,
+                                ),
                               ),
                             ),
                             child: Column(
@@ -318,7 +323,9 @@ class _CheckinSuccessScreenState extends State<CheckinSuccessScreen> {
                                 padding: const EdgeInsets.only(right: 10),
                                 child: ImageLoadCard(
                                   imageUrl: File(_checkinImages[index]),
-                                  onTapRemove: () => setState(() => _checkinImages.removeAt(index)),
+                                  onTapRemove: () => setState(
+                                    () => _checkinImages.removeAt(index),
+                                  ),
                                 ),
                               );
                             },
@@ -360,7 +367,8 @@ class _CheckinSuccessScreenState extends State<CheckinSuccessScreen> {
                               ),
                             ),
                           );
-                          if (context.mounted) Navigator.pop(context, _checkinImages);
+                          if (context.mounted)
+                            Navigator.pop(context, _checkinImages);
                         },
                       ),
                     ),
