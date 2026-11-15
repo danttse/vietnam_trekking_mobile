@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/widgets/app_bar/app_top_bar_with_back.dart';
+import '../../../l10n/app_localizations.dart';
 
 class TermsOfUseScreen extends StatelessWidget {
   const TermsOfUseScreen({super.key});
@@ -57,6 +58,7 @@ class TermsOfUseScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
@@ -64,7 +66,7 @@ class TermsOfUseScreen extends StatelessWidget {
         child: Column(
           children: [
             AppTopBarWithBack(
-              title: 'Điều khoản sử dụng',
+              title: l10n.termsOfUseTitle,
               onBack: () => Navigator.pop(context),
             ),
             Expanded(
@@ -74,7 +76,7 @@ class TermsOfUseScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Cập nhật lần cuối: 20/12/2025',
+                      l10n.termsLastUpdated,
                       style: TextStyle(
                         fontSize: 12,
                         color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
@@ -84,37 +86,32 @@ class TermsOfUseScreen extends StatelessWidget {
                     _buildSection(
                       context: context,
                       number: '1',
-                      title: 'Giới thiệu',
-                      content:
-                          'Chào mừng bạn đến với Trek Việt Nam, ứng dụng hỗ trợ điều hướng, ghi lại nhật ký hành trình trekking và kết nối cộng đồng đam mê dã ngoại tại Việt Nam. Bằng việc đăng ký tài khoản, bạn đồng ý tuân thủ các điều khoản này.',
+                      title: l10n.termsSection1Title,
+                      content: l10n.termsSection1Content,
                     ),
                     _buildSection(
                       context: context,
                       number: '2',
-                      title: 'Điều kiện sử dụng',
-                      content:
-                          'Bạn phải từ 16 tuổi trở lên hoặc có sự giám sát của người bảo hộ để sử dụng ứng dụng. Bạn chịu trách nhiệm hoàn toàn về tính bảo mật của mật khẩu và mọi hoạt động dưới tài khoản của mình.',
+                      title: l10n.termsSection2Title,
+                      content: l10n.termsSection2Content,
                     ),
                     _buildSection(
                       context: context,
                       number: '3',
-                      title: 'Quyền và nghĩa vụ của người dùng',
-                      content:
-                          'Người dùng được phép sử dụng bản đồ ngoại tuyến, lưu trữ lịch sử di chuyển và chia sẻ ảnh trekking lành mạnh lên cộng đồng. Nghiêm cấm hành vi phá hoại dữ liệu, đăng tải thông tin sai lệch về bản đồ biên giới hoặc địa danh nhạy cảm.',
+                      title: l10n.termsSection3Title,
+                      content: l10n.termsSection3Content,
                     ),
                     _buildSection(
                       context: context,
                       number: '4',
-                      title: 'Quyền sở hữu trí tuệ',
-                      content:
-                          'Toàn bộ mã nguồn, thiết kế đồ họa, hệ thống huy hiệu và cơ sở dữ liệu cung đường trekking độc quyền đều thuộc quyền sở hữu của Trek Việt Nam. Mọi hành vi sao chép không xin phép đều bị nghiêm cấm.',
+                      title: l10n.termsSection4Title,
+                      content: l10n.termsSection4Content,
                     ),
                     _buildSection(
                       context: context,
                       number: '5',
-                      title: 'Giới hạn trách nhiệm',
-                      content:
-                          'Trekking là hoạt động thể thao mạo hiểm ngoài trời. Chúng tôi cung cấp bản đồ GPS mang tính tham khảo và không chịu trách nhiệm pháp lý trước bất kỳ tai nạn, rủi ro tự nhiên hay lạc đường nào của bạn trên cung đường thực tế.',
+                      title: l10n.termsSection5Title,
+                      content: l10n.termsSection5Content,
                     ),
                   ],
                 ),

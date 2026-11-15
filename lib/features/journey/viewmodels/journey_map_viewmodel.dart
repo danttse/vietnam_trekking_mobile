@@ -1,5 +1,8 @@
+import '../../../core/database/daos/checkin_dao.dart';
+
 import 'dart:async';
 import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
@@ -99,10 +102,47 @@ class JourneyMapViewModel extends ChangeNotifier {
     _errorMessage = null;
   }
 
+  // Lay danh sach checkin tu SQLite cho ban do
+  Future<void> _loadLocalCheckins() async {
+    final jId = _journey.journeyId;
+    final cId = _journey.clientJourneyId;
+    final ids = {if (jId.isNotEmpty) jId, if (cId != null && cId.isNotEmpty) cId};
+    if (ids.isEmpty) return;
+    try {
+      final checkins = await CheckinDao().getCheckinsByJourneyIds(ids);
+      final checkedIds = checkins
+          .where((c) => c.verificationStatus != 'REJECTED')
+          .map((c) => c.milestoneId)
+          .toSet();
+      if (checkedIds.isNotEmpty) {
+        _milestones = _milestones.map((m) {
+          if (checkedIds.contains(m.id) || checkedIds.contains(m.milestoneId)) {
+            return m.copyWith(isCheckedIn: true, checkedInAt: DateTime.now());
+          }
+          return m;
+        }).toList();
+        notifyListeners();
+      }
+    } catch (_) {}
+  }
+
+  // Cap nhat checkin milestone vao bo nho ban do
+  void checkInMilestone(String milestoneId) {
+    final index = _milestones.indexWhere((m) => m.id == milestoneId);
+    if (index == -1) return;
+    _milestones = List.from(_milestones);
+    _milestones[index] = _milestones[index].copyWith(
+      isCheckedIn: true,
+      checkedInAt: DateTime.now(),
+    );
+    notifyListeners();
+  }
+
   void init() {
     _location.addListener(_onLocationChanged);
     _location.initialize();
     _loadOfflineMap();
+    _loadLocalCheckins();
     if (_journey.journeyId.isNotEmpty) {
       _tracking.addListener(_onTrackChanged);
       unawaited(_loadTrack());
@@ -147,10 +187,7 @@ class JourneyMapViewModel extends ChangeNotifier {
         }
       }
       final storage = customMapStorage ?? OfflineMapStorageService();
-      final map = await storage.findReadyMap(
-        routeId,
-        _journey.trekkingPlaceId,
-      );
+      final map = await storage.findReadyMap(routeId, _journey.trekkingPlaceId);
       if (map == null) {
         throw StateError('Chưa có bản đồ offline đã cài cho địa điểm này.');
       }

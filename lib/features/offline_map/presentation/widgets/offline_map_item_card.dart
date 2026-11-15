@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/database/database.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class OfflineMapItemCard extends StatelessWidget {
   final DownloadedMap map;
@@ -23,6 +24,7 @@ class OfflineMapItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -90,8 +92,8 @@ class OfflineMapItemCard extends StatelessWidget {
                             ),
                             child: Text(
                               map.scope == 'ROUTE'
-                                  ? 'Tuyến đường'
-                                  : 'Địa điểm',
+                                  ? l10n.routeScope
+                                  : l10n.placeScope,
                               style: TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.w600,
@@ -111,9 +113,9 @@ class OfflineMapItemCard extends StatelessWidget {
                                 color: Colors.amber.withValues(alpha: 0.15),
                                 borderRadius: BorderRadius.circular(6),
                               ),
-                              child: const Text(
-                                'Đang đi',
-                                style: TextStyle(
+                              child: Text(
+                                l10n.mapInUseBadge,
+                                style: const TextStyle(
                                   fontSize: 10,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.amber,
@@ -154,9 +156,11 @@ class OfflineMapItemCard extends StatelessWidget {
                           Expanded(
                             child: Text(
                               map.downloadedAt != null
-                                  ? 'Đã tải: ${map.downloadedAt!.day}/${map.downloadedAt!.month}/${map.downloadedAt!.year}'
+                                  ? l10n.downloadedOnDate(
+                                      '${map.downloadedAt!.day}/${map.downloadedAt!.month}/${map.downloadedAt!.year}',
+                                    )
                                   : (map.isReady
-                                      ? 'Sẵn sàng sử dụng offline'
+                                      ? l10n.readyForOfflineUse
                                       : map.status),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,

@@ -56,6 +56,15 @@ class _ExploreScreenState extends State<ExploreScreen> {
     super.dispose();
   }
 
+  String _filterLabel(ExploreFilter filter, AppLocalizations l10n) =>
+      switch (filter) {
+        ExploreFilter.all => l10n.filterAll,
+        ExploreFilter.popular => l10n.popular,
+        ExploreFilter.north => l10n.regionNorth,
+        ExploreFilter.central => l10n.regionCentral,
+        ExploreFilter.south => l10n.regionSouth,
+      };
+
   Widget _buildSectionHeader({required String title, VoidCallback? onSeeAll}) {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
@@ -130,9 +139,12 @@ class _ExploreScreenState extends State<ExploreScreen> {
     );
   }
 
-  Widget _buildFeaturedSlider(List<ExplorePlaceModel> places) {
+  Widget _buildFeaturedSlider(
+    List<ExplorePlaceModel> places,
+    AppLocalizations l10n,
+  ) {
     if (places.isEmpty) {
-      return _buildEmptyState('Không có địa điểm nổi bật phù hợp');
+      return _buildEmptyState(l10n.noFeaturedPlaces);
     }
     return PagedCarousel(
       key: ValueKey('featured:${places.map((place) => place.id).join(',')}'),
@@ -149,7 +161,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
     );
   }
 
-  Widget _buildMoreTrailsTile() {
+  Widget _buildMoreTrailsTile(AppLocalizations l10n) {
     final colors = Theme.of(context).colorScheme;
     final loading = _viewModel.isLoadingMoreTrails;
     return SizedBox(
@@ -184,10 +196,10 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 const SizedBox(height: 8),
                 Text(
                   loading
-                      ? 'Đang tải…'
+                      ? l10n.commonLoading
                       : _viewModel.routesError == null
-                      ? 'Thêm cung đường'
-                      : 'Thử lại',
+                      ? l10n.addRouteButton
+                      : l10n.commonRetry,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: colors.primary,
@@ -238,7 +250,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 listenable: _viewModel,
                 builder: (context, _) => HorizontalChipBar(
                   items: ExploreFilter.values
-                      .map((filter) => filter.label)
+                      .map((filter) => _filterLabel(filter, l10n))
                       .toList(),
                   selectedIndex: _viewModel.selectedRegion,
                   onSelect: _viewModel.setRegion,
@@ -258,11 +270,13 @@ class _ExploreScreenState extends State<ExploreScreen> {
                     children: [
                       Text(
                         _viewModel.error ??
-                            'Không tải được một số cung đường: ${_viewModel.routesError}',
+                            l10n.cannotLoadRoutesError(
+                              _viewModel.routesError ?? '',
+                            ),
                       ),
                       TextButton(
                         onPressed: _viewModel.load,
-                        child: const Text('Thử lại'),
+                        child: Text(l10n.commonRetry),
                       ),
                     ],
                   );
@@ -274,7 +288,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
               ListenableBuilder(
                 listenable: _viewModel,
                 builder: (context, _) =>
-                    _buildFeaturedSlider(_viewModel.featuredPlaces),
+                    _buildFeaturedSlider(_viewModel.featuredPlaces, l10n),
               ),
               const SizedBox(height: 20),
               _buildSectionHeader(title: l10n.popularTrails),
@@ -284,7 +298,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 builder: (context, _) {
                   final trails = _viewModel.popularTrails;
                   if (trails.isEmpty) {
-                    return _buildEmptyState('Không có cung đường phù hợp');
+                    return _buildEmptyState(l10n.noMatchingRoutes);
                   }
                   return SizedBox(
                     height:
@@ -301,7 +315,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                           const SizedBox(width: 12),
                       itemBuilder: (context, index) {
                         if (index == trails.length) {
-                          return _buildMoreTrailsTile();
+                          return _buildMoreTrailsTile(l10n);
                         }
                         final trail = trails[index];
                         return PopularTrailCard(
@@ -321,7 +335,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 builder: (context, _) {
                   final recommended = _viewModel.recommendedPlaces;
                   if (recommended.isEmpty) {
-                    return _buildEmptyState('Không có gợi ý phù hợp');
+                    return _buildEmptyState(l10n.noMatchingSuggestions);
                   }
                   return ListView.separated(
                     shrinkWrap: true,
@@ -350,8 +364,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
                               : _viewModel.loadMorePlaces,
                           child: Text(
                             _viewModel.isLoadingMorePlaces
-                                ? 'Đang tải…'
-                                : 'Thêm địa điểm',
+                                ? l10n.commonLoading
+                                : l10n.addPlaceButton,
                           ),
                         ),
                       )

@@ -51,7 +51,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 title: Text(viewModel.error!),
                 trailing: TextButton(
                   onPressed: viewModel.load,
-                  child: const Text('Thử lại'),
+                  child: Text(l10n.commonRetry),
                 ),
               ),
             AppTopBar(
@@ -137,7 +137,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: ProfileStatCard(
-                              value: '${profile.totalDays} ngày',
+                              value: l10n.durationDays('${profile.totalDays}'),
                               label: l10n.profileStatTotalDays,
                             ),
                           ),

@@ -46,14 +46,17 @@ class MarkerModel {
 
     return MarkerModel(
       // Backend trả "journeyMarkerId", fallback về "markerId" / "id" / "localMarkerId"
-      markerId: json['journeyMarkerId'] as String? ??
+      markerId:
+          json['journeyMarkerId'] as String? ??
           json['markerId'] as String? ??
           json['id'] as String? ??
           json['localMarkerId'] as String? ??
           '',
-      serverMarkerId: json['journeyMarkerId'] as String? ??
+      serverMarkerId:
+          json['journeyMarkerId'] as String? ??
           json['serverMarkerId'] as String?,
-      localJourneyId: json['localJourneyId'] as String? ??
+      localJourneyId:
+          json['localJourneyId'] as String? ??
           json['journeyId'] as String? ??
           '',
       name: json['name'] as String? ?? '',
@@ -63,18 +66,15 @@ class MarkerModel {
       longitude: lng,
       altitude: (json['altitude'] as num?)?.toDouble(),
       markedAt: json['markedAt'] != null
-          ? DateTime.tryParse(json['markedAt'] as String) ??
-              DateTime.now()
+          ? DateTime.tryParse(json['markedAt'] as String) ?? DateTime.now()
           : DateTime.now(),
       syncStatus: json['syncStatus'] as String? ?? 'LOCAL_ONLY',
-      mediaLocalPaths: (json['mediaLocalPaths'] as List<dynamic>?)
-              ?.cast<String>() ??
-          [],
+      mediaLocalPaths:
+          (json['mediaLocalPaths'] as List<dynamic>?)?.cast<String>() ?? [],
       // Backend trả "images" (list of URLs)
-      mediaRemoteUrls: (json['images'] as List<dynamic>?)
-              ?.cast<String>() ??
-          (json['mediaRemoteUrls'] as List<dynamic>?)
-              ?.cast<String>() ??
+      mediaRemoteUrls:
+          (json['images'] as List<dynamic>?)?.cast<String>() ??
+          (json['mediaRemoteUrls'] as List<dynamic>?)?.cast<String>() ??
           [],
     );
   }
@@ -82,17 +82,17 @@ class MarkerModel {
   /// Chuyển sang body API tạo marker mới.
   /// Backend nhận location dạng GeoJSON Point với [lng, lat].
   Map<String, dynamic> toCreateJson({String? clientMarkerId}) => {
-        'name': name,
-        'type': type,
-        if (note != null && note!.isNotEmpty) 'note': note,
-        'location': {
-          'type': 'Point',
-          'coordinates': [longitude, latitude], // GeoJSON: [lng, lat]
-        },
-        if (altitude != null) 'altitude': altitude,
-        'markedAt': markedAt.toIso8601String(),
-        if (clientMarkerId != null) 'clientMarkerId': clientMarkerId,
-      };
+    'name': name,
+    'type': type,
+    if (note != null && note!.isNotEmpty) 'note': note,
+    'location': {
+      'type': 'Point',
+      'coordinates': [longitude, latitude], // GeoJSON: [lng, lat]
+    },
+    if (altitude != null) 'altitude': altitude,
+    'markedAt': markedAt.toIso8601String(),
+    if (clientMarkerId != null) 'clientMarkerId': clientMarkerId,
+  };
 
   String get typeLabel {
     switch (type.toUpperCase()) {

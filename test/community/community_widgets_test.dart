@@ -6,7 +6,7 @@ import 'package:vietnam_trekking_mobile/features/community/data/models/comment_m
 import 'package:vietnam_trekking_mobile/features/community/data/models/post_model.dart';
 import 'package:vietnam_trekking_mobile/features/community/viewmodels/create_new_post_viewmodel.dart';
 import 'package:vietnam_trekking_mobile/features/community/viewmodels/community_view_model.dart';
-import 'package:vietnam_trekking_mobile/features/community/views/create_new_post_creen.dart';
+import 'package:vietnam_trekking_mobile/features/community/views/create_new_post_screen.dart';
 import 'package:vietnam_trekking_mobile/features/community/views/community_screen.dart';
 import 'package:vietnam_trekking_mobile/features/community/views/community_action_dialogs.dart';
 
@@ -39,7 +39,7 @@ void main() {
       }),
     );
     addTearDown(vm.dispose);
-    await tester.pumpWidget(app(CreateNewPostCreen(viewModel: vm)));
+    await tester.pumpWidget(app(CreateNewPostScreen(viewModel: vm)));
     await tester.tap(find.text('Chỉ mình tôi'));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField), 'Nội dung sau sửa');
@@ -152,7 +152,7 @@ void main() {
             size: Size(360, 640),
             textScaler: TextScaler.linear(1.6),
           ),
-          child: CreateNewPostCreen(viewModel: vm),
+          child: CreateNewPostScreen(viewModel: vm),
         ),
       ),
     );

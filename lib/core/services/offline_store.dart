@@ -761,11 +761,26 @@ class OfflineStore {
   Future<List<Map<String, dynamic>>> checkins(String ref) async {
     final owner = await requireOwner();
     final db = await databaseHelper.database;
-    final row = await _journeyRow(db, ref, owner);
-    final rows = await db.query(
-      'offline_checkins',
-      where: 'localJourneyId = ? AND userId = ?',
-      whereArgs: [row['localJourneyId'], owner],
+    String canonicalId = ref;
+    try {
+      final row = await _journeyRow(db, ref, owner);
+      canonicalId = row['localJourneyId'] as String;
+    } catch (_) {}
+    // Lay tat ca localJourneyId co the cho journey nay
+    final altIds = await db.rawQuery(
+      'SELECT DISTINCT localJourneyId FROM local_journeys '
+      'WHERE (localJourneyId = ? OR serverJourneyId = ? OR localJourneyId = ? OR serverJourneyId = ?) AND userId = ?',
+      [canonicalId, canonicalId, ref, ref, owner],
+    );
+    final allIds =
+        altIds.map((r) => r['localJourneyId'] as String).toSet()
+          ..add(canonicalId)
+          ..add(ref);
+    final inClause = allIds.map((_) => '?').join(',');
+    final rows = await db.rawQuery(
+      'SELECT * FROM offline_checkins '
+      'WHERE userId = ? AND localJourneyId IN ($inClause)',
+      [owner, ...allIds],
     );
     return Future.wait(
       rows.map((r) async {
@@ -781,7 +796,8 @@ class OfflineStore {
           'milestoneId': r['milestoneId'],
           'checkedAt': r['checkedAt'],
           'offlineSyncStatus': r['syncStatus'],
-          'verification': {'status': r['verificationStatus']},
+          'verification': {'status': r['verificationStatus'] ?? 'VERIFIED'},
+          'verificationStatus': r['verificationStatus'] ?? 'VERIFIED',
         };
       }),
     );
@@ -791,30 +807,77 @@ class OfflineStore {
     final owner = await requireOwner();
     final db = await databaseHelper.database;
     await db.transaction((tx) async {
-      final row = await _journeyRow(tx, ref, owner);
+      String canonicalLocalId = ref;
+      try {
+        final row = await _journeyRow(tx, ref, owner);
+        canonicalLocalId = row['localJourneyId'] as String;
+      } catch (_) {}
+      // Tim tat ca localJourneyId co the cho journey nay
+      final altIds = await tx.rawQuery(
+        'SELECT DISTINCT localJourneyId FROM local_journeys '
+        'WHERE (localJourneyId = ? OR serverJourneyId = ? OR localJourneyId = ? OR serverJourneyId = ?) AND userId = ?',
+        [canonicalLocalId, canonicalLocalId, ref, ref, owner],
+      );
+      final knownLocalIds =
+          altIds.map((r) => r['localJourneyId'] as String).toSet()
+            ..add(canonicalLocalId)
+            ..add(ref);
+      final inClause = knownLocalIds.map((_) => '?').join(',');
       for (final value in data) {
         final c = value as Map;
-        final existing = await tx.query(
-          'offline_checkins',
-          where: 'localJourneyId = ? AND milestoneId = ? AND userId = ?',
-          whereArgs: [row['localJourneyId'], c['milestoneId'], owner],
+        // Trich xuat milestoneId an toan tu c
+        final rawMilestone = c['milestoneId'] ?? c['milestone'] ?? c['milestone_id'];
+        final milestoneId = (rawMilestone is Map)
+            ? (rawMilestone['_id'] ?? rawMilestone['id'] ?? rawMilestone['milestoneId'])?.toString()
+            : rawMilestone?.toString();
+        if (milestoneId == null || milestoneId.isEmpty) continue;
+
+        // Tim record hien tai theo milestoneId, bao gom ca cac localJourneyId khac
+        final existing = await tx.rawQuery(
+          'SELECT * FROM offline_checkins '
+          'WHERE milestoneId = ? AND userId = ? '
+          'AND localJourneyId IN ($inClause) LIMIT 1',
+          [milestoneId, owner, ...knownLocalIds],
         );
+        // Bo qua record dang PENDING tu server (server chua biet checkin nay)
+        if (existing.isNotEmpty && existing.first['syncStatus'] == 'PENDING') {
+          continue;
+        }
         final id = existing.isEmpty
             ? c['clientCheckinId'] ??
-                  'server-${c['milestoneCheckinId'] ?? c['checkinId'] ?? c['_id']}'
-            : existing.first['localCheckinId'];
-        final coordinates = (c['location'] as Map?)?['coordinates'] as List?;
+                  'server-${c['milestoneCheckinId'] ?? c['checkinId'] ?? c['_id'] ?? c['id']}'
+            : existing.first['localCheckinId'] as String;
+        // Giu nguyen localJourneyId cua record hien tai, tranh thay doi
+        final keepLocalJourneyId = existing.isNotEmpty
+            ? existing.first['localJourneyId'] as String
+            : canonicalLocalId;
+        final location = c['location'];
+        final coordinates = (location is Map) ? (location['coordinates'] as List?) : null;
+        final lat = coordinates != null && coordinates.length >= 2
+            ? (coordinates.last as num).toDouble()
+            : (c['latitude'] as num?)?.toDouble() ?? 0.0;
+        final lng = coordinates != null && coordinates.length >= 2
+            ? (coordinates.first as num).toDouble()
+            : (c['longitude'] as num?)?.toDouble() ?? 0.0;
+        final verification = (c['verification'] is Map)
+            ? (c['verification'] as Map)['status']
+            : c['verificationStatus'] ??
+                  c['status'] ??
+                  (c['verification'] is String
+                      ? c['verification']
+                      : 'VERIFIED');
+        final checkedAt = (c['checkedAt'] ?? c['createdAt'] ?? c['checkinTime'] ?? DateTime.now().toUtc().toIso8601String()).toString();
         await upsertRow(tx, 'offline_checkins', {
           'localCheckinId': id,
           'serverCheckinId':
-              c['milestoneCheckinId'] ?? c['checkinId'] ?? c['_id'],
-          'localJourneyId': row['localJourneyId'],
-          'milestoneId': c['milestoneId'],
+              c['milestoneCheckinId'] ?? c['checkinId'] ?? c['_id'] ?? c['id'],
+          'localJourneyId': keepLocalJourneyId,
+          'milestoneId': milestoneId,
           'userId': owner,
-          'latitude': coordinates?.last ?? c['latitude'] ?? 0,
-          'longitude': coordinates?.first ?? c['longitude'] ?? 0,
-          'checkedAt': c['checkedAt'],
-          'verificationStatus': (c['verification'] as Map?)?['status'],
+          'latitude': lat,
+          'longitude': lng,
+          'checkedAt': checkedAt,
+          'verificationStatus': verification ?? 'VERIFIED',
           'syncStatus': 'SYNCED',
         }, 'localCheckinId');
         await _write(tx, '/checkins/$id', c, owner);
@@ -1270,7 +1333,19 @@ class OfflineStore {
         final serverId = row['serverJourneyId'];
         if (serverId == null) continue; // Wait for this journey without blocking unrelated contributions.
         path = path.replaceFirst('@journey', serverId.toString());
-        if (path == '/checkins') body['journeyId'] = serverId;
+        if (path == '/checkins') {
+          body['journeyId'] = serverId;
+          body['userId'] ??= owner;
+          body['syncSource'] ??= 'ONLINE';
+          if (body['location'] == null &&
+              body['longitude'] != null &&
+              body['latitude'] != null) {
+            body['location'] = {
+              'type': 'Point',
+              'coordinates': [body['longitude'], body['latitude']],
+            };
+          }
+        }
         if (path == '/contributions/routes') body['sourceJourneyId'] = serverId;
       }
       if (path.contains('@marker')) {
@@ -1471,6 +1546,13 @@ class OfflineStore {
             );
           } else if (path == '/checkins') {
             await _write(tx, '/checkins/${op['operationId']}', result, owner);
+            final verification = (result['verification'] is Map)
+                ? (result['verification'] as Map)['status']
+                : result['verificationStatus'] ??
+                      result['status'] ??
+                      (result['verification'] is String
+                          ? result['verification']
+                          : 'VERIFIED');
             await tx.update(
               'offline_checkins',
               {
@@ -1478,7 +1560,7 @@ class OfflineStore {
                     result['milestoneCheckinId'] ??
                     result['checkinId'] ??
                     result['_id'],
-                'verificationStatus': result['verification']?['status'],
+                'verificationStatus': verification ?? 'VERIFIED',
                 'syncStatus': 'SYNCED',
               },
               where: 'localCheckinId = ? AND userId = ?',

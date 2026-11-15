@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import '../../../core/widgets/cards/image_load_card.dart';
 import '../../community/views/community_share.dart';
 
 import 'package:flutter/material.dart';
@@ -42,17 +45,34 @@ class _JourneyDetailScreenState extends State<JourneyDetailScreen> {
   }
 
   Future<void> _openMilestone(MilestoneModel milestone) async {
-    await Navigator.push<bool>(
+    final result = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => MilestoneCheckinScreen(
           milestone: milestone,
           journey: _viewModel.journey,
           mapImageUrl: _viewModel.mapImageUrl,
+          onCheckinImagesSelected: (images) {
+            for (final img in images) {
+              _viewModel.addCheckinImage(img);
+            }
+          },
         ),
       ),
     );
-    if (mounted) await _viewModel.loadMilestones();
+    if (mounted) {
+      // Chi ghi nhan khi checkin thanh cong
+      final isSuccess = result == true || (result is List);
+      if (isSuccess) {
+        _viewModel.checkIn(milestone.id);
+        if (result is List) {
+          for (final img in result) {
+            if (img is String) _viewModel.addCheckinImage(img);
+          }
+        }
+      }
+      await _viewModel.loadMilestones();
+    }
   }
 
   Future<void> _shareRoute() async {
@@ -73,9 +93,13 @@ class _JourneyDetailScreenState extends State<JourneyDetailScreen> {
       );
     } catch (e) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Không mở được chia sẻ route. ${e.toString()}'),
+            content: Text(
+              l10n?.cannotOpenRouteShare(e.toString()) ??
+                  'Không mở được chia sẻ route. ${e.toString()}',
+            ),
           ),
         );
       }
@@ -83,25 +107,29 @@ class _JourneyDetailScreenState extends State<JourneyDetailScreen> {
   }
 
   Future<void> _finishJourney() async {
+    final l10n = AppLocalizations.of(context);
     final share = await showDialog<bool>(
       context: context,
       builder: (dialog) => AlertDialog(
-        title: const Text('Kết thúc hành trình?'),
-        content: const Text(
-          'Lưu đường GPS đã ghi cùng hành trình và gửi route cho admin xét duyệt nếu bạn chọn chia sẻ.',
+        title: Text(l10n?.finishJourneyTitle ?? 'Kết thúc hành trình?'),
+        content: Text(
+          l10n?.finishJourneyDesc ??
+              'Lưu đường GPS đã ghi cùng hành trình và gửi route cho admin xét duyệt nếu bạn chọn chia sẻ.',
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialog),
-            child: const Text('Tiếp tục đi'),
+            child: Text(l10n?.keepGoingButton ?? 'Tiếp tục đi'),
           ),
           TextButton(
             onPressed: () => Navigator.pop(dialog, false),
-            child: const Text('Kết thúc'),
+            child: Text(l10n?.finishButton ?? 'Kết thúc'),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(dialog, true),
-            child: const Text('Kết thúc & gửi route tới admin'),
+            child: Text(
+              l10n?.finishAndSendToAdmin ?? 'Kết thúc & gửi route tới admin',
+            ),
           ),
         ],
       ),
@@ -660,16 +688,65 @@ class _JourneyDetailScreenState extends State<JourneyDetailScreen> {
                                 const SizedBox(height: 8),
                                 Text(
                                   _viewModel.isDownloaded
-                                      ? 'Đã có bản đồ offline trên thiết bị'
-                                      : 'Chưa tải bản đồ offline',
+                                      ? l10n.offlineMapAvailable
+                                      : l10n.offlineMapNotDownloaded,
                                 ),
                                 const SizedBox(height: 4),
-                                const Text(
-                                  'Bấm Xem bản đồ để mở bản đồ của hành trình.',
+                                Text(
+                                  l10n.tapViewMapNotice,
                                   textAlign: TextAlign.center,
                                 ),
                               ],
                             ),
+                          ),
+                          ListenableBuilder(
+                            listenable: _viewModel,
+                            builder: (context, _) {
+                              if (_viewModel.checkinImages.isEmpty) {
+                                return const SizedBox.shrink();
+                              }
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 20),
+                                  Text(
+                                    l10n.checkinPhotosCount(
+                                      _viewModel.checkinImages.length,
+                                    ).toUpperCase(),
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 0.8,
+                                      color: colorScheme.onSurfaceVariant
+                                          .withValues(alpha: 0.8),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  SizedBox(
+                                    height: 72,
+                                    child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount:
+                                          _viewModel.checkinImages.length,
+                                      itemBuilder: (context, index) {
+                                        return Padding(
+                                          padding: const EdgeInsets.only(
+                                            right: 10,
+                                          ),
+                                          child: ImageLoadCard(
+                                            imageUrl: File(
+                                              _viewModel.checkinImages[index],
+                                            ),
+                                            onTapRemove: () => _viewModel
+                                                .removeCheckinImage(index),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
                           ),
                           if (_viewModel.journeyStatus ==
                                   JourneyStatus.completed &&
@@ -698,18 +775,82 @@ class _JourneyDetailScreenState extends State<JourneyDetailScreen> {
                             ),
                           ),
                           if (_viewModel.journeyStatus ==
-                              JourneyStatus.completed)
-                            OutlinedButton.icon(
-                              key: const ValueKey('journey-share-community'),
-                              onPressed: () {
-                                final journey = _viewModel.journey;
-                                if (journey != null) {
-                                  shareJourneyToCommunity(context, journey);
-                                }
-                              },
-                              icon: const Icon(Icons.groups_outlined),
-                              label: const Text('Chia sẻ lên cộng đồng'),
+                              JourneyStatus.completed) ...[
+                            const SizedBox(height: 12),
+                            SizedBox(
+                              width: double.infinity,
+                              child: BtnOutlineStyle(
+                                key: const ValueKey('journey-share-community'),
+                                text: l10n.shareToCommunityButton,
+                                icon: const Icon(Icons.groups_outlined),
+                                onPressed: () {
+                                  final journey = _viewModel.journey;
+                                  if (journey != null) {
+                                    shareJourneyToCommunity(context, journey);
+                                  }
+                                },
+                              ),
                             ),
+                          ],
+                          if (_viewModel.journeyStatus ==
+                              JourneyStatus.planned) ...[
+                            const SizedBox(height: 12),
+                            SizedBox(
+                              width: double.infinity,
+                              child: BtnOutlineStyle(
+                                key: const ValueKey('journey-cancel'),
+                                text: l10n.cancelJourneyButton,
+                                icon: const Icon(Icons.cancel_outlined),
+                                onPressed: _viewModel.isUpdating
+                                    ? null
+                                    : () async {
+                                        final messenger =
+                                            ScaffoldMessenger.of(context);
+                                        final ok = await showDialog<bool>(
+                                          context: context,
+                                          builder: (dialogCtx) => AlertDialog(
+                                            title: Text(
+                                              l10n.cancelJourneyConfirmTitle,
+                                            ),
+                                            content: Text(
+                                              l10n.cancelJourneyConfirmMessage,
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () =>
+                                                    Navigator.pop(
+                                                      dialogCtx,
+                                                      false,
+                                                    ),
+                                                child: Text(l10n.cancelButton),
+                                              ),
+                                              TextButton(
+                                                onPressed: () =>
+                                                    Navigator.pop(
+                                                      dialogCtx,
+                                                      true,
+                                                    ),
+                                                child: Text(l10n.confirmButton),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                        if (ok == true) {
+                                          await _viewModel.cancelJourney();
+                                          if (_viewModel.error != null) {
+                                            messenger.showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  _viewModel.error!,
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                        }
+                                      },
+                              ),
+                            ),
+                          ],
                           const SizedBox(height: 12),
                           SizedBox(
                             width: double.infinity,
@@ -758,18 +899,23 @@ class _JourneyDetailScreenState extends State<JourneyDetailScreen> {
                                     ? null
                                     : _finishJourney,
                                 icon: Icons.check_circle_outline,
-                                label: 'Kết thúc hành trình',
+                                label: l10n.finishJourneyButton,
                                 loading: _viewModel.isUpdating,
                               ),
                             ),
                           if (_viewModel.journeyStatus ==
-                              JourneyStatus.completed)
-                            FilledButton.icon(
-                              key: const ValueKey('journey-share-route'),
-                              onPressed: _shareRoute,
-                              icon: const Icon(Icons.share_outlined),
-                              label: const Text('Chia sẻ route tới admin'),
+                              JourneyStatus.completed) ...[
+                            const SizedBox(height: 12),
+                            SizedBox(
+                              width: double.infinity,
+                              child: BtnOutlineStyle(
+                                key: const ValueKey('journey-share-route'),
+                                text: l10n.shareRouteToAdminButton,
+                                icon: const Icon(Icons.share_outlined),
+                                onPressed: _shareRoute,
+                              ),
                             ),
+                          ],
                           const SizedBox(height: 12),
                           SizedBox(
                             width: double.infinity,
@@ -811,9 +957,9 @@ class _JourneyDetailScreenState extends State<JourneyDetailScreen> {
                                       if (context.mounted) {
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
-                                              const SnackBar(
+                                              SnackBar(
                                                 content: Text(
-                                                  'Không thể mở dữ liệu hành trình. Vui lòng thử lại.',
+                                                  l10n.cannotOpenJourneyData,
                                                 ),
                                               ),
                                             );

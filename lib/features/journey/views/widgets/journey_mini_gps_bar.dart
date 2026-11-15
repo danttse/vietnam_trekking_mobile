@@ -44,9 +44,7 @@ class JourneyMiniGpsBar extends StatelessWidget {
             decoration: BoxDecoration(
               color: cs.surfaceContainerHighest.withValues(alpha: 0.85),
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: cs.outline.withValues(alpha: 0.15),
-              ),
+              border: Border.all(color: cs.outline.withValues(alpha: 0.15)),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.2),

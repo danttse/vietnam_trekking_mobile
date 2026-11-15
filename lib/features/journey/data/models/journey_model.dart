@@ -1,10 +1,26 @@
 import 'package:flutter/material.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../route/data/models/route_model.dart';
 
 enum JourneyStatus { planned, active, paused, completed, cancelled }
 
 extension JourneyStatusExt on JourneyStatus {
+  String localizedLabel(AppLocalizations l10n) {
+    switch (this) {
+      case JourneyStatus.planned:
+        return l10n.journeyStatusPlanned;
+      case JourneyStatus.active:
+        return l10n.journeyStatusActive;
+      case JourneyStatus.paused:
+        return l10n.journeyStatusPaused;
+      case JourneyStatus.completed:
+        return l10n.journeyStatusCompleted;
+      case JourneyStatus.cancelled:
+        return l10n.journeyStatusCancelled;
+    }
+  }
+
   String get label {
     switch (this) {
       case JourneyStatus.planned:
@@ -182,6 +198,25 @@ class JourneyModel {
       return '${_formatDayMonth(start)}/${start.year} - ${_formatDayMonth(end)}/${end.year}';
     }
     return '';
+  }
+
+  String localizedSummarySubtitle(AppLocalizations l10n) {
+    final parts = <String>[];
+    if (route.province != null && route.province!.isNotEmpty) {
+      parts.add(route.province!);
+    }
+    if (participantCount > 0) {
+      parts.add(l10n.memberCountText(participantCount));
+    }
+
+    final double km = displayDistanceKm;
+
+    final String kmFormatted = km.truncateToDouble() == km
+        ? km.toStringAsFixed(0)
+        : km.toStringAsFixed(1);
+    parts.add('$kmFormatted km');
+
+    return parts.join(' • ');
   }
 
   String get summarySubtitle {

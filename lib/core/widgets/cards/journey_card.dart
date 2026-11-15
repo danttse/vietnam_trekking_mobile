@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../features/journey/data/models/journey_model.dart';
+import '../../../l10n/app_localizations.dart';
 
 class JourneyCard extends StatelessWidget {
   final JourneyModel journey;
@@ -15,6 +16,7 @@ class JourneyCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final l10n = AppLocalizations.of(context)!;
     final status = journey.status;
 
     return InkWell(
@@ -76,7 +78,7 @@ class JourneyCard extends StatelessWidget {
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
-                              status.label,
+                              status.localizedLabel(l10n).toUpperCase(),
                               style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.bold,
@@ -88,7 +90,7 @@ class JourneyCard extends StatelessWidget {
                         ],
                       ),
                       if (journey.offlineSyncStatus != 'SYNCED') Text(
-                        journey.offlineSyncStatus == 'FAILED' ? 'Đồng bộ thất bại — cần kiểm tra' : 'Đã lưu trên máy · chờ đồng bộ',
+                        journey.offlineSyncStatus == 'FAILED' ? l10n.syncFailedCheck : l10n.savedOfflinePendingSync,
                         style: const TextStyle(fontSize: 11, color: Colors.orange)),
                       const SizedBox(height: 6),
                       Text(
@@ -101,7 +103,7 @@ class JourneyCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        journey.summarySubtitle,
+                        journey.localizedSummarySubtitle(l10n),
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w400,

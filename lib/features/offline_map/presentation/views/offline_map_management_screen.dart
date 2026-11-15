@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/widgets/app_bar/app_top_bar_with_back.dart';
 import '../../../../core/widgets/feedback/app_snack_bar.dart';
 import '../../../../core/database/database.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../viewmodels/offline_map_management_viewmodel.dart';
 import '../widgets/offline_map_item_card.dart';
 
@@ -37,11 +38,12 @@ class _OfflineMapManagementScreenState
 
   /// Xử lý khi nhấn nút xóa
   void _handleDeleteClick(DownloadedMap map, bool isInUse) {
+    final l10n = AppLocalizations.of(context)!;
     if (isInUse) {
       // Nếu bản đồ đang phục vụ hành trình đang đi -> Chặn và báo lỗi bằng SnackBar
       AppSnackBar.showError(
         context,
-        'Bản đồ "${map.mapName}" đang được sử dụng trong hành trình đang diễn ra.',
+        l10n.offlineMapInUseNotice(map.mapName),
       );
       return;
     }
@@ -50,17 +52,18 @@ class _OfflineMapManagementScreenState
 
   Future<void> _confirmDelete(DownloadedMap map) async {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
 
     final shouldDelete = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text(
-          'Xóa bản đồ offline',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        title: Text(
+          l10n.deleteOfflineMapTitle,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         content: Text(
-          'Bạn có chắc chắn muốn xóa bản đồ "${map.mapName}"?\nDữ liệu ngoại tuyến sẽ được giải phóng khỏi thiết bị.',
+          l10n.deleteOfflineMapConfirm(map.mapName),
           style: TextStyle(
             fontSize: 14,
             height: 1.45,
@@ -71,7 +74,7 @@ class _OfflineMapManagementScreenState
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
             child: Text(
-              'Hủy',
+              l10n.cancelButton,
               style: TextStyle(color: colorScheme.onSurfaceVariant),
             ),
           ),
@@ -85,7 +88,7 @@ class _OfflineMapManagementScreenState
               elevation: 0,
             ),
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Xóa bản đồ'),
+            child: Text(l10n.deleteOfflineMapButton),
           ),
         ],
       ),
@@ -97,12 +100,12 @@ class _OfflineMapManagementScreenState
         if (success) {
           AppSnackBar.showSuccess(
             context,
-            'Đã xóa bản đồ "${map.mapName}" thành công',
+            l10n.deleteOfflineMapSuccess(map.mapName),
           );
         } else {
           AppSnackBar.showError(
             context,
-            _viewModel.error ?? 'Không thể xóa bản đồ',
+            _viewModel.error ?? l10n.deleteOfflineMapError(''),
           );
         }
       }
@@ -112,13 +115,14 @@ class _OfflineMapManagementScreenState
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
       body: SafeArea(
         child: Column(
           children: [
-            const AppTopBarWithBack(title: 'Bản đồ offline'),
+            AppTopBarWithBack(title: l10n.offlineMapTitle),
 
             Expanded(
               child: ListenableBuilder(
@@ -131,7 +135,7 @@ class _OfflineMapManagementScreenState
                   }
 
                   if (_viewModel.error != null && _viewModel.maps.isEmpty) {
-                    return _buildErrorState(colorScheme);
+                    return _buildErrorState(colorScheme, l10n);
                   }
 
                   return RefreshIndicator(
@@ -140,11 +144,11 @@ class _OfflineMapManagementScreenState
                       children: [
                         Padding(
                           padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-                          child: _buildStorageSummaryBanner(colorScheme),
+                          child: _buildStorageSummaryBanner(colorScheme, l10n),
                         ),
                         Expanded(
                           child: _viewModel.maps.isEmpty
-                              ? _buildEmptyState(colorScheme)
+                              ? _buildEmptyState(colorScheme, l10n)
                               : ListView.builder(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 16,
@@ -182,7 +186,10 @@ class _OfflineMapManagementScreenState
     );
   }
 
-  Widget _buildStorageSummaryBanner(ColorScheme colorScheme) {
+  Widget _buildStorageSummaryBanner(
+    ColorScheme colorScheme,
+    AppLocalizations l10n,
+  ) {
     final info = _viewModel.storageInfo;
     final totalMB = info?.totalMB ?? '0.0';
     final count = _viewModel.mapCount;
@@ -219,7 +226,7 @@ class _OfflineMapManagementScreenState
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Dung lượng đã sử dụng',
+                  l10n.storageUsedLabel,
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
@@ -248,7 +255,7 @@ class _OfflineMapManagementScreenState
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        '$count bản đồ',
+                        l10n.offlineMapCount(count),
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
@@ -266,7 +273,7 @@ class _OfflineMapManagementScreenState
     );
   }
 
-  Widget _buildEmptyState(ColorScheme colorScheme) {
+  Widget _buildEmptyState(ColorScheme colorScheme, AppLocalizations l10n) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32.0),
@@ -288,7 +295,7 @@ class _OfflineMapManagementScreenState
             ),
             const SizedBox(height: 18),
             Text(
-              'Chưa có bản đồ offline',
+              l10n.noOfflineMapsTitle,
               style: TextStyle(
                 fontSize: 17,
                 fontWeight: FontWeight.bold,
@@ -297,7 +304,7 @@ class _OfflineMapManagementScreenState
             ),
             const SizedBox(height: 8),
             Text(
-              'Bạn có thể tải bản đồ trước khi bắt đầu hành trình để xem bản đồ ngay cả khi không có kết nối mạng.',
+              l10n.noOfflineMapsDesc,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13,
@@ -311,7 +318,7 @@ class _OfflineMapManagementScreenState
     );
   }
 
-  Widget _buildErrorState(ColorScheme colorScheme) {
+  Widget _buildErrorState(ColorScheme colorScheme, AppLocalizations l10n) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -336,7 +343,7 @@ class _OfflineMapManagementScreenState
             ElevatedButton.icon(
               onPressed: _viewModel.loadMaps,
               icon: const Icon(Icons.refresh),
-              label: const Text('Thử lại'),
+              label: Text(l10n.commonRetry),
             ),
           ],
         ),

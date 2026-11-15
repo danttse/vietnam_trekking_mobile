@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../data/models/milestone_model.dart';
 
 /// Timeline dọc hiển thị các điểm kiểm soát (milestones).
@@ -18,8 +19,10 @@ class MilestoneTimeline extends StatelessWidget {
     if (milestones.isEmpty) {
       return const Padding(
         padding: EdgeInsets.all(16),
-        child: Text('Chưa có điểm kiểm soát',
-            style: TextStyle(color: Colors.grey)),
+        child: Text(
+          'Chưa có điểm kiểm soát',
+          style: TextStyle(color: Colors.grey),
+        ),
       );
     }
     return ListView.builder(
@@ -52,9 +55,8 @@ class _MilestoneItem extends StatelessWidget {
     return const Color(0xFF4A5568);
   }
 
-  Color get _lineColor => milestone.isCheckedIn
-      ? const Color(0xFF4CAF50)
-      : const Color(0xFF2D3748);
+  Color get _lineColor =>
+      milestone.isCheckedIn ? const Color(0xFF4CAF50) : const Color(0xFF2D3748);
 
   @override
   Widget build(BuildContext context) {
@@ -82,19 +84,23 @@ class _MilestoneItem extends StatelessWidget {
                     boxShadow: isCurrent
                         ? [
                             BoxShadow(
-                              color: const Color(0xFFE8620A).withValues(alpha: 0.4),
+                              color: const Color(0xFFE8620A)
+                                  .withValues(alpha: 0.4),
                               blurRadius: 8,
                               spreadRadius: 2,
-                            )
+                            ),
                           ]
                         : null,
                   ),
                   child: isCheckedIn
                       ? const Icon(Icons.check, size: 11, color: Colors.white)
                       : isCurrent
-                          ? const Icon(Icons.person_pin_circle,
-                              size: 11, color: Colors.white)
-                          : null,
+                      ? const Icon(
+                          Icons.person_pin_circle,
+                          size: 11,
+                          color: Colors.white,
+                        )
+                      : null,
                 ),
                 if (!isLast)
                   Expanded(
@@ -126,8 +132,8 @@ class _MilestoneItem extends StatelessWidget {
                         color: isCheckedIn
                             ? const Color(0xFF4CAF50)
                             : isCurrent
-                                ? const Color(0xFFE8620A)
-                                : cs.onSurface,
+                            ? const Color(0xFFE8620A)
+                            : cs.onSurface,
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -145,7 +151,8 @@ class _MilestoneItem extends StatelessWidget {
                           '• Hoàn thành',
                           style: TextStyle(
                             fontSize: 11,
-                            color: const Color(0xFF4CAF50).withValues(alpha: 0.8),
+                            color: const Color(0xFF4CAF50)
+                                .withValues(alpha: 0.8),
                           ),
                         ),
                       ),
@@ -156,7 +163,8 @@ class _MilestoneItem extends StatelessWidget {
                           '• Hiện tại của bạn',
                           style: TextStyle(
                             fontSize: 11,
-                            color: const Color(0xFFE8620A).withValues(alpha: 0.9),
+                            color: const Color(0xFFE8620A)
+                                .withValues(alpha: 0.9),
                           ),
                         ),
                       ),

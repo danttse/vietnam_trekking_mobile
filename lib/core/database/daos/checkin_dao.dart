@@ -1,4 +1,5 @@
 import 'package:sqflite/sqflite.dart';
+
 import '../database_helper.dart';
 import '../models/offline_checkin.dart';
 
@@ -7,7 +8,7 @@ class CheckinDao {
   final DatabaseHelper _dbHelper;
 
   CheckinDao({DatabaseHelper? dbHelper})
-      : _dbHelper = dbHelper ?? DatabaseHelper.instance;
+    : _dbHelper = dbHelper ?? DatabaseHelper.instance;
 
   Future<Database> get _db => _dbHelper.database;
 
@@ -44,31 +45,64 @@ class CheckinDao {
     return OfflineCheckin.fromMap(rows.first);
   }
 
-  Future<List<OfflineCheckin>> getCheckinsByJourney(
-    String localJourneyId,
-  ) async {
-    final db = await _db;
-    final rows = await db.query(
-      _table,
-      where: 'localJourneyId = ?',
-      whereArgs: [localJourneyId],
-      orderBy: 'checkedAt ASC',
-    );
-    return rows.map(OfflineCheckin.fromMap).toList();
+  // Lay danh sach checkin theo journey id (ho tro ca local va server id)
+  Future<List<OfflineCheckin>> getCheckinsByJourney(String journeyRef) async {
+    return getCheckinsByJourneyIds([journeyRef]);
   }
 
-  /// Kiểm tra xem milestone đã được check-in trong journey này chưa
+  // Lay danh sach checkin theo tap hop journey ids
+  Future<List<OfflineCheckin>> getCheckinsByJourneyIds(Iterable<String> journeyIds) async {
+    final ids = journeyIds.where((id) => id.isNotEmpty).toSet();
+    if (ids.isEmpty) return [];
+    final db = await _db;
+    final inClause = ids.map((_) => '?').join(',');
+    final rows = await db.rawQuery(
+      '''
+      SELECT DISTINCT c.* FROM $_table c
+      LEFT JOIN local_journeys j ON c.localJourneyId = j.localJourneyId OR c.localJourneyId = j.serverJourneyId
+      WHERE c.localJourneyId IN ($inClause)
+         OR j.localJourneyId IN ($inClause)
+         OR j.serverJourneyId IN ($inClause)
+         OR c.localJourneyId IN (
+           SELECT j2.localJourneyId FROM local_journeys j2
+           WHERE j2.localJourneyId IN ($inClause) OR j2.serverJourneyId IN ($inClause)
+         )
+         OR c.localJourneyId IN (
+           SELECT j3.serverJourneyId FROM local_journeys j3
+           WHERE j3.localJourneyId IN ($inClause) OR j3.serverJourneyId IN ($inClause)
+         )
+      ORDER BY c.checkedAt ASC
+    ''',
+      [...ids, ...ids, ...ids, ...ids, ...ids, ...ids, ...ids],
+    );
+    return rows
+        .map((r) => OfflineCheckin.fromMap(Map<String, dynamic>.from(r)))
+        .toList();
+  }
+
+  // Kiem tra milestone da duoc checkin chua
   Future<bool> hasCheckin({
     required String localJourneyId,
     required String milestoneId,
     required String userId,
   }) async {
     final db = await _db;
-    final rows = await db.query(
-      _table,
-      where: 'localJourneyId = ? AND milestoneId = ? AND userId = ?',
-      whereArgs: [localJourneyId, milestoneId, userId],
-      limit: 1,
+    final rows = await db.rawQuery(
+      '''
+      SELECT 1 FROM $_table c
+      LEFT JOIN local_journeys j ON c.localJourneyId = j.localJourneyId OR c.localJourneyId = j.serverJourneyId
+      WHERE c.milestoneId = ? AND (
+        c.localJourneyId = ?
+        OR j.localJourneyId = ?
+        OR j.serverJourneyId = ?
+        OR c.localJourneyId IN (
+          SELECT j2.localJourneyId FROM local_journeys j2
+          WHERE j2.localJourneyId = ? OR j2.serverJourneyId = ?
+        )
+      )
+      LIMIT 1
+    ''',
+      [milestoneId, localJourneyId, localJourneyId, localJourneyId, localJourneyId, localJourneyId],
     );
     return rows.isNotEmpty;
   }

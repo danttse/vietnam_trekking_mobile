@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../../core/widgets/buttons/btn_login_style.dart';
 import 'widgets/trekking_button.dart';
 
@@ -49,8 +50,7 @@ class DownloadSuccessScreen extends StatelessWidget {
               Text(
                 'Mọi dữ liệu đã được lưu trữ an toàn ngoại tuyến.',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 13, color: cs.onSurfaceVariant),
+                style: TextStyle(fontSize: 13, color: cs.onSurfaceVariant),
               ),
 
               const SizedBox(height: 36),
@@ -63,18 +63,10 @@ class DownloadSuccessScreen extends StatelessWidget {
                 ),
                 child: Column(
                   children: const [
-                    _FeatureRow(
-                        label:
-                            'Offline Map (Bản đồ ngoại tuyến)'),
-                    _FeatureRow(
-                        label:
-                            'Hiking Trail (Đường mòn chi tiết)'),
-                    _FeatureRow(
-                        label:
-                            'Waypoints (Các điểm dừng chân)'),
-                    _FeatureRow(
-                        label:
-                            'Backtrack (Chế độ quay lại tự động)'),
+                    _FeatureRow(label: 'Offline Map (Bản đồ ngoại tuyến)'),
+                    _FeatureRow(label: 'Hiking Trail (Đường mòn chi tiết)'),
+                    _FeatureRow(label: 'Waypoints (Các điểm dừng chân)'),
+                    _FeatureRow(label: 'Backtrack (Chế độ quay lại tự động)'),
                   ],
                 ),
               ),
@@ -119,13 +111,13 @@ class _FeatureRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         children: [
-          const Icon(Icons.check_circle,
-              size: 16, color: Color(0xFF4CAF50)),
+          const Icon(Icons.check_circle, size: 16, color: Color(0xFF4CAF50)),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(label,
-                style: TextStyle(
-                    fontSize: 13, color: cs.onSurface)),
+            child: Text(
+              label,
+              style: TextStyle(fontSize: 13, color: cs.onSurface),
+            ),
           ),
         ],
       ),

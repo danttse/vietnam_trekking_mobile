@@ -364,25 +364,100 @@ class TrekkingCatalogService {
   Future<List<Map<String, dynamic>>> getJourneyCheckins(
     String journeyId,
   ) async {
-    final owner = await offline.requireOwner();
-    final ref = await offline.localJourneyId(journeyId);
-    final snapshot = await offline.read('/journeys/$ref', owner: owner) as Map;
-    final serverId =
-        snapshot['serverJourneyId'] ??
-        ((snapshot['offlineSyncStatus'] ?? 'SYNCED') == 'SYNCED'
-            ? snapshot['journeyId']
-            : null);
-    if (serverId != null) {
+    String? owner;
+    try {
+      owner = await offline.requireOwner();
+    } catch (_) {}
+
+    var ref = journeyId;
+    if (owner != null) {
       try {
-        final data =
-            (await checkinDio.get('/checkins/journeys/$serverId')).data['data']
-                as List;
-        await offline.cacheCheckins(journeyId, data);
-      } on DioException catch (e) {
-        if (!OfflineStore.canUseCache(e)) rethrow;
+        ref = await offline.localJourneyId(journeyId);
+      } on StateError {
+        // Journey chua luu local
       }
     }
-    return offline.checkins(journeyId);
+
+    dynamic snapshot;
+    if (owner != null) {
+      try {
+        snapshot = await offline.read('/journeys/$ref', owner: owner);
+      } catch (_) {}
+    }
+
+    final serverId = (snapshot is Map
+        ? (snapshot['serverJourneyId'] ?? snapshot['journeyId'])?.toString()
+        : null) ?? (journeyId.isNotEmpty ? journeyId : null);
+
+    List<Map<String, dynamic>> serverCheckins = [];
+    if (serverId != null && serverId.isNotEmpty) {
+      try {
+        Response<dynamic>? res;
+        try {
+          res = await checkinDio.get('/checkins/journeys/$serverId');
+        } on DioException catch (e) {
+          if (e.response?.statusCode == 404) {
+            try {
+              res = await checkinDio.get(
+                '/checkins',
+                queryParameters: {'journeyId': serverId},
+              );
+            } catch (_) {
+              try {
+                res = await checkinDio.get('/journeys/$serverId/checkins');
+              } catch (_) {}
+            }
+          }
+        }
+        final raw = res?.data;
+        final list = raw is Map
+            ? (raw['data'] ?? raw['items'] ?? raw['checkins'])
+            : raw;
+        if (list is List) {
+          serverCheckins = list
+              .map((e) => Map<String, dynamic>.from(e as Map))
+              .toList();
+          try {
+            await offline.cacheCheckins(journeyId, list);
+          } catch (e) {
+            debugPrint('[getJourneyCheckins] cache error: $e');
+          }
+        }
+      } catch (e) {
+        debugPrint('[getJourneyCheckins] server fetch error: $e');
+      }
+    }
+
+    List<Map<String, dynamic>> localCheckins = [];
+    try {
+      final list = await offline.checkins(journeyId);
+      if (list.isNotEmpty || ref == journeyId) {
+        localCheckins = list;
+      } else {
+        localCheckins = await offline.checkins(ref);
+      }
+    } catch (_) {
+      try {
+        localCheckins = await offline.checkins(ref);
+      } catch (_) {}
+    }
+
+    // Hop nhat danh sach tu server va local SQLite theo milestoneId de khong bao gio bi mat check-in
+    final merged = <String, Map<String, dynamic>>{};
+    for (final c in [...localCheckins, ...serverCheckins]) {
+      final rawMId = c['milestoneId'] ?? c['milestone'] ?? c['milestone_id'];
+      final mId = (rawMId is Map)
+          ? (rawMId['_id'] ?? rawMId['id'] ?? rawMId['milestoneId'])?.toString()
+          : rawMId?.toString();
+      if (mId != null && mId.isNotEmpty) {
+        merged[mId] = c;
+      }
+    }
+
+    if (merged.isNotEmpty) {
+      return merged.values.toList();
+    }
+    return serverCheckins.isNotEmpty ? serverCheckins : localCheckins;
   }
 
   static RouteModel parseRoute(

@@ -256,7 +256,7 @@ class _CreateNewJourneyScreenState extends State<CreateNewJourneyScreen> {
                             createdJourney.route.routeId,
                             createdJourney.route.trekkingPlaceId,
                           );
-                          
+
                           dynamic result;
                           if (existingMap == null) {
                             // Map not downloaded - go to download screen first
@@ -281,7 +281,7 @@ class _CreateNewJourneyScreenState extends State<CreateNewJourneyScreen> {
                               ),
                             );
                           }
-                          
+
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -380,7 +380,9 @@ class _CreateNewJourneyScreenState extends State<CreateNewJourneyScreen> {
                         style: TextStyle(
                           color: hasText
                               ? colorScheme.onSurface
-                              : colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                              : colorScheme.onSurfaceVariant.withValues(
+                                  alpha: 0.6,
+                                ),
                           fontSize: 14,
                         ),
                       ),

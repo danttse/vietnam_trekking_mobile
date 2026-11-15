@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/widgets/buttons/btn_login_style.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../user_navigation/views/user_navigation_screen.dart';
+import 'place_reviews_screen.dart';
 import 'widgets/rating_stars.dart';
 import 'widgets/trekking_button.dart';
-import 'place_reviews_screen.dart';
-import '../../user_navigation/views/user_navigation_screen.dart';
 
 /// Màn hình "Cảm ơn bạn!" sau khi gửi review thành công.
 class ReviewSuccessScreen extends StatelessWidget {
@@ -22,6 +23,7 @@ class ReviewSuccessScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: cs.surface,
@@ -52,7 +54,7 @@ class ReviewSuccessScreen extends StatelessWidget {
 
               const SizedBox(height: 28),
               Text(
-                'Cảm ơn bạn!',
+                l10n?.reviewThankYouTitle ?? 'Cảm ơn bạn!',
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.w800,
@@ -61,7 +63,8 @@ class ReviewSuccessScreen extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                'Đánh giá của bạn đã được gửi thành công và sẽ giúp ích rất nhiều cho cộng đồng Trekker Việt Nam.',
+                l10n?.reviewThankYouMessage ??
+                    'Đánh giá của bạn đã được gửi thành công và sẽ giúp ích rất nhiều cho cộng đồng Trekker Việt Nam.',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 13, color: cs.onSurfaceVariant),
               ),
@@ -78,7 +81,8 @@ class ReviewSuccessScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      'ĐÁNH GIÁ CỦA BẠN',
+                      l10n?.yourReviewSection.toUpperCase() ??
+                          'ĐÁNH GIÁ CỦA BẠN',
                       style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w700,
@@ -104,7 +108,7 @@ class ReviewSuccessScreen extends StatelessWidget {
 
               // ── CTAs ──────────────────────────────────────────────────
               TrekkingSecondaryButton(
-                label: 'Xem đánh giá khác',
+                label: l10n?.viewOtherReviewsButton ?? 'Xem đánh giá khác',
                 onPressed: placeId == null
                     ? null
                     : () => Navigator.push(
@@ -119,7 +123,7 @@ class ReviewSuccessScreen extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               BtnLoginPrimary(
-                text: 'Quay về trang chủ',
+                text: l10n?.backToHomeButton ?? 'Quay về trang chủ',
                 onPressed: () {
                   Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(
