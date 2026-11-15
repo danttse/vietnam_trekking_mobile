@@ -83,7 +83,6 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
       backgroundColor: cs.surface,
       body: CustomScrollView(
         slivers: [
-          // ── Hero image app bar ────────────────────────────────────────────
           SliverAppBar(
             expandedHeight: 200,
             pinned: true,
@@ -147,7 +146,7 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // ── Name + address ────────────────────────────────────────
+                  //Name + address
                   Text(
                     route?.name ?? 'Đang tải...',
                     style: TextStyle(
@@ -169,11 +168,9 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                   ],
 
                   const SizedBox(height: 20),
-                  // ── Stats grid ────────────────────────────────────────────
                   _buildStatsGrid(cs, route),
-
                   const SizedBox(height: 20),
-                  // ── Description ───────────────────────────────────────────
+                  //Description
                   if (route?.description != null) ...[
                     Text(
                       route!.description!,
@@ -182,11 +179,12 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                         color: cs.onSurfaceVariant,
                         height: 1.5,
                       ),
+                      textAlign: TextAlign.justify,
                     ),
                     const SizedBox(height: 20),
                   ],
 
-                  // ── Map preview ───────────────────────────────────────────
+                  //Map preview
                   Text(
                     'BẢN ĐỒ LỘ TRÌNH',
                     style: TextStyle(
@@ -200,7 +198,7 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                   _buildMapPreview(cs),
 
                   const SizedBox(height: 24),
-                  // ── Milestones ────────────────────────────────────────────
+                  //Milestones
                   if (_vm.milestones.isNotEmpty) ...[
                     Text(
                       'ĐIỂM KIỂM SOÁT (${_vm.milestones.length} điểm)',
@@ -225,7 +223,6 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                     const SizedBox(height: 20),
                   ],
 
-                  // ── Offline map card ──────────────────────────────────────
                   if (_vm.packageInfo != null ||
                       _vm.offlineStatus != OfflineMapStatus.none)
                     OfflineMapCard(

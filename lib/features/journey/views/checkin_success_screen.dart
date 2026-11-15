@@ -1,16 +1,24 @@
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 
 import '../../../core/widgets/buttons/btn_login_style.dart';
 import '../../../core/widgets/buttons/btn_outline_style.dart';
+import '../../../core/widgets/cards/image_load_card.dart';
 import '../../../core/widgets/cards/profile_achievement_card.dart';
 import '../../../core/widgets/cards/profile_stat_card.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../community/views/community_share.dart';
 import '../../profile/data/models/profile_model.dart';
+import '../../profile/views/badge_detail_screen.dart';
 import '../data/models/journey_model.dart';
 import '../data/models/milestone_model.dart';
 import '../viewmodels/checkin_success_viewmodel.dart';
-import '../../profile/views/badge_detail_screen.dart';
 import 'rate_milestone_screen.dart';
 
 class CheckinSuccessScreen extends StatefulWidget {
@@ -33,6 +41,8 @@ class CheckinSuccessScreen extends StatefulWidget {
 
 class _CheckinSuccessScreenState extends State<CheckinSuccessScreen> {
   late final CheckinSuccessViewModel _viewModel;
+  final List<String> _checkinImages = [];
+  bool _pickingImages = false;
 
   @override
   void initState() {
@@ -48,6 +58,49 @@ class _CheckinSuccessScreenState extends State<CheckinSuccessScreen> {
   void dispose() {
     _viewModel.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickCheckinImages() async {
+    if (_pickingImages) return;
+    final slots = 2 - _checkinImages.length;
+    if (slots <= 0) return;
+    setState(() => _pickingImages = true);
+    try {
+      final photos = await ImagePicker().pickMultiImage(imageQuality: 80);
+      if (!mounted || photos.isEmpty) return;
+      final root = await getApplicationDocumentsDirectory();
+      final directory = Directory(p.join(root.path, 'checkin_photos'));
+      await directory.create(recursive: true);
+      for (final photo in photos.take(slots)) {
+        final target = p.join(
+          directory.path,
+          '${DateTime.now().microsecondsSinceEpoch}_${p.basename(photo.path)}',
+        );
+        await File(photo.path).copy(target);
+        if (!mounted) return;
+        setState(() => _checkinImages.add(target));
+      }
+      final jId = widget.journey?.journeyId;
+      if (jId != null && jId.isNotEmpty) {
+        final prefs = await SharedPreferences.getInstance();
+        final existing =
+            prefs.getStringList('journey_checkin_images_$jId') ?? [];
+        for (final img in _checkinImages) {
+          if (!existing.contains(img)) existing.add(img);
+        }
+        await prefs.setStringList('journey_checkin_images_$jId', existing);
+      }
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Không chọn được ảnh. Vui lòng thử lại.'),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _pickingImages = false);
+    }
   }
 
   @override
@@ -75,8 +128,10 @@ class _CheckinSuccessScreenState extends State<CheckinSuccessScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  BadgeDetailScreen(badge: items.first),
+                              builder: (context) => BadgeDetailScreen(
+                                badge: items.first,
+                                allBadges: items,
+                              ),
                             ),
                           );
                         }
@@ -115,7 +170,9 @@ class _CheckinSuccessScreenState extends State<CheckinSuccessScreen> {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    l10n.checkinSuccessTitle,
+                    widget.journeyFinished
+                        ? l10n.journeyCompletedTitle
+                        : l10n.checkinSuccessTitle,
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -166,8 +223,10 @@ class _CheckinSuccessScreenState extends State<CheckinSuccessScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  BadgeDetailScreen(badge: item),
+                              builder: (context) => BadgeDetailScreen(
+                                badge: item,
+                                allBadges: _viewModel.getAchievements(l10n),
+                              ),
                             ),
                           );
                         },
@@ -200,14 +259,90 @@ class _CheckinSuccessScreenState extends State<CheckinSuccessScreen> {
                     ],
                   ),
                   const SizedBox(height: 28),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      l10n.addPhotosPrompt,
+                      style: TextStyle(
+                        color: colorScheme.onSurface,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    height: 72,
+                    child: Row(
+                      children: [
+                        InkWell(
+                          onTap: _checkinImages.length >= 2
+                              ? null
+                              : _pickCheckinImages,
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            width: 72,
+                            height: 72,
+                            decoration: BoxDecoration(
+                              color: colorScheme.surfaceContainerHighest,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: colorScheme.onSurfaceVariant.withValues(
+                                  alpha: 0.25,
+                                ),
+                              ),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.camera_alt_outlined,
+                                  size: 24,
+                                  color: colorScheme.onSurfaceVariant,
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  l10n.addPhoto,
+                                  style: TextStyle(
+                                    color: colorScheme.onSurfaceVariant,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: _checkinImages.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.only(right: 10),
+                                child: ImageLoadCard(
+                                  imageUrl: File(_checkinImages[index]),
+                                  onTapRemove: () => setState(
+                                    () => _checkinImages.removeAt(index),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
                   SizedBox(
                     width: double.infinity,
                     child: BtnLoginPrimary(
                       text: widget.journeyFinished
-                          ? 'Quay lại hành trình'
+                          ? l10n.backToJourneyButton
                           : l10n.continueJourneyButton,
                       onPressed: () {
-                        Navigator.pop(context, true);
+                        Navigator.pop(context, _checkinImages);
                       },
                     ),
                   ),
@@ -232,7 +367,8 @@ class _CheckinSuccessScreenState extends State<CheckinSuccessScreen> {
                               ),
                             ),
                           );
-                          if (context.mounted) Navigator.pop(context, true);
+                          if (context.mounted)
+                            Navigator.pop(context, _checkinImages);
                         },
                       ),
                     ),
@@ -243,52 +379,22 @@ class _CheckinSuccessScreenState extends State<CheckinSuccessScreen> {
                       text: l10n.shareAchievementButton,
                       icon: const SizedBox.shrink(),
                       onPressed: () {
-                        final text =
-                            'Mình đã check-in ${_viewModel.destinationName}! '
-                            'Cao độ: ${_viewModel.maxElevationText}. '
-                            '${widget.journey?.name ?? ''} #TrekViet';
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (sheetContext) => SafeArea(
-                            child: Padding(
-                              padding: const EdgeInsets.all(24),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    l10n.shareAchievementButton,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  SelectableText(text),
-                                  const SizedBox(height: 16),
-                                  BtnLoginPrimary(
-                                    text: 'Sao chép để chia sẻ',
-                                    onPressed: () async {
-                                      await Clipboard.setData(
-                                        ClipboardData(text: text),
-                                      );
-                                      if (!sheetContext.mounted) return;
-                                      Navigator.pop(sheetContext);
-                                      if (context.mounted)
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                              const SnackBar(
-                                                content: Text(
-                                                  'Đã sao chép thành tích.',
-                                                ),
-                                              ),
-                                            );
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
+                        final journey = widget.journey;
+                        final content = widget.journeyFinished
+                            ? 'Mình đã hoàn thành hành trình ${journey?.name ?? _viewModel.destinationName}! '
+                                  'Cao độ: ${_viewModel.maxElevationText}. #TrekViet'
+                            : 'Mình đã check-in ${_viewModel.destinationName}! '
+                                  'Cao độ: ${_viewModel.maxElevationText}. '
+                                  '${journey?.name ?? ''} #TrekViet';
+                        if (journey == null) {
+                          openCommunityShare(context, content: content);
+                        } else {
+                          shareJourneyToCommunity(
+                            context,
+                            journey,
+                            content: content,
+                          );
+                        }
                       },
                     ),
                   ),

@@ -1,9 +1,8 @@
+import '../../../core/database/daos/checkin_dao.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
-
 import '../../route/viewmodel/download_offline_map_viewmodel.dart';
-
 import 'package:flutter/material.dart';
-
 import '../../../core/services/trekking_catalog_service.dart';
 import '../../../core/network/api_error_handler.dart';
 import '../../../core/services/journey_tracking_service.dart';
@@ -14,21 +13,24 @@ import '../data/models/milestone_model.dart';
 class JourneyDetailViewModel extends ChangeNotifier {
   JourneyModel? _journey;
   final TrekkingCatalogService _api;
+  final CheckinDao _checkinDao;
   StreamSubscription<String>? _offlineSubscription;
+
   Future<void>? _refreshing;
   bool _isLoadingMilestones = false;
   bool _hasLoadedMilestones = false;
   String? milestoneError;
-
   bool _isDownloading = false;
   bool _isDownloaded = false;
   late List<MilestoneModel> _milestones;
   JourneyDetailViewModel({
     JourneyModel? route,
     TrekkingCatalogService? catalog,
+    CheckinDao? checkinDao,
     bool autoLoad = true,
   }) : _journey = route,
-       _api = catalog ?? TrekkingCatalogService() {
+       _api = catalog ?? TrekkingCatalogService(),
+       _checkinDao = checkinDao ?? CheckinDao(dbHelper: (catalog ?? TrekkingCatalogService()).offline.databaseHelper) {
     _milestones = [];
     _offlineSubscription = _api.offline.changes.listen((owner) async {
       if (!_disposed &&
@@ -38,6 +40,7 @@ class JourneyDetailViewModel extends ChangeNotifier {
         await loadMilestones();
       }
     });
+    _loadPersistedData();
     if (autoLoad) {
       loadMilestones();
       _loadDownloadedState();
@@ -48,9 +51,15 @@ class JourneyDetailViewModel extends ChangeNotifier {
     final current = _journey;
     if (current == null) return;
     try {
+      final routeId = current.trekkingRouteId.isNotEmpty
+          ? current.trekkingRouteId
+          : current.route.routeId;
+      final placeId = current.trekkingPlaceId.isNotEmpty
+          ? current.trekkingPlaceId
+          : current.route.trekkingPlaceId;
       final map = await OfflineMapStorageService().findReadyMap(
-        current.route.routeId,
-        current.route.trekkingPlaceId,
+        routeId,
+        placeId,
       );
       if (!_disposed) {
         _isDownloaded = map != null;
@@ -60,11 +69,12 @@ class JourneyDetailViewModel extends ChangeNotifier {
       debugPrint('[JourneyDetailViewModel] offline map: $e');
     }
   }
-
   bool _disposed = false;
+
   Future<void> refreshDownloadedState() => _loadDownloadedState();
   bool isUpdating = false;
   String? error;
+
   Future<void> loadMilestones() async {
     if (_disposed) return;
     if (_refreshing != null) return _refreshing!;
@@ -86,37 +96,123 @@ class JourneyDetailViewModel extends ChangeNotifier {
   Future<void> _loadMilestones() async {
     final current = _journey;
     if (current == null) return;
+    // 1. Cố gắng làm mới thông tin journey, nhưng không để lỗi này chặn việc tải cột mốc
+    JourneyModel activeJourney = current;
     try {
       final refreshed = await _api.getJourney(current.journeyId);
-      if (_disposed) return;
-      _journey = refreshed;
-      notifyListeners();
-      final data = await _api.getMilestones(refreshed.route.routeId);
+      if (!_disposed) {
+        _journey = refreshed;
+        activeJourney = refreshed;
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('[JourneyDetailViewModel] refresh journey skipped: $e');
+    }
+    final routeId = activeJourney.trekkingRouteId.isNotEmpty
+        ? activeJourney.trekkingRouteId
+        : activeJourney.route.routeId;
+    if (routeId.isEmpty) {
+      if (!_disposed) {
+        milestoneError = 'Không tìm thấy thông tin cung đường của hành trình.';
+        notifyListeners();
+      }
+      return;
+    }
+    try {
+      // 2. Tải danh sách cột mốc của cung đường
+      final data = await _api.getMilestones(routeId);
       if (_disposed) return;
       final milestones = data
           .map(
             (m) => MilestoneModel.fromJson(Map<String, dynamic>.from(m as Map)),
           )
           .toList();
-      final checkins = await _api.getJourneyCheckins(refreshed.journeyId);
-      if (_disposed) return;
+      // Lay danh sach checkin tu SQLite va server
       final verified = <String, DateTime?>{};
-      for (final checkin in checkins) {
-        if (checkin['offlineSyncStatus'] != 'FAILED' &&
-            ((checkin['verification'] as Map?)?['status'] == 'VERIFIED' ||
-                checkin['offlineSyncStatus'] == 'PENDING')) {
-          verified[checkin['milestoneId'].toString()] = DateTime.tryParse(
-            checkin['checkedAt']?.toString() ?? '',
-          );
+      final candidateJourneyIds = {
+        current.journeyId,
+        if (current.clientJourneyId != null && current.clientJourneyId!.isNotEmpty) current.clientJourneyId!,
+        activeJourney.journeyId,
+        if (activeJourney.clientJourneyId != null && activeJourney.clientJourneyId!.isNotEmpty) activeJourney.clientJourneyId!,
+      };
+
+      for (final jId in candidateJourneyIds) {
+        try {
+          final checkins = await _api.getJourneyCheckins(jId);
+          for (final checkin in checkins) {
+            final syncStatus =
+                checkin['offlineSyncStatus'] ?? checkin['syncStatus'];
+            final verification = (checkin['verification'] is Map)
+                ? (checkin['verification'] as Map)['status']
+                : checkin['verificationStatus'] ?? checkin['verification'];
+            final isVerified = verification == 'VERIFIED' ||
+                verification == 'APPROVED' ||
+                verification == 'PENDING_VERIFICATION';
+            final isLocalPending = syncStatus == 'PENDING';
+            if (syncStatus != 'FAILED' && (isVerified || isLocalPending)) {
+              // Trich xuat milestoneId an toan
+              final rawMId = checkin['milestoneId'] ?? checkin['milestone'] ?? checkin['milestone_id'];
+              final mId = (rawMId is Map)
+                  ? (rawMId['_id'] ?? rawMId['id'] ?? rawMId['milestoneId'])?.toString()
+                  : rawMId?.toString();
+              if (mId != null && mId.isNotEmpty) {
+                verified[mId] = DateTime.tryParse(
+                  (checkin['checkedAt'] ?? checkin['createdAt'] ?? checkin['checkinTime'] ?? '').toString(),
+                ) ?? DateTime.now();
+              }
+            }
+          }
+        } catch (e) {
+          debugPrint('[JourneyDetailViewModel] optional checkins load for $jId: $e');
         }
       }
-      _milestones = milestones
-          .map(
-            (m) => verified.containsKey(m.id)
-                ? m.copyWith(isCheckedIn: true, checkedInAt: verified[m.id])
-                : m,
-          )
-          .toList();
+
+      // Kiem tra truc tiep tu bang offline_checkins
+      try {
+        final localCheckins = await _checkinDao.getCheckinsByJourneyIds(candidateJourneyIds);
+        for (final c in localCheckins) {
+          final isRejected = c.verificationStatus == 'REJECTED' || c.verificationStatus == 'FAILED';
+          if (c.syncStatus != 'FAILED' && !isRejected) {
+            if (c.milestoneId.isNotEmpty) {
+              verified[c.milestoneId] = c.checkedAt;
+            }
+          }
+        }
+      } catch (e) {
+        debugPrint('[JourneyDetailViewModel] local checkins load error: $e');
+      }
+      _milestones = milestones.map((m) {
+        final mIdNorm = m.id.trim().toLowerCase();
+        final isChecked =
+            verified.containsKey(m.id) ||
+            verified.containsKey(m.milestoneId) ||
+            _localCheckedInMilestones.contains(m.id) ||
+            _localCheckedInMilestones.contains(m.milestoneId) ||
+            verified.keys.any((k) => k.trim().toLowerCase() == mIdNorm) ||
+            _localCheckedInMilestones.any((k) => k.trim().toLowerCase() == mIdNorm);
+        if (isChecked) {
+          _localCheckedInMilestones.add(m.id);
+          return m.copyWith(
+            isCheckedIn: true,
+            checkedInAt: verified[m.id] ??
+                verified[m.milestoneId] ??
+                DateTime.now(),
+          );
+        }
+        return m;
+      }).toList();
+
+      // Luu danh sach milestone da check-in vao SharedPreferences de dam bao luon giu trang thai
+      final jId = _journey?.journeyId;
+      if (jId != null && jId.isNotEmpty && _localCheckedInMilestones.isNotEmpty) {
+        try {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setStringList(
+            'journey_checked_in_milestones_$jId',
+            _localCheckedInMilestones.toList(),
+          );
+        } catch (_) {}
+      }
       _hasLoadedMilestones = true;
       milestoneError = null;
       error = null;
@@ -131,12 +227,12 @@ class JourneyDetailViewModel extends ChangeNotifier {
   }
 
   @override
+
   void dispose() {
     _disposed = true;
     _offlineSubscription?.cancel();
     super.dispose();
   }
-
   JourneyModel? get journey => _journey;
   JourneyStatus get journeyStatus => _journey?.status ?? JourneyStatus.planned;
   bool get isDownloading => _isDownloading;
@@ -155,6 +251,10 @@ class JourneyDetailViewModel extends ChangeNotifier {
     };
     if (action == null) return;
     await updateStatus(action);
+  }
+
+  Future<void> cancelJourney() async {
+    await updateStatus('cancel');
   }
 
   Future<void> updateStatus(String action) async {
@@ -178,26 +278,20 @@ class JourneyDetailViewModel extends ChangeNotifier {
       }
     }
   }
-
   String get journeyName => _journey?.name ?? 'Hành trình trekking';
   String get journeyLocation => _journey?.route.province ?? 'Việt Nam';
-
   String get journeyImageUrl =>
       _journey?.route.imageUrl ??
       'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800';
-
   String get mapImageUrl => _journey?.route.mapImageUrl ?? '';
-
   String get distanceKm {
     final km = _journey?.displayDistanceKm ?? 0;
     return km.truncateToDouble() == km
         ? km.toStringAsFixed(0)
         : km.toStringAsFixed(1);
   }
-
   String get maxElevationText =>
       '${_journey?.route.maxElevation.toInt() ?? 0} m';
-
   String get estimatedDurationText {
     final minutes = _journey?.route.estimatedDuration.inMinutes ?? 0;
     if (minutes == 0) return 'Chưa có dữ liệu';
@@ -207,7 +301,6 @@ class JourneyDetailViewModel extends ChangeNotifier {
         ? '$remainder phút'
         : '$hours giờ${remainder == 0 ? '' : ' $remainder phút'}';
   }
-
   int get checkedInCount => _milestones.where((m) => m.isCheckedIn).length;
   int get totalMilestoneCount => _milestones.length;
 
@@ -227,15 +320,98 @@ class JourneyDetailViewModel extends ChangeNotifier {
     }
     download.dispose();
   }
+  final List<String> _checkinImages = [];
+  List<String> get checkinImages => List.unmodifiable(_checkinImages);
+  final Set<String> _localCheckedInMilestones = {};
+  // Doc du lieu anh checkin da luu
+
+  Future<void> _loadPersistedData() async {
+    final id = _journey?.journeyId;
+    if (id == null || id.isEmpty) return;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final savedImages =
+          prefs.getStringList('journey_checkin_images_$id') ?? [];
+      final savedMilestones =
+          prefs.getStringList('journey_checked_in_milestones_$id') ?? [];
+      if (!_disposed) {
+        _checkinImages.clear();
+        _checkinImages.addAll(savedImages);
+        _localCheckedInMilestones.addAll(savedMilestones);
+        if (savedMilestones.isNotEmpty && _milestones.isNotEmpty) {
+          _milestones = _milestones.map((m) {
+            final mIdNorm = m.id.trim().toLowerCase();
+            if (_localCheckedInMilestones.contains(m.id) ||
+                _localCheckedInMilestones.contains(m.milestoneId) ||
+                _localCheckedInMilestones.any((k) => k.trim().toLowerCase() == mIdNorm)) {
+              return m.copyWith(isCheckedIn: true);
+            }
+            return m;
+          }).toList();
+        }
+        notifyListeners();
+      }
+    } catch (_) {}
+  }
+  // Cap nhat trang thai checkin vao bo nho
 
   void checkIn(String milestoneId) {
-    final index = _milestones.indexWhere((m) => m.id == milestoneId);
-    if (index == -1) return;
-    _milestones = List.from(_milestones);
-    _milestones[index] = _milestones[index].copyWith(
-      isCheckedIn: true,
-      checkedInAt: DateTime.now(),
+    _localCheckedInMilestones.add(milestoneId);
+    final id = _journey?.journeyId;
+    if (id != null && id.isNotEmpty) {
+      SharedPreferences.getInstance().then((prefs) {
+        prefs.setStringList(
+          'journey_checked_in_milestones_$id',
+          _localCheckedInMilestones.toList(),
+        );
+      }).catchError((_) {});
+    }
+    final targetNorm = milestoneId.trim().toLowerCase();
+    final index = _milestones.indexWhere(
+      (m) =>
+          m.id == milestoneId ||
+          m.milestoneId == milestoneId ||
+          m.id.trim().toLowerCase() == targetNorm,
     );
+    if (index != -1) {
+      _milestones = List.from(_milestones);
+      _milestones[index] = _milestones[index].copyWith(
+        isCheckedIn: true,
+        checkedInAt: DateTime.now(),
+      );
+      notifyListeners();
+    }
+  }
+  // Dong bo hoa du lieu checkin
+
+  Future<void> syncPendingCheckins() async {
+    try {
+      await _api.syncPending();
+      await loadMilestones();
+    } catch (_) {}
+  }
+
+  void addCheckinImage(String path) {
+    _checkinImages.add(path);
+    final id = _journey?.journeyId;
+    if (id != null && id.isNotEmpty) {
+      SharedPreferences.getInstance().then((prefs) {
+        prefs.setStringList('journey_checkin_images_$id', _checkinImages);
+      }).catchError((_) {});
+    }
     notifyListeners();
+  }
+
+  void removeCheckinImage(int index) {
+    if (index >= 0 && index < _checkinImages.length) {
+      _checkinImages.removeAt(index);
+      final id = _journey?.journeyId;
+      if (id != null && id.isNotEmpty) {
+        SharedPreferences.getInstance().then((prefs) {
+          prefs.setStringList('journey_checkin_images_$id', _checkinImages);
+        }).catchError((_) {});
+      }
+      notifyListeners();
+    }
   }
 }

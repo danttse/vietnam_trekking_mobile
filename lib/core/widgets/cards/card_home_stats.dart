@@ -39,12 +39,18 @@ class CardHomeStats extends StatelessWidget {
                     Icon(icon, color: iconColor, size: 13),
                     const SizedBox(width: 4),
                     Expanded(
-                      child: Text(
-                        value,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: colors.onSurface,
-                          fontWeight: FontWeight.w700,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          value,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: colors.onSurface,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
                     ),
@@ -53,6 +59,8 @@ class CardHomeStats extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 10,
                     color: colors.onSurfaceVariant,

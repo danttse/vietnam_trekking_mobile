@@ -233,7 +233,7 @@ class ProfileViewModel extends ChangeNotifier {
     stopRankUpdates();
     _monitoring = true;
     _rankTimer = Timer.periodic(
-      const Duration(seconds: 15),
+      const Duration(minutes: 1),
       (_) => refreshRank(),
     );
     refreshRank();

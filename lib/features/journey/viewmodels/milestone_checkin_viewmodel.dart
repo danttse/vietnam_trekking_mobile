@@ -181,9 +181,20 @@ class MilestoneCheckinViewModel extends ChangeNotifier {
       }
       final data = await _api.checkIn(journey!.journeyId, {
         'milestoneId': _milestone.id,
+        if (_milestone.trekkingRouteId.isNotEmpty)
+          'trekkingRouteId': _milestone.trekkingRouteId
+        else if (journey?.trekkingRouteId.isNotEmpty == true)
+          'trekkingRouteId': journey!.trekkingRouteId,
         'latitude': pos.latitude,
         'longitude': pos.longitude,
+        'location': {
+          'type': 'Point',
+          'coordinates': [pos.longitude, pos.latitude],
+        },
         'accuracyMeters': pos.accuracy,
+        if (_distanceMeters != null)
+          'distanceToMilestoneMeters': _distanceMeters,
+        'syncSource': 'ONLINE',
         'checkedAt': now.toIso8601String(),
       });
       if (_disposed) return false;

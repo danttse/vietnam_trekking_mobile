@@ -14,8 +14,11 @@ class PickerCatalog extends TrekkingCatalogService {
   ];
   @override
   Future<List<Map<String, dynamic>>> getPlaces({
+    bool includeRoutes = false,
+    int? maxItems,
     String? query,
     String? region,
+    String? sort,
   }) async => places;
   @override
   Future<List<RouteModel>> getRoutes(

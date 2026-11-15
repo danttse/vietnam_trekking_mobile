@@ -41,15 +41,23 @@ class JourneyViewModel extends ChangeNotifier {
 
   List<JourneyModel> _completedJourneys = [];
   List<JourneyModel> _upcomingJourneys = [];
+  List<JourneyModel> _cancelledJourneys = [];
 
   List<JourneyGroupModel> _completedGroups = [];
   List<JourneyGroupModel> _upcomingGroups = [];
+  List<JourneyGroupModel> _cancelledGroups = [];
 
-  List<JourneyModel> get currentJourneys =>
-      _selectedTabIndex == 0 ? _completedJourneys : _upcomingJourneys;
+  List<JourneyModel> get currentJourneys => switch (_selectedTabIndex) {
+        0 => _completedJourneys,
+        1 => _upcomingJourneys,
+        _ => _cancelledJourneys,
+      };
 
-  List<JourneyGroupModel> get currentGroups =>
-      _selectedTabIndex == 0 ? _completedGroups : _upcomingGroups;
+  List<JourneyGroupModel> get currentGroups => switch (_selectedTabIndex) {
+        0 => _completedGroups,
+        1 => _upcomingGroups,
+        _ => _cancelledGroups,
+      };
 
   int get currentTripsCount => currentJourneys.length;
 
@@ -68,7 +76,7 @@ class JourneyViewModel extends ChangeNotifier {
       currentJourneys.fold<int>(0, (sum, j) => sum + j.participantCount);
 
   String get tripBadgeText =>
-      '${_completedJourneys.length + _upcomingJourneys.length} Chuyến đi';
+      '${_completedJourneys.length + _upcomingJourneys.length + _cancelledJourneys.length} Chuyến đi';
 
   void setTab(int index) {
     if (_selectedTabIndex != index) {
@@ -90,17 +98,25 @@ class JourneyViewModel extends ChangeNotifier {
           journey.clientJourneyId != null &&
               j.clientJourneyId == journey.clientJourneyId,
     );
+    _cancelledJourneys.removeWhere(
+      (j) =>
+          j.journeyId == journey.journeyId ||
+          journey.clientJourneyId != null &&
+              j.clientJourneyId == journey.clientJourneyId,
+    );
     if (journey.status == JourneyStatus.completed) {
       _completedJourneys.insert(0, journey);
-      _completedGroups = groupJourneysByMonthYear(_completedJourneys);
       _selectedTabIndex = 0;
+    } else if (journey.status == JourneyStatus.cancelled) {
+      _cancelledJourneys.insert(0, journey);
+      _selectedTabIndex = 2;
     } else {
       _upcomingJourneys.insert(0, journey);
-      _upcomingGroups = groupJourneysByMonthYear(_upcomingJourneys);
       _selectedTabIndex = 1;
     }
     _completedGroups = groupJourneysByMonthYear(_completedJourneys);
     _upcomingGroups = groupJourneysByMonthYear(_upcomingJourneys);
+    _cancelledGroups = groupJourneysByMonthYear(_cancelledJourneys);
     notifyListeners();
   }
 
@@ -126,8 +142,12 @@ class JourneyViewModel extends ChangeNotifier {
                 j.status != JourneyStatus.cancelled,
           )
           .toList();
+      _cancelledJourneys = journeys
+          .where((j) => j.status == JourneyStatus.cancelled)
+          .toList();
       _completedGroups = groupJourneysByMonthYear(_completedJourneys);
       _upcomingGroups = groupJourneysByMonthYear(_upcomingJourneys);
+      _cancelledGroups = groupJourneysByMonthYear(_cancelledJourneys);
       error = null;
     } catch (e, stack) {
       if (_disposed) return;

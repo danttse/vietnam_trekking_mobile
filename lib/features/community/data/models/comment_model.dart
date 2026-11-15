@@ -12,6 +12,7 @@ class CommentModel {
   final bool isLiked;
   final int replyCount;
   final DateTime createdAt;
+  final bool deleted;
 
   CommentModel({
     required this.id,
@@ -27,7 +28,27 @@ class CommentModel {
     this.isLiked = false,
     this.replyCount = 0,
     required this.createdAt,
+    this.deleted = false,
   });
+
+  factory CommentModel.fromJson(Map<String, dynamic> json) => CommentModel(
+    id: json['commentId'] as String,
+    postId: json['postId'] as String,
+    userId: json['authorId'] as String? ?? '',
+    userName: json['authorName'] as String? ?? 'Trekker',
+    userAvatar: json['authorAvatar'] as String?,
+    content: json['deleted'] == true || json['hidden'] == true
+        ? (json['hidden'] == true && json['deleted'] != true
+              ? 'Bình luận đã bị ẩn'
+              : 'Bình luận đã bị xóa')
+        : (json['content'] as String? ?? ''),
+    parentCommentId: json['parentCommentId'] as String?,
+    rootCommentId: json['rootCommentId'] as String?,
+    likeCount: (json['likeCount'] as num?)?.toInt() ?? 0,
+    isLiked: json['isLiked'] == true,
+    createdAt: DateTime.parse(json['createdAt'] as String),
+    deleted: json['deleted'] == true || json['hidden'] == true,
+  );
 
   bool get isRoot => parentCommentId == null;
 
@@ -72,6 +93,7 @@ class CommentModel {
       isLiked: isLiked ?? this.isLiked,
       replyCount: replyCount ?? this.replyCount,
       createdAt: createdAt ?? this.createdAt,
+      deleted: deleted,
     );
   }
 }

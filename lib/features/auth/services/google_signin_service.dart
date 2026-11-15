@@ -60,6 +60,8 @@ class GoogleSignInService {
         );
       }
 
+      print('[GOOGLE_AUTH] Đã chọn tài khoản: ${account.email}');
+
       // Bước 3: Lấy ID Token
       final String? idToken = auth.idToken;
 
@@ -83,6 +85,7 @@ class GoogleSignInService {
 
       return idToken;
     } catch (e) {
+      print('[GOOGLE_AUTH_ERROR] GoogleSignIn error: $e');
       if (kDebugMode) {
         debugPrint('[GoogleSignInService] Error during sign-in: $e');
         debugPrint('[GoogleSignInService] Stack trace: ${StackTrace.current}');
@@ -99,6 +102,7 @@ class GoogleSignInService {
         debugPrint('[GoogleSignInService] Signed out from Google');
       }
     } catch (e) {
+      print('[GOOGLE_AUTH_ERROR] GoogleSignIn error: $e');
       if (kDebugMode) {
         debugPrint('[GoogleSignInService] Error during sign-out: $e');
       }
@@ -119,6 +123,7 @@ class GoogleSignInService {
         debugPrint('[GoogleSignInService] Disconnected from Google');
       }
     } catch (e) {
+      print('[GOOGLE_AUTH_ERROR] GoogleSignIn error: $e');
       if (kDebugMode) {
         debugPrint('[GoogleSignInService] Error during disconnect: $e');
       }

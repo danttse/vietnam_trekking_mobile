@@ -35,7 +35,7 @@ class SecureTokenStorage implements TokenStorage {
   final FlutterSecureStorage _storage;
 
   const SecureTokenStorage({FlutterSecureStorage? storage})
-      : _storage = storage ?? const FlutterSecureStorage();
+    : _storage = storage ?? const FlutterSecureStorage();
 
   /// Returns the stored access token, or [null] on PlatformException.
   @override

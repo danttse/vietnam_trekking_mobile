@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../viewmodels/route_detail_viewmodel.dart';
 import '../../data/models/route_model.dart';
 
@@ -8,11 +9,7 @@ class RouteMapPreview extends StatelessWidget {
   final VoidCallback? onViewMap;
   final String? mapImageUrl;
 
-  const RouteMapPreview({
-    super.key,
-    this.onViewMap,
-    this.mapImageUrl,
-  });
+  const RouteMapPreview({super.key, this.onViewMap, this.mapImageUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +44,9 @@ class RouteMapPreview extends StatelessWidget {
                 left: 8,
                 child: Container(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 8, vertical: 4),
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.black.withValues(alpha: 0.6),
                     borderRadius: BorderRadius.circular(6),
@@ -57,12 +56,15 @@ class RouteMapPreview extends StatelessWidget {
                     children: [
                       Icon(Icons.map_outlined, size: 12, color: Colors.white),
                       SizedBox(width: 4),
-                      Text('APEX TRAIL',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 0.5)),
+                      Text(
+                        'APEX TRAIL',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -73,14 +75,17 @@ class RouteMapPreview extends StatelessWidget {
                 right: 8,
                 child: Container(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 10, vertical: 4),
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.black.withValues(alpha: 0.7),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Text('Xem bản đồ',
-                      style:
-                          TextStyle(color: Colors.white, fontSize: 11)),
+                  child: const Text(
+                    'Xem bản đồ',
+                    style: TextStyle(color: Colors.white, fontSize: 11),
+                  ),
                 ),
               ),
             ],
@@ -102,9 +107,10 @@ class _MapPlaceholder extends StatelessWidget {
           children: [
             Icon(Icons.map_outlined, color: Color(0xFF4A7A4A), size: 36),
             SizedBox(height: 6),
-            Text('Bản đồ lộ trình',
-                style:
-                    TextStyle(color: Color(0xFF4A7A4A), fontSize: 12)),
+            Text(
+              'Bản đồ lộ trình',
+              style: TextStyle(color: Color(0xFF4A7A4A), fontSize: 12),
+            ),
           ],
         ),
       ),
@@ -147,8 +153,7 @@ class OfflineMapCard extends StatelessWidget {
           if (packageInfo != null) ...[
             Row(
               children: [
-                Icon(Icons.download_outlined,
-                    size: 18, color: cs.primary),
+                Icon(Icons.download_outlined, size: 18, color: cs.primary),
                 const SizedBox(width: 8),
                 Text(
                   packageInfo!.mapName,
@@ -160,11 +165,13 @@ class OfflineMapCard extends StatelessWidget {
                 ),
                 const Spacer(),
                 if (status == OfflineMapStatus.ready)
-                  const Icon(Icons.check_circle,
-                      color: Color(0xFF4CAF50), size: 18),
+                  const Icon(
+                    Icons.check_circle,
+                    color: Color(0xFF4CAF50),
+                    size: 18,
+                  ),
                 if (status == OfflineMapStatus.outdated)
-                  const Icon(Icons.update,
-                      color: Color(0xFFFFB74D), size: 18),
+                  const Icon(Icons.update, color: Color(0xFFFFB74D), size: 18),
               ],
             ),
             const SizedBox(height: 10),
@@ -172,12 +179,13 @@ class OfflineMapCard extends StatelessWidget {
             _InfoRow(label: 'Mức Zoom', value: packageInfo!.zoomLabel),
             _InfoRow(label: 'Dung lượng', value: packageInfo!.sizeMb),
             _InfoRow(
-                label: 'Điểm kiểm soát',
-                value: '${packageInfo!.waypointCount} Waypoints'),
+              label: 'Điểm kiểm soát',
+              value: '${packageInfo!.waypointCount} Waypoints',
+            ),
             _InfoRow(
-                label: 'Đường mòn',
-                value:
-                    packageInfo!.supportsTrail ? 'Có hỗ trợ' : 'Không'),
+              label: 'Đường mòn',
+              value: packageInfo!.supportsTrail ? 'Có hỗ trợ' : 'Không',
+            ),
           ],
           const SizedBox(height: 12),
           if (status == OfflineMapStatus.downloading) ...[
@@ -187,15 +195,13 @@ class OfflineMapCard extends StatelessWidget {
                 value: downloadProgress,
                 minHeight: 8,
                 backgroundColor: cs.surface,
-                valueColor:
-                    const AlwaysStoppedAnimation(Color(0xFF4CAF50)),
+                valueColor: const AlwaysStoppedAnimation(Color(0xFF4CAF50)),
               ),
             ),
             const SizedBox(height: 6),
             Text(
               '${(downloadProgress * 100).toStringAsFixed(0)}% đang tải...',
-              style:
-                  TextStyle(fontSize: 12, color: cs.onSurfaceVariant),
+              style: TextStyle(fontSize: 12, color: cs.onSurfaceVariant),
             ),
             const SizedBox(height: 8),
             SizedBox(
@@ -216,20 +222,21 @@ class OfflineMapCard extends StatelessWidget {
                 onPressed: onRetry,
                 icon: const Icon(Icons.refresh),
                 label: const Text('Thử lại'),
-                style: FilledButton.styleFrom(
-                    backgroundColor: cs.primary),
+                style: FilledButton.styleFrom(backgroundColor: cs.primary),
               ),
             ),
           ] else if (status == OfflineMapStatus.ready) ...[
             Row(
               children: [
-                const Icon(Icons.check_circle,
-                    color: Color(0xFF4CAF50), size: 14),
+                const Icon(
+                  Icons.check_circle,
+                  color: Color(0xFF4CAF50),
+                  size: 14,
+                ),
                 const SizedBox(width: 6),
                 Text(
                   'Bản đồ đã sẵn sàng offline',
-                  style: TextStyle(
-                      fontSize: 12, color: cs.onSurfaceVariant),
+                  style: TextStyle(fontSize: 12, color: cs.onSurfaceVariant),
                 ),
               ],
             ),
@@ -240,11 +247,11 @@ class OfflineMapCard extends StatelessWidget {
                 onPressed: onDownload,
                 icon: const Icon(Icons.download),
                 label: Text(
-                    status == OfflineMapStatus.outdated
-                        ? 'Cập nhật bản đồ'
-                        : 'Tải bản đồ Offline'),
-                style: FilledButton.styleFrom(
-                    backgroundColor: cs.primary),
+                  status == OfflineMapStatus.outdated
+                      ? 'Cập nhật bản đồ'
+                      : 'Tải bản đồ Offline',
+                ),
+                style: FilledButton.styleFrom(backgroundColor: cs.primary),
               ),
             ),
           ],
@@ -266,15 +273,19 @@ class _InfoRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: Row(
         children: [
-          Text(label,
-              style: TextStyle(
-                  fontSize: 12, color: cs.onSurfaceVariant)),
+          Text(
+            label,
+            style: TextStyle(fontSize: 12, color: cs.onSurfaceVariant),
+          ),
           const Spacer(),
-          Text(value,
-              style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: cs.onSurface)),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: cs.onSurface,
+            ),
+          ),
         ],
       ),
     );

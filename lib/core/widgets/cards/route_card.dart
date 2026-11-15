@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../features/route/data/models/route_model.dart';
+import '../../../l10n/app_localizations.dart';
 
 class RouteCard extends StatelessWidget {
   final RouteModel route;
@@ -13,22 +14,23 @@ class RouteCard extends StatelessWidget {
     this.isSelected = false,
   });
 
-  String _getDifficultyText(RouteDifficulty difficulty) {
+  String _getDifficultyText(RouteDifficulty difficulty, AppLocalizations l10n) {
     switch (difficulty) {
       case RouteDifficulty.easy:
-        return 'DỄ';
+        return l10n.difficultyEasy.toUpperCase();
       case RouteDifficulty.moderate:
-        return 'TRUNG BÌNH';
+        return l10n.difficultyModerate.toUpperCase();
       case RouteDifficulty.hard:
-        return 'KHÓ';
+        return l10n.difficultyHard.toUpperCase();
       case RouteDifficulty.extreme:
-        return 'CỰC KHÓ';
+        return l10n.difficultyExtreme.toUpperCase();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
 
     return InkWell(
       onTap: onTap,
@@ -142,7 +144,7 @@ class RouteCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        _getDifficultyText(route.difficulty),
+                        _getDifficultyText(route.difficulty, l10n),
                         style: TextStyle(
                           fontSize: 11.5,
                           fontWeight: FontWeight.w500,

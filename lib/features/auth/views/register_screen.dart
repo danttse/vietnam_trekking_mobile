@@ -309,23 +309,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 16),
               BtnOutlineStyle(
-                text: l10n.registerWithGoogle,
-                icon: const Icon(
-                  Icons.g_mobiledata,
-                  color: Colors.redAccent,
-                  size: 28,
+                text: l10n.loginWithGoogle,
+                icon: Image.asset(
+                  'assets/images/google_icon.webp',
+                  width: 24,
+                  height: 24,
                 ),
-                onPressed: _viewModel.isLoading || _googleViewModel.isLoading
+                onPressed: _viewModel.isLoading
                     ? null
                     : () async {
-                        final success = await _googleViewModel
-                            .signInWithGoogle();
+                        final success = await _googleViewModel.signInWithGoogle();
+
                         if (success && context.mounted) {
-                          Navigator.of(context).pushAndRemoveUntil(
+                          Navigator.pushReplacement(
+                            context,
                             MaterialPageRoute(
-                              builder: (_) => const UserNavigationScreen(),
+                              builder: (context) =>
+                                  const UserNavigationScreen(),
                             ),
-                            (_) => false,
                           );
                         }
                       },

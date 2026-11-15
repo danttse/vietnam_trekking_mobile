@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+
 import '../data/models/journey_model.dart';
 import '../data/repositories/journey_repository.dart';
 
@@ -8,7 +9,7 @@ class JourneyListViewModel extends ChangeNotifier {
   final JourneyRepository _repo;
 
   JourneyListViewModel({JourneyRepository? repo})
-      : _repo = repo ?? JourneyRepository();
+    : _repo = repo ?? JourneyRepository();
 
   // ── State ─────────────────────────────────────────────────────────────────
   JourneyListTab _tab = JourneyListTab.completed;
@@ -33,12 +34,13 @@ class JourneyListViewModel extends ChangeNotifier {
   int get totalCompleted => _completed.length;
   double get totalDistanceKm {
     final total = _completed.fold<double>(
-        0, (sum, j) => sum + j.distanceMeters / 1000);
+      0,
+      (sum, j) => sum + j.distanceMeters / 1000,
+    );
     return total;
   }
 
-  int get totalCheckins =>
-      _completed.fold(0, (sum, j) => sum + j.checkinCount);
+  int get totalCheckins => _completed.fold(0, (sum, j) => sum + j.checkinCount);
 
   int get upcomingCount => _upcoming.length;
 

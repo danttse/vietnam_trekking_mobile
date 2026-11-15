@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../features/explore/data/models/explore_place_model.dart';
+import '../../../l10n/app_localizations.dart';
 
 class RecommendedPlaceCard extends StatelessWidget {
   final ExplorePlaceModel place;
@@ -14,9 +15,27 @@ class RecommendedPlaceCard extends StatelessWidget {
     this.isSelected = false,
   });
 
+  String _formatDifficulty(String difficulty, AppLocalizations l10n) {
+    switch (difficulty.trim().toUpperCase()) {
+      case 'EASY':
+        return l10n.difficultyEasy;
+      case 'MODERATE':
+        return l10n.difficultyModerate;
+      case 'HARD':
+        return l10n.difficultyHard;
+      case 'EXTREME':
+        return l10n.difficultyExtreme;
+      case 'EXPERT':
+        return l10n.difficultyExpert;
+      default:
+        return difficulty;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
 
     return InkWell(
       onTap: onTap,
@@ -107,7 +126,7 @@ class RecommendedPlaceCard extends StatelessWidget {
                     Text(
                       [
                         place.distance,
-                        place.difficulty.toUpperCase(),
+                        _formatDifficulty(place.difficulty, l10n).toUpperCase(),
                       ].where((value) => value.isNotEmpty).join(' • '),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

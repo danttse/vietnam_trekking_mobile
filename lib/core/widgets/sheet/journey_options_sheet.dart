@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../l10n/app_localizations.dart';
 import 'app_draggable_sheet.dart';
 
 class JourneyOptionsSheet extends StatelessWidget {
@@ -14,9 +15,10 @@ class JourneyOptionsSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
 
     return AppDraggableSheet(
-      title: 'Tùy chọn',
+      title: l10n.journeyOptionsTitle,
       initialChildSize: 0.35,
       minChildSize: 0.25,
       maxChildSize: 0.5,
@@ -27,7 +29,7 @@ class JourneyOptionsSheet extends StatelessWidget {
           children: [
             ListTile(
               title: Text(
-                'Chi tiết tuyến đường',
+                l10n.routeDetailOption,
                 style: TextStyle(
                   color: colorScheme.onSurfaceVariant,
                   fontSize: 15,
@@ -41,7 +43,7 @@ class JourneyOptionsSheet extends StatelessWidget {
             ),
             ListTile(
               title: Text(
-                'Chi tiết Hành trình',
+                l10n.journeyDetailOption,
                 style: TextStyle(
                   color: colorScheme.onSurfaceVariant,
                   fontSize: 15,

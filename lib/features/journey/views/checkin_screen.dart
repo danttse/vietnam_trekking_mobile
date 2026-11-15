@@ -6,7 +6,9 @@ import 'package:geolocator/geolocator.dart';
 import '../viewmodels/checkin_viewmodel.dart';
 import '../data/models/milestone_model.dart';
 import '../data/services/checkin_service.dart';
+import '../../../core/widgets/app_bar/app_top_bar_with_back.dart';
 import '../../../core/widgets/buttons/btn_login_style.dart';
+import '../../../l10n/app_localizations.dart';
 import 'checkin_success_screen.dart';
 
 class CheckinScreen extends StatefulWidget {
@@ -91,11 +93,10 @@ class _CheckinScreenState extends State<CheckinScreen>
         });
   }
 
-  // ── ViewModel listener ────────────────────────────────────────────────────
-
   void _onVmChange() {
     if (!mounted) return;
     if (_vm.submitState == CheckinSubmitState.success) {
+      // Chuyen sang man checkin thanh cong
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (_) => CheckinSuccessScreen(milestone: widget.milestone),
@@ -129,8 +130,6 @@ class _CheckinScreenState extends State<CheckinScreen>
     super.dispose();
   }
 
-  // ── Checkin action ────────────────────────────────────────────────────────
-
   Future<void> _performCheckin() async {
     await _vm.performCheckin(({
       required String milestoneId,
@@ -163,182 +162,172 @@ class _CheckinScreenState extends State<CheckinScreen>
     });
   }
 
-  // ── Build ─────────────────────────────────────────────────────────────────
-
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
     final inRange = _vm.gpsState == CheckinGpsState.inRange;
 
     return Scaffold(
       backgroundColor: cs.surface,
-      appBar: AppBar(
-        backgroundColor: cs.surface,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, size: 20, color: cs.onSurface),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: Text(
-          'Check-in cột mốc',
-          style: TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.w600,
-            color: cs.onSurface,
+      body: Column(
+        children: [
+          AppTopBarWithBack(
+            title: l10n?.checkinControlPointTitle ?? 'Điểm kiểm soát Check-in',
           ),
-        ),
-      ),
-      body: _locationPermissionDenied
-          ? _buildPermissionDenied(cs)
-          : Column(
-              children: [
-                // ── GPS status chip ──────────────────────────────────────
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    children: [
-                      Icon(
-                        _vm.gpsState == CheckinGpsState.acquiring
-                            ? Icons.gps_not_fixed
-                            : Icons.gps_fixed,
-                        size: 14,
-                        color: _vm.gpsState == CheckinGpsState.acquiring
-                            ? cs.onSurfaceVariant
-                            : const Color(0xFF4CAF50),
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        _vm.gpsState == CheckinGpsState.acquiring
-                            ? 'GPS: Đang xác định vị trí...'
-                            : 'GPS: Đã kết nối vị trí',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: cs.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 12),
-
-                // ── Radar ─────────────────────────────────────────────────
-                Expanded(child: Center(child: _buildRadar(cs, inRange))),
-
-                // ── Milestone info ────────────────────────────────────────
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'ĐIỂM CẦN ĐẾN',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
-                          color: cs.onSurfaceVariant,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(14),
-                        decoration: BoxDecoration(
-                          color: cs.surfaceContainerHighest,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widget.milestone.name,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                                color: cs.onSurface,
-                              ),
+          _locationPermissionDenied
+              ? _buildPermissionDenied(cs)
+              : Column(
+                  children: [
+                    //GPS status chip
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        children: [
+                          Icon(
+                            _vm.gpsState == CheckinGpsState.acquiring
+                                ? Icons.gps_not_fixed
+                                : Icons.gps_fixed,
+                            size: 14,
+                            color: _vm.gpsState == CheckinGpsState.acquiring
+                                ? cs.onSurfaceVariant
+                                : const Color(0xFF4CAF50),
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            _vm.gpsState == CheckinGpsState.acquiring
+                                ? 'GPS: Đang xác định vị trí...'
+                                : 'GPS: Đã kết nối vị trí',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: cs.onSurfaceVariant,
                             ),
-                            Text(
-                              widget.milestone.altitudeLabel,
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: cs.onSurfaceVariant,
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 12),
+                    Expanded(child: Center(child: _buildRadar(cs, inRange))),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            l10n?.checkinTargetPointLabel ?? 'ĐIỂM CẦN ĐẾN',
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                              color: cs.onSurfaceVariant,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(14),
+                            decoration: BoxDecoration(
+                              color: cs.surfaceContainerHighest,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  widget.milestone.name,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                    color: cs.onSurface,
+                                  ),
+                                ),
+                                Text(
+                                  widget.milestone.altitudeLabel,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: cs.onSurfaceVariant,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 14),
+
+                    // ── Status message ────────────────────────────────────────
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: inRange
+                              ? const Color(0xFF1A3B2A)
+                              : cs.surfaceContainerHighest,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: inRange
+                                ? const Color(0xFF4CAF50).withValues(alpha: 0.4)
+                                : cs.onSurface.withValues(alpha: 0.08),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              inRange
+                                  ? Icons.check_circle_outline
+                                  : Icons.info_outline,
+                              size: 16,
+                              color: inRange
+                                  ? const Color(0xFF4CAF50)
+                                  : cs.onSurfaceVariant,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                inRange
+                                    ? (l10n?.checkinWithinRange(
+                                      _vm.distanceToTarget?.toInt() ?? 0) ??
+                                        'Bạn đang trong phạm vi check-in! (Cách ${_vm.distanceLabel})')
+                                    : (l10n?.checkinRadiusNotice ??
+                                        'Cần ở trong vòng bán kính '
+                                            '${widget.milestone.checkinRadiusMeters.toInt()}m. '
+                                            'Khoảng cách hiện tại: ${_vm.distanceLabel}'),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: inRange
+                                      ? const Color(0xFF81C784)
+                                      : cs.onSurfaceVariant,
+                                ),
                               ),
                             ),
                           ],
                         ),
                       ),
-                    ],
-                  ),
-                ),
+                    ),
 
-                const SizedBox(height: 14),
+                    const SizedBox(height: 16),
 
-                // ── Status message ────────────────────────────────────────
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: inRange
-                          ? const Color(0xFF1A3B2A)
-                          : cs.surfaceContainerHighest,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: inRange
-                            ? const Color(0xFF4CAF50).withValues(alpha: 0.4)
-                            : cs.onSurface.withValues(alpha: 0.08),
+                    // ── CTA button ────────────────────────────────────────────
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                      child: BtnLoginPrimary(
+                        text: l10n?.checkinNowButton ?? 'Check-in ngay',
+                        isLoading:
+                            _vm.submitState == CheckinSubmitState.submitting,
+                        onPressed: _vm.canCheckin ? _performCheckin : null,
                       ),
                     ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          inRange
-                              ? Icons.check_circle_outline
-                              : Icons.info_outline,
-                          size: 16,
-                          color: inRange
-                              ? const Color(0xFF4CAF50)
-                              : cs.onSurfaceVariant,
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            inRange
-                                ? 'Bạn đang trong phạm vi check-in! (Cách ${_vm.distanceLabel})'
-                                : 'Cần ở trong vòng bán kính '
-                                      '${widget.milestone.checkinRadiusMeters.toInt()}m. '
-                                      'Khoảng cách hiện tại: ${_vm.distanceLabel}',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: inRange
-                                  ? const Color(0xFF81C784)
-                                  : cs.onSurfaceVariant,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+
+                    SafeArea(child: const SizedBox(height: 16)),
+                  ],
                 ),
-
-                const SizedBox(height: 16),
-
-                // ── CTA button ────────────────────────────────────────────
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  child: BtnLoginPrimary(
-                    text: 'Check-in ngay',
-                    isLoading: _vm.submitState == CheckinSubmitState.submitting,
-                    onPressed: _vm.canCheckin ? _performCheckin : null,
-                  ),
-                ),
-
-                SafeArea(child: const SizedBox(height: 16)),
-              ],
-            ),
+        ],
+      ),
     );
   }
 

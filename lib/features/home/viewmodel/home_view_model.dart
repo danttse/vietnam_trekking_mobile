@@ -1,15 +1,18 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/rendering.dart';
 import 'package:gal/gal.dart';
 
 import '../../../core/services/offline_store.dart';
 import '../../../core/services/user_api_service.dart';
 import '../../../core/services/trekking_catalog_service.dart';
+import '../../../core/network/api_error_handler.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
 import '../../../core/widgets/feedback/app_snack_bar.dart';
 
 import '../../../core/services/auth_event_bus.dart';
@@ -25,7 +28,7 @@ class HomeViewModel extends ChangeNotifier {
   final ProvinceVisitRepository _repository;
   final UserApiService _userApi;
   final TrekkingCatalogService _catalog;
-  final GlobalKey _captureKey=GlobalKey();
+  final GlobalKey _captureKey = GlobalKey();
 
   // ── State ─────────────────────────────────────────────────────────────────
 
@@ -85,27 +88,47 @@ class HomeViewModel extends ChangeNotifier {
     placesError = null;
     notifyListeners();
     try {
-      final visits = await _userApi.getRecentPlaces();
+      List<Map<String, dynamic>> visits;
+      try {
+        visits = await _userApi.getRecentPlaces();
+      } catch (e) {
+        if (_isAuthFailure(e)) rethrow;
+        _logPlacesFailure('recent visits', e);
+        visits = [];
+      }
+      if (_disposed) return;
+      final seen = <String>{};
       final recent = await Future.wait(
-        visits.map((visit) async {
-          final place = await _catalog.getPlace(
-            visit['trekkingPlaceId'].toString(),
-          );
-          final date = DateTime.tryParse(
-            visit['lastVisitedAt']?.toString() ?? '',
-          )?.toLocal();
-          return RecentPlace(
-            name: place['name'] as String? ?? '',
-            lastVisited: date == null ? '' : '${date.day}/${date.month}',
-            placeId: visit['trekkingPlaceId'].toString(),
-            imageUrl: _imageUrl(place),
-          );
-        }),
+        visits
+            .where((visit) {
+              final id = visit['trekkingPlaceId']?.toString().trim();
+              return id != null && id.isNotEmpty && seen.add(id);
+            })
+            .take(10)
+            .map((visit) async {
+              final id = visit['trekkingPlaceId'].toString().trim();
+              try {
+                final place = await _catalog.getPlace(id);
+                final date = DateTime.tryParse(
+                  visit['lastVisitedAt']?.toString() ?? '',
+                )?.toLocal();
+                return RecentPlace(
+                  name: place['name'] as String? ?? '',
+                  lastVisited: date == null ? '' : '${date.day}/${date.month}',
+                  placeId: id,
+                  imageUrl: _imageUrl(place),
+                );
+              } catch (e) {
+                if (_isAuthFailure(e)) rethrow;
+                _logPlacesFailure('recent place', e);
+                return null;
+              }
+            }),
       );
       if (_disposed) return;
-      recentPlaces = recent;
-      if (recent.isEmpty) {
-        final places = await _catalog.getPlaces();
+      recentPlaces = recent.whereType<RecentPlace>().toList();
+      if (recentPlaces.isEmpty) {
+        final places = await _catalog.getPlaces(maxItems: 10);
         if (_disposed) return;
         explorePlaces = places
             .take(10)
@@ -121,11 +144,34 @@ class HomeViewModel extends ChangeNotifier {
       } else {
         explorePlaces = [];
       }
-    } catch (_) {
-      if (!_disposed) placesError = 'Không thể tải địa điểm. Thử lại';
+    } catch (e) {
+      _logPlacesFailure('load places', e);
+      if (!_disposed) {
+        placesError = e is DioException
+            ? ApiErrorHandler.handle(e)
+            : 'Không thể tải địa điểm. Vui lòng thử lại.';
+      }
     } finally {
       isLoadingPlaces = false;
       if (!_disposed) notifyListeners();
+    }
+  }
+
+  static bool _isAuthFailure(Object error) =>
+      error is DioException &&
+      (error.response?.statusCode == 401 ||
+          error.response?.statusCode == 403 ||
+          error.type == DioExceptionType.cancel);
+
+  static void _logPlacesFailure(String stage, Object error) {
+    if (!kDebugMode) return;
+    if (error is DioException) {
+      debugPrint(
+        '[HomeViewModel] $stage: ${error.requestOptions.path} '
+        'HTTP ${error.response?.statusCode}, ${error.type.name}',
+      );
+    } else {
+      debugPrint('[HomeViewModel] $stage: ${error.runtimeType}');
     }
   }
 
@@ -331,11 +377,14 @@ class HomeViewModel extends ChangeNotifier {
       if (!_disposed) notifyListeners();
     }
   }
+
   Future<void> captureAndSave([BuildContext? context]) async {
     final ctx = context ?? _captureKey.currentContext;
     if (ctx == null) return;
     try {
-      final boundary = _captureKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+      final boundary =
+          _captureKey.currentContext?.findRenderObject()
+              as RenderRepaintBoundary?;
       if (boundary == null) return;
       final image = await boundary.toImage(pixelRatio: 3.0);
       final byteData = await image.toByteData(format: ImageByteFormat.png);
@@ -344,8 +393,8 @@ class HomeViewModel extends ChangeNotifier {
 
       final hasAccess = await Gal.hasAccess();
       if (!hasAccess) {
-      await Gal.requestAccess();
-    }
+        await Gal.requestAccess();
+      }
       await Gal.putImageBytes(byte, name: 'vietnam_trekking_map');
 
       if (ctx.mounted) {

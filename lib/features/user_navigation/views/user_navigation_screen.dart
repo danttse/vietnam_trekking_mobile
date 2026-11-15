@@ -19,6 +19,7 @@ import '../../profile/views/profile_screen.dart';
 import '../view_models/user_navigation_viewmodel.dart';
 import '../../route/view/route_detail_screen.dart';
 import '../../../core/services/trekking_catalog_service.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Màn hình điều phối chính phía người dùng (User Shell Navigation)
 class UserNavigationScreen extends StatefulWidget {
@@ -135,36 +136,43 @@ class _UserNavigationScreenState extends State<UserNavigationScreen>
           body: IndexedStack(
             index: currentIndex,
             children: [
-              HomeScreen(onProfileTap: () => _viewModel.goToProfile()),
-              ExploreScreen(
-                onPlaceTap: (place) => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => PlaceDetailScreen(placeId: place.id),
+              HomeScreen(
+                onProfileTap: () => _viewModel.goToProfile(),
+                isActive: currentIndex == 0,
+              ),
+              TickerMode(
+                enabled: currentIndex == 1,
+                child: ExploreScreen(
+                  onPlaceTap: (place) => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => PlaceDetailScreen(placeId: place.id),
+                    ),
                   ),
-                ),
-                onTrailTap: (trail) async {
-                  try {
-                    final route = await TrekkingCatalogService().getRoute(
-                      trail.id,
-                    );
-                    if (!context.mounted) return;
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => RouteDetailScreen(route: route),
-                      ),
-                    );
-                  } catch (_) {
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            'Không thể tải cung đường. Vui lòng thử lại.',
-                          ),
+                  onTrailTap: (trail) async {
+                    try {
+                      final route = await TrekkingCatalogService().getRoute(
+                        trail.id,
+                      );
+                      if (!context.mounted) return;
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => RouteDetailScreen(route: route),
                         ),
                       );
+                    } catch (_) {
+                      if (context.mounted) {
+                        final l10n = AppLocalizations.of(context)!;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              l10n.cannotLoadRoutesGeneral,
+                            ),
+                          ),
+                        );
+                      }
                     }
-                  }
-                },
+                  },
+                ),
               ),
               const CommunityScreen(),
               const JourneyScreen(),

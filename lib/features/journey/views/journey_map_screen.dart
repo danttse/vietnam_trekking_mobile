@@ -1,4 +1,7 @@
+import '../../community/views/community_share.dart';
+
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
@@ -18,6 +21,7 @@ import '../../../core/widgets/app_bar/app_top_bar.dart';
 import '../../../core/widgets/buttons/btn_login_style.dart';
 import '../../../core/widgets/buttons/btn_outline_style.dart';
 import '../../../core/widgets/sheet/app_draggable_sheet.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Bản đồ hành trình đầy đủ với route, milestones, markers, user position.
 class JourneyMapScreen extends StatefulWidget {
@@ -93,9 +97,8 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
 
   void _showError(String message) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 
   Future<void> _drawTrack() async {
@@ -129,25 +132,29 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
 
   Future<void> _completeJourney() async {
     if (!_viewModel.canMark || _viewModel.updatingJourney) return;
+    final l10n = AppLocalizations.of(context);
     final share = await showDialog<bool>(
       context: context,
       builder: (dialog) => AlertDialog(
-        title: const Text('Kết thúc hành trình?'),
-        content: const Text(
-          'Đường GPS đã ghi sẽ được lưu cùng hành trình. Bạn có thể gửi route và cột mốc cho admin xét duyệt.',
+        title: Text(l10n?.finishJourneyTitle ?? 'Kết thúc hành trình?'),
+        content: Text(
+          l10n?.finishJourneyDesc ??
+              'Đường GPS đã ghi sẽ được lưu cùng hành trình. Bạn có thể gửi route và cột mốc cho admin xét duyệt.',
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialog),
-            child: const Text('Tiếp tục đi'),
+            child: Text(l10n?.keepGoingButton ?? 'Tiếp tục đi'),
           ),
           TextButton(
             onPressed: () => Navigator.pop(dialog, false),
-            child: const Text('Kết thúc'),
+            child: Text(l10n?.finishButton ?? 'Kết thúc'),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(dialog, true),
-            child: const Text('Kết thúc & chia sẻ'),
+            child: Text(
+              l10n?.finishAndSendToAdmin ?? 'Kết thúc & gửi route tới admin',
+            ),
           ),
         ],
       ),
@@ -174,10 +181,12 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
       );
     } catch (e) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context);
         _showError(
           e is StateError
               ? e.message
-              : 'Chưa lấy được vị trí. Vui lòng thử lại.',
+              : (l10n?.locationFetchFailed(e.toString()) ??
+                  'Chưa lấy được vị trí. Vui lòng thử lại.'),
         );
       }
     }
@@ -195,12 +204,13 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
 
   Future<void> _openMilestone(dynamic id) async {
     if (id == null || _openingMilestone) return;
-    final milestone =
-        _viewModel.milestones.where((m) => m.id == id).firstOrNull;
+    final milestone = _viewModel.milestones
+        .where((m) => m.id == id)
+        .firstOrNull;
     if (milestone == null) return;
     _openingMilestone = true;
     try {
-      final result = await Navigator.push<bool>(
+      final result = await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (_) => MilestoneCheckinScreen(
@@ -209,8 +219,16 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
           ),
         ),
       );
-      if (result == true && mounted) {
-        Navigator.pop(context, true);
+      // Chi cap nhat khi checkin thanh cong
+      final isSuccess = result == true || (result is List);
+      if (isSuccess && mounted) {
+        _viewModel.checkInMilestone(milestone.id);
+        await _mapRenderer.clearAll();
+        await _mapRenderer.addMapLayers(
+          milestones: _viewModel.milestones,
+          markers: _viewModel.markers,
+          isMounted: () => mounted,
+        );
       }
     } finally {
       _openingMilestone = false;
@@ -247,10 +265,12 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
       }
     } catch (e) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context);
         _showError(
           e is StateError
               ? e.message
-              : 'Chưa lấy được vị trí để đánh dấu cột mốc.',
+              : (l10n?.locationFetchForMarkerFailed ??
+                  'Chưa lấy được vị trí để đánh dấu cột mốc.'),
         );
       }
     } finally {
@@ -260,8 +280,9 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
 
   Future<void> _editMarker(String id) async {
     if (_openingMarker) return;
-    final index =
-        _viewModel.markers.indexWhere((marker) => marker.markerId == id);
+    final index = _viewModel.markers.indexWhere(
+      (marker) => marker.markerId == id,
+    );
     if (index < 0) return;
     _openingMarker = true;
     try {
@@ -292,18 +313,22 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
 
   void _showMarkerSaved(MarkerModel marker) {
     if (!mounted) return;
+    final l10n = AppLocalizations.of(context);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         action: SnackBarAction(
-          label: 'Gửi cho admin',
+          label: l10n?.sendToAdminButton ?? 'Gửi cho admin',
           onPressed: () => _shareContribution(markerOnly: true),
         ),
         content: Text(
           marker.isSynced
-              ? 'Đã đồng bộ cột mốc riêng. Gửi đóng góp để admin nhận.'
+              ? (l10n?.markersSyncedSendToAdmin ??
+                  'Đã đồng bộ cột mốc riêng. Gửi đóng góp để admin nhận.')
               : marker.syncStatus == 'FAILED'
-              ? 'Đã lưu trên máy nhưng chưa đồng bộ được. Chạm cột mốc để chỉnh sửa.'
-              : 'Đã lưu cột mốc trên máy. Sẽ tự đồng bộ khi có mạng.',
+              ? (l10n?.markersSavedOfflineNeedSync ??
+                  'Đã lưu trên máy nhưng chưa đồng bộ được. Chạm cột mốc để chỉnh sửa.')
+              : (l10n?.markersSavedOfflineAutoSync ??
+                  'Đã lưu cột mốc trên máy. Sẽ tự đồng bộ khi có mạng.'),
         ),
       ),
     );
@@ -311,11 +336,13 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
 
   Future<void> _shareContribution({bool markerOnly = false}) async {
     if (_viewModel.journey.journeyId.isEmpty) return;
+    final l10n = AppLocalizations.of(context);
     if (!markerOnly && _viewModel.journey.status != JourneyStatus.completed) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text(
-            'Hoàn thành hành trình để gửi cung đường và cột mốc cho admin.',
+            l10n?.completeJourneyBeforeSendAdmin ??
+                'Hoàn thành hành trình để gửi cung đường và cột mốc cho admin.',
           ),
         ),
       );
@@ -337,7 +364,10 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
       );
     } catch (_) {
       if (mounted) {
-        _showError('Không tải được cột mốc. Vui lòng thử lại.');
+        _showError(
+          l10n?.milestonesLoadFailedRetry ??
+              'Không tải được cột mốc. Vui lòng thử lại.',
+        );
       }
     }
   }
@@ -361,21 +391,15 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
           backgroundColor: Colors.black,
           body: Stack(
             children: [
-              // ── Map 100% ────────────────────────────────────────────────
+              // Map 100%
               _buildMap(cs),
-
-              // ── Top Bar với AppTopBar ────────────────────────────────────
               _buildTopBar(cs),
-
-              // ── Right controls ──────────────────────────────────────────
               if (!_viewModel.loadingMap && _viewModel.mapError == null)
                 Positioned(
                   right: 12,
                   top: kToolbarHeight + MediaQuery.of(context).padding.top + 12,
                   child: _buildRightControls(cs),
                 ),
-
-              // ── Floating Mini GPS Status Bar ────────────────────────────
               if (!_viewModel.loadingMap && _viewModel.mapError == null)
                 JourneyMiniGpsBar(
                   trackReady: _viewModel.trackReady,
@@ -387,8 +411,9 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
                   hasPoints: _viewModel.tracking.points.isNotEmpty,
                   distanceMeters: _viewModel.tracking.distanceMeters,
                   pointsCount: _viewModel.tracking.points.length,
-                  checkedMilestonesCount:
-                      _viewModel.milestones.where((m) => m.isCheckedIn).length,
+                  checkedMilestonesCount: _viewModel.milestones
+                      .where((m) => m.isCheckedIn)
+                      .length,
                   totalMilestonesCount: _viewModel.milestones.length,
                   onTap: _openJourneyDetailsSheet,
                 ),
@@ -413,15 +438,17 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
               Text(_viewModel.mapError!, textAlign: TextAlign.center),
               const SizedBox(height: 16),
               BtnLoginPrimary(
-                text: 'Tải / cập nhật bản đồ offline',
+                text: AppLocalizations.of(context)?.downloadOrUpdateOfflineMap ??
+                    'Tải / cập nhật bản đồ offline',
                 onPressed: () async {
                   await Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (_) => DownloadOfflineMapScreen(
                         route: _viewModel.journey.route,
-                        pendingJourney:
-                            _viewModel.readOnly ? null : _viewModel.journey,
+                        pendingJourney: _viewModel.readOnly
+                            ? null
+                            : _viewModel.journey,
                       ),
                     ),
                   );
@@ -472,6 +499,7 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
   }
 
   Widget _buildTopBar(ColorScheme cs) {
+    final l10n = AppLocalizations.of(context);
     return Positioned(
       top: 0,
       left: 0,
@@ -494,7 +522,7 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
             child: AppTopBar(
               title: _viewModel.journey.name.isNotEmpty
                   ? _viewModel.journey.name
-                  : 'Bản đồ hành trình',
+                  : (l10n?.journeyMapTitle ?? 'Bản đồ hành trình'),
               icon: Icons.tune,
               onClickIcon: _openJourneyDetailsSheet,
               leading: InkWell(
@@ -522,6 +550,7 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
   }
 
   Widget _buildRightControls(ColorScheme cs) {
+    final l10n = AppLocalizations.of(context);
     final pointsCount = _viewModel.tracking.points.length;
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -538,7 +567,7 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
         const SizedBox(height: 8),
         _MapBtn(
           icon: Icons.tune,
-          label: 'Chi tiết',
+          label: l10n?.detailLabel ?? 'Chi tiết',
           onTap: _openJourneyDetailsSheet,
         ),
         const SizedBox(height: 8),
@@ -574,16 +603,21 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
   }
 
   void _openJourneyDetailsSheet() {
+    final l10n = AppLocalizations.of(context);
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (sheetContext) => ListenableBuilder(
-        listenable: Listenable.merge([_viewModel, _viewModel.tracking, _viewModel.location]),
+        listenable: Listenable.merge([
+          _viewModel,
+          _viewModel.tracking,
+          _viewModel.location,
+        ]),
         builder: (ctx, _) => AppDraggableSheet(
           title: _viewModel.journey.name.isNotEmpty
               ? _viewModel.journey.name
-              : 'Chi tiết hành trình',
+              : (l10n?.journeyDetailTitle ?? 'Chi tiết hành trình'),
           initialChildSize: 0.6,
           minChildSize: 0.35,
           maxChildSize: 0.92,
@@ -599,8 +633,10 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
     ScrollController scrollController,
   ) {
     final cs = Theme.of(context).colorScheme;
-    final checkedMilestones =
-        _viewModel.milestones.where((m) => m.isCheckedIn).length;
+    final l10n = AppLocalizations.of(context);
+    final checkedMilestones = _viewModel.milestones
+        .where((m) => m.isCheckedIn)
+        .length;
     final tracking = _viewModel.tracking;
 
     return ListView(
@@ -612,7 +648,7 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
           children: [
             Expanded(
               child: Text(
-                'Tiến độ hành trình',
+                l10n?.journeyProgressTitle ?? 'Tiến độ hành trình',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -621,7 +657,11 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
               ),
             ),
             Text(
-              '$checkedMilestones/${_viewModel.milestones.length} điểm đã đến',
+              l10n?.milestonesArrivedCount(
+                    checkedMilestones,
+                    _viewModel.milestones.length,
+                  ) ??
+                  '$checkedMilestones/${_viewModel.milestones.length} điểm đã đến',
               style: TextStyle(fontSize: 12, color: cs.onSurfaceVariant),
             ),
           ],
@@ -648,10 +688,12 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
                   ),
                   title: Text(
                     _viewModel.backtracking
-                        ? 'Backtrack · Quay lại điểm đầu'
+                        ? (l10n?.backtrackReturnToStart ??
+                            'Backtrack · Quay lại điểm đầu')
                         : tracking.points.isEmpty
-                        ? 'Backtrack · Ghi lại đường đi'
-                        : 'Đường đi đã lưu',
+                        ? (l10n?.backtrackRecordRoute ??
+                            'Backtrack · Ghi lại đường đi')
+                        : (l10n?.savedRoute ?? 'Đường đi đã lưu'),
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
@@ -660,18 +702,23 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
                   subtitle: Text(
                     '${tracking.points.length} điểm GPS · ${(tracking.distanceMeters / 1000).toStringAsFixed(2)} km\n'
                     '${tracking.error ?? (tracking.recording
-                            ? 'Đang ghi GPS khi ứng dụng mở'
+                            ? (l10n?.recordingGpsForeground ??
+                                'Đang ghi GPS khi ứng dụng mở')
                             : tracking.enabled
-                            ? 'Tạm dừng ghi GPS'
-                            : 'Lưu trên máy, dùng được khi mất mạng')}',
+                            ? (l10n?.pausedRecordingGps ??
+                                'Tạm dừng ghi GPS')
+                            : (l10n?.savedOfflineUsable ??
+                                'Lưu trên máy, dùng được khi mất mạng'))}',
                     style: const TextStyle(fontSize: 11),
                   ),
-                  trailing: _viewModel.canMark &&
+                  trailing:
+                      _viewModel.canMark &&
                           _viewModel.journey.status == JourneyStatus.active
                       ? IconButton(
                           tooltip: tracking.enabled
-                              ? 'Dừng ghi GPS'
-                              : 'Ghi lại đường đi',
+                              ? (l10n?.stopGpsRecording ?? 'Dừng ghi GPS')
+                              : (l10n?.recordRouteButton ??
+                                  'Ghi lại đường đi'),
                           onPressed: _viewModel.toggleRecording,
                           icon: Icon(
                             tracking.enabled
@@ -690,7 +737,9 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
                   Padding(
                     padding: const EdgeInsets.only(top: 4, bottom: 8),
                     child: BtnOutlineStyle(
-                      text: tracking.enabled ? 'Dừng ghi GPS' : 'Bắt đầu ghi GPS',
+                      text: tracking.enabled
+                          ? (l10n?.stopGpsRecording ?? 'Dừng ghi GPS')
+                          : (l10n?.startGpsRecording ?? 'Bắt đầu ghi GPS'),
                       icon: Icon(
                         tracking.enabled
                             ? Icons.stop_circle_outlined
@@ -704,19 +753,21 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
                     padding: const EdgeInsets.only(top: 4),
                     child: BtnOutlineStyle(
                       text: _viewModel.backtracking
-                          ? 'Thoát backtrack'
-                          : 'Quay lại theo đường đã đi',
+                          ? (l10n?.exitBacktrack ?? 'Thoát backtrack')
+                          : (l10n?.returnAlongRoute ??
+                              'Quay lại theo đường đã đi'),
                       icon: const Icon(Icons.undo),
                       onPressed: _toggleBacktrack,
                     ),
                   ),
                 if (_viewModel.backtracking)
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 6),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6),
                     child: Text(
-                      'Theo vệt màu cam về điểm bắt đầu GPS màu xanh lá.',
+                      l10n?.backtrackOrangeTrailNotice ??
+                          'Theo vệt màu cam về điểm bắt đầu GPS màu xanh lá.',
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 11),
+                      style: const TextStyle(fontSize: 11),
                     ),
                   ),
               ],
@@ -726,15 +777,21 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
         ],
 
         // Map legend
-        const Row(
+        Row(
           children: [
-            Icon(Icons.circle, size: 9, color: Color(0xFFE8620A)),
-            SizedBox(width: 4),
-            Text('Điểm check-in', style: TextStyle(fontSize: 11)),
-            SizedBox(width: 12),
-            Icon(Icons.circle, size: 9, color: Color(0xFF3B82F6)),
-            SizedBox(width: 4),
-            Text('Cột mốc của bạn', style: TextStyle(fontSize: 11)),
+            const Icon(Icons.circle, size: 9, color: Color(0xFFE8620A)),
+            const SizedBox(width: 4),
+            Text(
+              l10n?.checkinPointLegend ?? 'Điểm check-in',
+              style: const TextStyle(fontSize: 11),
+            ),
+            const SizedBox(width: 12),
+            const Icon(Icons.circle, size: 9, color: Color(0xFF3B82F6)),
+            const SizedBox(width: 4),
+            Text(
+              l10n?.yourMarkerLegend ?? 'Cột mốc của bạn',
+              style: const TextStyle(fontSize: 11),
+            ),
           ],
         ),
         const SizedBox(height: 8),
@@ -785,19 +842,17 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
           const SizedBox(height: 8),
           Row(
             children: [
-              const Icon(
-                Icons.circle,
-                color: Color(0xFF3B82F6),
-                size: 10,
-              ),
+              const Icon(Icons.circle, color: Color(0xFF3B82F6), size: 10),
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
-                  'Vị trí của bạn • sai số ±${_viewModel.location.position!.accuracy.round()} m',
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: cs.onSurfaceVariant,
-                  ),
+                  l10n?.yourLocationAccuracy(
+                        _viewModel.location.position!.accuracy
+                            .round()
+                            .toString(),
+                      ) ??
+                      'Vị trí của bạn • sai số ±${_viewModel.location.position!.accuracy.round()} m',
+                  style: TextStyle(fontSize: 11, color: cs.onSurfaceVariant),
                 ),
               ),
             ],
@@ -823,7 +878,10 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
-                      'Gửi ${_viewModel.markers.length} cột mốc cho admin',
+                      l10n?.sendMarkersToAdminCount(
+                            _viewModel.markers.length,
+                          ) ??
+                          'Gửi ${_viewModel.markers.length} cột mốc cho admin',
                       style: TextStyle(
                         fontSize: 11,
                         color: cs.onSurfaceVariant,
@@ -846,7 +904,7 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
         // Main CTA: Đánh dấu cột mốc
         if (_viewModel.canMark) ...[
           BtnLoginPrimary(
-            text: 'Đánh dấu cột mốc',
+            text: l10n?.markMilestoneButton ?? 'Đánh dấu cột mốc',
             onPressed: () {
               Navigator.pop(sheetContext);
               _openMarkerForm();
@@ -859,8 +917,8 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
         if (_viewModel.canMark) ...[
           BtnOutlineStyle(
             text: _viewModel.updatingJourney
-                ? 'Đang lưu hành trình...'
-                : 'Kết thúc hành trình',
+                ? (l10n?.savingJourneyProgress ?? 'Đang lưu hành trình...')
+                : (l10n?.finishJourneyButton ?? 'Kết thúc hành trình'),
             icon: const Icon(Icons.check_circle_outline, size: 20),
             onPressed: _viewModel.updatingJourney
                 ? null
@@ -872,11 +930,22 @@ class _JourneyMapScreenState extends State<JourneyMapScreen> {
           const SizedBox(height: 10),
         ],
 
+        if (_viewModel.journey.status == JourneyStatus.completed) ...[
+          BtnOutlineStyle(
+            text: l10n?.shareToCommunityButton ?? 'Chia sẻ lên cộng đồng',
+            icon: const Icon(Icons.groups_outlined, size: 20),
+            onPressed: () {
+              Navigator.pop(sheetContext);
+              shareJourneyToCommunity(context, _viewModel.journey);
+            },
+          ),
+          const SizedBox(height: 10),
+        ],
         // Completed journey CTA: Chia sẻ route tới admin
         if (_viewModel.journey.status == JourneyStatus.completed &&
             _viewModel.journey.journeyId.isNotEmpty)
           BtnOutlineStyle(
-            text: 'Chia sẻ route tới admin',
+            text: l10n?.shareRouteToAdminButton ?? 'Chia sẻ route tới admin',
             icon: const Icon(Icons.share_outlined, size: 20),
             onPressed: () {
               Navigator.pop(sheetContext);

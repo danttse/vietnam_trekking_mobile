@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../features/journey/data/models/journey_model.dart';
 import '../network/dio_client.dart';
+import '../models/catalog_page.dart';
 import 'auth_event_bus.dart';
 import 'token_storage.dart';
 import 'offline_store.dart';
@@ -51,13 +52,52 @@ class TrekkingCatalogService {
     }
   }
 
+  /// One bounded page for Explore. Geometry and milestones load on detail only.
+  Future<CatalogPage> getCatalogPage(
+    String path, {
+    String? query,
+    String? region,
+    String? sort,
+    int page = 1,
+    int limit = 20,
+  }) async {
+    final response = await dio.get(
+      path,
+      queryParameters: {
+        'summary': 'true',
+        'page': page,
+        'limit': limit,
+        if (query != null && query.trim().isNotEmpty) 'q': query.trim(),
+        if (region != null) 'region': region,
+        if (sort != null) 'sort': sort,
+      },
+    );
+    return CatalogPage.fromJson(
+      Map<String, dynamic>.from(response.data['data'] as Map),
+    );
+  }
+
   Future<List<Map<String, dynamic>>> getPlaces({
     String? query,
     String? region,
+    String? sort,
+    bool includeRoutes = false,
+    int? maxItems,
   }) async {
-    final resource = query == null && region == null
-        ? '/places'
-        : '/places?${query ?? ''}&${region ?? ''}';
+    if (maxItems != null && maxItems < 1) {
+      throw ArgumentError.value(maxItems, 'maxItems', 'Must be positive');
+    }
+    final parameters = {
+      if (query != null && query.isNotEmpty) 'q': query,
+      if (region != null) 'region': region,
+      if (sort != null) 'sort': sort,
+      if (includeRoutes) 'includeRoutes': 'true',
+      if (maxItems != null) 'limit': maxItems.toString(),
+    };
+    final resource = Uri(
+      path: '/places',
+      queryParameters: parameters.isEmpty ? null : parameters,
+    ).toString();
     try {
       final items = <Map<String, dynamic>>[];
       var page = 1;
@@ -67,8 +107,10 @@ class TrekkingCatalogService {
           queryParameters: {
             if (query != null && query.isNotEmpty) 'q': query,
             if (region != null) 'region': region,
+            if (sort != null) 'sort': sort,
+            if (includeRoutes) 'includeRoutes': 'true',
             'page': page,
-            'limit': 100,
+            'limit': maxItems != null && maxItems < 100 ? maxItems : 100,
           },
         );
         final data = response.data['data'] as Map;
@@ -76,6 +118,10 @@ class TrekkingCatalogService {
             .map((e) => Map<String, dynamic>.from(e as Map))
             .toList();
         items.addAll(batch);
+        if (maxItems != null && items.length >= maxItems) {
+          items.removeRange(maxItems, items.length);
+          break;
+        }
         if (batch.isEmpty || items.length >= (data['total'] as num).toInt())
           break;
         page++;
@@ -318,25 +364,100 @@ class TrekkingCatalogService {
   Future<List<Map<String, dynamic>>> getJourneyCheckins(
     String journeyId,
   ) async {
-    final owner = await offline.requireOwner();
-    final ref = await offline.localJourneyId(journeyId);
-    final snapshot = await offline.read('/journeys/$ref', owner: owner) as Map;
-    final serverId =
-        snapshot['serverJourneyId'] ??
-        ((snapshot['offlineSyncStatus'] ?? 'SYNCED') == 'SYNCED'
-            ? snapshot['journeyId']
-            : null);
-    if (serverId != null) {
+    String? owner;
+    try {
+      owner = await offline.requireOwner();
+    } catch (_) {}
+
+    var ref = journeyId;
+    if (owner != null) {
       try {
-        final data =
-            (await checkinDio.get('/journeys/$serverId/checkins')).data['data']
-                as List;
-        await offline.cacheCheckins(journeyId, data);
-      } on DioException catch (e) {
-        if (!OfflineStore.canUseCache(e)) rethrow;
+        ref = await offline.localJourneyId(journeyId);
+      } on StateError {
+        // Journey chua luu local
       }
     }
-    return offline.checkins(journeyId);
+
+    dynamic snapshot;
+    if (owner != null) {
+      try {
+        snapshot = await offline.read('/journeys/$ref', owner: owner);
+      } catch (_) {}
+    }
+
+    final serverId = (snapshot is Map
+        ? (snapshot['serverJourneyId'] ?? snapshot['journeyId'])?.toString()
+        : null) ?? (journeyId.isNotEmpty ? journeyId : null);
+
+    List<Map<String, dynamic>> serverCheckins = [];
+    if (serverId != null && serverId.isNotEmpty) {
+      try {
+        Response<dynamic>? res;
+        try {
+          res = await checkinDio.get('/checkins/journeys/$serverId');
+        } on DioException catch (e) {
+          if (e.response?.statusCode == 404) {
+            try {
+              res = await checkinDio.get(
+                '/checkins',
+                queryParameters: {'journeyId': serverId},
+              );
+            } catch (_) {
+              try {
+                res = await checkinDio.get('/journeys/$serverId/checkins');
+              } catch (_) {}
+            }
+          }
+        }
+        final raw = res?.data;
+        final list = raw is Map
+            ? (raw['data'] ?? raw['items'] ?? raw['checkins'])
+            : raw;
+        if (list is List) {
+          serverCheckins = list
+              .map((e) => Map<String, dynamic>.from(e as Map))
+              .toList();
+          try {
+            await offline.cacheCheckins(journeyId, list);
+          } catch (e) {
+            debugPrint('[getJourneyCheckins] cache error: $e');
+          }
+        }
+      } catch (e) {
+        debugPrint('[getJourneyCheckins] server fetch error: $e');
+      }
+    }
+
+    List<Map<String, dynamic>> localCheckins = [];
+    try {
+      final list = await offline.checkins(journeyId);
+      if (list.isNotEmpty || ref == journeyId) {
+        localCheckins = list;
+      } else {
+        localCheckins = await offline.checkins(ref);
+      }
+    } catch (_) {
+      try {
+        localCheckins = await offline.checkins(ref);
+      } catch (_) {}
+    }
+
+    // Hop nhat danh sach tu server va local SQLite theo milestoneId de khong bao gio bi mat check-in
+    final merged = <String, Map<String, dynamic>>{};
+    for (final c in [...localCheckins, ...serverCheckins]) {
+      final rawMId = c['milestoneId'] ?? c['milestone'] ?? c['milestone_id'];
+      final mId = (rawMId is Map)
+          ? (rawMId['_id'] ?? rawMId['id'] ?? rawMId['milestoneId'])?.toString()
+          : rawMId?.toString();
+      if (mId != null && mId.isNotEmpty) {
+        merged[mId] = c;
+      }
+    }
+
+    if (merged.isNotEmpty) {
+      return merged.values.toList();
+    }
+    return serverCheckins.isNotEmpty ? serverCheckins : localCheckins;
   }
 
   static RouteModel parseRoute(

@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../core/network/api_error_handler.dart';
-
-import '../viewmodels/review_viewmodel.dart';
-import '../data/models/review_model.dart';
-import 'widgets/rating_stars.dart';
 import '../../../core/widgets/buttons/btn_login_style.dart';
+import '../../../l10n/app_localizations.dart';
+import '../data/models/review_model.dart';
+import '../viewmodels/review_viewmodel.dart';
+import 'widgets/rating_stars.dart';
 import 'review_success_screen.dart';
 
 class ReviewScreen extends StatefulWidget {
@@ -85,6 +85,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
     final isLoading = _vm.state == ReviewSubmitState.submitting;
 
     return Scaffold(
@@ -97,7 +98,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          'Đánh giá địa điểm',
+          l10n?.placeReviewTitle ?? 'Đánh giá địa điểm',
           style: TextStyle(
             fontSize: 17,
             fontWeight: FontWeight.w600,
@@ -146,7 +147,8 @@ class _ReviewScreenState extends State<ReviewScreen> {
             child: Column(
               children: [
                 Text(
-                  'MỨC ĐỘ HÀI LÒNG CỦA BẠN?',
+                  l10n?.satisfactionLevelPrompt.toUpperCase() ??
+                      'MỨC ĐỘ HÀI LÒNG CỦA BẠN?',
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
@@ -171,7 +173,8 @@ class _ReviewScreenState extends State<ReviewScreen> {
 
           // ── Content ───────────────────────────────────────────────────
           Text(
-            'CHIA SẺ TRẢI NGHIỆM',
+            l10n?.shareExperiencePrompt.toUpperCase() ??
+                'CHIA SẺ TRẢI NGHIỆM',
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
@@ -186,7 +189,8 @@ class _ReviewScreenState extends State<ReviewScreen> {
             style: TextStyle(color: cs.onSurface, fontSize: 13),
             onChanged: (v) => _vm.setContent(v),
             decoration: InputDecoration(
-              hintText: 'Đường đi Tà Năng mùa này rất đẹp, cỏ xanh mướt...',
+              hintText: l10n?.shareExperienceHint ??
+                  'Đường đi Tà Năng mùa này rất đẹp, cỏ xanh mướt...',
               hintStyle: TextStyle(
                 color: cs.onSurfaceVariant.withValues(alpha: 0.5),
                 fontSize: 13,
@@ -205,7 +209,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
 
           // ── Images ────────────────────────────────────────────────────
           Text(
-            'THÊM HÌNH ẢNH',
+            l10n?.addPhotosPrompt.toUpperCase() ?? 'THÊM HÌNH ẢNH',
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
@@ -220,7 +224,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
             children: [
               OutlinedButton.icon(
                 icon: const Icon(Icons.add_photo_alternate_outlined),
-                label: const Text('Thêm ảnh (tối đa 10)'),
+                label: Text(l10n?.addPhotosMax10 ?? 'Thêm ảnh (tối đa 10)'),
                 onPressed: isLoading
                     ? null
                     : () async {
@@ -306,7 +310,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Đánh giá ẩn danh',
+                        l10n?.anonymousReviewLabel ?? 'Đánh giá ẩn danh',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
@@ -314,7 +318,8 @@ class _ReviewScreenState extends State<ReviewScreen> {
                         ),
                       ),
                       Text(
-                        'Tên của bạn sẽ không hiển thị công khai',
+                        l10n?.anonymousReviewDesc ??
+                            'Tên của bạn sẽ không hiển thị công khai',
                         style: TextStyle(
                           fontSize: 11,
                           color: cs.onSurfaceVariant,
@@ -338,8 +343,8 @@ class _ReviewScreenState extends State<ReviewScreen> {
 
           BtnLoginPrimary(
             text: widget.existingReview == null
-                ? 'Gửi đánh giá'
-                : 'Lưu chỉnh sửa (1 lần)',
+                ? (l10n?.submitReviewButton ?? 'Gửi đánh giá')
+                : (l10n?.saveReviewEditButton ?? 'Lưu chỉnh sửa (1 lần)'),
             isLoading: isLoading,
             onPressed: _vm.canSubmit
                 ? () {

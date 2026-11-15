@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../features/explore/data/models/explore_place_model.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../services/trekking_catalog_service.dart';
 import '../cards/recommended_place_card.dart';
 import 'app_draggable_sheet.dart';
@@ -53,7 +54,10 @@ class _SelectPlaceSheetState extends State<SelectPlaceSheet> {
       final places = await _catalog.getPlaces();
       if (mounted) setState(() => _places = places);
     } catch (_) {
-      if (mounted) setState(() => _error = 'Không thể tải địa điểm.');
+      if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        setState(() => _error = l10n.cannotLoadPlaces);
+      }
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -89,7 +93,7 @@ class _SelectPlaceSheetState extends State<SelectPlaceSheet> {
     );
   }
 
-  Widget _buildSearchBar(ColorScheme colorScheme) {
+  Widget _buildSearchBar(ColorScheme colorScheme, AppLocalizations l10n) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: TextField(
@@ -97,7 +101,7 @@ class _SelectPlaceSheetState extends State<SelectPlaceSheet> {
         textInputAction: TextInputAction.search,
         onChanged: (v) => setState(() => _query = v.trim()),
         decoration: InputDecoration(
-          hintText: 'Tìm địa điểm',
+          hintText: l10n.searchPlaceHint,
           prefixIcon: const Icon(Icons.search, size: 20),
           suffixIcon: ListenableBuilder(
             listenable: _search,
@@ -132,6 +136,7 @@ class _SelectPlaceSheetState extends State<SelectPlaceSheet> {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
     final filteredPlaces = _places.where((p) {
       final name = (p['name'] ?? '').toString().toLowerCase();
       final province = (p['province'] ?? p['address'] ?? '')
@@ -142,13 +147,13 @@ class _SelectPlaceSheetState extends State<SelectPlaceSheet> {
     }).toList();
 
     return AppDraggableSheet(
-      title: 'Chọn địa điểm',
+      title: l10n.selectPlaceTitle,
       initialChildSize: 0.7,
       minChildSize: 0.4,
       maxChildSize: 0.95,
       contentBuilder: (context, scrollController) => Column(
         children: [
-          _buildSearchBar(colors),
+          _buildSearchBar(colors, l10n),
           Expanded(
             child: _loading
                 ? const Center(child: CircularProgressIndicator())
@@ -160,13 +165,13 @@ class _SelectPlaceSheetState extends State<SelectPlaceSheet> {
                         Text(_error!),
                         TextButton(
                           onPressed: _loadPlaces,
-                          child: const Text('Thử lại'),
+                          child: Text(l10n.commonRetry),
                         ),
                       ],
                     ),
                   )
                 : filteredPlaces.isEmpty
-                ? const Center(child: Text('Chưa có địa điểm.'))
+                ? Center(child: Text(l10n.noPlacesAvailable))
                 : widget.useListView
                 ? ListView.separated(
                     controller: scrollController,

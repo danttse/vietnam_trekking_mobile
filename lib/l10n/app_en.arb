@@ -1,9 +1,7 @@
-﻿{
+{
     "@@locale": "en",
-
     "appName": "TrekViet",
     "appTagline": "Journey through Vietnam's thousand clouds",
-
     "loginTitle": "LOGIN",
     "emailLabel": "Email",
     "emailHint": "Enter your email",
@@ -15,7 +13,6 @@
     "orDivider": "Or",
     "noAccount": "Don't have an account?",
     "registerNow": "Register now",
-
     "registerTitle": "REGISTER",
     "fullNameLabel": "Full name",
     "fullNameHint": "Enter your full name",
@@ -28,7 +25,6 @@
     "registerButton": "Register",
     "registerWithGoogle": "Register with Google",
     "alreadyHaveAccount": "Already have an account?",
-
     "forgotPasswordTitle": "Recover Password",
     "resetPasswordTitle": "Reset Password",
     "forgotPasswordDescription": "Enter your registered email below. We will\nsend you a secure link to reset\nyour new password.",
@@ -40,37 +36,34 @@
     "backToLogin": "Back to ",
     "otpVerifiedSuccess": "OTP verified! Please enter your new password.",
     "updatePasswordSuccess": "Password updated successfully! Please login again.",
-
     "otpDialogTitle": "Enter verification code",
     "otpSentTo": "OTP code has been sent to:",
     "resendOtp": "Resend code",
     "cancelButton": "Cancel",
     "confirmButton": "Confirm",
-
     "navHome": "Home",
     "navExplore": "Explore",
     "navCommunity": "Community",
     "navJourney": "Journey",
     "navProfile": "Profile",
     "featureInDevelopment": "Feature is under development",
-
     "homeRankLabel": "RANK",
     "homeStatProvinces": "Provinces",
     "homeStatDistance": "Distance",
     "homeStatTrips": "Trips",
     "homeRecentCheckin": "Recent Check-Ins",
-
     "provinceSheetTitle": "Visited Provinces",
     "regionNorth": "North",
     "regionCentral": "Central",
     "regionSouth": "South",
     "saveButton": "Save",
-
     "profileTitle": "Profile",
     "memberSince": "Member since {date}",
     "@memberSince": {
         "placeholders": {
-            "date": { "type": "String" }
+            "date": {
+                "type": "String"
+            }
         }
     },
     "profileProvinceMapTitle": "Province Map",
@@ -80,7 +73,6 @@
     "profileStatCompletedTrips": "Completed trips",
     "profileStatTotalDays": "Total days traveled",
     "profileAchievementsTitle": "YOUR ACHIEVEMENTS",
-
     "settingsTitle": "Settings",
     "settingsGroupAccount": "ACCOUNT",
     "settingsChangePassword": "Change password",
@@ -95,9 +87,8 @@
     "settingsTermsOfUse": "Terms of Use",
     "settingsPrivacyPolicy": "Privacy Policy",
     "logoutButton": "Logout",
-    
-    "proposePlace":"Suggest a new location",
-    "submitPropose":"Submit suggestion",
+    "proposePlace": "Suggest a new location",
+    "submitPropose": "Submit suggestion",
     "placeName": "Place name",
     "enterPlaceName": "Enter place name",
     "provinceCity": "Province/City",
@@ -119,17 +110,18 @@
     "central": "Central",
     "south": "Southern",
     "popular": "Popular",
-    "editBio":"Edit Bio",
+    "editBio": "Edit Bio",
     "editAvatar": "Edit Avatar",
     "avatarPickerTitle": "UPLOAD OPTIONS",
     "takeNewPhoto": "Take a new photo",
     "chooseFromLibrary": "Choose from library",
-    "titleBioBox":"Biography (BIO)",
-
-    "featureComingSoon": "Feature {feature} is under development",
+    "titleBioBox": "Biography (BIO)",
+    "featureComingSoon": "Feature coming soon",
     "@featureComingSoon": {
         "placeholders": {
-            "feature": { "type": "String" }
+            "feature": {
+                "type": "String"
+            }
         }
     },
     "changePasswordTitle": "Change Password",
@@ -143,7 +135,6 @@
     "passwordTooShort": "Password must be at least 6 characters",
     "changePasswordSuccess": "Password changed successfully!",
     "createNewPostHintText": "Share your trekking experience",
-
     "communityTabPosts": "Posts",
     "communityTabGroups": "Groups",
     "communityTabPersonal": "Personal",
@@ -154,38 +145,42 @@
     "postHideAllFrom": "Hide all from {authorName}",
     "@postHideAllFrom": {
         "placeholders": {
-            "authorName": { "type": "String" }
+            "authorName": {
+                "type": "String"
+            }
         }
     },
     "thisPerson": "this person",
     "postReport": "Report post",
     "postReportSuccess": "Thank you for your report. We will review this content.",
     "communityNoPosts": "No posts yet",
-
     "commentsTitle": "Comments",
     "noCommentsYet": "No comments yet",
     "beFirstToComment": "Be the first to comment!",
     "replyingTo": "Replying to {userName}",
     "@replyingTo": {
         "placeholders": {
-            "userName": { "type": "String" }
+            "userName": {
+                "type": "String"
+            }
         }
     },
     "replyToHint": "Reply to @{userName}...",
     "@replyToHint": {
         "placeholders": {
-            "userName": { "type": "String" }
+            "userName": {
+                "type": "String"
+            }
         }
     },
     "writeCommentHint": "Write a comment...",
-
     "journeyCompleted": "Completed",
     "journeyUpcoming": "Upcoming",
+    "journeyCancelled": "Cancelled",
     "journeyStatTrips": "Trips",
     "journeyStatDistance": "Distance",
     "journeyStatCompanions": "Companions",
     "journeyEmptyList": "No journeys yet",
-
     "createNewJourneyTitle": "Create New Journey",
     "journeyNameLabel": "Journey Name",
     "journeyNameHint": "Enter journey name",
@@ -200,7 +195,6 @@
     "selectRouteSheetTitle": "Select Route",
     "createJourneyButton": "Create Journey",
     "createJourneySuccess": "Journey created successfully!",
-
     "milestonesSectionTitle": "MILESTONES",
     "milestoneCheckedIn": "Checked in",
     "milestoneNotCheckedIn": "Not yet",
@@ -208,14 +202,20 @@
     "milestoneAltitude": "{altitude} m asl",
     "@milestoneAltitude": {
         "placeholders": {
-            "altitude": { "type": "String" }
+            "altitude": {
+                "type": "String"
+            }
         }
     },
     "milestoneProgress": "{checked}/{total} milestones",
     "@milestoneProgress": {
         "placeholders": {
-            "checked": { "type": "int" },
-            "total": { "type": "int" }
+            "checked": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
         }
     },
     "journeyDetailMapTitle": "ROUTE MAP",
@@ -234,7 +234,6 @@
     "journeyStatusPaused": "PAUSED",
     "journeyStatusCompleted": "COMPLETED",
     "journeyStatusCancelled": "CANCELLED",
-
     "downloadOfflineMapTitle": "Download Offline Map",
     "downloadOfflineMapSubtitle": "Store offline terrain data to prevent signal loss.",
     "downloading": "DOWNLOADING...",
@@ -242,7 +241,9 @@
     "mapDataHeader": "{name} Map Data",
     "@mapDataHeader": {
         "placeholders": {
-            "name": { "type": "String" }
+            "name": {
+                "type": "String"
+            }
         }
     },
     "mapLabel": "Map",
@@ -253,7 +254,9 @@
     "waypointsCount": "{count} Waypoints",
     "@waypointsCount": {
         "placeholders": {
-            "count": { "type": "int" }
+            "count": {
+                "type": "int"
+            }
         }
     },
     "trailSupportLabel": "Trails",
@@ -265,19 +268,22 @@
     "hikingTrailFeature": "Hiking Trail (Detailed)",
     "waypointsFeature": "Waypoints (Rest points)",
     "backtrackFeature": "Backtrack (Auto return mode)",
-
     "checkinControlPointTitle": "Check-in Checkpoint",
     "checkinTargetPointLabel": "TARGET DESTINATION",
     "checkinTargetAltitude": "Target altitude: {altitude} m",
     "@checkinTargetAltitude": {
         "placeholders": {
-            "altitude": { "type": "String" }
+            "altitude": {
+                "type": "String"
+            }
         }
     },
     "checkinWithinRange": "You are within check-in range! ({distance}m away)",
     "@checkinWithinRange": {
         "placeholders": {
-            "distance": { "type": "int" }
+            "distance": {
+                "type": "int"
+            }
         }
     },
     "checkinNowButton": "Check-in now",
@@ -286,7 +292,9 @@
     "checkinSuccessToast": "Successfully checked in at {name}!",
     "@checkinSuccessToast": {
         "placeholders": {
-            "name": { "type": "String" }
+            "name": {
+                "type": "String"
+            }
         }
     },
     "checkinCongratulation": "CONGRATULATIONS!",
@@ -294,7 +302,9 @@
     "checkinSuccessMessage": "You have completed the checkpoint {name}.",
     "@checkinSuccessMessage": {
         "placeholders": {
-            "name": { "type": "String" }
+            "name": {
+                "type": "String"
+            }
         }
     },
     "achievementsEarnedTitle": "ACHIEVEMENTS EARNED",
@@ -304,27 +314,33 @@
     "continueJourneyButton": "Continue journey",
     "ratePlaceButton": "Rate destination",
     "shareAchievementButton": "Share achievement",
-    "featureComingSoon": "Feature coming soon",
     "milestoneConquerBadgeTitle": "Conquer {name}",
     "@milestoneConquerBadgeTitle": {
         "placeholders": {
-            "name": { "type": "String" }
+            "name": {
+                "type": "String"
+            }
         }
     },
     "milestoneConquerBadgeDesc": "Successfully reached {name} at {altitude}m altitude",
     "@milestoneConquerBadgeDesc": {
         "placeholders": {
-            "name": { "type": "String" },
-            "altitude": { "type": "String" }
+            "name": {
+                "type": "String"
+            },
+            "altitude": {
+                "type": "String"
+            }
         }
     },
     "milestoneConquerBadgeDescSimple": "Successfully reached checkpoint {name}",
     "@milestoneConquerBadgeDescSimple": {
         "placeholders": {
-            "name": { "type": "String" }
+            "name": {
+                "type": "String"
+            }
         }
     },
-
     "ratePlaceTitle": "Rate destination",
     "rateSatisfactionLevel": "YOUR SATISFACTION LEVEL?",
     "rateShareExperience": "SHARE YOUR EXPERIENCE",
@@ -338,8 +354,12 @@
     "rateStarsSummary": "{rating}/5 stars - {name}",
     "@rateStarsSummary": {
         "placeholders": {
-            "rating": { "type": "int" },
-            "name": { "type": "String" }
+            "rating": {
+                "type": "int"
+            },
+            "name": {
+                "type": "String"
+            }
         }
     },
     "rateViewOtherReviews": "View other reviews",
@@ -350,25 +370,23 @@
     "achievedDatePrefix": "Achieved on: {date}",
     "@achievedDatePrefix": {
         "placeholders": {
-            "date": { "type": "String" }
+            "date": {
+                "type": "String"
+            }
         }
     },
     "allBadgesTitle": "All Badges",
-
     "promoteSkip": "Skip",
     "promoteNext": "Next",
     "promoteStart": "Get Started",
-
     "promoteExploreTitle": "Explore trekking destinations across Vietnam",
     "promoteExploreDesc": "Discover trails, scenic spots, detailed info, and community reviews.",
-
     "promoteGpsTitle": "Create journeys and record GPS",
     "promoteGpsDesc": "Plan trips, record real-time tracks, check-in milestones, and review track logs.",
     "promoteGpsRecording": "RECORDING",
     "promoteGpsDistance": "Distance",
     "promoteGpsElevation": "Elevation",
     "promoteGpsSpeed": "Speed",
-
     "promoteOfflineTitle": "Work offline\nanytime, anywhere",
     "promoteOfflineDesc": "Download maps and location data to use even without Internet.",
     "promoteOfflineMapTitle": "Offline maps (MBTiles)",
@@ -377,7 +395,6 @@
     "promoteOfflineFavoriteSubtitle": "Never lose track of important coordinates",
     "promoteOfflineGpsTitle": "Record GPS & check-in",
     "promoteOfflineGpsSubtitle": "Full trip history is safely kept",
-
     "promoteStatsTitle": "Track journeys and\nachievements",
     "promoteStatsDesc": "Mark 34 explored provinces, collect badges, and view your travel stats.",
     "promoteStatsProvinces": "Provinces visited",
@@ -388,10 +405,8 @@
     "promoteStatsBadgeIslandSub": "3 bays visited",
     "promoteStatsBadgeExplore": "Explorer",
     "promoteStatsBadgeExploreSub": "10 provinces",
-
     "promoteCommunityTitle": "Connect with trekking lovers",
     "promoteCommunityDesc": "Share journeys, photos, experience, and interact with people of the same passion.",
-
     "supportFaqHeader": "FREQUENTLY ASKED QUESTIONS",
     "supportFeedbackHeader": "SEND US FEEDBACK",
     "supportIssueTypeLabel": "ISSUE TYPE",
@@ -401,39 +416,44 @@
     "supportDirectEmail": "Or email us directly at",
     "supportEmptyError": "Please enter your detailed description",
     "supportSuccessMessage": "Thank you for your feedback! We will get back to you soon.",
-
     "supportIssueGpsMap": "GPS / Map issue",
     "supportIssueAccount": "Account / Login issue",
     "supportIssueContent": "Content / Destination contribution",
     "supportIssueAppExperience": "App experience feedback",
     "supportIssueOther": "Other issue",
-
     "supportFaq1Q": "How do I check-in at a milestone?",
     "supportFaq1A": "Enable GPS on your phone, move within 50m of the milestone, and tap 'Check-in now' on the Journey Map screen.",
     "supportFaq2Q": "How do badges work?",
     "supportFaq2A": "Badges are automatically unlocked when you complete trekking challenges, conquer peaks, or achieve province exploration milestones.",
     "supportFaq3Q": "How to create a new journey?",
     "supportFaq3A": "Go to the Journey tab, tap the (+) icon or 'Start journey' button to enable real-time GPS tracking and save your trail.",
-
     "rankSectionTitle": "YOUR TREKKING RANK",
     "rankXpEarned": "You earned +{xp} XP",
     "@rankXpEarned": {
         "placeholders": {
-            "xp": { "type": "String" }
+            "xp": {
+                "type": "String"
+            }
         }
     },
     "rankPromoted": "Promoted to {name} · Level {level}!",
     "@rankPromoted": {
         "placeholders": {
-            "name": { "type": "String" },
-            "level": { "type": "int" }
+            "name": {
+                "type": "String"
+            },
+            "level": {
+                "type": "int"
+            }
         }
     },
     "rankDetailTitle": "Rank and XP",
     "rankLevel": "Level {level}",
     "@rankLevel": {
         "placeholders": {
-            "level": { "type": "int" }
+            "level": {
+                "type": "int"
+            }
         }
     },
     "rankViewDetails": "View all rank details",
@@ -441,13 +461,17 @@
     "rankNextTarget": "Next rank: {name}",
     "@rankNextTarget": {
         "placeholders": {
-            "name": { "type": "String" }
+            "name": {
+                "type": "String"
+            }
         }
     },
     "rankXpRemaining": "{xp} more XP to reach the next XP milestone",
     "@rankXpRemaining": {
         "placeholders": {
-            "xp": { "type": "String" }
+            "xp": {
+                "type": "String"
+            }
         }
     },
     "rankXpReached": "XP requirement met. Complete the remaining requirements to rank up.",
@@ -469,7 +493,9 @@
     "rankOverallProgress": "Requirements progress: {percent}%",
     "@rankOverallProgress": {
         "placeholders": {
-            "percent": { "type": "String" }
+            "percent": {
+                "type": "String"
+            }
         }
     },
     "rankPromotionTitle": "You ranked up!",
@@ -491,18 +517,707 @@
     "rankPromotionContinue": "Keep exploring",
     "xpBadgeEarned": "Badge earned",
     "xpHistoryEmpty": "No XP activity yet. Start your next adventure!",
-
     "otpVerificationTitle": "Email Verification",
     "otpExpiredLabel": "OTP expired. Please resend.",
     "otpExpiresIn": "OTP expires in",
     "otpIncompleteError": "Please enter all 6 OTP digits",
     "otpResendSuccess": "OTP resent. Please check your email.",
-
     "journeyMilestonesLoading": "Loading check-in points…",
     "journeyMilestonesLoadFailed": "Could not load check-in points",
     "journeyMilestonesEmpty": "No check-in points yet",
     "journeyMilestonesEmptyMessage": "This route has no official check-in milestones yet. An administrator needs to add milestones to the route before you can check in. You can still open the map to add personal markers.",
     "journeyReloadMilestones": "Reload milestones",
-    "journeyCheckinClose": "Close"
-
+    "journeyCheckinClose": "Close",
+    "commonRetry": "Retry",
+    "commonReload": "Reload",
+    "commonLoading": "Loading…",
+    "commonSaving": "Saving…",
+    "commonDelete": "Delete",
+    "commonClose": "Close",
+    "commonSaveChanges": "Save changes",
+    "commonViewMore": "View more",
+    "commonNoData": "No data yet",
+    "postCreateTitle": "Create post",
+    "postEditTitle": "Edit post",
+    "postSharingWithTrekViet": "Sharing with TrekViệt community",
+    "visibilityPublic": "Public",
+    "visibilityPrivate": "Only me",
+    "whatsOnYourMind": "What's on your mind?",
+    "postAddToPost": "Add to your post",
+    "postAddPhoto": "Photo",
+    "postMaxImagesHint": "You can select up to 10 images",
+    "postSelectedImagesCount": "{count} images selected",
+    "@postSelectedImagesCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "postRemoveImage": "Remove image",
+    "postTagLocation": "Tag location",
+    "postShareJourney": "Share journey",
+    "postPublishButton": "Post",
+    "postDeleteTitle": "Delete post",
+    "postDeleteMessage": "Are you sure you want to delete this post? This action cannot be undone.",
+    "postDeleteError": "Cannot delete post: {error}",
+    "@postDeleteError": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "postCopiedToClipboard": "Copied to clipboard",
+    "postEditAction": "Edit post",
+    "postDeleteAction": "Delete post",
+    "postPublishedSuccess": "Post published successfully",
+    "syncBeforeCommunityShare": "Please sync journey before sharing to community",
+    "shareJourneyDefaultContent": "My trekking journey at {name}!",
+    "@shareJourneyDefaultContent": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "reportFeatureUnavailable": "Reporting is not available yet",
+    "messagesTabTitle": "Messages",
+    "newMessageTooltip": "New message",
+    "groupCreateTitle": "Create trekking group",
+    "groupNameLabel": "Group name",
+    "groupMaxMembersHint": "Maximum 10 members for regular groups",
+    "groupAddByEmailOrQr": "Add by Email/QR",
+    "unselect": "Deselect",
+    "groupCreating": "Creating group...",
+    "groupCreateButton": "Create group",
+    "groupNameAndMemberRequired": "Please enter group name and select at least 1 member",
+    "groupDetailsTitle": "Group details",
+    "groupMemberCount": "Members ({count})",
+    "@groupMemberCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "groupRenameDialogTitle": "Rename group",
+    "groupRenameButton": "Rename",
+    "groupAddMemberButton": "Add member",
+    "groupOwnerRole": "Group leader",
+    "groupTransferOwnerTitle": "Transfer leadership",
+    "groupTransferOwnerMessage": "Are you sure you want to transfer leadership to {name}? You will become a regular member.",
+    "@groupTransferOwnerMessage": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "groupTransferOwnerConfirm": "Transfer",
+    "groupTransferOwnerAction": "Transfer leader",
+    "groupRemoveMemberAction": "Remove from group",
+    "groupLeaveAction": "Leave group",
+    "groupLeaveOwnerHint": "You are the leader. Please transfer leadership before leaving.",
+    "messagesHeaderSubtitle": "Direct messages and trekking groups",
+    "noConversationsYet": "No conversations yet",
+    "groupPaused": "Group paused",
+    "directMessage": "Direct message",
+    "viewMoreConversations": "View more conversations",
+    "selectMember": "Select member",
+    "searchUser": "Search user",
+    "searchUserHint": "Enter email or username...",
+    "emailOrQrContent": "Email or QR content",
+    "searchButton": "Search",
+    "scanQrButton": "Scan QR code",
+    "personalPage": "Profile",
+    "groupSuspendedByAdmin": "Group has been suspended by administrator",
+    "olderMessages": "Older messages",
+    "recallMessage": "Recall",
+    "reportMessage": "Report",
+    "reportReason": "Reason for report",
+    "reportMessageDesc": "Describe why you are reporting this message",
+    "reportSentToAdmin": "Report sent to administrator",
+    "formerMember": "Former member",
+    "messageRecalled": "Message has been recalled",
+    "typeMessageHint": "Type a message...",
+    "sendMessageTooltip": "Send",
+    "sendErrorRetryHint": "Failed to send: {error}. Tap to retry.",
+    "@sendErrorRetryHint": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "commentSaveError": "Cannot save comment: {error}",
+    "@commentSaveError": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "commentDeleteTitle": "Delete comment",
+    "commentDeleteMessage": "Are you sure you want to delete this comment?",
+    "commentDeleteError": "Cannot delete comment: {error}",
+    "@commentDeleteError": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "commentEditTitle": "Edit comment",
+    "contentRequired": "Content cannot be empty",
+    "selectYourJourney": "Select your journey",
+    "searchPlaceHint": "Search trekking places...",
+    "onlySyncedJourneysHint": "Only synced journeys can be shared",
+    "noDataToSelect": "No data available to select",
+    "finishJourneyTitle": "Finish journey?",
+    "finishJourneyDesc": "Are you sure you want to finish this journey? Track log data will be saved.",
+    "finishJourneySaveGpsNotice": "After finishing, you can save your GPS track log as a new route to contribute.",
+    "keepGoingButton": "Keep going",
+    "finishButton": "Finish",
+    "finishAndSendToAdmin": "Finish & Submit",
+    "locationFetchFailed": "Could not get current location: {error}",
+    "@locationFetchFailed": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "locationFetchForMarkerFailed": "Could not get GPS location for marker",
+    "sendToAdminButton": "Send to Admin",
+    "markersSyncedSendToAdmin": "Markers synced to server. You can submit them for admin review to add to official maps.",
+    "markersSavedOfflineNeedSync": "Markers saved offline. Once online and synced to server, you can submit to admin.",
+    "markersSavedOfflineAutoSync": "Markers saved offline on device and will sync automatically when online.",
+    "completeJourneyBeforeSendAdmin": "Please complete the journey before submitting route/marker proposals to Admin.",
+    "milestonesLoadFailedRetry": "Could not load milestones. Tap to retry.",
+    "downloadOrUpdateOfflineMap": "Download / Update offline map",
+    "journeyMapTitle": "Journey map",
+    "detailLabel": "Details",
+    "journeyDetailTitle": "Journey details",
+    "milestonesArrivedCount": "Reached {checked}/{total} milestones",
+    "@milestonesArrivedCount": {
+        "placeholders": {
+            "checked": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "backtrackReturnToStart": "Backtrack: Return to start",
+    "backtrackRecordRoute": "Backtrack: Record route",
+    "savedRoute": "Saved route",
+    "recordingGpsForeground": "Recording GPS in background",
+    "pausedRecordingGps": "Paused GPS recording",
+    "savedOfflineUsable": "Saved offline, usable without connection",
+    "stopGpsRecording": "Stop GPS recording",
+    "recordRouteButton": "Record route",
+    "startGpsRecording": "Start GPS recording",
+    "exitBacktrack": "Exit Backtrack",
+    "returnAlongRoute": "Return along recorded route",
+    "backtrackOrangeTrailNotice": "Follow the orange trail on map to return to starting point safely.",
+    "checkinPointLegend": "Check-in point",
+    "yourMarkerLegend": "Your marker",
+    "yourLocationAccuracy": "Your location (±{accuracy}m)",
+    "@yourLocationAccuracy": {
+        "placeholders": {
+            "accuracy": {
+                "type": "String"
+            }
+        }
+    },
+    "sendMarkersToAdminCount": "Send {count} markers to Admin",
+    "@sendMarkersToAdminCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "markMilestoneButton": "Add marker",
+    "savingJourneyProgress": "Saving journey progress...",
+    "finishJourneyButton": "Finish journey",
+    "shareToCommunityButton": "Share to community",
+    "shareRouteToAdminButton": "Contribute route to Admin",
+    "cannotOpenRouteShare": "Cannot open route share: {error}",
+    "@cannotOpenRouteShare": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "offlineMapAvailable": "Offline map available",
+    "offlineMapNotDownloaded": "Offline map not downloaded",
+    "tapViewMapNotice": "Tap to view detailed route map",
+    "checkinPhotosCount": "Check-in photos ({count})",
+    "@checkinPhotosCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "cannotOpenJourneyData": "Cannot open journey data",
+    "journeyPlansLabel": "Journey plans",
+    "journeyEstimatedTotal": "Estimated total: {count} days",
+    "@journeyEstimatedTotal": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "personCount": "{count} people",
+    "@personCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "provincesLabel": "Provinces",
+    "noPlansYet": "No journey plans yet",
+    "startFirstJourneyHint": "Start your first journey!",
+    "createPlanForNextTripHint": "Plan your next adventure",
+    "otherLabel": "Other",
+    "contributionTitle": "Contribute route & markers",
+    "contributionMarkerOnlyTitle": "Contribute markers",
+    "contributionSuccessTitle": "Contribution submitted successfully!",
+    "contributionSavedOfflineTitle": "Contribution saved offline!",
+    "contributionOfflineNotice": "Contribution saved locally. Once connected to internet, the app will automatically sync and submit it to admins for review.",
+    "contributionMarkersReceived": "Thank you for contributing {count} new markers. Admin will review and approve them to add to the official TrekViệt map.",
+    "@contributionMarkersReceived": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "contributionRouteAndMarkersReceived": "Thank you for contributing the route and {count} new markers. Admin will review and approve them to add to the official TrekViệt map.",
+    "@contributionRouteAndMarkersReceived": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "contributionStatusPendingSync": "Status: Pending sync when online",
+    "contributionViewHistoryNotice": "You can review this in Contribution History on your Profile page.",
+    "contributionSourceJourney": "From journey: {name}",
+    "@contributionSourceJourney": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "contributionNameLabel": "Proposed route name *",
+    "contributionMarkerNameLabel": "Contribution name *",
+    "contributionNameHint": "e.g.: Fansipan climb via Tram Ton...",
+    "contributionNameRequired": "Please enter proposed route name",
+    "contributionDescLabel": "Detailed description",
+    "contributionDescHint": "Describe terrain, landscape, practical experience...",
+    "contributionSafetyLabel": "Safety notes / Trail tips",
+    "contributionSafetyHint": "Water sources, safe camp spots, slippery spots...",
+    "contributionSelectMarkersLabel": "Select accompanying markers ({count})",
+    "@contributionSelectMarkersLabel": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "contributionSelectMarkersHint": "Select personal markers you created to submit with the route",
+    "contributionSubmitButton": "Submit to Admin for review",
+    "contributionSkipButton": "Skip contribution",
+    "markerFormCreateTitle": "Add marker",
+    "markerFormEditTitle": "Edit marker",
+    "markerNameLabel": "Marker name *",
+    "markerNameHint": "e.g.: Mountain peak, Stream, Camp site...",
+    "markerTypeLabel": "Marker type",
+    "markerGpsCoordinates": "GPS coordinates",
+    "markerPhotosLabel": "Marker photos",
+    "markerAddPhoto": "+ Add photo",
+    "markerNoteLabel": "Additional note",
+    "markerNoteHint": "Notes on water, steep slope, phone signal...",
+    "markerSaveOffline": "Save marker (Offline)",
+    "markerSaveAndSync": "Save & Sync marker",
+    "markerSyncDesc": "Marker will be saved on device and synced to server when online.",
+    "markerSaveError": "Cannot save marker: {error}",
+    "@markerSaveError": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "placeReviewTitle": "Place reviews",
+    "anonymousTrekker": "Anonymous Trekker",
+    "noReviewsYet": "No reviews yet",
+    "viewMoreReviews": "View more reviews",
+    "satisfactionLevelPrompt": "How was your experience?",
+    "shareExperiencePrompt": "Share your experience",
+    "shareExperienceHint": "Share tips, advice and your experience at this place...",
+    "addPhotosPrompt": "Add photos",
+    "addPhotosMax10": "Up to 10 photos",
+    "anonymousReviewLabel": "Anonymous review",
+    "anonymousReviewDesc": "Your name will not be shown publicly",
+    "submitReviewButton": "Submit review",
+    "saveReviewEditButton": "Save review",
+    "reviewThankYouTitle": "Thank you!",
+    "reviewThankYouMessage": "Your review has been recorded and will help the Trekker community in Vietnam.",
+    "yourReviewSection": "Your review",
+    "viewOtherReviewsButton": "View other reviews",
+    "backToHomeButton": "Back to home",
+    "noFeaturedPlaces": "No featured places yet",
+    "noMatchingRoutes": "No matching routes found",
+    "noMatchingSuggestions": "No matching suggestions found",
+    "addRouteButton": "Add route",
+    "addPlaceButton": "Add place",
+    "routeEstimatedDuration": "Estimated duration: {duration}",
+    "@routeEstimatedDuration": {
+        "placeholders": {
+            "duration": {
+                "type": "String"
+            }
+        }
+    },
+    "routeMaxElevation": "Max elevation: {elevation} m",
+    "@routeMaxElevation": {
+        "placeholders": {
+            "elevation": {
+                "type": "String"
+            }
+        }
+    },
+    "routeElevationGain": "Elevation gain: {gain} m",
+    "@routeElevationGain": {
+        "placeholders": {
+            "gain": {
+                "type": "String"
+            }
+        }
+    },
+    "routeTotalDistance": "Total distance: {distance} km",
+    "@routeTotalDistance": {
+        "placeholders": {
+            "distance": {
+                "type": "String"
+            }
+        }
+    },
+    "routeDescriptionTitle": "Route description",
+    "routeNoDescription": "No description available for this route.",
+    "routeDifficultyPrefix": "Difficulty: {difficulty}",
+    "@routeDifficultyPrefix": {
+        "placeholders": {
+            "difficulty": {
+                "type": "String"
+            }
+        }
+    },
+    "routePlacePrefix": "Location: {place}",
+    "@routePlacePrefix": {
+        "placeholders": {
+            "place": {
+                "type": "String"
+            }
+        }
+    },
+    "routeStartPrefix": "Start point: {coords}",
+    "@routeStartPrefix": {
+        "placeholders": {
+            "coords": {
+                "type": "String"
+            }
+        }
+    },
+    "routeEndPrefix": "End point: {coords}",
+    "@routeEndPrefix": {
+        "placeholders": {
+            "coords": {
+                "type": "String"
+            }
+        }
+    },
+    "downloadMapBeforeStart": "Download map before start",
+    "cannotStartJourney": "Cannot start journey: {error}",
+    "@cannotStartJourney": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "backToJourneyScreen": "Back to journeys",
+    "difficultyEasy": "Easy",
+    "difficultyModerate": "Moderate",
+    "difficultyHard": "Hard",
+    "difficultyExpert": "Expert",
+    "placeAboutSection": "About",
+    "placeNoDescription": "No description available for this place.",
+    "placeRoutesSection": "Trekking routes ({count})",
+    "@placeRoutesSection": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "placeNoRoutes": "No routes at this location yet.",
+    "offlineMapTitle": "Offline map management",
+    "offlineMapStorageUsed": "Storage used: {size}",
+    "@offlineMapStorageUsed": {
+        "placeholders": {
+            "size": {
+                "type": "String"
+            }
+        }
+    },
+    "offlineMapCount": "{count} maps downloaded",
+    "@offlineMapCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "noOfflineMapsTitle": "No offline maps yet",
+    "noOfflineMapsDesc": "Download maps for your upcoming trails to use when offline.",
+    "deleteOfflineMapTitle": "Delete offline map",
+    "deleteOfflineMapConfirm": "Are you sure you want to delete the offline map for \"{name}\"? You will need to re-download it to use offline.",
+    "@deleteOfflineMapConfirm": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "deleteOfflineMapButton": "Delete map",
+    "deleteOfflineMapSuccess": "Deleted map for {name}",
+    "@deleteOfflineMapSuccess": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "deleteOfflineMapError": "Cannot delete map: {error}",
+    "@deleteOfflineMapError": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "offlineMapInUseNotice": "Map \"{name}\" is currently in use by active journey.",
+    "@offlineMapInUseNotice": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "badgeUnlocked": "Unlocked",
+    "badgeLocked": "Locked",
+    "badgeAchievedDate": "Achieved on: {date}",
+    "@badgeAchievedDate": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            }
+        }
+    },
+    "badgeMissionProgress": "Challenge progress",
+    "viewAll": "View all",
+    "shareAchievement": "Share achievement",
+    "shareAchievementText": "I just earned the \"{title}\" badge on TrekViệt! Let's explore Vietnam's trekking trails together!",
+    "@shareAchievementText": {
+        "placeholders": {
+            "title": {
+                "type": "String"
+            }
+        }
+    },
+    "suggestPlaceSuccess": "Place suggestion submitted successfully! Admins will review and respond soon.",
+    "filterAll": "All",
+    "cannotLoadRoutesError": "Could not load some routes: {error}",
+    "@cannotLoadRoutesError": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "noDistanceAvailable": "No distance info",
+    "noReviewsYet": "No reviews yet",
+    "reviewsCount": "{rating} ({count} reviews)",
+    "@reviewsCount": {
+        "placeholders": {
+            "rating": {
+                "type": "String"
+            },
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "durationMinutes": "{minutes} min",
+    "@durationMinutes": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "durationHours": "{hours} hr",
+    "@durationHours": {
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            }
+        }
+    },
+    "durationHoursMinutes": "{hours} hr {minutes} min",
+    "@durationHoursMinutes": {
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            },
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "durationDays": "{days} days",
+    "@durationDays": {
+        "placeholders": {
+            "days": {
+                "type": "String"
+            }
+        }
+    },
+    "routeScope": "Route",
+    "placeScope": "Place",
+    "mapInUseBadge": "Active",
+    "downloadedOnDate": "Downloaded: {date}",
+    "@downloadedOnDate": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            }
+        }
+    },
+    "readyForOfflineUse": "Ready for offline use",
+    "manageOfflineMaps": "Manage offline maps",
+    "homeNoPlacesToExplore": "No places to explore yet",
+    "yourMapPosterTitle": "Your map poster",
+    "downloadPosterNow": "Download image now",
+    "loadProvinces": "Load provinces",
+    "statElevation": "Elevation",
+    "statDuration": "Duration",
+    "statRoutes": "Routes",
+    "difficultyExtreme": "Extreme",
+    "commonError": "An error occurred. Please try again.",
+    "statTotalDistance": "Total distance",
+    "statElevationGain": "Total elevation gain",
+    "statMaxElevation": "Max elevation",
+    "statEstimatedDuration": "Estimated duration",
+    "storageUsedLabel": "Storage used",
+    "journeyCompletedTitle": "Journey completed!",
+    "termsOfUseTitle": "Terms of Use",
+    "termsLastUpdated": "Last updated: 12/20/2025",
+    "termsSection1Title": "Introduction",
+    "termsSection1Content": "Welcome to Trek Vietnam, an application that supports navigation, logging trekking journeys, and connecting outdoor enthusiast communities in Vietnam. By registering an account, you agree to comply with these terms.",
+    "termsSection2Title": "Terms of Service",
+    "termsSection2Content": "You must be 16 years of age or older or have guardian supervision to use the application. You are solely responsible for password security and all activities under your account.",
+    "termsSection3Title": "User Rights and Obligations",
+    "termsSection3Content": "Users are allowed to use offline maps, store travel history, and share healthy trekking photos with the community. Acts of vandalizing data or posting misleading information about border maps or sensitive landmarks are strictly prohibited.",
+    "termsSection4Title": "Intellectual Property Rights",
+    "termsSection4Content": "All source code, graphic designs, badge systems, and proprietary trekking route databases are the property of Trek Vietnam. Any unauthorized copying is strictly prohibited.",
+    "termsSection5Title": "Limitation of Liability",
+    "termsSection5Content": "Trekking is an outdoor extreme sport. We provide GPS maps for reference and are not liable for any accidents, natural risks, or getting lost on actual trails.",
+    "privacyPolicyTitle": "Privacy Policy",
+    "privacySection1Title": "Data Collection",
+    "privacySection1Content": "We collect registration information (Name, Email, Avatar) and specifically your GPS location data (even when the app runs in the background) to map trekking routes and enable check-in features.",
+    "privacySection2Title": "Data Usage",
+    "privacySection2Content": "Location data is used to display your position on outdoor maps, tally total distance traveled, and unlock personal exploration badges.",
+    "privacySection3Title": "Data Sharing",
+    "privacySection3Content": "Your information and trekking history are only shared publicly when you actively click 'Publish Post' in Community forums or share badges to social networks.",
+    "privacySection4Title": "Information Security",
+    "privacySection4Content": "Trek Vietnam applies advanced end-to-end encryption measures to protect your personal information and coordinate data from unauthorized access.",
+    "privacySection5Title": "Your Rights",
+    "privacySection5Content": "You have the right to access, edit your personal profile information, or request permanent deletion of your account and all GPS location history stored on our servers at any time.",
+    "journeyOptionsTitle": "Options",
+    "routeDetailOption": "Route Details",
+    "journeyDetailOption": "Journey Details",
+    "selectPlaceTitle": "Select Place",
+    "searchPlaceHint": "Search place",
+    "cannotLoadPlaces": "Cannot load places.",
+    "noPlacesAvailable": "No places available.",
+    "changePlaceButton": "Change place",
+    "searchRouteHint": "Search route",
+    "cannotLoadRoutesAtPlace": "Cannot load routes for this place.",
+    "placeHasNoRoutes": "This place has no routes.",
+    "routesAtPlacePrefix": "Routes at {place}",
+    "@routesAtPlacePrefix": {
+        "placeholders": {
+            "place": {
+                "type": "String"
+            }
+        }
+    },
+    "downloadButton": "Download",
+    "retryDownloadButton": "Retry download",
+    "cannotLoadRoutesGeneral": "Cannot load routes. Please try again.",
+    "personalQrTitle": "Personal QR",
+    "personalQrDesc": "Others scan this code to view your profile and message you.",
+    "copyCodeButton": "Copy code",
+    "closeButton": "Close",
+    "noBioYet": "No bio yet.",
+    "userPostsCount": "{count} posts",
+    "@userPostsCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "aboutSection": "About",
+    "personalBio": "Personal Bio",
+    "myQrCode": "My QR",
+    "reissueQrDialogTitle": "Reissue QR?",
+    "reissueQrDialogMessage": "The old code will stop working.",
+    "reissueButton": "Reissue",
+    "sendMessageButton": "Message",
+    "cannotStartJourneyGeneral": "Cannot start journey. Please try again.",
+    "viewMorePosts": "View more posts",
+    "communityProfileTitle": "Community Profile",
+    "backToJourneyButton": "Back to journey",
+    "markerNameRequired": "Enter milestone name",
+    "syncFailedCheck": "Sync failed — review needed",
+    "savedOfflinePendingSync": "Saved on device · pending sync",
+    "memberCountText": "{count} members",
+    "@memberCountText": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "cancelJourneyButton": "Cancel journey",
+    "cancelJourneyConfirmTitle": "Cancel journey?",
+    "cancelJourneyConfirmMessage": "Are you sure you want to cancel this journey? Its status will be changed to cancelled.",
+    "editReviewOnceButton": "Edit review (1 time)",
+    "completeJourneyToReview": "Complete a journey here to review.",
+    "reviewRemoved": "Your review has been removed.",
+    "reviewEditLimitReached": "You have used your review edit limit.",
+    "viewAllReviewsButton": "View all reviews"
 }

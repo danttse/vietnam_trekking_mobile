@@ -1,188 +1,165 @@
 import 'package:flutter/material.dart';
+
 import '../../../features/community/data/models/comment_model.dart';
 
 class CommentItem extends StatelessWidget {
   final CommentModel comment;
-  final VoidCallback? onLike;
-  final VoidCallback? onReply;
-  final VoidCallback? onUserTap;
+  final VoidCallback? onLike, onReply, onUserTap, onEdit, onDelete;
   final bool isReply;
-
   const CommentItem({
     super.key,
     required this.comment,
     this.onLike,
     this.onReply,
     this.onUserTap,
+    this.onEdit,
+    this.onDelete,
     this.isReply = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final colors = theme.colorScheme;
+    final avatar = comment.userAvatar;
+    final contentLeftPadding = isReply ? 38.0 : 46.0;
 
     return Padding(
-      padding: EdgeInsets.only(
-        left: isReply ? 48.0 : 16.0,
-        right: 16.0,
-        top: 5.0,
-        bottom: 5.0,
-      ),
-      child: Row(
+      padding: EdgeInsets.only(left: isReply ? 40 : 0, top: 8, bottom: 8),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          GestureDetector(
-            onTap: onUserTap,
-            child: CircleAvatar(
-              radius: isReply ? 14 : 18,
-              backgroundColor: colorScheme.surfaceContainerHighest,
-              backgroundImage: comment.userAvatar != null && comment.userAvatar!.isNotEmpty
-                  ? NetworkImage(comment.userAvatar!)
-                  : null,
-              child: comment.userAvatar == null || comment.userAvatar!.isEmpty
-                  ? Text(
-                      comment.userName.isNotEmpty ? comment.userName[0].toUpperCase() : 'U',
-                      style: TextStyle(
-                        color: colorScheme.onSurface,
-                        fontWeight: FontWeight.bold,
-                        fontSize: isReply ? 12 : 14,
-                      ),
-                    )
-                  : null,
-            ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: comment.deleted ? null : onUserTap,
+                child: CircleAvatar(
+                  radius: isReply ? 14 : 18,
+                  backgroundImage: avatar != null && avatar.isNotEmpty
+                      ? NetworkImage(avatar)
+                      : null,
+                  child: avatar == null || avatar.isEmpty
+                      ? Text(
+                          comment.userName.isEmpty ? 'T' : comment.userName[0],
+                          style: TextStyle(
+                            fontSize: isReply ? 12 : 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      : null,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  comment.userName,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                comment.timeAgo,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: colors.onSurfaceVariant,
+                ),
+              ),
+              if (!comment.deleted &&
+                  (onEdit != null || onDelete != null)) ...[
+                const SizedBox(width: 4),
+                SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: PopupMenuButton<String>(
+                    tooltip: 'Tùy chọn bình luận',
+                    onSelected: (value) {
+                      if (value == 'edit') onEdit?.call();
+                      if (value == 'delete') onDelete?.call();
+                    },
+                    itemBuilder: (_) => [
+                      if (onEdit != null)
+                        const PopupMenuItem(
+                          value: 'edit',
+                          child: Text('Sửa bình luận'),
+                        ),
+                      if (onDelete != null)
+                        const PopupMenuItem(
+                          value: 'delete',
+                          child: Text('Xóa bình luận'),
+                        ),
+                    ],
+                    padding: EdgeInsets.zero,
+                    iconSize: 18,
+                    icon: Icon(
+                      Icons.more_vert,
+                      size: 18,
+                      color: colors.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+              ],
+            ],
           ),
-          const SizedBox(width: 12),
-          Expanded(
+          Padding(
+            padding: EdgeInsets.only(left: contentLeftPadding, top: 2),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      comment.userName,
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                        color: colorScheme.onSurface,
-                      ),
-                    ),
-                    Text(
-                      comment.timeAgo,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                RichText(
-                  text: TextSpan(
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: colorScheme.onSurface.withValues(alpha: 0.9),
-                      fontSize: 13.5,
-                      height: 1.35,
-                    ),
-                    children: [
-                      if (comment.replyToUserName != null) ...[
-                        TextSpan(
-                          text: '@${comment.replyToUserName} ',
-                          style: TextStyle(
-                            color: colorScheme.onSurface,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                      TextSpan(text: comment.content),
-                    ],
+                Text(
+                  comment.content,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: comment.deleted
+                        ? colors.onSurfaceVariant
+                        : colors.onSurface,
+                    fontStyle: comment.deleted
+                        ? FontStyle.italic
+                        : FontStyle.normal,
                   ),
                 ),
-                const SizedBox(height: 8),
-
-                Row(
-                  children: [
-                    InkWell(
-                      onTap: onLike,
-                      borderRadius: BorderRadius.circular(4),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-                        child: Row(
-                          children: [
-                            Icon(
-                              comment.isLiked ? Icons.favorite : Icons.favorite_border,
-                              size: 19,
-                              color: Colors.redAccent,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              comment.likeCount > 0
-                                  ? '${comment.likeCount} Thích'
-                                  : 'Thích',
-                              style: TextStyle(
-                                fontSize: 12.5,
-                                fontWeight: comment.isLiked ? FontWeight.w600 : FontWeight.w400,
-                                color: comment.isLiked ? colorScheme.onSurface: colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                          ],
+                if (!comment.deleted)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Wrap(
+                      spacing: 12,
+                      children: [
+                        TextButton.icon(
+                          onPressed: onLike,
+                          style: TextButton.styleFrom(
+                            visualDensity: VisualDensity.compact,
+                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                            minimumSize: const Size(0, 32),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          icon: Icon(
+                            comment.isLiked
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            color: Colors.redAccent,
+                            size: 18,
+                          ),
+                          label: Text(
+                            comment.likeCount > 0
+                                ? '${comment.likeCount} Thích'
+                                : 'Thích',
+                          ),
                         ),
-                      ),
+                        TextButton(
+                          onPressed: onReply,
+                          style: TextButton.styleFrom(
+                            visualDensity: VisualDensity.compact,
+                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                            minimumSize: const Size(0, 32),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          child: const Text('Phản hồi'),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 16),
-                    InkWell(
-                      onTap: onReply,
-                      borderRadius: BorderRadius.circular(4),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-                        child: Text(
-                          'Phản hồi',
-                          style: TextStyle(
-                            fontSize: 12.5,
-                            fontWeight: FontWeight.w400,
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ),
-                    ),
-                    if (comment.userId == 'current_user_id') ...[
-                      const SizedBox(width: 16),
-                      InkWell(
-                        onTap: () {},
-                        borderRadius: BorderRadius.circular(4),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-                          child: Text(
-                            'Xóa',
-                            style: TextStyle(
-                              fontSize: 12.5,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.redAccent,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ] else ...[
-                      const SizedBox(width: 16),
-                      InkWell(
-                        onTap: () {},
-                        borderRadius: BorderRadius.circular(4),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-                          child: Text(
-                            'Báo cáo',
-                            style: TextStyle(
-                              fontSize: 12.5,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.redAccent,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
+                  ),
               ],
             ),
           ),

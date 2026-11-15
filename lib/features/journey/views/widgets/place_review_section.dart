@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/network/api_error_handler.dart';
+import '../../../../core/widgets/buttons/btn_outline_style.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../data/models/review_model.dart';
 import '../../data/repositories/journey_repository.dart';
 import '../review_screen.dart';
@@ -71,11 +73,12 @@ class _PlaceReviewSectionState extends State<PlaceReviewSection> {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'ĐÁNH GIÁ ĐỊA ĐIỂM',
+          l10n?.rateYourReviewTitle ?? 'ĐÁNH GIÁ ĐỊA ĐIỂM',
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w700,
@@ -90,41 +93,34 @@ class _PlaceReviewSectionState extends State<PlaceReviewSection> {
         if (!_loading && _error == null && !_canCreate && !_canEdit)
           Text(
             _own == null
-                ? 'Hoàn thành hành trình tại đây để đánh giá.'
+                ? (l10n?.completeJourneyToReview ?? 'Hoàn thành hành trình tại đây để đánh giá.')
                 : _own!.deleted
-                ? 'Đánh giá của bạn đã được gỡ.'
-                : 'Bạn đã dùng lượt chỉnh sửa đánh giá.',
+                ? (l10n?.reviewRemoved ?? 'Đánh giá của bạn đã được gỡ.')
+                : (l10n?.reviewEditLimitReached ?? 'Bạn đã dùng lượt chỉnh sửa đánh giá.'),
             style: TextStyle(fontSize: 12, color: colors.onSurfaceVariant),
           ),
         if (_canCreate || _canEdit)
-          OutlinedButton.icon(
-            style: OutlinedButton.styleFrom(
-              foregroundColor: colors.primary,
-              side: BorderSide(color: colors.primary.withValues(alpha: 0.5)),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            icon: const Icon(Icons.rate_review_outlined, size: 18),
-            label: Text(
-              _canCreate ? 'Đánh giá địa điểm' : 'Chỉnh sửa đánh giá (1 lần)',
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-            ),
-            onPressed: () async {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => ReviewScreen(
-                    placeId: widget.placeId,
-                    placeName: widget.placeName ?? 'Địa điểm',
-                    existingReview: _own,
+          SizedBox(
+            width: double.infinity,
+            child: BtnOutlineStyle(
+              text: _canCreate
+                  ? (l10n?.ratePlaceButton ?? 'Đánh giá địa điểm')
+                  : (l10n?.editReviewOnceButton ?? 'Chỉnh sửa đánh giá (1 lần)'),
+              icon: const Icon(Icons.rate_review_outlined),
+              onPressed: () async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ReviewScreen(
+                      placeId: widget.placeId,
+                      placeName: widget.placeName ?? 'Địa điểm',
+                      existingReview: _own,
+                    ),
                   ),
-                ),
-              );
-              if (mounted) await _load();
-            },
+                );
+                if (mounted) await _load();
+              },
+            ),
           ),
         for (final review in _reviews)
           Card(
@@ -242,9 +238,9 @@ class _PlaceReviewSectionState extends State<PlaceReviewSection> {
             );
             if (mounted) await _load();
           },
-          child: const Text(
-            'Xem tất cả đánh giá',
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+          child: Text(
+            l10n?.viewAllReviewsButton ?? 'Xem tất cả đánh giá',
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
           ),
         ),
       ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Badge hiển thị trạng thái journey — bám sát màu từ UI design.
 class JourneyStatusBadge extends StatelessWidget {
@@ -13,7 +14,8 @@ class JourneyStatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cfg = _config(status);
+    final l10n = AppLocalizations.of(context);
+    final cfg = _config(status, l10n);
     final fontSize = small ? 10.0 : 11.0;
     final hPad = small ? 8.0 : 10.0;
     final vPad = small ? 3.0 : 4.0;
@@ -37,39 +39,39 @@ class JourneyStatusBadge extends StatelessWidget {
     );
   }
 
-  static _BadgeConfig _config(String status) {
+  static _BadgeConfig _config(String status, [AppLocalizations? l10n]) {
     switch (status.toUpperCase()) {
       case 'PLANNED':
         return _BadgeConfig(
-          label: 'Dự kiến',
+          label: l10n?.journeyStatusPlanned ?? 'Dự kiến',
           bg: const Color(0xFF1E3A5F).withValues(alpha: 0.8),
           border: const Color(0xFF4A90D9).withValues(alpha: 0.6),
           text: const Color(0xFF90C4F8),
         );
       case 'ACTIVE':
         return _BadgeConfig(
-          label: 'Đang diễn ra',
+          label: l10n?.journeyStatusActive ?? 'Đang diễn ra',
           bg: const Color(0xFF1A3B2A).withValues(alpha: 0.9),
           border: const Color(0xFF4CAF50).withValues(alpha: 0.6),
           text: const Color(0xFF81C784),
         );
       case 'PAUSED':
         return _BadgeConfig(
-          label: 'Đang tạm dừng',
+          label: l10n?.journeyStatusPaused ?? 'Đang tạm dừng',
           bg: const Color(0xFF3B2A0A).withValues(alpha: 0.9),
           border: const Color(0xFFFFA726).withValues(alpha: 0.6),
           text: const Color(0xFFFFB74D),
         );
       case 'COMPLETED':
         return _BadgeConfig(
-          label: 'Đã hoàn thành',
+          label: l10n?.journeyStatusCompleted ?? 'Đã hoàn thành',
           bg: const Color(0xFF1A2B1A).withValues(alpha: 0.9),
           border: const Color(0xFF207335).withValues(alpha: 0.6),
           text: const Color(0xFF66BB6A),
         );
       case 'CANCELLED':
         return _BadgeConfig(
-          label: 'Đã hủy',
+          label: l10n?.journeyStatusCancelled ?? 'Đã hủy',
           bg: const Color(0xFF2B1A1A).withValues(alpha: 0.9),
           border: const Color(0xFFEF5350).withValues(alpha: 0.5),
           text: const Color(0xFFEF9A9A),
@@ -90,9 +92,10 @@ class _BadgeConfig {
   final Color bg;
   final Color border;
   final Color text;
-  const _BadgeConfig(
-      {required this.label,
-      required this.bg,
-      required this.border,
-      required this.text});
+  const _BadgeConfig({
+    required this.label,
+    required this.bg,
+    required this.border,
+    required this.text,
+  });
 }

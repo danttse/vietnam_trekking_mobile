@@ -586,11 +586,11 @@ void main() {
     await tester.ensureVisible(find.text('Check-in ngay'));
     await tester.tap(find.text('Check-in ngay'));
     await tester.pumpAndSettle();
-    expect(find.text('Check-in thành công!'), findsOneWidget);
+    expect(find.text('Hoàn thành hành trình!'), findsOneWidget);
     expect(api.completions, 1);
     expect(find.text('Quay lại hành trình'), findsOneWidget);
     final rating = find.text(
-      AppLocalizations.of(tester.element(find.text('Check-in thành công!')))!
+      AppLocalizations.of(tester.element(find.text('Hoàn thành hành trình!')))!
           .ratePlaceButton,
     );
     await tester.ensureVisible(rating);

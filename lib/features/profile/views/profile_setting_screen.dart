@@ -132,6 +132,12 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                     icon: Icons.photo_camera_outlined,
                     onTapAction: () => _settingViewModel.changeAvatar(context),
                   ),
+                  ProfileSettingItem(
+                    mainTitle: l10n.manageOfflineMaps,
+                    icon: Icons.map_outlined,
+                    onTapAction: () =>
+                        _settingViewModel.openOfflineMapManagement(context),
+                  ),
                 ],
               ),
               const SizedBox(height: 20),

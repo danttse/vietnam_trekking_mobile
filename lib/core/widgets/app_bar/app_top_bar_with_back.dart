@@ -11,7 +11,7 @@ class AppTopBarWithBack extends StatelessWidget {
     return SizedBox(
       height: 44,
       child: Padding(
-        padding: EdgeInsetsGeometry.symmetric(vertical: 4, horizontal: 8),
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
         child: Stack(
           alignment: Alignment.center,
           children: [

@@ -67,11 +67,20 @@ class CheckinService {
       'milestoneId': milestoneId,
       'latitude': latitude,
       'longitude': longitude,
+      'location': {
+        'type': 'Point',
+        'coordinates': [longitude, latitude],
+      },
       'accuracyMeters': accuracyMeters,
+      'distanceToMilestoneMeters': distanceToTarget,
+      'userId': userId,
+      'syncSource': 'ONLINE',
       'checkedAt': DateTime.now().toUtc().toIso8601String(),
     });
     final verification =
-        data['verification']?['status']?.toString() ?? 'PENDING';
+        data['verification']?['status']?.toString() ??
+        data['verificationStatus']?.toString() ??
+        'VERIFIED';
     return CheckinResult(
       serverCheckinId: data['checkinId']?.toString() ?? '',
       milestoneType: data['milestoneType'] ?? 'CHECKPOINT',

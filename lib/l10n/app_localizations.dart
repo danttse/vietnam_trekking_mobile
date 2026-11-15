@@ -944,6 +944,12 @@ abstract class AppLocalizations {
   /// **'Sắp tới'**
   String get journeyUpcoming;
 
+  /// No description provided for @journeyCancelled.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã hủy'**
+  String get journeyCancelled;
+
   /// No description provided for @journeyStatTrips.
   ///
   /// In vi, this message translates to:
@@ -1385,7 +1391,7 @@ abstract class AppLocalizations {
   /// No description provided for @statMaxElevation.
   ///
   /// In vi, this message translates to:
-  /// **'Độ cao tối đa'**
+  /// **'Điểm cao nhất'**
   String get statMaxElevation;
 
   /// No description provided for @statConqueredProvinces.
@@ -2179,6 +2185,2028 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đóng'**
   String get journeyCheckinClose;
+
+  /// No description provided for @commonRetry.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thử lại'**
+  String get commonRetry;
+
+  /// No description provided for @commonReload.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tải lại'**
+  String get commonReload;
+
+  /// No description provided for @commonLoading.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tải…'**
+  String get commonLoading;
+
+  /// No description provided for @commonSaving.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang lưu…'**
+  String get commonSaving;
+
+  /// No description provided for @commonDelete.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xóa'**
+  String get commonDelete;
+
+  /// No description provided for @commonClose.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đóng'**
+  String get commonClose;
+
+  /// No description provided for @commonSaveChanges.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu thay đổi'**
+  String get commonSaveChanges;
+
+  /// No description provided for @commonViewMore.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem thêm'**
+  String get commonViewMore;
+
+  /// No description provided for @commonNoData.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có dữ liệu'**
+  String get commonNoData;
+
+  /// No description provided for @postCreateTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo bài viết'**
+  String get postCreateTitle;
+
+  /// No description provided for @postEditTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉnh sửa bài viết'**
+  String get postEditTitle;
+
+  /// No description provided for @postSharingWithTrekViet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang chia sẻ cùng cộng đồng TrekViệt'**
+  String get postSharingWithTrekViet;
+
+  /// No description provided for @visibilityPublic.
+  ///
+  /// In vi, this message translates to:
+  /// **'Công khai'**
+  String get visibilityPublic;
+
+  /// No description provided for @visibilityPrivate.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ mình tôi'**
+  String get visibilityPrivate;
+
+  /// No description provided for @whatsOnYourMind.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn đang nghĩ gì?'**
+  String get whatsOnYourMind;
+
+  /// No description provided for @postAddToPost.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm vào bài viết'**
+  String get postAddToPost;
+
+  /// No description provided for @postAddPhoto.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh'**
+  String get postAddPhoto;
+
+  /// No description provided for @postMaxImagesHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ có thể chọn tối đa 10 ảnh'**
+  String get postMaxImagesHint;
+
+  /// No description provided for @postSelectedImagesCount.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} ảnh đã chọn'**
+  String postSelectedImagesCount(int count);
+
+  /// No description provided for @postRemoveImage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xóa ảnh'**
+  String get postRemoveImage;
+
+  /// No description provided for @postTagLocation.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gắn vị trí'**
+  String get postTagLocation;
+
+  /// No description provided for @postShareJourney.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chia sẻ hành trình'**
+  String get postShareJourney;
+
+  /// No description provided for @postPublishButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng bài'**
+  String get postPublishButton;
+
+  /// No description provided for @postDeleteTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xóa bài viết'**
+  String get postDeleteTitle;
+
+  /// No description provided for @postDeleteMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có chắc chắn muốn xóa bài viết này không? Hành động này không thể hoàn tác.'**
+  String get postDeleteMessage;
+
+  /// No description provided for @postDeleteError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể xóa bài viết: {error}'**
+  String postDeleteError(String error);
+
+  /// No description provided for @postCopiedToClipboard.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã sao chép vào bộ nhớ tạm'**
+  String get postCopiedToClipboard;
+
+  /// No description provided for @postEditAction.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉnh sửa bài viết'**
+  String get postEditAction;
+
+  /// No description provided for @postDeleteAction.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xóa bài viết'**
+  String get postDeleteAction;
+
+  /// No description provided for @postPublishedSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã đăng bài viết thành công'**
+  String get postPublishedSuccess;
+
+  /// No description provided for @syncBeforeCommunityShare.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng đồng bộ hành trình trước khi chia sẻ lên cộng đồng'**
+  String get syncBeforeCommunityShare;
+
+  /// No description provided for @shareJourneyDefaultContent.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hành trình trekking {name} của mình!'**
+  String shareJourneyDefaultContent(String name);
+
+  /// No description provided for @reportFeatureUnavailable.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tính năng báo cáo chưa khả dụng'**
+  String get reportFeatureUnavailable;
+
+  /// No description provided for @messagesTabTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tin nhắn'**
+  String get messagesTabTitle;
+
+  /// No description provided for @newMessageTooltip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắn tin mới'**
+  String get newMessageTooltip;
+
+  /// No description provided for @groupCreateTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo nhóm trekking'**
+  String get groupCreateTitle;
+
+  /// No description provided for @groupNameLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên nhóm'**
+  String get groupNameLabel;
+
+  /// No description provided for @groupMaxMembersHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tối đa 10 thành viên cho nhóm thường'**
+  String get groupMaxMembersHint;
+
+  /// No description provided for @groupAddByEmailOrQr.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm bằng Email/QR'**
+  String get groupAddByEmailOrQr;
+
+  /// No description provided for @unselect.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ chọn'**
+  String get unselect;
+
+  /// No description provided for @groupCreating.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tạo nhóm...'**
+  String get groupCreating;
+
+  /// No description provided for @groupCreateButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo nhóm'**
+  String get groupCreateButton;
+
+  /// No description provided for @groupNameAndMemberRequired.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng nhập tên nhóm và chọn ít nhất 1 thành viên'**
+  String get groupNameAndMemberRequired;
+
+  /// No description provided for @groupDetailsTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chi tiết nhóm'**
+  String get groupDetailsTitle;
+
+  /// No description provided for @groupMemberCount.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thành viên ({count})'**
+  String groupMemberCount(int count);
+
+  /// No description provided for @groupRenameDialogTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi tên nhóm'**
+  String get groupRenameDialogTitle;
+
+  /// No description provided for @groupRenameButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi tên'**
+  String get groupRenameButton;
+
+  /// No description provided for @groupAddMemberButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm thành viên'**
+  String get groupAddMemberButton;
+
+  /// No description provided for @groupOwnerRole.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trưởng nhóm'**
+  String get groupOwnerRole;
+
+  /// No description provided for @groupTransferOwnerTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chuyển quyền trưởng nhóm'**
+  String get groupTransferOwnerTitle;
+
+  /// No description provided for @groupTransferOwnerMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có chắc muốn chuyển quyền trưởng nhóm cho {name}? Bạn sẽ trở thành thành viên thường.'**
+  String groupTransferOwnerMessage(String name);
+
+  /// No description provided for @groupTransferOwnerConfirm.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chuyển quyền'**
+  String get groupTransferOwnerConfirm;
+
+  /// No description provided for @groupTransferOwnerAction.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chuyển quyền trưởng nhóm'**
+  String get groupTransferOwnerAction;
+
+  /// No description provided for @groupRemoveMemberAction.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xóa khỏi nhóm'**
+  String get groupRemoveMemberAction;
+
+  /// No description provided for @groupLeaveAction.
+  ///
+  /// In vi, this message translates to:
+  /// **'Rời nhóm'**
+  String get groupLeaveAction;
+
+  /// No description provided for @groupLeaveOwnerHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn là trưởng nhóm. Hãy chuyển quyền trưởng nhóm cho người khác trước khi rời nhóm.'**
+  String get groupLeaveOwnerHint;
+
+  /// No description provided for @messagesHeaderSubtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắn tin trực tiếp và nhóm trekking'**
+  String get messagesHeaderSubtitle;
+
+  /// No description provided for @noConversationsYet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có cuộc trò chuyện nào'**
+  String get noConversationsYet;
+
+  /// No description provided for @groupPaused.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhóm tạm dừng'**
+  String get groupPaused;
+
+  /// No description provided for @directMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trò chuyện trực tiếp'**
+  String get directMessage;
+
+  /// No description provided for @viewMoreConversations.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem thêm cuộc trò chuyện'**
+  String get viewMoreConversations;
+
+  /// No description provided for @selectMember.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn thành viên'**
+  String get selectMember;
+
+  /// No description provided for @searchUser.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm kiếm người dùng'**
+  String get searchUser;
+
+  /// No description provided for @searchUserHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập email hoặc tên người dùng...'**
+  String get searchUserHint;
+
+  /// No description provided for @emailOrQrContent.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nội dung Email hoặc mã QR'**
+  String get emailOrQrContent;
+
+  /// No description provided for @searchButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm kiếm'**
+  String get searchButton;
+
+  /// No description provided for @scanQrButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quét mã QR'**
+  String get scanQrButton;
+
+  /// No description provided for @personalPage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trang cá nhân'**
+  String get personalPage;
+
+  /// No description provided for @groupSuspendedByAdmin.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhóm đã bị quản trị viên đình chỉ hoạt động'**
+  String get groupSuspendedByAdmin;
+
+  /// No description provided for @olderMessages.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tin nhắn cũ hơn'**
+  String get olderMessages;
+
+  /// No description provided for @recallMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thu hồi'**
+  String get recallMessage;
+
+  /// No description provided for @reportMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Báo cáo'**
+  String get reportMessage;
+
+  /// No description provided for @reportReason.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lý do báo cáo'**
+  String get reportReason;
+
+  /// No description provided for @reportMessageDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mô tả lý do bạn báo cáo tin nhắn này'**
+  String get reportMessageDesc;
+
+  /// No description provided for @reportSentToAdmin.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã gửi báo cáo cho quản trị viên'**
+  String get reportSentToAdmin;
+
+  /// No description provided for @formerMember.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thành viên cũ'**
+  String get formerMember;
+
+  /// No description provided for @messageRecalled.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tin nhắn đã được thu hồi'**
+  String get messageRecalled;
+
+  /// No description provided for @typeMessageHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập tin nhắn...'**
+  String get typeMessageHint;
+
+  /// No description provided for @sendMessageTooltip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi'**
+  String get sendMessageTooltip;
+
+  /// No description provided for @sendErrorRetryHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi gửi: {error}. Bấm để thử lại.'**
+  String sendErrorRetryHint(String error);
+
+  /// No description provided for @commentSaveError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể lưu bình luận: {error}'**
+  String commentSaveError(String error);
+
+  /// No description provided for @commentDeleteTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xóa bình luận'**
+  String get commentDeleteTitle;
+
+  /// No description provided for @commentDeleteMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có chắc muốn xóa bình luận này không?'**
+  String get commentDeleteMessage;
+
+  /// No description provided for @commentDeleteError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể xóa bình luận: {error}'**
+  String commentDeleteError(String error);
+
+  /// No description provided for @commentEditTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉnh sửa bình luận'**
+  String get commentEditTitle;
+
+  /// No description provided for @contentRequired.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nội dung không được để trống'**
+  String get contentRequired;
+
+  /// No description provided for @selectYourJourney.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn hành trình của bạn'**
+  String get selectYourJourney;
+
+  /// No description provided for @searchPlaceHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm địa điểm'**
+  String get searchPlaceHint;
+
+  /// No description provided for @onlySyncedJourneysHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ có thể chia sẻ các hành trình đã đồng bộ lên hệ thống'**
+  String get onlySyncedJourneysHint;
+
+  /// No description provided for @noDataToSelect.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không có dữ liệu để chọn'**
+  String get noDataToSelect;
+
+  /// No description provided for @finishJourneyTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết thúc hành trình?'**
+  String get finishJourneyTitle;
+
+  /// No description provided for @finishJourneyDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có chắc chắn muốn kết thúc hành trình này? Sau khi kết thúc, dữ liệu track log sẽ được lưu lại.'**
+  String get finishJourneyDesc;
+
+  /// No description provided for @finishJourneySaveGpsNotice.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sau khi kết thúc, bạn có thể lưu track log GPS thành tuyến đường mới để đóng góp cho cộng đồng.'**
+  String get finishJourneySaveGpsNotice;
+
+  /// No description provided for @keepGoingButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp tục đi'**
+  String get keepGoingButton;
+
+  /// No description provided for @finishButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết thúc'**
+  String get finishButton;
+
+  /// No description provided for @finishAndSendToAdmin.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết thúc & Gửi duyệt'**
+  String get finishAndSendToAdmin;
+
+  /// No description provided for @locationFetchFailed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể lấy vị trí hiện tại: {error}'**
+  String locationFetchFailed(String error);
+
+  /// No description provided for @locationFetchForMarkerFailed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể lấy vị trí GPS để tạo điểm mốc'**
+  String get locationFetchForMarkerFailed;
+
+  /// No description provided for @sendToAdminButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi cho Admin'**
+  String get sendToAdminButton;
+
+  /// No description provided for @markersSyncedSendToAdmin.
+  ///
+  /// In vi, this message translates to:
+  /// **'Các điểm mốc đã được đồng bộ lên máy chủ. Bạn có thể gửi đóng góp để quản trị viên duyệt đưa vào bản đồ chính thức.'**
+  String get markersSyncedSendToAdmin;
+
+  /// No description provided for @markersSavedOfflineNeedSync.
+  ///
+  /// In vi, this message translates to:
+  /// **'Các điểm mốc đã được lưu offline. Khi có mạng và sau khi đồng bộ lên máy chủ, bạn có thể gửi đóng góp cho quản trị viên.'**
+  String get markersSavedOfflineNeedSync;
+
+  /// No description provided for @markersSavedOfflineAutoSync.
+  ///
+  /// In vi, this message translates to:
+  /// **'Các điểm mốc được lưu offline trên máy và sẽ tự động đồng bộ khi có kết nối mạng.'**
+  String get markersSavedOfflineAutoSync;
+
+  /// No description provided for @completeJourneyBeforeSendAdmin.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hãy hoàn thành hành trình trước khi gửi đề xuất tuyến đường/cột mốc cho Admin.'**
+  String get completeJourneyBeforeSendAdmin;
+
+  /// No description provided for @milestonesLoadFailedRetry.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể tải cột mốc. Bấm để thử lại.'**
+  String get milestonesLoadFailedRetry;
+
+  /// No description provided for @downloadOrUpdateOfflineMap.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tải / Cập nhật bản đồ Offline'**
+  String get downloadOrUpdateOfflineMap;
+
+  /// No description provided for @journeyMapTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản đồ hành trình'**
+  String get journeyMapTitle;
+
+  /// No description provided for @detailLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chi tiết'**
+  String get detailLabel;
+
+  /// No description provided for @journeyDetailTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chi tiết hành trình'**
+  String get journeyDetailTitle;
+
+  /// No description provided for @milestonesArrivedCount.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã đến {checked}/{total} cột mốc'**
+  String milestonesArrivedCount(int checked, int total);
+
+  /// No description provided for @backtrackReturnToStart.
+  ///
+  /// In vi, this message translates to:
+  /// **'Backtrack: Quay về điểm xuất phát'**
+  String get backtrackReturnToStart;
+
+  /// No description provided for @backtrackRecordRoute.
+  ///
+  /// In vi, this message translates to:
+  /// **'Backtrack: Ghi tracklog đường đi'**
+  String get backtrackRecordRoute;
+
+  /// No description provided for @savedRoute.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuyến đường đã lưu'**
+  String get savedRoute;
+
+  /// No description provided for @recordingGpsForeground.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang ghi GPS chạy ngầm'**
+  String get recordingGpsForeground;
+
+  /// No description provided for @pausedRecordingGps.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạm dừng ghi GPS'**
+  String get pausedRecordingGps;
+
+  /// No description provided for @savedOfflineUsable.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu offline, có thể dùng khi mất sóng'**
+  String get savedOfflineUsable;
+
+  /// No description provided for @stopGpsRecording.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dừng ghi GPS'**
+  String get stopGpsRecording;
+
+  /// No description provided for @recordRouteButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi đường đi'**
+  String get recordRouteButton;
+
+  /// No description provided for @startGpsRecording.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu ghi GPS'**
+  String get startGpsRecording;
+
+  /// No description provided for @exitBacktrack.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thoát Backtrack'**
+  String get exitBacktrack;
+
+  /// No description provided for @returnAlongRoute.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quay lại theo đường đã đi'**
+  String get returnAlongRoute;
+
+  /// No description provided for @backtrackOrangeTrailNotice.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo dõi vệt màu cam trên bản đồ để quay trở lại điểm xuất phát an toàn.'**
+  String get backtrackOrangeTrailNotice;
+
+  /// No description provided for @checkinPointLegend.
+  ///
+  /// In vi, this message translates to:
+  /// **'Điểm check-in'**
+  String get checkinPointLegend;
+
+  /// No description provided for @yourMarkerLegend.
+  ///
+  /// In vi, this message translates to:
+  /// **'Điểm mốc của bạn'**
+  String get yourMarkerLegend;
+
+  /// No description provided for @yourLocationAccuracy.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vị trí của bạn (±{accuracy}m)'**
+  String yourLocationAccuracy(String accuracy);
+
+  /// No description provided for @sendMarkersToAdminCount.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi {count} điểm mốc cho Admin'**
+  String sendMarkersToAdminCount(int count);
+
+  /// No description provided for @markMilestoneButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đánh dấu mốc'**
+  String get markMilestoneButton;
+
+  /// No description provided for @savingJourneyProgress.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang lưu dữ liệu hành trình...'**
+  String get savingJourneyProgress;
+
+  /// No description provided for @finishJourneyButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết thúc hành trình'**
+  String get finishJourneyButton;
+
+  /// No description provided for @shareToCommunityButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chia sẻ lên cộng đồng'**
+  String get shareToCommunityButton;
+
+  /// No description provided for @shareRouteToAdminButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đóng góp tuyến đường cho Admin'**
+  String get shareRouteToAdminButton;
+
+  /// No description provided for @cannotOpenRouteShare.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể mở chia sẻ tuyến đường: {error}'**
+  String cannotOpenRouteShare(String error);
+
+  /// No description provided for @offlineMapAvailable.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản đồ offline khả dụng'**
+  String get offlineMapAvailable;
+
+  /// No description provided for @offlineMapNotDownloaded.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa tải bản đồ offline'**
+  String get offlineMapNotDownloaded;
+
+  /// No description provided for @tapViewMapNotice.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm để xem bản đồ lộ trình chi tiết'**
+  String get tapViewMapNotice;
+
+  /// No description provided for @checkinPhotosCount.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh check-in ({count})'**
+  String checkinPhotosCount(int count);
+
+  /// No description provided for @cannotOpenJourneyData.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể mở dữ liệu hành trình'**
+  String get cannotOpenJourneyData;
+
+  /// No description provided for @journeyPlansLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kế hoạch hành trình'**
+  String get journeyPlansLabel;
+
+  /// No description provided for @journeyEstimatedTotal.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ước tính tổng cộng: {count} ngày'**
+  String journeyEstimatedTotal(int count);
+
+  /// No description provided for @personCount.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} người'**
+  String personCount(int count);
+
+  /// No description provided for @provincesLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tỉnh thành'**
+  String get provincesLabel;
+
+  /// No description provided for @noPlansYet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có kế hoạch hành trình nào'**
+  String get noPlansYet;
+
+  /// No description provided for @startFirstJourneyHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hãy bắt đầu chuyến đi đầu tiên của bạn!'**
+  String get startFirstJourneyHint;
+
+  /// No description provided for @createPlanForNextTripHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo kế hoạch cho chuyến đi sắp tới của bạn'**
+  String get createPlanForNextTripHint;
+
+  /// No description provided for @otherLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khác'**
+  String get otherLabel;
+
+  /// No description provided for @contributionTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đóng góp tuyến đường & cột mốc'**
+  String get contributionTitle;
+
+  /// No description provided for @contributionMarkerOnlyTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đóng góp cột mốc'**
+  String get contributionMarkerOnlyTitle;
+
+  /// No description provided for @contributionSuccessTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi đóng góp thành công!'**
+  String get contributionSuccessTitle;
+
+  /// No description provided for @contributionSavedOfflineTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu đóng góp offline!'**
+  String get contributionSavedOfflineTitle;
+
+  /// No description provided for @contributionOfflineNotice.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dữ liệu đóng góp đã được lưu trên máy của bạn. Khi có kết nối mạng, ứng dụng sẽ tự động đồng bộ và gửi đến quản trị viên để xem xét phê duyệt.'**
+  String get contributionOfflineNotice;
+
+  /// No description provided for @contributionMarkersReceived.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cảm ơn bạn đã đóng góp {count} điểm mốc mới. Quản trị viên sẽ xem xét và phê duyệt để đưa lên bản đồ chính thức của TrekViệt.'**
+  String contributionMarkersReceived(int count);
+
+  /// No description provided for @contributionRouteAndMarkersReceived.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cảm ơn bạn đã đóng góp tuyến đường cùng {count} điểm mốc mới. Quản trị viên sẽ xem xét và phê duyệt để đưa lên bản đồ chính thức của TrekViệt.'**
+  String contributionRouteAndMarkersReceived(int count);
+
+  /// No description provided for @contributionStatusPendingSync.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trạng thái: Chờ đồng bộ khi có mạng'**
+  String get contributionStatusPendingSync;
+
+  /// No description provided for @contributionViewHistoryNotice.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có thể xem lại trong Lịch sử đóng góp ở trang Hồ sơ.'**
+  String get contributionViewHistoryNotice;
+
+  /// No description provided for @contributionSourceJourney.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ hành trình: {name}'**
+  String contributionSourceJourney(String name);
+
+  /// No description provided for @contributionNameLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên tuyến đường đề xuất *'**
+  String get contributionNameLabel;
+
+  /// No description provided for @contributionMarkerNameLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên đóng góp *'**
+  String get contributionMarkerNameLabel;
+
+  /// No description provided for @contributionNameHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'VD: Cung đường leo Fansipan qua Trạm Tôn...'**
+  String get contributionNameHint;
+
+  /// No description provided for @contributionNameRequired.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng nhập tên tuyến đường đề xuất'**
+  String get contributionNameRequired;
+
+  /// No description provided for @contributionDescLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mô tả chi tiết'**
+  String get contributionDescLabel;
+
+  /// No description provided for @contributionDescHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mô tả về địa hình, cảnh quan, trải nghiệm thực tế...'**
+  String get contributionDescHint;
+
+  /// No description provided for @contributionSafetyLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu ý an toàn / Mẹo đi đường'**
+  String get contributionSafetyLabel;
+
+  /// No description provided for @contributionSafetyHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nguồn nước, điểm cắm trại an toàn, đoạn trơn trượt...'**
+  String get contributionSafetyHint;
+
+  /// No description provided for @contributionSelectMarkersLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn các điểm mốc kèm theo ({count})'**
+  String contributionSelectMarkersLabel(int count);
+
+  /// No description provided for @contributionSelectMarkersHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đánh dấu chọn các điểm mốc cá nhân bạn đã tạo để gửi duyệt kèm tuyến đường'**
+  String get contributionSelectMarkersHint;
+
+  /// No description provided for @contributionSubmitButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi cho Admin duyệt'**
+  String get contributionSubmitButton;
+
+  /// No description provided for @contributionSkipButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ qua đóng góp'**
+  String get contributionSkipButton;
+
+  /// No description provided for @markerFormCreateTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đánh dấu điểm mốc'**
+  String get markerFormCreateTitle;
+
+  /// No description provided for @markerFormEditTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉnh sửa điểm mốc'**
+  String get markerFormEditTitle;
+
+  /// No description provided for @markerNameLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên điểm mốc *'**
+  String get markerNameLabel;
+
+  /// No description provided for @markerNameHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'VD: Đỉnh núi, Suối nước, Điểm cắm trại...'**
+  String get markerNameHint;
+
+  /// No description provided for @markerTypeLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Loại điểm mốc'**
+  String get markerTypeLabel;
+
+  /// No description provided for @markerGpsCoordinates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tọa độ GPS'**
+  String get markerGpsCoordinates;
+
+  /// No description provided for @markerPhotosLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hình ảnh điểm mốc'**
+  String get markerPhotosLabel;
+
+  /// No description provided for @markerAddPhoto.
+  ///
+  /// In vi, this message translates to:
+  /// **'+ Thêm ảnh'**
+  String get markerAddPhoto;
+
+  /// No description provided for @markerNoteLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi chú thêm'**
+  String get markerNoteLabel;
+
+  /// No description provided for @markerNoteHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu ý về nguồn nước, độ dốc, sóng điện thoại...'**
+  String get markerNoteHint;
+
+  /// No description provided for @markerSaveOffline.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu trên máy'**
+  String get markerSaveOffline;
+
+  /// No description provided for @markerSaveAndSync.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu & Đồng bộ điểm mốc'**
+  String get markerSaveAndSync;
+
+  /// No description provided for @markerSyncDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Điểm mốc sẽ được lưu trên máy và tự động đồng bộ lên máy chủ khi có mạng.'**
+  String get markerSyncDesc;
+
+  /// No description provided for @markerSaveError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể lưu điểm mốc: {error}'**
+  String markerSaveError(String error);
+
+  /// No description provided for @placeReviewTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đánh giá địa điểm'**
+  String get placeReviewTitle;
+
+  /// No description provided for @anonymousTrekker.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trekker ẩn danh'**
+  String get anonymousTrekker;
+
+  /// No description provided for @noReviewsYet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có đánh giá'**
+  String get noReviewsYet;
+
+  /// No description provided for @viewMoreReviews.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem thêm đánh giá'**
+  String get viewMoreReviews;
+
+  /// No description provided for @satisfactionLevelPrompt.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mức độ hài lòng của bạn?'**
+  String get satisfactionLevelPrompt;
+
+  /// No description provided for @shareExperiencePrompt.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chia sẻ trải nghiệm'**
+  String get shareExperiencePrompt;
+
+  /// No description provided for @shareExperienceHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chia sẻ cảm nhận, lời khuyên và trải nghiệm về địa điểm này...'**
+  String get shareExperienceHint;
+
+  /// No description provided for @addPhotosPrompt.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm hình ảnh'**
+  String get addPhotosPrompt;
+
+  /// No description provided for @addPhotosMax10.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tối đa 10 ảnh'**
+  String get addPhotosMax10;
+
+  /// No description provided for @anonymousReviewLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đánh giá ẩn danh'**
+  String get anonymousReviewLabel;
+
+  /// No description provided for @anonymousReviewDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên của bạn sẽ không hiển thị công khai'**
+  String get anonymousReviewDesc;
+
+  /// No description provided for @submitReviewButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi đánh giá'**
+  String get submitReviewButton;
+
+  /// No description provided for @saveReviewEditButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu đánh giá'**
+  String get saveReviewEditButton;
+
+  /// No description provided for @reviewThankYouTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cảm ơn bạn!'**
+  String get reviewThankYouTitle;
+
+  /// No description provided for @reviewThankYouMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đánh giá của bạn đã được ghi nhận và sẽ giúp ích rất nhiều cho cộng đồng Trekker Việt Nam.'**
+  String get reviewThankYouMessage;
+
+  /// No description provided for @yourReviewSection.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đánh giá của bạn'**
+  String get yourReviewSection;
+
+  /// No description provided for @viewOtherReviewsButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem các đánh giá khác'**
+  String get viewOtherReviewsButton;
+
+  /// No description provided for @backToHomeButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quay về trang chủ'**
+  String get backToHomeButton;
+
+  /// No description provided for @noFeaturedPlaces.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có địa điểm nổi bật nào'**
+  String get noFeaturedPlaces;
+
+  /// No description provided for @noMatchingRoutes.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tìm thấy cung đường phù hợp'**
+  String get noMatchingRoutes;
+
+  /// No description provided for @noMatchingSuggestions.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tìm thấy gợi ý phù hợp'**
+  String get noMatchingSuggestions;
+
+  /// No description provided for @addRouteButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm cung đường'**
+  String get addRouteButton;
+
+  /// No description provided for @addPlaceButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm địa điểm'**
+  String get addPlaceButton;
+
+  /// No description provided for @routeEstimatedDuration.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thời gian ước tính: {duration}'**
+  String routeEstimatedDuration(String duration);
+
+  /// No description provided for @routeMaxElevation.
+  ///
+  /// In vi, this message translates to:
+  /// **'Độ cao tối đa: {elevation} m'**
+  String routeMaxElevation(String elevation);
+
+  /// No description provided for @routeElevationGain.
+  ///
+  /// In vi, this message translates to:
+  /// **'Độ cao tích lũy: {gain} m'**
+  String routeElevationGain(String gain);
+
+  /// No description provided for @routeTotalDistance.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tổng chiều dài: {distance} km'**
+  String routeTotalDistance(String distance);
+
+  /// No description provided for @routeDescriptionTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mô tả cung đường'**
+  String get routeDescriptionTitle;
+
+  /// No description provided for @routeNoDescription.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có mô tả cho cung đường này.'**
+  String get routeNoDescription;
+
+  /// No description provided for @routeDifficultyPrefix.
+  ///
+  /// In vi, this message translates to:
+  /// **'Độ khó: {difficulty}'**
+  String routeDifficultyPrefix(String difficulty);
+
+  /// No description provided for @routePlacePrefix.
+  ///
+  /// In vi, this message translates to:
+  /// **'Địa điểm: {place}'**
+  String routePlacePrefix(String place);
+
+  /// No description provided for @routeStartPrefix.
+  ///
+  /// In vi, this message translates to:
+  /// **'Điểm bắt đầu: {coords}'**
+  String routeStartPrefix(String coords);
+
+  /// No description provided for @routeEndPrefix.
+  ///
+  /// In vi, this message translates to:
+  /// **'Điểm kết thúc: {coords}'**
+  String routeEndPrefix(String coords);
+
+  /// No description provided for @downloadMapBeforeStart.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tải bản đồ trước khi bắt đầu'**
+  String get downloadMapBeforeStart;
+
+  /// No description provided for @cannotStartJourney.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể bắt đầu hành trình: {error}'**
+  String cannotStartJourney(String error);
+
+  /// No description provided for @backToJourneyScreen.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quay lại danh sách hành trình'**
+  String get backToJourneyScreen;
+
+  /// No description provided for @difficultyEasy.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dễ'**
+  String get difficultyEasy;
+
+  /// No description provided for @difficultyModerate.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trung bình'**
+  String get difficultyModerate;
+
+  /// No description provided for @difficultyHard.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khó'**
+  String get difficultyHard;
+
+  /// No description provided for @difficultyExpert.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chuyên nghiệp'**
+  String get difficultyExpert;
+
+  /// No description provided for @placeAboutSection.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giới thiệu'**
+  String get placeAboutSection;
+
+  /// No description provided for @placeNoDescription.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có thông tin giới thiệu cho địa điểm này.'**
+  String get placeNoDescription;
+
+  /// No description provided for @placeRoutesSection.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cung đường trekking ({count})'**
+  String placeRoutesSection(int count);
+
+  /// No description provided for @placeNoRoutes.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có cung đường nào tại địa điểm này.'**
+  String get placeNoRoutes;
+
+  /// No description provided for @offlineMapTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quản lý bản đồ Offline'**
+  String get offlineMapTitle;
+
+  /// No description provided for @offlineMapStorageUsed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dung lượng đã dùng: {size}'**
+  String offlineMapStorageUsed(String size);
+
+  /// No description provided for @offlineMapCount.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} bản đồ đã tải'**
+  String offlineMapCount(int count);
+
+  /// No description provided for @noOfflineMapsTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có bản đồ ngoại tuyến nào'**
+  String get noOfflineMapsTitle;
+
+  /// No description provided for @noOfflineMapsDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hãy tải bản đồ của các cung đường bạn sắp đi để sử dụng khi mất kết nối mạng.'**
+  String get noOfflineMapsDesc;
+
+  /// No description provided for @deleteOfflineMapTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xóa bản đồ ngoại tuyến'**
+  String get deleteOfflineMapTitle;
+
+  /// No description provided for @deleteOfflineMapConfirm.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có chắc chắn muốn xóa bản đồ của \"{name}\"? Bạn sẽ cần tải lại nếu muốn dùng offline.'**
+  String deleteOfflineMapConfirm(String name);
+
+  /// No description provided for @deleteOfflineMapButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xóa bản đồ'**
+  String get deleteOfflineMapButton;
+
+  /// No description provided for @deleteOfflineMapSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xóa bản đồ {name}'**
+  String deleteOfflineMapSuccess(String name);
+
+  /// No description provided for @deleteOfflineMapError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể xóa bản đồ: {error}'**
+  String deleteOfflineMapError(String error);
+
+  /// No description provided for @offlineMapInUseNotice.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản đồ \"{name}\" đang được sử dụng bởi hành trình hiện tại.'**
+  String offlineMapInUseNotice(String name);
+
+  /// No description provided for @badgeUnlocked.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã đạt được'**
+  String get badgeUnlocked;
+
+  /// No description provided for @badgeLocked.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa đạt được'**
+  String get badgeLocked;
+
+  /// No description provided for @badgeAchievedDate.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đạt được ngày: {date}'**
+  String badgeAchievedDate(String date);
+
+  /// No description provided for @badgeMissionProgress.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiến trình thử thách'**
+  String get badgeMissionProgress;
+
+  /// No description provided for @viewAll.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem tất cả'**
+  String get viewAll;
+
+  /// No description provided for @shareAchievement.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chia sẻ thành tích'**
+  String get shareAchievement;
+
+  /// No description provided for @shareAchievementText.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mình vừa đạt được danh hiệu \"{title}\" trên TrekViệt! Cùng khám phá các cung đường trekking Việt Nam nhé!'**
+  String shareAchievementText(String title);
+
+  /// No description provided for @suggestPlaceSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đề xuất địa điểm đã được gửi thành công! Quản trị viên sẽ kiểm tra và phản hồi sớm.'**
+  String get suggestPlaceSuccess;
+
+  /// No description provided for @filterAll.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tất cả'**
+  String get filterAll;
+
+  /// No description provided for @cannotLoadRoutesError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tải được một số cung đường: {error}'**
+  String cannotLoadRoutesError(String error);
+
+  /// No description provided for @noDistanceAvailable.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có cự ly'**
+  String get noDistanceAvailable;
+
+  /// No description provided for @reviewsCount.
+  ///
+  /// In vi, this message translates to:
+  /// **'{rating} ({count} đánh giá)'**
+  String reviewsCount(String rating, int count);
+
+  /// No description provided for @durationMinutes.
+  ///
+  /// In vi, this message translates to:
+  /// **'{minutes} phút'**
+  String durationMinutes(int minutes);
+
+  /// No description provided for @durationHours.
+  ///
+  /// In vi, this message translates to:
+  /// **'{hours} giờ'**
+  String durationHours(int hours);
+
+  /// No description provided for @durationHoursMinutes.
+  ///
+  /// In vi, this message translates to:
+  /// **'{hours} giờ {minutes} phút'**
+  String durationHoursMinutes(int hours, int minutes);
+
+  /// No description provided for @durationDays.
+  ///
+  /// In vi, this message translates to:
+  /// **'{days} ngày'**
+  String durationDays(String days);
+
+  /// No description provided for @routeScope.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuyến đường'**
+  String get routeScope;
+
+  /// No description provided for @placeScope.
+  ///
+  /// In vi, this message translates to:
+  /// **'Địa điểm'**
+  String get placeScope;
+
+  /// No description provided for @mapInUseBadge.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang đi'**
+  String get mapInUseBadge;
+
+  /// No description provided for @downloadedOnDate.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã tải: {date}'**
+  String downloadedOnDate(String date);
+
+  /// No description provided for @readyForOfflineUse.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sẵn sàng sử dụng offline'**
+  String get readyForOfflineUse;
+
+  /// No description provided for @manageOfflineMaps.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quản lý bản đồ offline'**
+  String get manageOfflineMaps;
+
+  /// No description provided for @homeNoPlacesToExplore.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có địa điểm để khám phá'**
+  String get homeNoPlacesToExplore;
+
+  /// No description provided for @yourMapPosterTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh bản đồ của bạn'**
+  String get yourMapPosterTitle;
+
+  /// No description provided for @downloadPosterNow.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tải ảnh ngay'**
+  String get downloadPosterNow;
+
+  /// No description provided for @loadProvinces.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tải danh sách tỉnh'**
+  String get loadProvinces;
+
+  /// No description provided for @statElevation.
+  ///
+  /// In vi, this message translates to:
+  /// **'Độ cao'**
+  String get statElevation;
+
+  /// No description provided for @statDuration.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thời gian'**
+  String get statDuration;
+
+  /// No description provided for @statRoutes.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cung đường'**
+  String get statRoutes;
+
+  /// No description provided for @difficultyExtreme.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cực khó'**
+  String get difficultyExtreme;
+
+  /// No description provided for @commonError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã có lỗi xảy ra. Vui lòng thử lại'**
+  String get commonError;
+
+  /// No description provided for @statTotalDistance.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tổng quãng đường'**
+  String get statTotalDistance;
+
+  /// No description provided for @statElevationGain.
+  ///
+  /// In vi, this message translates to:
+  /// **'Độ cao tổng'**
+  String get statElevationGain;
+
+  /// No description provided for @statEstimatedDuration.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thời gian dự kiến'**
+  String get statEstimatedDuration;
+
+  /// No description provided for @storageUsedLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dung lượng đã sử dụng'**
+  String get storageUsedLabel;
+
+  /// No description provided for @journeyCompletedTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoàn thành hành trình!'**
+  String get journeyCompletedTitle;
+
+  /// No description provided for @termsOfUseTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Điều khoản sử dụng'**
+  String get termsOfUseTitle;
+
+  /// No description provided for @termsLastUpdated.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cập nhật lần cuối: 20/12/2025'**
+  String get termsLastUpdated;
+
+  /// No description provided for @termsSection1Title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giới thiệu'**
+  String get termsSection1Title;
+
+  /// No description provided for @termsSection1Content.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chào mừng bạn đến với Trek Việt Nam, ứng dụng hỗ trợ điều hướng, ghi lại nhật ký hành trình trekking và kết nối cộng đồng đam mê dã ngoại tại Việt Nam. Bằng việc đăng ký tài khoản, bạn đồng ý tuân thủ các điều khoản này.'**
+  String get termsSection1Content;
+
+  /// No description provided for @termsSection2Title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Điều kiện sử dụng'**
+  String get termsSection2Title;
+
+  /// No description provided for @termsSection2Content.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn phải từ 16 tuổi trở lên hoặc có sự giám sát của người bảo hộ để sử dụng ứng dụng. Bạn chịu trách nhiệm hoàn toàn về tính bảo mật của mật khẩu và mọi hoạt động dưới tài khoản của mình.'**
+  String get termsSection2Content;
+
+  /// No description provided for @termsSection3Title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quyền và nghĩa vụ của người dùng'**
+  String get termsSection3Title;
+
+  /// No description provided for @termsSection3Content.
+  ///
+  /// In vi, this message translates to:
+  /// **'Người dùng được phép sử dụng bản đồ ngoại tuyến, lưu trữ lịch sử di chuyển và chia sẻ ảnh trekking lành mạnh lên cộng đồng. Nghiêm cấm hành vi phá hoại dữ liệu, đăng tải thông tin sai lệch về bản đồ biên giới hoặc địa danh nhạy cảm.'**
+  String get termsSection3Content;
+
+  /// No description provided for @termsSection4Title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quyền sở hữu trí tuệ'**
+  String get termsSection4Title;
+
+  /// No description provided for @termsSection4Content.
+  ///
+  /// In vi, this message translates to:
+  /// **'Toàn bộ mã nguồn, thiết kế đồ họa, hệ thống huy hiệu và cơ sở dữ liệu cung đường trekking độc quyền đều thuộc quyền sở hữu của Trek Việt Nam. Mọi hành vi sao chép không xin phép đều bị nghiêm cấm.'**
+  String get termsSection4Content;
+
+  /// No description provided for @termsSection5Title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giới hạn trách nhiệm'**
+  String get termsSection5Title;
+
+  /// No description provided for @termsSection5Content.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trekking là hoạt động thể thao mạo hiểm ngoài trời. Chúng tôi cung cấp bản đồ GPS mang tính tham khảo và không chịu trách nhiệm pháp lý trước bất kỳ tai nạn, rủi ro tự nhiên hay lạc đường nào của bạn trên cung đường thực tế.'**
+  String get termsSection5Content;
+
+  /// No description provided for @privacyPolicyTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chính sách bảo mật'**
+  String get privacyPolicyTitle;
+
+  /// No description provided for @privacySection1Title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thu thập dữ liệu'**
+  String get privacySection1Title;
+
+  /// No description provided for @privacySection1Content.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chúng tôi thu thập thông tin đăng ký (Tên, Email, Ảnh đại diện) và đặc biệt là dữ liệu vị trí GPS của bạn (ngay cả khi ứng dụng chạy ngầm) để vẽ bản đồ hành trình trekking và kích hoạt tính năng check-in.'**
+  String get privacySection1Content;
+
+  /// No description provided for @privacySection2Title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sử dụng dữ liệu'**
+  String get privacySection2Title;
+
+  /// No description provided for @privacySection2Content.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dữ liệu vị trí được sử dụng để hiển thị vị trí của bạn trên bản đồ dã ngoại, thống kê tổng quãng đường di chuyển và mở khóa các huy hiệu thám hiểm cá nhân.'**
+  String get privacySection2Content;
+
+  /// No description provided for @privacySection3Title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chia sẻ dữ liệu'**
+  String get privacySection3Title;
+
+  /// No description provided for @privacySection3Content.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông tin và lịch sử đi trekking của bạn chỉ được chia sẻ công khai khi bạn chủ động ấn nút \'Đăng bài viết\' trên diễn đàn Cộng đồng hoặc chia sẻ huy hiệu lên mạng xã hội.'**
+  String get privacySection3Content;
+
+  /// No description provided for @privacySection4Title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bảo mật thông tin'**
+  String get privacySection4Title;
+
+  /// No description provided for @privacySection4Content.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trek Việt Nam áp dụng các biện pháp mã hóa đầu cuối tiên tiến nhất để bảo vệ thông tin cá nhân và dữ liệu tọa độ của bạn trước các truy cập trái phép.'**
+  String get privacySection4Content;
+
+  /// No description provided for @privacySection5Title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quyền của bạn'**
+  String get privacySection5Title;
+
+  /// No description provided for @privacySection5Content.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có quyền truy cập, chỉnh sửa thông tin hồ sơ cá nhân hoặc yêu cầu xóa vĩnh viễn tài khoản cùng toàn bộ lịch sử định vị GPS đã lưu trên máy chủ của chúng tôi bất kỳ lúc nào.'**
+  String get privacySection5Content;
+
+  /// No description provided for @journeyOptionsTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tùy chọn'**
+  String get journeyOptionsTitle;
+
+  /// No description provided for @routeDetailOption.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chi tiết Tuyến đường'**
+  String get routeDetailOption;
+
+  /// No description provided for @journeyDetailOption.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chi tiết Hành trình'**
+  String get journeyDetailOption;
+
+  /// No description provided for @selectPlaceTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn địa điểm'**
+  String get selectPlaceTitle;
+
+  /// No description provided for @cannotLoadPlaces.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể tải địa điểm.'**
+  String get cannotLoadPlaces;
+
+  /// No description provided for @noPlacesAvailable.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có địa điểm.'**
+  String get noPlacesAvailable;
+
+  /// No description provided for @changePlaceButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi địa điểm'**
+  String get changePlaceButton;
+
+  /// No description provided for @searchRouteHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm cung đường'**
+  String get searchRouteHint;
+
+  /// No description provided for @cannotLoadRoutesAtPlace.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể tải cung đường tại địa điểm này.'**
+  String get cannotLoadRoutesAtPlace;
+
+  /// No description provided for @placeHasNoRoutes.
+  ///
+  /// In vi, this message translates to:
+  /// **'Địa điểm này chưa có cung đường.'**
+  String get placeHasNoRoutes;
+
+  /// No description provided for @routesAtPlacePrefix.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cung đường tại {place}'**
+  String routesAtPlacePrefix(String place);
+
+  /// No description provided for @downloadButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tải xuống'**
+  String get downloadButton;
+
+  /// No description provided for @retryDownloadButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thử tải lại'**
+  String get retryDownloadButton;
+
+  /// No description provided for @cannotLoadRoutesGeneral.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể tải cung đường. Vui lòng thử lại.'**
+  String get cannotLoadRoutesGeneral;
+
+  /// No description provided for @personalQrTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'QR cá nhân'**
+  String get personalQrTitle;
+
+  /// No description provided for @personalQrDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Người khác quét mã này để xem trang cá nhân và nhắn tin cho bạn.'**
+  String get personalQrDesc;
+
+  /// No description provided for @copyCodeButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sao chép mã'**
+  String get copyCodeButton;
+
+  /// No description provided for @closeButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đóng'**
+  String get closeButton;
+
+  /// No description provided for @noBioYet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có giới thiệu.'**
+  String get noBioYet;
+
+  /// No description provided for @userPostsCount.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} bài viết'**
+  String userPostsCount(int count);
+
+  /// No description provided for @aboutSection.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giới thiệu'**
+  String get aboutSection;
+
+  /// No description provided for @personalBio.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giới thiệu cá nhân'**
+  String get personalBio;
+
+  /// No description provided for @myQrCode.
+  ///
+  /// In vi, this message translates to:
+  /// **'QR của tôi'**
+  String get myQrCode;
+
+  /// No description provided for @reissueQrDialogTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cấp lại QR?'**
+  String get reissueQrDialogTitle;
+
+  /// No description provided for @reissueQrDialogMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mã cũ sẽ ngừng hoạt động.'**
+  String get reissueQrDialogMessage;
+
+  /// No description provided for @reissueButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cấp lại'**
+  String get reissueButton;
+
+  /// No description provided for @sendMessageButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắn tin'**
+  String get sendMessageButton;
+
+  /// No description provided for @cannotStartJourneyGeneral.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể bắt đầu hành trình. Vui lòng thử lại.'**
+  String get cannotStartJourneyGeneral;
+
+  /// No description provided for @viewMorePosts.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem thêm bài viết'**
+  String get viewMorePosts;
+
+  /// No description provided for @communityProfileTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trang cá nhân cộng đồng'**
+  String get communityProfileTitle;
+
+  /// No description provided for @backToJourneyButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quay lại hành trình'**
+  String get backToJourneyButton;
+
+  /// No description provided for @markerNameRequired.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập tên cột mốc'**
+  String get markerNameRequired;
+
+  /// No description provided for @syncFailedCheck.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đồng bộ thất bại — cần kiểm tra'**
+  String get syncFailedCheck;
+
+  /// No description provided for @savedOfflinePendingSync.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu trên máy · chờ đồng bộ'**
+  String get savedOfflinePendingSync;
+
+  /// No description provided for @memberCountText.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} thành viên'**
+  String memberCountText(int count);
+
+  /// No description provided for @cancelJourneyButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hủy hành trình'**
+  String get cancelJourneyButton;
+
+  /// No description provided for @cancelJourneyConfirmTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hủy hành trình?'**
+  String get cancelJourneyConfirmTitle;
+
+  /// No description provided for @cancelJourneyConfirmMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có chắc chắn muốn hủy hành trình này không? Trạng thái sẽ chuyển sang đã hủy.'**
+  String get cancelJourneyConfirmMessage;
+
+  /// No description provided for @editReviewOnceButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉnh sửa đánh giá (1 lần)'**
+  String get editReviewOnceButton;
+
+  /// No description provided for @completeJourneyToReview.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoàn thành hành trình tại đây để đánh giá.'**
+  String get completeJourneyToReview;
+
+  /// No description provided for @reviewRemoved.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đánh giá của bạn đã được gỡ.'**
+  String get reviewRemoved;
+
+  /// No description provided for @reviewEditLimitReached.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn đã dùng lượt chỉnh sửa đánh giá.'**
+  String get reviewEditLimitReached;
+
+  /// No description provided for @viewAllReviewsButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem tất cả đánh giá'**
+  String get viewAllReviewsButton;
 }
 
 class _AppLocalizationsDelegate

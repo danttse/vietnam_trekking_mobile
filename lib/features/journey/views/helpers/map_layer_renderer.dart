@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
@@ -196,9 +197,7 @@ class MapLayerRenderer {
     ];
     if (locations.isEmpty) return;
     if (locations.length == 1) {
-      await c.animateCamera(
-        CameraUpdate.newLatLngZoom(locations.first, 14),
-      );
+      await c.animateCamera(CameraUpdate.newLatLngZoom(locations.first, 14));
       return;
     }
     final south = locations.map((p) => p.latitude).reduce(math.min);

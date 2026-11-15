@@ -5,7 +5,9 @@ import '../../../core/widgets/buttons/btn_login_style.dart';
 import '../../../core/widgets/inputs/login_input_field.dart';
 import '../../../core/widgets/sheet/select_route_sheet.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../offline_map/services/offline_map_storage_service.dart';
 import '../../route/data/models/route_model.dart';
+import '../../route/view/download_offline_map_screen.dart';
 import '../../route/view/route_detail_screen.dart';
 import '../data/models/journey_model.dart';
 import '../viewmodels/create_new_journey_viewmodel.dart';
@@ -248,15 +250,38 @@ class _CreateNewJourneyScreenState extends State<CreateNewJourneyScreen> {
                           );
                         }
                         if (createdJourney != null && context.mounted) {
-                          final result = await Navigator.push<dynamic>(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => RouteDetailScreen(
-                                route: createdJourney.route,
-                                pendingJourney: createdJourney,
-                              ),
-                            ),
+                          // Check if offline map is already downloaded
+                          final storage = OfflineMapStorageService();
+                          final existingMap = await storage.findReadyMap(
+                            createdJourney.route.routeId,
+                            createdJourney.route.trekkingPlaceId,
                           );
+
+                          dynamic result;
+                          if (existingMap == null) {
+                            // Map not downloaded - go to download screen first
+                            result = await Navigator.push<dynamic>(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DownloadOfflineMapScreen(
+                                  route: createdJourney.route,
+                                  pendingJourney: createdJourney,
+                                ),
+                              ),
+                            );
+                          } else {
+                            // Map already downloaded - go directly to route detail
+                            result = await Navigator.push<dynamic>(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RouteDetailScreen(
+                                  route: createdJourney.route,
+                                  pendingJourney: createdJourney,
+                                ),
+                              ),
+                            );
+                          }
+
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -305,9 +330,25 @@ class _CreateNewJourneyScreenState extends State<CreateNewJourneyScreen> {
         const SizedBox(height: 8),
         InkWell(
           onTap: () async {
+            DateTime currentInitial = initialDate ?? DateTime.now();
+            final parts = controller.text.split('/');
+            if (parts.length == 3) {
+              final d = int.tryParse(parts[0]);
+              final m = int.tryParse(parts[1]);
+              final y = int.tryParse(parts[2]);
+              if (d != null && m != null && y != null) {
+                final parsed = DateTime(y, m, d);
+                final minDate = firstDate ?? DateTime(2020);
+                final maxDate = lastDate ?? DateTime(2030);
+                if (!parsed.isBefore(minDate) && !parsed.isAfter(maxDate)) {
+                  currentInitial = parsed;
+                }
+              }
+            }
+
             final DateTime? pickedDate = await showDatePicker(
               context: context,
-              initialDate: initialDate ?? DateTime.now(),
+              initialDate: currentInitial,
               firstDate: firstDate ?? DateTime(2020),
               lastDate: lastDate ?? DateTime(2030),
             );
@@ -327,9 +368,33 @@ class _CreateNewJourneyScreenState extends State<CreateNewJourneyScreen> {
               ),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-            child: Text(
-              controller.text,
-              style: TextStyle(color: colorScheme.onSurface, fontSize: 14),
+            child: ValueListenableBuilder<TextEditingValue>(
+              valueListenable: controller,
+              builder: (context, value, _) {
+                final hasText = value.text.isNotEmpty;
+                return Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        hasText ? value.text : 'DD/MM/YYYY',
+                        style: TextStyle(
+                          color: hasText
+                              ? colorScheme.onSurface
+                              : colorScheme.onSurfaceVariant.withValues(
+                                  alpha: 0.6,
+                                ),
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                    Icon(
+                      Icons.calendar_today_outlined,
+                      size: 16,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ),

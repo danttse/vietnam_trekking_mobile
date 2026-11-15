@@ -50,7 +50,7 @@ class _SuggestPlaceScreenState extends State<SuggestPlaceScreen> {
                         if (_viewModel.provinces.isEmpty)
                           TextButton(
                             onPressed: _viewModel.loadProvinces,
-                            child: const Text('Tải danh sách tỉnh'),
+                            child: Text(l10n.loadProvinces),
                           ),
                         EditTextAuthCustom(
                           label: l10n.placeName,
@@ -232,10 +232,8 @@ class _SuggestPlaceScreenState extends State<SuggestPlaceScreen> {
                         final success = await _viewModel.submit();
                         if (success && context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Đề xuất của bạn đã được gửi thành công!',
-                              ),
+                            SnackBar(
+                              content: Text(l10n.suggestPlaceSuccess),
                               backgroundColor: Colors.green,
                             ),
                           );

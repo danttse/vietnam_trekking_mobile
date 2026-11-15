@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../../features/explore/data/models/explore_place_model.dart';
 import '../../../features/route/data/models/route_model.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../services/trekking_catalog_service.dart';
 import '../cards/recommended_place_card.dart';
 import '../cards/route_card.dart';
 import 'app_draggable_sheet.dart';
-import 'select_place_sheet.dart';
 
 export 'select_place_sheet.dart';
 
@@ -63,7 +63,10 @@ class _SelectRouteSheetState extends State<SelectRouteSheet> {
       final places = await _catalog.getPlaces();
       if (mounted) setState(() => _places = places);
     } catch (_) {
-      if (mounted) setState(() => _error = 'Không thể tải địa điểm.');
+      if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        setState(() => _error = l10n.cannotLoadPlaces);
+      }
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -85,7 +88,8 @@ class _SelectRouteSheetState extends State<SelectRouteSheet> {
       if (mounted && request == _request) setState(() => _routes = routes);
     } catch (_) {
       if (mounted && request == _request) {
-        setState(() => _error = 'Không thể tải cung đường tại địa điểm này.');
+        final l10n = AppLocalizations.of(context)!;
+        setState(() => _error = l10n.cannotLoadRoutesAtPlace);
       }
     } finally {
       if (mounted && request == _request) setState(() => _loading = false);
@@ -216,6 +220,7 @@ class _SelectRouteSheetState extends State<SelectRouteSheet> {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
     final places = _places.where((p) {
       final name = (p['name'] ?? '').toString().toLowerCase();
       final province = (p['province'] ?? p['address'] ?? '')
@@ -234,8 +239,8 @@ class _SelectRouteSheetState extends State<SelectRouteSheet> {
 
     return AppDraggableSheet(
       title: _place == null
-          ? 'Chọn địa điểm'
-          : 'Cung đường tại ${_place!['name']}',
+          ? l10n.selectPlaceTitle
+          : l10n.routesAtPlacePrefix(_place!['name']),
       initialChildSize: 0.7,
       minChildSize: 0.4,
       maxChildSize: 0.95,
@@ -249,13 +254,13 @@ class _SelectRouteSheetState extends State<SelectRouteSheet> {
                 child: TextButton.icon(
                   onPressed: _back,
                   icon: const Icon(Icons.arrow_back),
-                  label: const Text('Đổi địa điểm'),
+                  label: Text(l10n.changePlaceButton),
                 ),
               ),
             ),
           _buildSearchBar(
             colors,
-            _place == null ? 'Tìm địa điểm' : 'Tìm cung đường',
+            _place == null ? l10n.searchPlaceHint : l10n.searchRouteHint,
           ),
           Expanded(
             child: _loading
@@ -270,7 +275,7 @@ class _SelectRouteSheetState extends State<SelectRouteSheet> {
                           onPressed: _place == null
                               ? _loadPlaces
                               : () => _openPlace(_place!),
-                          child: const Text('Thử lại'),
+                          child: Text(l10n.commonRetry),
                         ),
                       ],
                     ),
@@ -279,8 +284,8 @@ class _SelectRouteSheetState extends State<SelectRouteSheet> {
                 ? Center(
                     child: Text(
                       _place == null
-                          ? 'Chưa có địa điểm.'
-                          : 'Địa điểm này chưa có cung đường.',
+                          ? l10n.noPlacesAvailable
+                          : l10n.placeHasNoRoutes,
                     ),
                   )
                 : _place == null

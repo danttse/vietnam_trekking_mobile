@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 /// Widget hiển thị hoặc nhập rating 1–5 sao.
 /// Nếu [onChanged] null → read-only mode.
 class RatingStars extends StatelessWidget {
-  final int rating;       // 0–5
+  final int rating; // 0–5
   final double starSize;
   final Color activeColor;
   final Color inactiveColor;

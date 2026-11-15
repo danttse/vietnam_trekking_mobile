@@ -123,6 +123,8 @@ class LoginViewModel extends ChangeNotifier {
         return false;
       }
 
+      print('[GOOGLE_AUTH] Đã có idToken, đang gửi POST /auth/google...');
+
       // Bước 2: Gửi ID Token đến backend để verify
       final response = await _repository.googleSignIn(
         GoogleSignInRequest(idToken: idToken),
@@ -138,6 +140,7 @@ class LoginViewModel extends ChangeNotifier {
       notifyListeners();
       return true;
     } on AuthException catch (e) {
+      print("[GOOGLE_AUTH_ERROR] Backend trả về lỗi: [${e.errorCode}] ${e.message}");
       // Map lỗi từ backend
       _errorMessage = _mapAuthExceptionToMessage(e);
       _isLoading = false;
@@ -149,6 +152,7 @@ class LoginViewModel extends ChangeNotifier {
         debugPrint('[LoginViewModel] Google Sign-In error: $e');
       }
 
+      print('[GOOGLE_AUTH_ERROR] Lỗi: $e');
       final errorMsg = e.toString().toLowerCase();
       if (errorMsg.contains('network') || errorMsg.contains('connection')) {
         _errorMessage = 'Không có kết nối mạng. Vui lòng kiểm tra lại';
