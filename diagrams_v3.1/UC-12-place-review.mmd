@@ -1,0 +1,19 @@
+sequenceDiagram
+    autonumber
+    actor User as Người dùng
+    participant App as Flutter Mobile App
+    participant Gateway as API Gateway
+    participant Community as community-service
+    participant DB as MongoDB (community_db)
+
+    User->>App: Chọn một địa điểm và chọn "Đánh giá"
+    User->>App: 56. Chọn điểm số từ 1 đến 5 sao
+    User->>App: 57. Nhập nội dung nhận xét và đính kèm ảnh (tùy chọn)
+    App->>App: Kiểm tra dữ liệu bắt buộc
+    App->>Gateway: POST /places/:id/reviews (payload)
+    Gateway->>Community: 58. Validate quyền hạn, địa điểm và payload
+    Community->>DB: 59. Lưu bản ghi đánh giá vào detail_evaluates
+    Community->>DB: 59. Tính toán và cập nhật lại ratingAverage & ratingCount của địa điểm
+    Community-->>Gateway: 201 Created
+    Gateway-->>App: 200 OK
+    App-->>User: Thông báo đánh giá thành công và hiển thị nhận xét mới

@@ -1,0 +1,32 @@
+sequenceDiagram
+    autonumber
+    actor Admin as Quản trị viên (Admin)
+    participant Portal as Web Admin Portal
+    participant Gateway as API Gateway
+    participant Trekking as trekking-service
+    participant R2 as Cloudflare R2 Storage
+    participant Audit as Audit Log Module
+
+    Admin->>Portal: Mở mục Quản lý Bản đồ & Huy hiệu
+    opt Quản lý Huy hiệu (Badge)
+        Admin->>Portal: 91. Tạo / sửa thông tin huy hiệu (tên, mô tả, điều kiện đạt, iconUrl)
+        Portal->>Gateway: POST /admin/badges (payload)
+        Gateway->>Trekking: Lưu cấu hình huy hiệu mới
+        Trekking-->>Portal: 200 OK
+    end
+
+    opt Xuất bản phiên bản bản đồ offline mới
+        Admin->>Portal: 92. Chọn địa điểm, chọn file ZIP bản đồ mới và nhập version mới
+        Portal->>Portal: Băm mã SHA-256 Checksum của file ZIP
+        Portal->>R2: Upload file bản đồ lên Cloudflare R2 Storage
+        alt Upload file lên R2 gặp lỗi
+            Portal-->>Admin: Thông báo lỗi tải file, hủy bỏ xuất bản phiên bản mới
+        else Upload R2 thành công
+            Portal->>Gateway: 93. POST /admin/places/:id/map-package (version, checksum, objectKey)
+            Gateway->>Trekking: Validate metadata trước khi publish (BR-16)
+            Trekking->>Trekking: Cập nhật phiên bản bản đồ mới nhất cho Place
+            Trekking->>Audit: Ghi Audit Log (Action: PUBLISH_MAP_VERSION)
+            Trekking-->>Portal: 200 OK
+            Portal-->>Admin: 94. Thông báo xuất bản bản đồ thành công, người dùng sẽ nhận bản mới ở lần kiểm tra tiếp theo
+        end
+    end

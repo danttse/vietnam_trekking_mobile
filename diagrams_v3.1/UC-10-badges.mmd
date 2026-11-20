@@ -1,0 +1,37 @@
+sequenceDiagram
+    autonumber
+    actor User as Người dùng
+    participant App as Flutter Mobile App
+    participant SQLite as SQLite Local (local_user / cache)
+    participant Gateway as API Gateway
+    participant Auth as auth-service (Gamification)
+    participant Trekking as trekking-service (Badges)
+
+    User->>App: Mở màn hình "Hồ sơ & Thành tích" (Profile)
+    alt Có kết nối mạng (Online)
+        App->>Gateway: GET /api/v1/gamification/me & /api/v1/badges/me
+        Gateway->>Auth: Lấy cấp bậc hiện tại (10 Ranks), tổng XP và tiến độ 6 tiêu chí thăng hạng
+        Gateway->>Trekking: Lấy danh mục huy hiệu đã đạt và chưa đạt của người dùng
+        Auth-->>Gateway: Trả về RankProfile (currentRank, totalXp, nextRankCriteria)
+        Trekking-->>Gateway: Trả về danh sách Badges (earnedAt, rarity, condition)
+        Gateway-->>App: Trả về dữ liệu Gamification tổng hợp
+        App->>SQLite: Lưu cache cấp bậc, điểm XP và danh sách huy hiệu
+    else Mất kết nối mạng (Offline)
+        App->>SQLite: Đọc cache cấp bậc, lịch sử XP và huy hiệu từ SQLite
+    end
+
+    App-->>User: Hiển thị Thẻ Cấp bậc (10 Ranks), Thanh tiến độ thăng hạng (6 tiêu chí), Tổng điểm XP và Lưới huy hiệu
+
+    opt Xem chi tiết Cấp bậc & Lịch sử XP
+        User->>App: Bấm vào Huy hiệu Cấp bậc hiện tại
+        App->>Gateway: GET /api/v1/gamification/me/xp-history
+        Gateway->>Auth: Truy vấn lịch sử giao dịch điểm kinh nghiệm (xp_transactions)
+        Auth-->>App: Trả về danh sách cộng điểm XP theo 7 quy tắc nghiệp vụ
+        App-->>User: Mở màn hình Chi tiết Cấp bậc & Lịch sử cộng điểm XP (rank_detail_screen & xp_history_screen)
+    end
+
+    opt Sự kiện Thăng hạng (Rank Promotion)
+        Note over App,Auth: Khi hoàn thành Journey hoặc Check-in, sự kiện RabbitMQ kích hoạt thăng hạng ngầm
+        App->>App: Phát hiện currentRank mới cao hơn rank đã lưu cache
+        App-->>User: Bật hộp thoại chúc mừng Thăng hạng (rank_promotion_dialog) và mở khóa danh hiệu mới
+    end

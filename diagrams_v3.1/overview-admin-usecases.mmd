@@ -1,0 +1,24 @@
+flowchart LR
+    Admin(["Quản trị viên (Admin)"])
+
+    subgraph AdminPortal ["Hệ thống TrekViệt — Web Admin Portal (SRS v3.1)"]
+        UC15(["UC-15: Đăng nhập Web Admin"])
+        UC16(["UC-16: Xem Dashboard quản trị"])
+        UC17(["UC-17: Quản lý người dùng"])
+        UC18(["UC-18: Quản lý dữ liệu trekking"])
+        UC19(["UC-19: Kiểm duyệt nội dung & tin nhắn báo cáo"])
+        UC20(["UC-20: Quản lý Badge và Offline Map"])
+        UC21(["UC-21: Duyệt đóng góp (Route, Place & Custom Markers)"])
+        UC22(["UC-22: Xem Audit Log"])
+        UC26(["UC-26: Quản lý Cấu hình Cấp bậc (Admin Rank Config)"])
+    end
+
+    Admin --> UC15
+    Admin --> UC16
+    Admin --> UC17
+    Admin --> UC18
+    Admin --> UC19
+    Admin --> UC20
+    Admin --> UC21
+    Admin --> UC22
+    Admin --> UC26

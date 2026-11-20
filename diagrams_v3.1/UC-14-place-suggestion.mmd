@@ -1,0 +1,23 @@
+sequenceDiagram
+    autonumber
+    actor User as Người dùng
+    participant App as Flutter Mobile App
+    participant Gateway as API Gateway
+    participant Trekking as trekking-service
+    participant DB as MongoDB (trekking_db)
+
+    User->>App: Chọn tính năng "Đề xuất địa điểm mới"
+    User->>App: 66. Nhập tên địa điểm, tỉnh thành, ghim tọa độ trên bản đồ, mô tả, độ khó, tags và ảnh
+    App->>App: 67. Validate các trường bắt buộc (phải có tọa độ và tên)
+    alt Trực tuyến (Online)
+        App->>Gateway: 68. POST /contributions/places (payload)
+        Gateway->>Trekking: Chuyển tiếp yêu cầu
+        Trekking->>DB: 69. Lưu bản ghi vào place_suggestions (trạng thái PENDING_REVIEW)
+        DB-->>Trekking: Đã tạo bản ghi
+        Trekking-->>Gateway: 201 Created
+        Gateway-->>App: Trả về mã đề xuất và trạng thái PENDING_REVIEW
+        App-->>User: Thông báo đã gửi đề xuất địa điểm, đang chờ Admin phê duyệt
+    else Mất mạng (Offline)
+        App->>App: Lưu bản nháp vào hàng đợi đồng bộ cục bộ
+        App-->>User: Báo đã lưu bản nháp đề xuất, sẽ tự gửi khi có mạng
+    end

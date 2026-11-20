@@ -1,0 +1,26 @@
+sequenceDiagram
+    autonumber
+    actor User as Người dùng
+    participant GPS as Cảm biến GPS thiết bị
+    participant App as Flutter Mobile App
+    participant SQLite as SQLite (track_points)
+    participant Map as MapLibre Native View
+
+    loop Chu kỳ ghi vết vị trí (1 - 5 giây)
+        GPS->>App: 27. Phát tọa độ (lat, lon, accuracy, altitude, timestamp)
+        alt GPS bị tắt hoặc mất quyền truy cập
+            App-->>User: Cảnh báo GPS đã tắt và tạm dừng ghi vị trí
+        else Độ chính xác quá kém (accuracy > ngưỡng cho phép)
+            App->>App: 28. Lọc bỏ điểm GPS nhiễu (noise filtering)
+        else Điểm GPS hợp lệ
+            App->>SQLite: 29. Ghi tọa độ vào bảng track_points
+            App->>Map: 30. Vẽ tiếp polyline hành trình lên bản đồ MapLibre
+        end
+    end
+
+    opt Dẫn đường quay lại (Backtrack)
+        User->>App: Bấm chọn "Backtrack" (Dẫn đường quay lại)
+        App->>SQLite: 31. Đọc danh sách track_points theo thứ tự thời gian ngược lại
+        App->>App: Đảo chiều danh sách tọa độ (D -> C -> B -> A)
+        App->>Map: Vẽ tuyến đường backtrack riêng biệt giúp người dùng trở về an toàn (FR-JRN-07)
+    end

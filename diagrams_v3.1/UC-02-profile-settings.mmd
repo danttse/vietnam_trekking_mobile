@@ -1,0 +1,28 @@
+sequenceDiagram
+    autonumber
+    actor User as Người dùng
+    participant App as Flutter Mobile App
+    participant SQLite as SQLite Local (local_user)
+    participant Gateway as API Gateway
+    participant Auth as auth-service
+
+    User->>App: 6. Mở màn hình Profile / Cài đặt
+    App->>SQLite: Đọc cache profile & settings
+    App-->>User: Hiển thị displayName, avatar, bio, settings hiện tại
+    User->>App: 7. Sửa thông tin (bio/avatar) hoặc đổi theme/language/unit
+    App->>App: 8. Validate tính hợp lệ của dữ liệu
+    alt Cài đặt hỗ trợ Local-first (Theme / Ngôn ngữ / Đơn vị đo)
+        App->>SQLite: Lưu ngay cài đặt vào local
+        App-->>User: 10. Áp dụng giao diện / ngôn ngữ mới ngay lập tức
+    end
+
+    alt Trạng thái Online
+        App->>Gateway: 9. PUT /users/profile (kèm Bearer Token)
+        Gateway->>Auth: Cập nhật thông tin người dùng
+        Auth-->>App: 200 OK
+        App->>SQLite: Cập nhật local_user cache
+        App-->>User: Báo cập nhật hồ sơ thành công
+    else Mất kết nối mạng (Offline)
+        App->>SQLite: Lưu thay đổi local & ghi vào sync_queue
+        App-->>User: Thông báo đã lưu trên máy, sẽ tự đồng bộ khi có mạng
+    end

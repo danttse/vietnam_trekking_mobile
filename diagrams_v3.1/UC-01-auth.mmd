@@ -1,0 +1,43 @@
+sequenceDiagram
+    autonumber
+    actor User as Người dùng
+    participant App as Flutter Mobile App
+    participant Storage as Secure Storage
+    participant Gateway as API Gateway
+    participant Auth as auth-service
+    participant DB as MongoDB (auth_db)
+
+    User->>App: 1. Nhập email/mật khẩu (hoặc Google Sign-in)
+    alt Đăng ký tài khoản mới (LOCAL)
+        App->>Gateway: POST /auth/register
+        Gateway->>Auth: Chuyển tiếp yêu cầu
+        Auth->>DB: Lưu user (PENDING_VERIFICATION)
+        Auth-->>App: Gửi mã OTP xác nhận qua email
+        User->>App: 2. Nhập mã OTP
+        App->>Gateway: POST /auth/verify-otp
+        Gateway->>Auth: Xác thực OTP
+        Auth->>DB: Kích hoạt user sang ACTIVE
+    end
+
+    App->>Gateway: POST /auth/login (email, password)
+    Gateway->>Auth: Validate credentials
+    Auth->>DB: Truy vấn user & verify hash password (FR-AUTH-03)
+    alt Đăng nhập thành công (User ACTIVE)
+        Auth-->>Gateway: 3. Phát hành access_token & refresh_token
+        Gateway-->>App: 200 OK + Tokens + Profile cơ bản
+        App->>Storage: 4. Lưu tokens vào Secure Storage (FR-AUTH-04)
+        App-->>User: 5. Chuyển vào màn hình chính
+    else Sai thông tin đăng nhập
+        Auth-->>App: 401 Unauthorized (Lỗi credential chung)
+        App-->>User: Hiển thị thông báo sai thông tin
+    else Tài khoản bị BLOCKED
+        Auth-->>App: 403 Forbidden (Tài khoản đã bị khóa)
+        App-->>User: Chặn đăng nhập & thông báo tài khoản bị khóa
+    else Mất kết nối Internet
+        App->>Storage: Kiểm tra session đăng nhập đã lưu
+        alt Đã có session local hợp lệ
+            App-->>User: Cho phép vào ứng dụng ở chế độ Offline
+        else Chưa có session
+            App-->>User: Yêu cầu kết nối mạng để đăng nhập lần đầu
+        end
+    end

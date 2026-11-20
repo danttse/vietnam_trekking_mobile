@@ -1,0 +1,14 @@
+sequenceDiagram
+    autonumber
+    actor Admin as Quản trị viên (Admin)
+    participant Portal as Web Admin Portal
+    participant Gateway as API Gateway
+    participant Services as Backend Microservices
+
+    Admin->>Portal: Mở trang Tổng quan (Dashboard)
+    Portal->>Gateway: 75. GET /admin/dashboard (Header: Bearer Token)
+    Gateway->>Gateway: Thẩm định quyền ADMIN hợp lệ
+    Gateway->>Services: Gọi API thống kê tổng quan
+    Services-->>Gateway: 76. Trả về số liệu: Users, Journeys, Places, Posts, Check-ins, Pending Contributions
+    Gateway-->>Portal: 200 OK + Dashboard Metrics JSON
+    Portal-->>Admin: 77. Hiển thị các biểu đồ thống kê, hoạt động gần đây và các mục cần phê duyệt

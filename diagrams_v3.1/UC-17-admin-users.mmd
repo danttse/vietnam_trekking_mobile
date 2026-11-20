@@ -1,0 +1,25 @@
+sequenceDiagram
+    autonumber
+    actor Admin as Quản trị viên (Admin)
+    participant Portal as Web Admin Portal
+    participant Gateway as API Gateway
+    participant Auth as auth-service
+    participant Audit as Audit Log Module
+
+    Admin->>Portal: 78. Mở trang Quản lý người dùng (User Management)
+    Portal->>Gateway: GET /admin/users (kèm từ khóa tìm kiếm, bộ lọc trạng thái, phân trang)
+    Gateway->>Auth: Truy vấn danh sách tài khoản
+    Auth-->>Portal: 79. Trả về danh sách người dùng (tuyệt đối không hiển thị passwordHash, token, secret) (BR-12)
+    Portal-->>Admin: Hiển thị bảng danh sách người dùng
+
+    opt Khóa hoặc Mở khóa tài khoản (Block / Unblock)
+        Admin->>Portal: 80. Chọn một người dùng và bấm "Khóa tài khoản" (Block)
+        Portal->>Admin: Hiển thị hộp thoại xác nhận hành động nguy hiểm
+        Admin->>Portal: Xác nhận đồng ý khóa
+        Portal->>Gateway: PATCH /admin/users/:id/status (status: BLOCKED)
+        Gateway->>Auth: 81. Validate quyền hạn (không cho tự khóa chính mình)
+        Auth->>Auth: Cập nhật trạng thái người dùng
+        Auth->>Audit: 81. Ghi Audit Log (Action: BLOCK_USER, AdminId, TargetUserId) (BR-15)
+        Auth-->>Portal: 200 OK
+        Portal-->>Admin: Thông báo đã cập nhật trạng thái người dùng thành công
+    end

@@ -1,0 +1,33 @@
+sequenceDiagram
+    autonumber
+    actor User as Người dùng
+    participant App as Flutter Mobile App
+    participant GPS as Thiết bị GPS
+    participant DB as SQLite Local (local_journey_markers)
+    participant Outbox as SQLite (offline_outbox)
+    participant Gateway as API Gateway
+    participant Trekking as trekking-service
+
+    Note over User,App: Điều kiện: Hành trình đang ở trạng thái ACTIVE (FR-JRN-12)
+    User->>App: Chọn "Thêm điểm mốc" trên màn hình bản đồ hành trình (Journey Map)
+    App->>GPS: Đọc tọa độ GPS tức thời (latitude, longitude, altitude, accuracy)
+    GPS-->>App: Trả về dữ liệu vị trí địa lý
+    alt Sai số GPS yếu (> 30m)
+        App-->>User: Cảnh báo tín hiệu GPS yếu, đề xuất chờ ổn định hoặc xác nhận tọa độ thủ công
+    end
+
+    User->>App: Nhập Tên mốc, chọn Phân loại (1 trong 10 loại enum), nhập Ghi chú, Chụp/chọn Ảnh
+    App->>App: Kiểm tra hợp lệ các trường dữ liệu bắt buộc (Tên, Type, Tọa độ)
+    App->>DB: Sinh clientMarkerId (UUIDv4), ghi bản ghi vào local_journey_markers (syncStatus: PENDING_SYNC)
+    App->>DB: Lưu đường dẫn ảnh cục bộ vào local_marker_media
+    App->>Outbox: Thêm thao tác CREATE_MARKER vào hàng đợi offline_outbox
+    App-->>User: Hiển thị biểu tượng Marker tương ứng với phân loại trên bản đồ MapLibre
+
+    opt Khi có kết nối mạng (Online)
+        Outbox->>Gateway: POST /api/v1/journeys/:id/markers {clientMarkerId, name, type, note, coordinates, mediaLocalPaths}
+        Gateway->>Trekking: Đồng bộ điểm mốc cá nhân lên server
+        Trekking->>Trekking: Lưu bản ghi journey_markers vào MongoDB (trekking_db)
+        Trekking-->>Outbox: 201 Created (trả về serverMarkerId)
+        Outbox->>DB: Cập nhật serverMarkerId và đổi trạng thái syncStatus = SYNCED
+        Outbox->>Outbox: Xóa tác vụ khỏi hàng đợi đồng bộ
+    end

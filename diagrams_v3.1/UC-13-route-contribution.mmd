@@ -1,0 +1,30 @@
+sequenceDiagram
+    autonumber
+    actor User as Người dùng
+    participant App as Flutter Mobile App
+    participant SQLite as SQLite Local (local_contributions / markers)
+    participant Queue as SQLite (offline_outbox / sync_queue)
+    participant Gateway as API Gateway
+    participant Trekking as trekking-service
+    participant R2 as Cloudflare R2 Storage
+
+    Note over User,App: Điều kiện: Journey đã COMPLETED, có track summary, đã check-in mốc kết thúc (BR-17)
+    User->>App: Sau màn hình tổng kết hành trình, chọn "Đóng góp cung đường"
+    App->>SQLite: Đọc danh sách các Điểm mốc cá nhân (Custom Markers) tạo trong hành trình
+    App-->>User: Hiển thị xem trước bản đồ tuyến đường, cự ly, độ cao và danh sách các Điểm mốc cá nhân đã ghim
+    User->>App: Nhập tên gợi ý, mô tả, cảnh báo an toàn, chọn lọc Marker và chọn ảnh/file GPX
+    App->>SQLite: Tạo bản ghi local_contributions (sourceJourneyId, encodedPolyline, markerIds[])
+
+    alt Có kết nối mạng (Online)
+        App->>Gateway: POST /api/v1/contributions/routes {sourceJourneyId, markerIds[], encodedPolyline, stats, description}
+        Gateway->>Trekking: Gửi hồ sơ đóng góp cung đường kèm danh sách Marker cá nhân
+        Trekking-->>App: 201 Created (trả về submissionId và trạng thái PENDING_REVIEW)
+        opt Nếu có file ảnh / GPX lớn
+            App->>R2: Upload trực tiếp file lên R2 qua Signed URL
+        end
+        App->>SQLite: Cập nhật trạng thái đóng góp sang PENDING_REVIEW
+        App-->>User: Thông báo đóng góp thành công, đang chờ Admin phê duyệt (BR-18)
+    else Mất kết nối mạng (Offline)
+        App->>Queue: Đưa hồ sơ đóng góp vào hàng đợi đồng bộ (chính sách NORMAL/BULK)
+        App-->>User: Thông báo đã lưu bản nháp đóng góp, hệ thống sẽ tự động gửi khi có Internet
+    end
