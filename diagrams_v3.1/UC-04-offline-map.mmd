@@ -1,0 +1,39 @@
+sequenceDiagram
+    autonumber
+    actor User as Người dùng
+    participant App as Flutter Mobile App
+    participant FS as Local File System (MBTiles)
+    participant SQLite as SQLite Local (downloaded_maps / cache)
+    participant Gateway as API Gateway
+    participant Trekking as trekking-service
+    participant R2 as Cloudflare R2 Storage
+
+    User->>App: Chọn "Tải bản đồ offline" cho Địa điểm (Place)
+    App->>Gateway: GET /api/v1/places/:id/offline-package
+    Gateway->>Trekking: Yêu cầu metadata gói ngoại tuyến cấp Địa điểm (Place-level)
+    Trekking-->>App: Trả về metadata (version, checksum SHA-256, downloadUrl, sizeBytes, routes[], milestones[])
+    
+    App->>FS: Kiểm tra dung lượng bộ nhớ trống thiết bị
+    alt Thiếu dung lượng trống
+        App-->>User: Chặn tải & cảnh báo không đủ bộ nhớ lưu trữ
+    else Đủ dung lượng
+        App-->>User: Hiển thị thông tin dung lượng và phiên bản gói Địa điểm
+        User->>App: Xác nhận bắt đầu tải gói ngoại tuyến
+        App->>SQLite: Upsert thông tin Place cùng toàn bộ Tuyến đường (Routes) và Cột mốc (Milestones) trực thuộc
+        App->>R2: Bắt đầu tải file nén bản đồ từ downloadUrl (Cloudflare R2)
+        alt Mất mạng giữa chừng khi tải
+            App->>FS: Giữ file .zip.part tạm thời, đánh dấu trạng thái INCOMPLETE
+            App-->>User: Báo lỗi gián đoạn kết nối, sẵn sàng resume khi có mạng
+        else Tải xong 100%
+            App->>FS: Băm SHA-256 nội dung file .zip.part vừa tải
+            alt Checksum không khớp
+                App->>FS: Xóa file tạm bị lỗi
+                App-->>User: Cảnh báo lỗi toàn vẹn (Checksum SHA-256 mismatch)
+            else Checksum hợp lệ
+                App->>FS: Giải nén file ZIP (.mbtiles, style.json, glyphs) vào thư mục bản đồ an toàn
+                App->>FS: Mở kết nối kiểm tra tính toàn vẹn SQLite MBTiles (70+ tiles)
+                App->>SQLite: Đánh dấu downloaded_maps status = READY (dùng chung cho mọi route thuộc địa điểm)
+                App-->>User: Thông báo gói bản đồ ngoại tuyến đã sẵn sàng sử dụng
+            end
+        end
+    end

@@ -1,0 +1,35 @@
+sequenceDiagram
+    autonumber
+    actor User as Người dùng
+    participant GPS as Cảm biến GPS thiết bị
+    participant App as Flutter Mobile App
+    participant SQLite as SQLite Local (offline_checkins)
+    participant Queue as SQLite (sync_queue)
+    participant Gateway as API Gateway
+    participant Checkin as checkin-service
+    participant Broker as RabbitMQ Broker
+
+    User->>App: Tiếp cận cột mốc và bấm "Check-in"
+    App->>GPS: 32. Lấy vị trí tọa độ hiện tại và sai số accuracy
+    App->>App: 33. Tính khoảng cách Haversine từ GPS đến Milestone
+    alt Khoảng cách > bán kính (radius) HOẶC accuracy không đạt ngưỡng
+        App-->>User: Từ chối check-in & báo khoảng cách hiện tại chưa đạt (BR-02)
+    else Khoảng cách <= bán kính VÀ accuracy đạt chuẩn
+        App->>SQLite: Kiểm tra trùng lặp (User + Journey + Milestone)
+        alt Đã từng check-in cột mốc này trong Journey
+            App-->>User: Thông báo cột mốc đã được check-in trước đó (BR-03)
+        else Check-in hợp lệ
+            App->>SQLite: 34. Lưu offline_checkins (trạng thái LOCAL_VERIFIED)
+            alt Có mạng (Online)
+                App->>Gateway: 35. POST /checkins (journeyId, milestoneId, GPS data)
+                Gateway->>Checkin: Thẩm định tọa độ & tính toán
+                Checkin->>Checkin: 36. Xác minh và đánh dấu trạng thái VERIFIED
+                Checkin->>Broker: 37. Bắn event checkin.verified để cập nhật tiến độ tỉnh/huy hiệu
+                Checkin-->>App: 200 OK + Verified Status
+                App->>SQLite: Cập nhật trạng thái sang VERIFIED
+            else Mất mạng (Offline)
+                App->>Queue: 35. Đưa thao tác check-in vào sync_queue
+                App-->>User: Báo check-in thành công trên máy, chờ đồng bộ khi có mạng
+            end
+        end
+    end

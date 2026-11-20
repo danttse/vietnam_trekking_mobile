@@ -1,0 +1,24 @@
+sequenceDiagram
+    autonumber
+    actor Admin as Quản trị viên (Admin)
+    participant Portal as Web Admin Portal
+    participant Gateway as API Gateway
+    participant Auth as auth-service
+    participant DB as MongoDB (auth_db)
+
+    Admin->>Portal: 71. Nhập tài khoản quản trị và mật khẩu
+    Portal->>Gateway: 72. POST /auth/admin/login
+    Gateway->>Auth: Xác thực tài khoản quản trị
+    Auth->>DB: Truy vấn thông tin user & kiểm tra password hash
+    Auth->>Auth: 73. Kiểm tra vai trò role = ADMIN và trạng thái = ACTIVE (BR-11)
+    alt Thông tin chính xác & Role ADMIN
+        Auth-->>Gateway: 74. Phát hành access_token có claim role: ADMIN
+        Gateway-->>Portal: 200 OK + JWT Token + Thông tin quản trị
+        Portal-->>Admin: Điều hướng vào trang Dashboard quản trị
+    else Tài khoản mang role USER cố tình đăng nhập
+        Auth-->>Portal: 403 Forbidden (Không có quyền truy cập quản trị) (AC-15)
+        Portal-->>Admin: Hiển thị thông báo từ chối truy cập
+    else Tài khoản bị BLOCKED hoặc INACTIVE
+        Auth-->>Portal: 403 Forbidden (Tài khoản đã bị vô hiệu hóa)
+        Portal-->>Admin: Báo lỗi tài khoản bị khóa
+    end

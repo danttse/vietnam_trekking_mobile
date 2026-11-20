@@ -1,0 +1,49 @@
+sequenceDiagram
+    autonumber
+    actor UserA as Người dùng A
+    actor UserB as Người dùng B
+    participant AppA as Flutter App A (Scanner/Chat)
+    participant AppB as Flutter App B
+    participant Gateway as API Gateway
+    participant Comm as community-service
+    participant WS as WebSocket Service
+
+    opt Luồng 1: Kết nối nhanh bằng Quét mã QR cá nhân
+        UserB->>AppB: Mở "Mã QR của tôi" (community_people.dart)
+        AppB-->>UserB: Hiển thị mã QR token ngẫu nhiên (không lộ email/token xác thực, có nút cấp lại mã)
+        UserA->>AppA: Mở "Quét mã QR" (personal_qr_scanner.dart)
+        AppA->>AppA: Quét camera thiết bị -> Đọc mã QR Token
+        AppA->>Gateway: GET /api/v1/community/users/qr/:qrToken
+        Gateway->>Comm: Phân giải thông tin hồ sơ người dùng
+        Comm-->>AppA: 200 OK (Thông tin User B: Tên hiển thị, Avatar, Bio, Public Posts)
+        AppA-->>UserA: Mở màn hình Community Profile của User B
+        UserA->>AppA: Bấm nút "Nhắn tin" để mở cuộc trò chuyện
+    end
+
+    opt Luồng 2: Nhắn tin trực tiếp (1-1) / Chat nhóm (tối đa 50 người)
+        UserA->>AppA: Nhập tin nhắn văn bản (tối đa 4,000 ký tự) và bấm Gửi
+        AppA->>Gateway: POST /api/v1/community/conversations/:id/messages {content, retryKey}
+        Gateway->>Comm: Kiểm tra tính hợp lệ (độ dài, thành viên nhóm, tài khoản ACTIVE)
+        Comm->>Comm: Lưu bản ghi tin nhắn vào MongoDB (community_db)
+        Comm->>WS: Phát sự kiện new_message {conversationId, messageId}
+        Comm-->>AppA: 201 Created {messageId, sentAt, status: SENT}
+        AppA-->>UserA: Cập nhật tin nhắn sang trạng thái ĐÃ GỬI trên giao diện
+        WS-->>AppB: Bắn tín hiệu socket cập nhật hộp thư (Inbox unread count +1)
+        AppB->>Gateway: GET /api/v1/community/conversations/:id/messages (Đồng bộ tin nhắn mới)
+        AppB-->>UserB: Hiển thị tin nhắn của User A thời gian thực trên màn hình chat
+    end
+
+    opt Luồng 3: Thu hồi tin nhắn / Báo cáo vi phạm
+        alt Thu hồi tin nhắn (User A thu hồi tin nhắn của chính mình)
+            UserA->>AppA: Nhấn giữ tin nhắn của mình -> Chọn "Thu hồi"
+            AppA->>Gateway: PATCH /api/v1/community/messages/:id/revoke
+            Comm->>Comm: Cập nhật trạng thái tin nhắn thành REVOKED (Tombstone: "Tin nhắn đã được thu hồi")
+            Comm-->>AppA: 200 OK
+            AppA-->>UserA: Cập nhật hiển thị tin nhắn đã thu hồi ở cả 2 phía
+        else Báo cáo tin nhắn (User B báo cáo tin nhắn vi phạm của User A)
+            UserB->>AppB: Nhấn giữ tin nhắn của User A -> Chọn "Báo cáo"
+            AppB->>Gateway: POST /api/v1/community/messages/:id/report {reason, context}
+            Comm->>Comm: Đưa tin nhắn vào hàng đợi message_reports cho Admin kiểm duyệt (UC-19)
+            Comm-->>AppB: 200 OK (Thông báo: Cảm ơn bạn đã báo cáo vi phạm)
+        end
+    end

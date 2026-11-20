@@ -1,0 +1,30 @@
+sequenceDiagram
+    autonumber
+    actor Admin as Quản trị viên (Admin)
+    participant Portal as Web Admin Portal
+    participant Gateway as API Gateway
+    participant Community as community-service
+    participant Audit as Audit Log Module
+
+    Admin->>Portal: Mở phân hệ Kiểm duyệt Cộng đồng (Community Moderation)
+    Portal->>Gateway: GET /api/v1/admin/moderation (lọc theo tab: BÀI VIẾT / BÌNH LUẬN / ĐÁNH GIÁ / TIN NHẮN BÁO CÁO)
+    Gateway->>Community: Truy vấn danh sách nội dung và tin nhắn chat bị báo cáo (message_reports)
+    Community-->>Portal: Trả về danh sách kèm lý do báo cáo, bằng chứng vi phạm và thông tin người gửi
+    Portal-->>Admin: Hiển thị bảng nội dung & báo cáo tin nhắn chờ xử lý
+
+    alt Xử lý bài viết / bình luận / đánh giá vi phạm
+        Admin->>Portal: Chọn hành động: "Ẩn nội dung" (Hide) hoặc "Xóa vĩnh viễn" (Delete)
+        Portal->>Gateway: PATCH /api/v1/admin/posts/:id/moderation (status: HIDDEN / DELETED)
+        Gateway->>Community: Cập nhật trạng thái hiển thị của bài viết
+        Community->>Audit: Ghi Audit Log (Action: MODERATE_POST, AdminId, TargetId, Reason) (BR-15)
+        Community-->>Portal: 200 OK
+        Portal-->>Admin: Cập nhật trạng thái xử lý thành công trên giao diện
+    else Xử lý Báo cáo Tin nhắn Chat vi phạm (Message Reports)
+        Admin->>Portal: Chọn một tin nhắn bị báo cáo: xem trích đoạn hội thoại và lý do báo cáo
+        Admin->>Portal: Chọn quyết định: "Xóa tin nhắn vi phạm" (Revoke Message) hoặc "Bác bỏ báo cáo" (Dismiss)
+        Portal->>Gateway: PATCH /api/v1/admin/messages/:id/moderation {decision: REVOKE_AND_WARN / DISMISS, adminNote}
+        Gateway->>Community: Cập nhật trạng thái tin nhắn thành REVOKED và đánh dấu report RESOLVED
+        Community->>Audit: Ghi Audit Log (Action: MODERATE_MESSAGE, AdminId, MessageId, SenderId, Reason)
+        Community-->>Portal: 200 OK
+        Portal-->>Admin: Thông báo đã xử lý vi phạm tin nhắn chat thành công
+    end

@@ -1,0 +1,32 @@
+sequenceDiagram
+    autonumber
+    actor Admin as Quản trị viên (Admin)
+    participant Portal as Web Admin Portal
+    participant Gateway as API Gateway
+    participant Trekking as trekking-service
+    participant Audit as Audit Log Module
+
+    Admin->>Portal: Mở mục Quản lý dữ liệu Trekking
+    Portal->>Gateway: GET /admin/places & /admin/routes
+    Gateway->>Trekking: Lấy danh mục dữ liệu trekking
+    Trekking-->>Portal: Trả về danh sách địa điểm, cung đường và cột mốc
+    Portal-->>Admin: Hiển thị danh sách dữ liệu
+
+    opt Thêm mới / Cập nhật cung đường (Route)
+        Admin->>Portal: 82-84. Nhập thông tin Route, tải lên file GeoJSON lộ trình và danh sách cột mốc (milestones) kèm bán kính (radius)
+        Portal->>Portal: 85. Validate cú pháp GeoJSON và quan hệ hợp lệ
+        Portal->>Gateway: POST /admin/routes (payload)
+        Gateway->>Trekking: Lưu thông tin cung đường mới
+        Trekking->>Audit: 86. Ghi Audit Log (Action: CREATE_ROUTE)
+        Trekking-->>Portal: 201 Created
+        Portal-->>Admin: Thông báo tạo cung đường mới thành công
+    end
+
+    opt Vô hiệu hóa Địa điểm (Soft Delete / Disable Place)
+        Admin->>Portal: 82. Chọn một Place và bấm "Vô hiệu hóa" (Disable)
+        Portal->>Gateway: PATCH /admin/places/:id/disable
+        Gateway->>Trekking: Cập nhật status = DISABLED (BR-14: Ưu tiên soft-delete để bảo toàn lịch sử)
+        Trekking->>Audit: 86. Ghi Audit Log (Action: DISABLE_PLACE)
+        Trekking-->>Portal: 200 OK
+        Portal-->>Admin: Cập nhật trạng thái thành công
+    end

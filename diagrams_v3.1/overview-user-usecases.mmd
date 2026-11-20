@@ -1,0 +1,45 @@
+flowchart LR
+    User(["Người dùng (User)"])
+    GPS(["GPS thiết bị"])
+
+    subgraph TrekVietApp ["Hệ thống TrekViệt — Flutter Mobile App (SRS v3.1)"]
+        UC01(["UC-01: Đăng ký / Đăng nhập"])
+        UC02(["UC-02: Quản lý hồ sơ và cài đặt"])
+        UC03(["UC-03: Khám phá địa điểm / cung đường"])
+        UC04(["UC-04: Tải gói offline cấp Địa điểm (Place-level)"])
+        UC05(["UC-05: Tạo và quản lý hành trình"])
+        UC06(["UC-06: Ghi GPS và Backtrack"])
+        UC07(["UC-07: Check-in cột mốc chuẩn"])
+        UC08(["UC-08: Đồng bộ dữ liệu offline"])
+        UC09(["UC-09: Xem bản đồ tỉnh (SELF_REPORTED / VERIFIED)"])
+        UC10(["UC-10: Cấp bậc (Rank), Huy hiệu (Badge) & XP"])
+        UC11(["UC-11: Tương tác bảng tin cộng đồng"])
+        UC12(["UC-12: Đánh giá địa điểm"])
+        UC13(["UC-13: Chia sẻ cung đường (kèm Marker cá nhân)"])
+        UC14(["UC-14: Đề xuất địa điểm mới"])
+        UC23(["UC-23: Nhắn tin trực tiếp, Chat nhóm & Kết nối QR"])
+        UC24(["UC-24: Tạo và quản lý Điểm mốc cá nhân (Markers)"])
+        UC25(["UC-25: Khôi phục và Đặt lại Mật khẩu (OTP)"])
+    end
+
+    User --> UC01
+    User --> UC02
+    User --> UC03
+    User --> UC04
+    User --> UC05
+    User --> UC06
+    User --> UC07
+    User --> UC08
+    User --> UC09
+    User --> UC10
+    User --> UC11
+    User --> UC12
+    User --> UC13
+    User --> UC14
+    User --> UC23
+    User --> UC24
+    User --> UC25
+
+    GPS --> UC06
+    GPS --> UC07
+    GPS --> UC24

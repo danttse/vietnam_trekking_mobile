@@ -1,0 +1,33 @@
+sequenceDiagram
+    autonumber
+    actor User as Người dùng
+    participant App as Flutter Mobile App
+    participant Gateway as API Gateway
+    participant Community as community-service
+    participant DB as MongoDB (community_db)
+
+    User->>App: Mở tab Cộng đồng (Community Feed)
+    App->>Gateway: 52. GET /posts (phân trang page, limit)
+    Gateway->>Community: Lấy danh sách bài viết
+    Community->>DB: Truy vấn các bài viết ở trạng thái VISIBLE
+    DB-->>Community: Danh sách bài đăng
+    Community-->>App: 200 OK + List Posts
+    App-->>User: Hiển thị bảng tin cộng đồng
+
+    opt Đăng bài viết mới
+        User->>App: 53. Soạn bài viết, chọn ảnh và gắn thẻ Journey/Place
+        App->>Gateway: POST /posts (content, media, journeyId)
+        Gateway->>Community: Tạo bài đăng mới
+        Community->>DB: Lưu bài viết
+        Community-->>App: 201 Created
+        App-->>User: Hiển thị bài viết vừa tạo trên bảng tin
+    end
+
+    opt Tương tác bài viết
+        User->>App: 54. Thả tim (Reaction) hoặc 55. Bình luận (Comment)
+        App->>Gateway: POST /posts/:id/reactions (hoặc /comments)
+        Gateway->>Community: Ghi nhận tương tác
+        Community->>DB: Lưu tương tác
+        Community-->>App: 200 OK
+        App-->>User: Cập nhật số đếm tương tác và hiển thị bình luận
+    end

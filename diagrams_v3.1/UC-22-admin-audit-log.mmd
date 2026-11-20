@@ -1,0 +1,17 @@
+sequenceDiagram
+    autonumber
+    actor Admin as Quản trị viên (Admin)
+    participant Portal as Web Admin Portal
+    participant Gateway as API Gateway
+    participant Auth as auth-service (Audit Module)
+    participant DB as MongoDB (audit_logs)
+
+    Admin->>Portal: Mở mục Nhật ký kiểm toán (Audit Logs)
+    Admin->>Portal: 102. Chọn bộ lọc: khoảng thời gian, admin thực hiện, loại hành động, đối tượng
+    Portal->>Gateway: GET /admin/audit-logs (params lọc)
+    Gateway->>Auth: 103. Truy vấn danh sách nhật ký kiểm toán (phân trang)
+    Auth->>DB: Query collection audit_logs
+    DB-->>Auth: Danh sách bản ghi nhật ký
+    Auth->>Auth: Kiểm tra và đảm bảo không lộ passwordHash, refresh token hoặc secret (BR-12, AC-23)
+    Auth-->>Portal: 104. 200 OK + Danh sách phân trang Audit Logs
+    Portal-->>Admin: Hiển thị bảng nhật ký chi tiết: Thời điểm, Admin thực hiện, Hành động, Đối tượng và Tóm tắt thay đổi trước/sau

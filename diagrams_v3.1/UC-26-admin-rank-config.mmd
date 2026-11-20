@@ -1,0 +1,32 @@
+sequenceDiagram
+    autonumber
+    actor Admin as Quản trị viên (Admin)
+    participant Portal as Web Admin Portal
+    participant Gateway as API Gateway
+    participant Auth as auth-service (Gamification)
+    participant Audit as Audit Log Module
+    participant DB as MongoDB (auth_db)
+
+    Admin->>Portal: Mở phân hệ Cấu hình Cấp bậc & Điểm thưởng (Rank Configuration)
+    Portal->>Gateway: GET /api/v1/admin/ranks
+    Gateway->>Auth: Xác thực quyền ADMIN và truy vấn bảng rank_configs
+    Auth->>DB: Lấy danh sách 10 cấp bậc (từ level 1 NEWBIE đến level 10 TREK_LEGEND)
+    DB-->>Auth: Trả về cấu hình 10 cấp bậc kèm ngưỡng 6 tiêu chí
+    Auth-->>Portal: 200 OK (Danh sách cấu hình Cấp bậc)
+    Portal-->>Admin: Hiển thị bảng danh sách 10 Cấp bậc và các điều kiện thăng hạng hiện tại
+
+    Admin->>Portal: Chọn một Cấp bậc cần điều chỉnh ngưỡng (ví dụ: cấp 5 PATHFINDER), sửa các giá trị tiêu chí
+    Admin->>Portal: Bấm "Lưu cấu hình Cấp bậc"
+    Portal->>Gateway: PUT /api/v1/admin/ranks/:level {minXp, minRoutes, minProvinces, minBadges, minDistanceKm, minApprovedContributions, name}
+    Gateway->>Auth: Kiểm tra tính hợp lệ và thẩm quyền quản trị
+
+    Auth->>Auth: Kiểm tra tính đơn điệu tăng dần (Ngưỡng cấp N phải lớn hơn cấp N-1 và nhỏ hơn cấp N+1)
+    alt Vi phạm tính đơn điệu tăng dần (Ngưỡng không hợp lý)
+        Auth-->>Portal: 422 Unprocessable Entity (Ngưỡng điều kiện không được thấp hơn cấp bậc liền trước)
+        Portal-->>Admin: Hiển thị cảnh báo lỗi logic cấu hình
+    else Cấu hình hợp lệ
+        Auth->>DB: Cập nhật bản ghi cấu hình trong collection rank_configs
+        Auth->>Audit: Ghi Audit Log (Action: UPDATE_RANK_CONFIG, AdminId, Level, BeforeSummary, AfterSummary)
+        Auth-->>Portal: 200 OK (Cập nhật cấu hình thành công)
+        Portal-->>Admin: Thông báo cập nhật cấu hình cấp bậc thành công trên toàn hệ thống
+    end

@@ -1,0 +1,25 @@
+sequenceDiagram
+    autonumber
+    actor User as Người dùng
+    participant App as Flutter Mobile App
+    participant SQLite as SQLite Local (cached_places/routes)
+    participant Gateway as API Gateway
+    participant Trekking as trekking-service
+
+    User->>App: 11. Mở tab Khám phá (Explore)
+    alt Có kết nối Internet
+        User->>App: 12. Tìm kiếm theo từ khóa hoặc lọc theo vùng, độ khó, tag
+        App->>Gateway: GET /places & /routes (params lọc)
+        Gateway->>Trekking: Lấy danh mục địa điểm và cung đường
+        Trekking-->>App: 200 OK + Danh sách Places & Routes
+        App->>SQLite: Upsert lưu cache local
+        App-->>User: Hiển thị danh sách kết quả / gợi ý
+    else Mất kết nối mạng (Offline)
+        App->>SQLite: Truy vấn cached_places & cached_routes
+        App-->>User: Hiển thị danh sách địa điểm đã lưu trong bộ nhớ máy
+    end
+
+    User->>App: 13. Chọn xem chi tiết Địa điểm (Place)
+    App-->>User: Hiển thị mô tả, ảnh, vị trí, độ khó, rating trung bình
+    User->>App: 14. Chọn xem chi tiết Cung đường (Route)
+    App-->>User: Hiển thị cự ly (distance), thời gian (duration), độ dốc (elevation), danh sách cột mốc và tình trạng bản đồ offline

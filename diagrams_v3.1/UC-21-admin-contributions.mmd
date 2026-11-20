@@ -1,0 +1,44 @@
+sequenceDiagram
+    autonumber
+    actor Admin as Quản trị viên (Admin)
+    participant Portal as Web Admin Portal
+    participant Gateway as API Gateway
+    participant Trekking as trekking-service
+    participant Audit as Audit Log Module
+    participant Broker as RabbitMQ Broker
+
+    Admin->>Portal: Mở mục Đóng góp người dùng (User Contributions)
+    Portal->>Gateway: GET /api/v1/admin/contributions (lọc type: ROUTE/PLACE, status: PENDING_REVIEW)
+    Gateway->>Trekking: Lấy danh sách đóng góp đang chờ duyệt
+    Trekking-->>Portal: Trả về danh sách đóng góp
+    Portal-->>Admin: Mở chi tiết đóng góp: hiển thị xem trước bản đồ tuyến đường, tọa độ, cự ly, media và danh sách Marker cá nhân đính kèm
+
+    opt Duyệt từng Điểm mốc cá nhân thành Milestone chính thức
+        Admin->>Portal: Chọn một Marker cá nhân trong danh sách đính kèm, chỉnh sửa tên/bán kính radius nếu cần
+        Admin->>Portal: Bấm "Chấp thuận mốc" (Approve Marker as Milestone)
+        Portal->>Gateway: POST /api/v1/admin/contributions/:id/markers/:markerId/review {decision: APPROVED, officialType, radius}
+        Gateway->>Trekking: Tạo bản ghi Milestone chính thức gắn với Route chuẩn
+        Trekking->>Audit: Ghi Audit Log (Action: APPROVE_MARKER_TO_MILESTONE, markerId)
+        Trekking-->>Portal: 200 OK (Đã chuyển Marker thành Milestone chính thức)
+    end
+
+    Admin->>Admin: Kiểm tra tổng thể vệt đường, tránh trùng lặp và xác nhận chất lượng dữ liệu
+
+    alt Phê duyệt toàn bộ hồ sơ đóng góp (APPROVE)
+        Admin->>Portal: Bấm "Phê duyệt cung đường" (Approve) và nhập ghi chú adminNote
+        Portal->>Gateway: PATCH /api/v1/admin/contributions/:id/review (decision: APPROVED)
+        Gateway->>Trekking: Áp dụng Optimistic Lock kiểm tra trạng thái đóng góp
+        Trekking->>Trekking: Tạo mới trekking_route chính thức (kèm các milestones đã duyệt) hoặc liên kết route hiện có
+        Trekking->>Trekking: Lưu resultingEntityId, reviewer metadata và thời điểm duyệt (BR-19)
+        Trekking->>Audit: Ghi Audit Log (Action: APPROVE_CONTRIBUTION, AdminId, ResultingRouteId)
+        Trekking->>Broker: Publish event contribution.approved (kích hoạt cộng XP cho người đóng góp)
+        Trekking-->>Portal: 200 OK
+        Portal-->>Admin: Thông báo phê duyệt thành công và đã xuất bản dữ liệu trekking chính thức
+    else Từ chối hoặc Yêu cầu chỉnh sửa (REJECT / NEEDS_REVISION)
+        Admin->>Portal: Chọn "Từ chối" hoặc "Yêu cầu chỉnh sửa", nhập lý do vào adminNote
+        Portal->>Gateway: PATCH /api/v1/admin/contributions/:id/review (decision: REJECTED / NEEDS_REVISION)
+        Gateway->>Trekking: Cập nhật trạng thái đóng góp và lý do
+        Trekking->>Audit: Ghi Audit Log (Action: REJECT_CONTRIBUTION / REQUEST_REVISION)
+        Trekking-->>Portal: 200 OK
+        Portal-->>Admin: Cập nhật trạng thái xử lý thành công trên giao diện
+    end

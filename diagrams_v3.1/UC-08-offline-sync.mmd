@@ -1,0 +1,28 @@
+sequenceDiagram
+    autonumber
+    participant App as Flutter Mobile App (Sync Worker)
+    participant SQLite as SQLite Local (sync_queue)
+    participant Gateway as API Gateway
+    participant Domain as Backend Domain Services
+    participant Broker as RabbitMQ Broker
+
+    Note over App: Kích hoạt: Có mạng trở lại, Timer 30s định kỳ, hoặc khi mở lại app
+    App->>SQLite: 38. Lấy các item PENDING theo thứ tự ưu tiên và phụ thuộc
+    App->>App: 39. Kiểm tra policy (IMMEDIATE, NORMAL, OFF_PEAK)
+    Note over App: 40. Đảm bảo Journey CREATE luôn được gửi trước Check-in phụ thuộc (FR-SYNC-03)
+
+    loop Gửi từng gói dữ liệu đồng bộ
+        App->>Gateway: 41. POST /sync/batch (kèm idempotencyKey & clientOperationId)
+        alt Server quá tải (HTTP 429) kèm header Retry-After
+            Gateway-->>App: 429 Too Many Requests + Retry-After
+            App->>SQLite: Cập nhật nextRetryAt, hoãn gửi dữ liệu NORMAL/BULK
+        else Mất mạng hoặc lỗi 5xx
+            App->>SQLite: Tăng retryCount, tính thời gian Exponential Backoff
+        else Xử lý thành công
+            Gateway->>Domain: 42. Lưu dữ liệu chính vào Database
+            Domain->>Broker: 43. Publish async event cập nhật badge/province/thống kê
+            Domain-->>Gateway: Trả kết quả {clientOperationId, serverId, status}
+            Gateway-->>App: 200 OK
+            App->>SQLite: 44. Cập nhật mapping ID địa phương <-> máy chủ và xóa item khỏi sync_queue
+        end
+    end

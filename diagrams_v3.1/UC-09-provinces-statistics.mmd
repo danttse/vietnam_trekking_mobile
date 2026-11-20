@@ -1,0 +1,39 @@
+sequenceDiagram
+    autonumber
+    actor User as Người dùng
+    participant App as Flutter Mobile App
+    participant SQLite as SQLite Local (visited_provinces)
+    participant Gateway as API Gateway
+    participant Checkin as checkin-service
+
+    User->>App: Mở màn hình Thống kê / Bản đồ hành chính
+    alt Có kết nối mạng (Online)
+        App->>Gateway: GET /api/v1/visits/provinces/me & /visits/me/summary
+        Gateway->>Checkin: Lấy danh sách 63 tỉnh kèm trạng thái (UNVISITED / SELF_REPORTED / VERIFIED) và thống kê
+        Checkin-->>App: Trả về danh sách tỉnh và chỉ số khám phá tổng hợp
+        App->>SQLite: Đồng bộ cập nhật bảng visited_provinces
+    else Mất kết nối mạng (Offline)
+        App->>SQLite: Đọc dữ liệu từ bảng visited_provinces đã lưu cục bộ
+    end
+
+    App->>App: Khớp provinceId với mapFeatureId của ranh giới 63 tỉnh
+    App->>App: Tô màu bản đồ theo 3 trạng thái: Xám (UNVISITED), Cam nhạt (SELF_REPORTED), Xanh lá (VERIFIED)
+    App-->>User: Hiển thị bản đồ hành chính, tổng cự ly (km), số chuyến đi, số tỉnh và số ngày trekking
+
+    opt Người dùng tự đánh dấu tỉnh thủ công (SELF_REPORTED)
+        User->>App: Chạm vào một tỉnh trên bản đồ để tự đánh dấu / bỏ đánh dấu
+        App->>SQLite: Kiểm tra trạng thái hiện tại của tỉnh
+        alt Tỉnh đã đạt trạng thái VERIFIED (qua GPS Check-in)
+            App-->>User: Thông báo: Tỉnh đã được xác thực qua GPS thực địa, không thể chỉnh sửa thủ công (BR-23)
+        else Tỉnh ở trạng thái UNVISITED hoặc SELF_REPORTED
+            App->>SQLite: Cập nhật trạng thái cục bộ (UNVISITED <-> SELF_REPORTED)
+            App->>App: Tô lại màu tỉnh tức thì trên bản đồ
+            alt Có mạng (Online)
+                App->>Gateway: PATCH /api/v1/visits/provinces/me/:provinceId {status}
+                Gateway->>Checkin: Cập nhật bản ghi province_visits
+                Checkin-->>App: 200 OK
+            else Mất mạng (Offline)
+                App->>SQLite: Đưa tác vụ cập nhật tỉnh vào hàng đợi đồng bộ
+            end
+        end
+    end

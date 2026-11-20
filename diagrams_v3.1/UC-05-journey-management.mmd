@@ -1,0 +1,36 @@
+sequenceDiagram
+    autonumber
+    actor User as Người dùng
+    participant App as Flutter Mobile App
+    participant SQLite as SQLite Local (local_journeys)
+    participant Queue as SQLite (sync_queue)
+    participant Gateway as API Gateway
+    participant Trekking as trekking-service
+
+    User->>App: Chọn cung đường và bấm "Tạo chuyến đi"
+    App->>App: 21. Sinh mã cục bộ duy nhất localJourneyId (FR-JRN-03)
+    alt Trạng thái Online
+        App->>Gateway: 22. POST /journeys (clientJourneyId, routeId)
+        Gateway->>Trekking: Tạo Journey canonical trên server
+        Trekking-->>App: 201 Created (trả về serverJourneyId)
+        App->>SQLite: Lưu local_journeys (mapping local <-> server ID, status: PLANNED)
+    else Trạng thái Offline
+        App->>SQLite: Lưu local_journeys (status: PLANNED)
+        App->>Queue: Đưa thao tác tạo Journey vào sync_queue
+    end
+
+    User->>App: 23. Bấm "Bắt đầu Trekking"
+    App->>SQLite: Chuyển trạng thái sang ACTIVE, ghi nhận startedAt
+    App->>App: Kích hoạt GPS tracking nền
+
+    opt Tạm dừng và Tiếp tục (Pause & Resume)
+        User->>App: 24. Bấm "Tạm dừng" (Pause) -> status: PAUSED
+        User->>App: 24. Bấm "Tiếp tục" (Resume) -> status: ACTIVE
+    end
+
+    User->>App: Bấm "Kết thúc hành trình"
+    App->>App: Thẩm định completedAt >= startedAt (BR-06)
+    App->>App: 25. Tính toán statistics (cự ly, thời gian, độ dốc, số cột mốc)
+    App->>App: Nén danh sách track points thành encoded polyline
+    App->>SQLite: Cập nhật status sang COMPLETED
+    App-->>User: 26. Hiển thị màn hình tổng kết hành trình và lịch sử chuyến đi
