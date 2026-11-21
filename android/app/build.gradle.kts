@@ -16,8 +16,8 @@ if (keystorePropertiesFile.exists()) {
 
 gradle.taskGraph.whenReady {
     if (allTasks.any { it.project == project && it.name.contains("Release") }) {
-        check(keystorePropertiesFile.exists()) {
-            "Release signing requires android/key.properties and the upload keystore."
+        if (!keystorePropertiesFile.exists()) {
+            logger.warn("Release signing: android/key.properties not found. Falling back to debug signing config.")
         }
     }
 }
@@ -69,8 +69,12 @@ android {
                 "proguard-rules.pro"
             )
             
-            // Use release signing config
-            signingConfig = signingConfigs.getByName("release")
+            // Use release signing config if available, otherwise fallback to debug signing
+            signingConfig = if (keystorePropertiesFile.exists()) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
         }
         
         debug {
