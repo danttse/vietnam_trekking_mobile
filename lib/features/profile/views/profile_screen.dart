@@ -11,6 +11,7 @@ import 'xp_history_screen.dart';
 import 'profile_setting_screen.dart';
 import 'badge_detail_screen.dart';
 import '../../../core/widgets/app_bar/app_top_bar.dart';
+import '../../../core/widgets/buttons/btn_outline_style.dart';
 
 class ProfileScreen extends StatefulWidget {
   final VoidCallback? onBackToHome;
@@ -169,9 +170,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      OutlinedButton.icon(
+                      BtnOutlineStyle(
                         icon: const Icon(Icons.history_rounded),
-                        label: Text(l10n.xpHistoryTitle),
+                        text: l10n.xpHistoryTitle,
                         onPressed: () => Navigator.push(
                           context,
                           MaterialPageRoute(

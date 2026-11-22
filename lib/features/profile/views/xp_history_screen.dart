@@ -45,9 +45,12 @@ class _XpHistoryScreenState extends State<XpHistoryScreen> {
     final colors = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(title: Text(l10n.xpHistoryTitle)),
-      body: ListenableBuilder(
-        listenable: vm,
-        builder: (context, _) => RefreshIndicator(
+      body: SafeArea(
+        top: false,
+        bottom: true,
+        child: ListenableBuilder(
+          listenable: vm,
+          builder: (context, _) => RefreshIndicator(
           onRefresh: () => vm.load(refresh: true),
           child: ListView(
             physics: const AlwaysScrollableScrollPhysics(),
@@ -165,6 +168,7 @@ class _XpHistoryScreenState extends State<XpHistoryScreen> {
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }

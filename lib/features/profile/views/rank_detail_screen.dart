@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/widgets/buttons/btn_outline_style.dart';
 import '../../../l10n/app_localizations.dart';
 import '../view_models/profile_viewmodel.dart';
 import '../widgets/rank_widgets.dart';
@@ -33,27 +34,30 @@ class _RankDetailScreenState extends State<RankDetailScreen> {
     final progress = vm.rankProgress;
     return Scaffold(
       appBar: AppBar(title: Text(l10n.rankDetailTitle)),
-      body: RefreshIndicator(
-        onRefresh: () => Future.wait([vm.loadRank(), vm.loadRankCatalog()]),
-        child: ListView(
-          padding: const EdgeInsets.all(18),
-          physics: const AlwaysScrollableScrollPhysics(),
-          children: [
-            RankSummaryCard(
-              profile: vm.rankProfile,
-              progress: progress,
-              isLoading: vm.isRankLoading,
-              error: vm.rankError,
-              onRetry: vm.loadRank,
-            ),
-            const SizedBox(height: 12),
-            OutlinedButton.icon(
-              icon: const Icon(Icons.history_rounded),
-              label: Text(l10n.xpHistoryTitle),
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const XpHistoryScreen()),
+      body: SafeArea(
+        top: false,
+        bottom: true,
+        child: RefreshIndicator(
+          onRefresh: () => Future.wait([vm.loadRank(), vm.loadRankCatalog()]),
+          child: ListView(
+            padding: const EdgeInsets.all(18),
+            physics: const AlwaysScrollableScrollPhysics(),
+            children: [
+              RankSummaryCard(
+                profile: vm.rankProfile,
+                progress: progress,
+                isLoading: vm.isRankLoading,
+                error: vm.rankError,
+                onRetry: vm.loadRank,
               ),
-            ),
+              const SizedBox(height: 12),
+              BtnOutlineStyle(
+                icon: const Icon(Icons.history_rounded),
+                text: l10n.xpHistoryTitle,
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const XpHistoryScreen()),
+                ),
+              ),
             if (progress?.nextRank != null) ...[
               const SizedBox(height: 24),
               Text(
@@ -176,6 +180,7 @@ class _RankDetailScreenState extends State<RankDetailScreen> {
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
