@@ -1117,6 +1117,25 @@
     },
     "readyForOfflineUse": "Sẵn sàng sử dụng offline",
     "manageOfflineMaps": "Quản lý bản đồ offline",
+    "yourContributions": "Đóng góp của bạn",
+    "tabContributionSubmitted": "Đã gửi",
+    "tabContributionApproved": "Đã duyệt",
+    "tabContributionRejected": "Từ chối",
+    "rejectionReason": "Lý do từ chối:",
+    "noRejectionReason": "Không có lý do chi tiết từ quản trị viên.",
+    "noContributionsSubmitted": "Chưa có đóng góp nào đang chờ duyệt.",
+    "noContributionsApproved": "Chưa có đóng góp nào được duyệt.",
+    "noContributionsRejected": "Chưa có đóng góp nào bị từ chối.",
+    "contributionTypeRoute": "Cung đường",
+    "contributionTypePlace": "Địa điểm",
+    "contributionDate": "Ngày gửi: {date}",
+    "@contributionDate": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            }
+        }
+    },
     "homeNoPlacesToExplore": "Chưa có địa điểm để khám phá",
     "yourMapPosterTitle": "Ảnh bản đồ của bạn",
     "downloadPosterNow": "Tải ảnh ngay",

@@ -1,10 +1,14 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sqflite/sqflite.dart';
 
+import '../../../core/database/database_helper.dart';
+import '../../../core/services/offline_store.dart';
 import '../../../core/services/user_api_service.dart';
 import '../../../core/services/trekking_upload_service.dart';
 import '../../../core/network/api_error_handler.dart';
@@ -154,26 +158,94 @@ class SuggestPlaceViewModel extends ChangeNotifier {
         _uploadedImages[image.path] = url;
         urls.add(url);
       }
-      await _api.trekking.post(
-        '/contributions/places',
-        data: {
-          'clientOperationId': _operationId,
-          'provinceId': _provinceIds[_selectedProvince],
-          'proposedName': placeNameController.text.trim(),
-          'description': descriptionController.text.trim(),
-          'location': {
-            'type': 'Point',
-            'coordinates': [coords[1], coords[0]],
-          },
-          'difficulty': [
-            'EASY',
-            'MODERATE',
-            'HARD',
-            'EXPERT',
-          ][difficulties.indexOf(_selectedDifficulty)],
-          'images': urls,
+      final payload = {
+        'clientOperationId': _operationId,
+        'provinceId': _provinceIds[_selectedProvince],
+        'proposedName': placeNameController.text.trim(),
+        'description': descriptionController.text.trim(),
+        'location': {
+          'type': 'Point',
+          'coordinates': [coords[1], coords[0]],
         },
+        'difficulty': [
+          'EASY',
+          'MODERATE',
+          'HARD',
+          'EXPERT',
+        ][difficulties.indexOf(_selectedDifficulty)],
+        'images': urls,
+      };
+
+      // Luu offline vao local_contributions va outbox truoc de dam bao an toan du lieu
+      String? localOwner;
+      try {
+        localOwner = await OfflineStore.currentOwner();
+        if (localOwner != null && localOwner.isNotEmpty) {
+          final db = await DatabaseHelper.instance.database;
+          final now = DateTime.now().toUtc().toIso8601String();
+          await db.insert(
+            'local_contributions',
+            {
+              'localContributionId': _operationId,
+              'userId': localOwner,
+              'type': 'PLACE_SUGGESTION',
+              'payload': jsonEncode(payload),
+              'serverStatus': 'PENDING_REVIEW',
+              'syncStatus': 'PENDING',
+              'createdAt': now,
+              'updatedAt': now,
+            },
+            conflictAlgorithm: ConflictAlgorithm.replace,
+          );
+          await db.insert(
+            'offline_outbox',
+            {
+              'operationId': _operationId,
+              'ownerId': localOwner,
+              'method': 'POST',
+              'path': '/contributions/places',
+              'body': jsonEncode({...payload, '_contributionRef': _operationId}),
+              'createdAt': now,
+            },
+            conflictAlgorithm: ConflictAlgorithm.ignore,
+          );
+        }
+      } catch (_) {}
+
+      final response = await _api.trekking.post(
+        '/contributions/places',
+        data: payload,
       );
+
+      // Cap nhat SYNCED va don dep outbox khi gui thanh cong len server
+      try {
+        if (localOwner != null && localOwner.isNotEmpty) {
+          final db = await DatabaseHelper.instance.database;
+          final respData = response.data is Map ? response.data as Map : null;
+          final inner = respData?['data'] is Map ? respData!['data'] as Map : respData;
+          final serverId = inner?['placeSuggestionId'] ??
+              inner?['id'] ??
+              respData?['placeSuggestionId'] ??
+              respData?['id'];
+
+          await db.update(
+            'local_contributions',
+            {
+              'syncStatus': 'SYNCED',
+              if (serverId != null) 'serverContributionId': serverId.toString(),
+              'lastSyncedAt': DateTime.now().toUtc().toIso8601String(),
+            },
+            where: 'localContributionId = ?',
+            whereArgs: [_operationId],
+          );
+          await db.delete(
+            'offline_outbox',
+            where: 'operationId = ? AND ownerId = ?',
+            whereArgs: [_operationId, localOwner],
+          );
+        }
+      } catch (_) {}
+
       return true;
     } catch (e) {
       if (!_disposed) error = ApiErrorHandler.handle(e);

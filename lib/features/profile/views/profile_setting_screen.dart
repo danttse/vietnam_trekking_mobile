@@ -165,6 +165,12 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                 title: l10n.settingsGroupContribute,
                 items: [
                   ProfileSettingItem(
+                    mainTitle: l10n.yourContributions,
+                    icon: Icons.rate_review_outlined,
+                    onTapAction: () =>
+                        _settingViewModel.openMyContributions(context),
+                  ),
+                  ProfileSettingItem(
                     mainTitle: l10n.settingsSuggestPlace,
                     icon: Icons.place_outlined,
                     onTapAction: () => _settingViewModel.suggestPlace(context),

@@ -2019,6 +2019,45 @@ class AppLocalizationsEn extends AppLocalizations {
   String get manageOfflineMaps => 'Manage offline maps';
 
   @override
+  String get yourContributions => 'Your contributions';
+
+  @override
+  String get tabContributionSubmitted => 'Submitted';
+
+  @override
+  String get tabContributionApproved => 'Approved';
+
+  @override
+  String get tabContributionRejected => 'Rejected';
+
+  @override
+  String get rejectionReason => 'Rejection reason:';
+
+  @override
+  String get noRejectionReason =>
+      'No specific reason provided by administrator.';
+
+  @override
+  String get noContributionsSubmitted => 'No pending contributions.';
+
+  @override
+  String get noContributionsApproved => 'No approved contributions.';
+
+  @override
+  String get noContributionsRejected => 'No rejected contributions.';
+
+  @override
+  String get contributionTypeRoute => 'Route';
+
+  @override
+  String get contributionTypePlace => 'Place';
+
+  @override
+  String contributionDate(String date) {
+    return 'Submitted on: $date';
+  }
+
+  @override
   String get homeNoPlacesToExplore => 'No places to explore yet';
 
   @override

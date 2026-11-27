@@ -40,7 +40,6 @@ class _OfflineMapManagementScreenState
   void _handleDeleteClick(DownloadedMap map, bool isInUse) {
     final l10n = AppLocalizations.of(context)!;
     if (isInUse) {
-      // Nếu bản đồ đang phục vụ hành trình đang đi -> Chặn và báo lỗi bằng SnackBar
       AppSnackBar.showError(
         context,
         l10n.offlineMapInUseNotice(map.mapName),

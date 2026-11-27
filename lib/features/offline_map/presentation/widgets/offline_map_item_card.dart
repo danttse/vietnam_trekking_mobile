@@ -80,7 +80,6 @@ class OfflineMapItemCard extends StatelessWidget {
                       const SizedBox(height: 5),
                       Row(
                         children: [
-                          // Tag loại bản đồ
                           Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 6,
@@ -101,7 +100,6 @@ class OfflineMapItemCard extends StatelessWidget {
                               ),
                             ),
                           ),
-                          // Badge hành trình đang đi
                           if (isInUse) ...[
                             const SizedBox(width: 6),
                             Container(

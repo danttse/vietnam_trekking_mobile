@@ -1117,6 +1117,25 @@
     },
     "readyForOfflineUse": "Ready for offline use",
     "manageOfflineMaps": "Manage offline maps",
+    "yourContributions": "Your contributions",
+    "tabContributionSubmitted": "Submitted",
+    "tabContributionApproved": "Approved",
+    "tabContributionRejected": "Rejected",
+    "rejectionReason": "Rejection reason:",
+    "noRejectionReason": "No specific reason provided by administrator.",
+    "noContributionsSubmitted": "No pending contributions.",
+    "noContributionsApproved": "No approved contributions.",
+    "noContributionsRejected": "No rejected contributions.",
+    "contributionTypeRoute": "Route",
+    "contributionTypePlace": "Place",
+    "contributionDate": "Submitted on: {date}",
+    "@contributionDate": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            }
+        }
+    },
     "homeNoPlacesToExplore": "No places to explore yet",
     "yourMapPosterTitle": "Your map poster",
     "downloadPosterNow": "Download image now",

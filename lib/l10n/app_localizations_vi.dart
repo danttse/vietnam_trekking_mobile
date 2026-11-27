@@ -2027,6 +2027,44 @@ class AppLocalizationsVi extends AppLocalizations {
   String get manageOfflineMaps => 'Quản lý bản đồ offline';
 
   @override
+  String get yourContributions => 'Đóng góp của bạn';
+
+  @override
+  String get tabContributionSubmitted => 'Đã gửi';
+
+  @override
+  String get tabContributionApproved => 'Đã duyệt';
+
+  @override
+  String get tabContributionRejected => 'Từ chối';
+
+  @override
+  String get rejectionReason => 'Lý do từ chối:';
+
+  @override
+  String get noRejectionReason => 'Không có lý do chi tiết từ quản trị viên.';
+
+  @override
+  String get noContributionsSubmitted => 'Chưa có đóng góp nào đang chờ duyệt.';
+
+  @override
+  String get noContributionsApproved => 'Chưa có đóng góp nào được duyệt.';
+
+  @override
+  String get noContributionsRejected => 'Chưa có đóng góp nào bị từ chối.';
+
+  @override
+  String get contributionTypeRoute => 'Cung đường';
+
+  @override
+  String get contributionTypePlace => 'Địa điểm';
+
+  @override
+  String contributionDate(String date) {
+    return 'Ngày gửi: $date';
+  }
+
+  @override
   String get homeNoPlacesToExplore => 'Chưa có địa điểm để khám phá';
 
   @override

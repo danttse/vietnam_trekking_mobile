@@ -1,10 +1,4 @@
-/// Model Contribution (đóng góp cung đường / địa điểm mới) trả về từ API.
-///
-/// Backend có 2 loại:
-/// - Route Submission: POST /contributions/routes
-/// - Place Suggestion: POST /contributions/places
-///
-/// Trạng thái: DRAFT → PENDING_REVIEW → (APPROVED | REJECTED | NEEDS_REVISION)
+
 class ContributionModel {
   final String contributionKind;
   final String contributionId;
@@ -43,8 +37,18 @@ class ContributionModel {
   });
 
   factory ContributionModel.fromJson(Map<String, dynamic> json) {
+    final bool isPlace = json['type'] == 'PLACE_SUGGESTION' ||
+        json['type'] == 'PLACE' ||
+        json.containsKey('placeSuggestionId') ||
+        json['contributionKind'] == 'PLACE';
+
+    final String kind = json['contributionKind'] as String? ??
+        (isPlace ? 'PLACE' : 'ROUTE');
+    final String type = json['type'] as String? ??
+        (isPlace ? 'PLACE_SUGGESTION' : 'ROUTE_SUBMISSION');
+
     return ContributionModel(
-      contributionKind: json['contributionKind'] as String? ?? 'ROUTE',
+      contributionKind: kind,
       contributionId:
           json['routeSubmissionId'] as String? ??
           json['placeSuggestionId'] as String? ??
@@ -52,11 +56,7 @@ class ContributionModel {
           json['id'] as String? ??
           '',
       userId: json['userId'] as String?,
-      type:
-          json['type'] as String? ??
-          (json.containsKey('routeSubmissionId')
-              ? 'ROUTE_SUBMISSION'
-              : 'PLACE_SUGGESTION'),
+      type: type,
       status: json['status'] as String? ?? 'PENDING_REVIEW',
       sourceJourneyId: json['sourceJourneyId'] as String?,
       proposedName: json['proposedName'] as String?,
@@ -222,12 +222,20 @@ class MyContributionsResponse {
     return MyContributionsResponse(
       routes: routeItems
           .cast<Map<String, dynamic>>()
-          .map(ContributionModel.fromJson)
+          .map((item) => ContributionModel.fromJson({
+                ...item,
+                'contributionKind': item['contributionKind'] ?? 'ROUTE',
+                'type': item['type'] ?? 'ROUTE_SUBMISSION',
+              }))
           .toList(),
       routesTotal: routesData['total'] as int? ?? routeItems.length,
       places: placeItems
           .cast<Map<String, dynamic>>()
-          .map(ContributionModel.fromJson)
+          .map((item) => ContributionModel.fromJson({
+                ...item,
+                'contributionKind': item['contributionKind'] ?? 'PLACE',
+                'type': item['type'] ?? 'PLACE_SUGGESTION',
+              }))
           .toList(),
       placesTotal: placesData['total'] as int? ?? placeItems.length,
     );

@@ -3728,6 +3728,78 @@ abstract class AppLocalizations {
   /// **'Quản lý bản đồ offline'**
   String get manageOfflineMaps;
 
+  /// No description provided for @yourContributions.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đóng góp của bạn'**
+  String get yourContributions;
+
+  /// No description provided for @tabContributionSubmitted.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã gửi'**
+  String get tabContributionSubmitted;
+
+  /// No description provided for @tabContributionApproved.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã duyệt'**
+  String get tabContributionApproved;
+
+  /// No description provided for @tabContributionRejected.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ chối'**
+  String get tabContributionRejected;
+
+  /// No description provided for @rejectionReason.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lý do từ chối:'**
+  String get rejectionReason;
+
+  /// No description provided for @noRejectionReason.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không có lý do chi tiết từ quản trị viên.'**
+  String get noRejectionReason;
+
+  /// No description provided for @noContributionsSubmitted.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có đóng góp nào đang chờ duyệt.'**
+  String get noContributionsSubmitted;
+
+  /// No description provided for @noContributionsApproved.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có đóng góp nào được duyệt.'**
+  String get noContributionsApproved;
+
+  /// No description provided for @noContributionsRejected.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có đóng góp nào bị từ chối.'**
+  String get noContributionsRejected;
+
+  /// No description provided for @contributionTypeRoute.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cung đường'**
+  String get contributionTypeRoute;
+
+  /// No description provided for @contributionTypePlace.
+  ///
+  /// In vi, this message translates to:
+  /// **'Địa điểm'**
+  String get contributionTypePlace;
+
+  /// No description provided for @contributionDate.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày gửi: {date}'**
+  String contributionDate(String date);
+
   /// No description provided for @homeNoPlacesToExplore.
   ///
   /// In vi, this message translates to:
